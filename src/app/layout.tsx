@@ -12,6 +12,11 @@ const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
 export const metadata: Metadata = {
   title: `${APP_SHORT_NAME} — ${APP_NAME}`,
   description: APP_DESCRIPTION,
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
