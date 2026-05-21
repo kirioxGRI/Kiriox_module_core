@@ -1,9 +1,11 @@
 import { Prisma } from '@/generated/prisma/client';
 import prisma from '@/infrastructure/db/prisma/client';
+import { resolveEffectiveCompanyId } from '@/infrastructure/db/prisma/resolveEffectiveCompanyId';
 import type { HardgateRow, IHardgateRepository, UpsertHardgateInput } from '@/modules/structural-risk/domain/contracts/IHardgateRepository';
 
 export class PrismaHardgateRepository implements IHardgateRepository {
   async getHardgates(runSaId: string, companyId: string): Promise<HardgateRow[]> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     return prisma.$queryRaw<HardgateRow[]>(Prisma.sql`
       SELECT
         h.id::text,
@@ -21,6 +23,7 @@ export class PrismaHardgateRepository implements IHardgateRepository {
   }
 
   async verifyRun(runSaId: string, companyId: string): Promise<boolean> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     const rows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
       SELECT id::text FROM public.graph_run_sa
       WHERE id = ${runSaId}::uuid AND company_id = ${companyId}::uuid

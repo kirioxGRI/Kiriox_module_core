@@ -1,5 +1,6 @@
 import { Prisma } from '@/generated/prisma/client';
 import prisma from '@/infrastructure/db/prisma/client';
+import { resolveEffectiveCompanyId } from '@/infrastructure/db/prisma/resolveEffectiveCompanyId';
 import type {
   CreateRunInput,
   IStructuralWizardRepository,
@@ -52,6 +53,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   // ── Runs ──────────────────────────────────────────────────────────────────
 
   async getRunsByCompany(companyId: string): Promise<WizardRunRow[]> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     return prisma.$queryRaw<WizardRunRow[]>(Prisma.sql`
       SELECT
         r.id::text,
@@ -99,6 +101,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   }
 
   async verifyRun(runSaId: string, companyId: string): Promise<WizardRunRow | null> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     const rows = await prisma.$queryRaw<Array<{ id: string; code: string }>>(Prisma.sql`
       SELECT id::text, code
       FROM public.graph_run_sa
@@ -117,13 +120,14 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   }
 
   async createRun(input: CreateRunInput): Promise<{ id: string; code: string }> {
+    const companyId = await resolveEffectiveCompanyId(input.companyId);
     return prisma.$transaction(async (tx) => {
       const rows = await tx.$queryRaw<Array<{ id: string; code: string }>>(Prisma.sql`
         INSERT INTO public.graph_run_sa (
           id, company_id, code, title, scope_type, methodology, model_version, status, created_by, assessment_date, created_at, updated_at
         ) VALUES (
           gen_random_uuid(),
-          ${input.companyId}::uuid,
+          ${companyId}::uuid,
           ${input.code},
           ${input.title},
           ${input.scopeCode},
@@ -143,7 +147,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
           INSERT INTO public.graph_map_run_sa_activities (
             id, company_id, run_sa_id, activity_id, selected_by, selected_at, is_active, created_at, updated_at
           ) VALUES (
-            gen_random_uuid(), ${input.companyId}::uuid, ${run.id}::uuid, ${activityId}::uuid,
+            gen_random_uuid(), ${companyId}::uuid, ${run.id}::uuid, ${activityId}::uuid,
             ${input.userId}::uuid, now(), true, now(), now()
           )
           ON CONFLICT (run_sa_id, activity_id) DO NOTHING
@@ -229,6 +233,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
 
   async deleteRun(runSaId: string, companyId: string, userId: string): Promise<boolean> {
     void userId;
+    companyId = await resolveEffectiveCompanyId(companyId);
 
     return prisma.$transaction(async (tx) => {
       const owned = await tx.$queryRaw<Array<{ id: string }>>(Prisma.sql`
@@ -282,6 +287,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   }
 
   async getSelectedActivities(runSaId: string, companyId: string): Promise<string[]> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     const rows = await prisma.$queryRaw<Array<{ activity_id: string }>>(Prisma.sql`
       SELECT activity_id::text
       FROM public.graph_map_run_sa_activities
@@ -292,6 +298,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   }
 
   async getActivitiesData(companyId: string, runSaId: string) {
+    companyId = await resolveEffectiveCompanyId(companyId);
     const [
       activities, people, resources, effects, strengths, alternatives,
       dependencies, sharedResources, linearRiskContext, cascadeCatalog,
@@ -442,6 +449,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   }
 
   async updateActivitySelection(runSaId: string, companyId: string, userId: string, selectedActivityIds: string[]): Promise<void> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     await prisma.$transaction(async (tx) => {
       await tx.$executeRaw(Prisma.sql`
         UPDATE public.graph_map_run_sa_activities
@@ -465,6 +473,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   }
 
   async updateActivityImpactCriticality(runSaId: string, activityId: string, companyId: string, impactCode?: string | null, criticalityCode?: string | null): Promise<void> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     await prisma.$executeRaw(Prisma.sql`
       UPDATE public.graph_map_run_sa_activities
       SET
@@ -476,6 +485,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   }
 
   async deleteDependency(dependencyId: string, companyId: string): Promise<void> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     await prisma.$executeRaw(Prisma.sql`
       UPDATE public.graph_activities_dependencies
       SET is_active = false, updated_at = now()
@@ -498,6 +508,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   }
 
   async verifyActivityInRun(runSaId: string, companyId: string, activityId: string): Promise<boolean> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     const rows = await prisma.$queryRaw<Array<{ activity_id: string }>>(Prisma.sql`
       SELECT activity_id::text
       FROM public.graph_map_run_sa_activities
@@ -509,6 +520,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   }
 
   async verifyActivityExists(activityId: string, companyId: string): Promise<boolean> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     const rows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
       SELECT id::text FROM public.activities
       WHERE id = ${activityId}::uuid AND company_id = ${companyId}::uuid AND is_active = true
@@ -530,6 +542,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
     runSaId?: string;
     companyId?: string;
   }) {
+    const effectiveCompanyId = input.companyId ? await resolveEffectiveCompanyId(input.companyId) : undefined;
     const result: { failureEffectCode?: string; dependencyStrengthCode?: string; alternativeCode?: string; resourceTypeCode?: string; valid: boolean; error?: string } = { valid: true };
 
     if (input.failureEffectId) {
@@ -556,11 +569,11 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
       const rows = await prisma.$queryRaw<Array<{ code: string }>>(Prisma.sql`SELECT code FROM public.graph_activity_catalog_criticality WHERE code = ${input.criticalityCode} LIMIT 1`);
       if (!rows[0]) { result.valid = false; result.error = 'Nivel de criticidad inválido'; return result; }
     }
-    if (input.riskId && input.companyId) {
+    if (input.riskId && effectiveCompanyId) {
       const rows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
         SELECT rr.id::text FROM public.run_ra_risks rr
         JOIN public.run_ra r ON r.id = rr.run_ra_id
-        WHERE rr.id = ${input.riskId}::uuid AND r.company_id = ${input.companyId}::uuid LIMIT 1
+        WHERE rr.id = ${input.riskId}::uuid AND r.company_id = ${effectiveCompanyId}::uuid LIMIT 1
       `);
       if (!rows[0]) { result.valid = false; result.error = 'Riesgo inválido'; return result; }
     }
@@ -576,6 +589,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
   }
 
   async upsertDependency(input: UpsertDependencyInput): Promise<{ id: string; created: boolean }> {
+    const effectiveCompanyId = await resolveEffectiveCompanyId(input.companyId);
     if (input.dependencyId) {
       await prisma.$executeRaw(Prisma.sql`
         UPDATE public.graph_activities_dependencies SET
@@ -587,14 +601,14 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
           alternative_level_id = ${input.alternativeLevelId}::uuid,
           dependency_person_id = ${input.dependencyPersonId}::uuid,
           updated_at = now()
-        WHERE id = ${input.dependencyId}::uuid AND company_id = ${input.companyId}::uuid
+        WHERE id = ${input.dependencyId}::uuid AND company_id = ${effectiveCompanyId}::uuid
       `);
       return { id: input.dependencyId, created: false };
     }
 
     const existing = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
       SELECT id::text FROM public.graph_activities_dependencies
-      WHERE company_id = ${input.companyId}::uuid AND activity_id = ${input.activityId}::uuid
+      WHERE company_id = ${effectiveCompanyId}::uuid AND activity_id = ${input.activityId}::uuid
         AND (
           (${input.dependencyActivityId}::uuid IS NULL AND dependency_activity_id IS NULL)
           OR dependency_activity_id = ${input.dependencyActivityId}::uuid
@@ -621,7 +635,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
         failure_effect_id, dependency_strength_id, alternative_level_id,
         control_id, description, is_active, created_at, updated_at
       ) VALUES (
-        gen_random_uuid(), ${input.companyId}::uuid, ${input.activityId}::uuid, ${input.dependencyResourceId}::uuid, ${input.dependencyActivityId}::uuid,
+        gen_random_uuid(), ${effectiveCompanyId}::uuid, ${input.activityId}::uuid, ${input.dependencyResourceId}::uuid, ${input.dependencyActivityId}::uuid,
         ${input.dependencySystemName ?? null}, ${input.dependencyDataName ?? null}, ${input.dependencyPersonId}::uuid,
         ${input.dependencyProviderName ?? null}, ${input.dependencyDocumentName ?? null},
         ${input.failureEffectId}::uuid, ${input.dependencyStrengthId}::uuid, ${input.alternativeLevelId}::uuid,

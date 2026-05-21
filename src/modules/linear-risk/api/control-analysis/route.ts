@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Prisma } from '@/generated/prisma/client';
 import prisma from '@/infrastructure/db/prisma/client';
+import { resolveEffectiveCompanyId } from '@/infrastructure/db/prisma/resolveEffectiveCompanyId';
 import { withAccess } from '@/core/permissions/http/withAccess';
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -33,6 +34,7 @@ type RiskLevelRow = {
 };
 
 async function ensureRunRaAccess(runRaId: string, companyId: string): Promise<boolean> {
+  companyId = await resolveEffectiveCompanyId(companyId);
   const rows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
     SELECT id::text
     FROM public.run_ra
@@ -52,8 +54,9 @@ export const GET = withAccess({ module: 'linear-risk', permission: 'read' }, asy
   const url = new URL(request.url);
   const runRaId = asUuid(url.searchParams.get('runRaId'));
   if (!runRaId) return NextResponse.json({ error: 'runRaId inválido' }, { status: 400 });
+  const effectiveCompanyId = await resolveEffectiveCompanyId(access.company.id);
 
-  const hasAccess = await ensureRunRaAccess(runRaId, access.company.id);
+  const hasAccess = await ensureRunRaAccess(runRaId, effectiveCompanyId);
   if (!hasAccess) return NextResponse.json({ error: 'Sin acceso' }, { status: 404 });
 
   const risks = await prisma.$queryRaw<any[]>(Prisma.sql`
@@ -137,7 +140,7 @@ export const GET = withAccess({ module: 'linear-risk', permission: 'read' }, asy
     prisma.$queryRaw<Array<{ id: string; name: string; last_name: string }>>(Prisma.sql`
       SELECT id::text, COALESCE(name,'') AS name, COALESCE(last_name,'') AS last_name
       FROM public.users
-      WHERE company_id = ${access.company.id}::uuid
+      WHERE company_id = ${effectiveCompanyId}::uuid
         AND is_active = true
       ORDER BY name ASC
     `),
@@ -197,8 +200,9 @@ export const POST = withAccess({ module: 'linear-risk', permission: 'read' }, as
   const runRaId = asUuid(body.runRaId);
   const riskId = asUuid(body.riskId);
   if (!runRaId || !riskId) return NextResponse.json({ error: 'runRaId o riskId inválido' }, { status: 400 });
+  const effectiveCompanyId = await resolveEffectiveCompanyId(access.company.id);
 
-  const hasAccess = await ensureRunRaAccess(runRaId, access.company.id);
+  const hasAccess = await ensureRunRaAccess(runRaId, effectiveCompanyId);
   if (!hasAccess) return NextResponse.json({ error: 'Sin acceso' }, { status: 404 });
 
   if (asText(body.action) === 'create_control') {
@@ -337,8 +341,9 @@ export const DELETE = withAccess({ module: 'linear-risk', permission: 'read' }, 
   if (!runRaId || !riskId || !controlId) {
     return NextResponse.json({ error: 'runRaId, riskId o controlId inválido.' }, { status: 400 });
   }
+  const effectiveCompanyId = await resolveEffectiveCompanyId(access.company.id);
 
-  const hasAccess = await ensureRunRaAccess(runRaId, access.company.id);
+  const hasAccess = await ensureRunRaAccess(runRaId, effectiveCompanyId);
   if (!hasAccess) return NextResponse.json({ error: 'Sin acceso' }, { status: 404 });
 
   await prisma.$executeRaw(Prisma.sql`

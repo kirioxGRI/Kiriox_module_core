@@ -121,3 +121,12 @@ Studio               : 0.27.3
 **Regla aprendida 2:** Un sistema de plugins por contrato no debe instalar paquetes directamente en runtime sin cuarentena. El flujo correcto y reusable es: recibir `.zip` -> guardar paquete -> descomprimir en `quarantine/` -> validar `plugin.manifest.json` -> validar permisos, versión semver, dependencias y `extensionPoints` -> mover a `plugins/installed/` -> cargar `index.ts` sólo si el contrato exportado coincide con el manifiesto y cumple el `KirioxPluginContract`.
 
 **Aplicación futura 2:** Toda futura capacidad de extensibilidad debe usar staging en disco (`packages/`, `quarantine/`, `installed/`) y validación contractual previa a la activación. No mezclar “subida de archivo”, “instalación” y “activación” en un solo paso opaco.
+
+## 2026-05-21 — Aprendizaje
+
+**Contexto:** Pantallas de riesgo lineal y estructural rotas por dependencia del tenant/company_id entregado por auth bypass en un sistema monocompañía.
+
+**Regla aprendida:** En Kiriox, las evaluaciones de riesgo lineal y estructural no deben depender ciegamente del companyId recibido desde auth cuando el sistema opera con una sola empresa. Deben resolver la empresa efectiva real desde public.company antes de filtrar o crear runs.
+
+**Aplicación futura:** Para módulos de evaluación monocompañía, normalizar el contexto de empresa en infraestructura/API antes de consultas o inserciones para evitar quiebres por envs de bypass o tenants desalineados.
+

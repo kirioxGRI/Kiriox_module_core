@@ -1,5 +1,6 @@
 import { Prisma } from "@/generated/prisma/client";
 import prisma from "@/infrastructure/db/prisma/client";
+import { resolveEffectiveCompanyId } from "@/infrastructure/db/prisma/resolveEffectiveCompanyId";
 import {
   LinearRiskRepository,
   LinearRiskDashboardSummary,
@@ -148,6 +149,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
     elementId?: string,
     activityId?: string
   ): Promise<LinearRiskEvaluationsSummary> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     console.log('[PrismaLinearRiskRepository] fetching evals for companyId:', companyId);
     const rows = await prisma.$queryRaw<any[]>(Prisma.sql`
       SELECT
@@ -305,6 +307,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
     companyId: string,
     forceNew = false
   ): Promise<{ id: string; code: string }> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     if (!forceNew) {
       const existing = await prisma.$queryRaw<any[]>(Prisma.sql`
         SELECT id::text, code FROM public.run_ra
@@ -355,6 +358,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
   }
 
   async getGeneralContext(runRaId: string, companyId: string): Promise<any> {
+    companyId = await resolveEffectiveCompanyId(companyId);
     console.log('[LinearRiskRepository] getGeneralContext:', { runRaId, companyId });
     const rows = await prisma.$queryRaw<any[]>(Prisma.sql`
       SELECT
@@ -504,6 +508,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
   // --- STEP 2: RISK ANALYSIS ---
 
   async getRiskAnalysisData(runRaId: string, companyId: string) {
+    companyId = await resolveEffectiveCompanyId(companyId);
     const [itemsRaw, impacts, probabilities, pesos, activities, owners, controls, runRaMeta, categories, objectives] = await Promise.all([
       prisma.$queryRaw<any[]>(Prisma.sql`
         SELECT
@@ -623,6 +628,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
   }
 
   async upsertRisk(runRaId: string, riskData: any, companyId: string, userId: string) {
+    companyId = await resolveEffectiveCompanyId(companyId);
     const { id: riskId, name, description, risk_category, cause, event, consequence, objective_id, activity_id, owner_id, impact_id, probability_id, peso_id, control_ids } = riskData;
 
     const objectiveId = this.asUuid(objective_id);
@@ -741,6 +747,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
   // --- STEP 3: CONTROL ANALYSIS ---
 
   async getControlAnalysisData(runRaId: string, companyId: string, riskId?: string) {
+    companyId = await resolveEffectiveCompanyId(companyId);
     // 1. Get all risks for this evaluation
     const risks = await prisma.$queryRaw<any[]>(Prisma.sql`
       SELECT
@@ -909,6 +916,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
   // --- STEP 4: RISK VALUATION ---
 
   async getRiskValuationData(runRaId: string, companyId: string) {
+    companyId = await resolveEffectiveCompanyId(companyId);
     const [risksRaw, controlsDirect, controlsMapped, levels, metaRows, valorationCatalog, ownersRaw] = await Promise.all([
       prisma.$queryRaw<any[]>(Prisma.sql`
         SELECT
@@ -1209,6 +1217,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
     completionReason?: string | null;
   }): Promise<void> {
     const { runRaId, companyId, changedBy, toCode, changeReason, completionReason } = input;
+    const effectiveCompanyId = await resolveEffectiveCompanyId(companyId);
 
     // 1. Resolve target lifecycle state
     const stateRows = await prisma.$queryRaw<{ id: string; code: string }[]>(Prisma.sql`
@@ -1225,7 +1234,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
       SELECT id::text
       FROM public.run_ra
       WHERE id = ${runRaId}::uuid
-        AND company_id = ${companyId}::uuid
+        AND company_id = ${effectiveCompanyId}::uuid
       LIMIT 1
     `);
     if (!runRows[0]) throw new Error('run_ra not found or access denied');

@@ -8,6 +8,7 @@ const Docxtemplater = require("docxtemplater") as typeof import("docxtemplater")
 const ImageModule = require("docxtemplater-image-module-free");
 import { withAccess } from "@/core/permissions/http/withAccess";
 import prisma from "@/infrastructure/db/prisma/client";
+import { resolveEffectiveCompanyId } from "@/infrastructure/db/prisma/resolveEffectiveCompanyId";
 import type { RouteAccessContext } from "@/core/permissions/http/withAccess";
 import { Prisma } from "@/generated/prisma/client";
 
@@ -27,6 +28,7 @@ function today(): string {
 }
 
 async function fetchReportData(runRaId: string, companyId: string) {
+  companyId = await resolveEffectiveCompanyId(companyId);
   const [evalRows, contextRows, riskRows, controlRows, levelRows, companyRows] = await Promise.all([
     prisma.$queryRaw<Array<Record<string, unknown>>>(Prisma.sql`
       SELECT r.id::text, r.code, COALESCE(r.title,'Sin título') AS title,
@@ -107,6 +109,7 @@ async function generateReport(request: Request, access: RouteAccessContext) {
     runRaId,
     access.company.id
   );
+  const effectiveCompanyId = await resolveEffectiveCompanyId(access.company.id);
 
   if (!evalRows[0]) {
     return NextResponse.json({ error: "Evaluación no encontrada" }, { status: 404 });
@@ -115,7 +118,7 @@ async function generateReport(request: Request, access: RouteAccessContext) {
   const evaluation = evalRows[0];
   const context = contextRows[0] ?? {};
   const companyName =
-    (typeof companyRows[0]?.name === "string" ? companyRows[0].name : undefined) ?? access.company.id;
+    (typeof companyRows[0]?.name === "string" ? companyRows[0].name : undefined) ?? effectiveCompanyId;
 
   const controlsByRisk = new Map<string, Array<Record<string, unknown>>>();
   for (const control of controlRows) {
