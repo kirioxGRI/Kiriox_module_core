@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function RootPage() {
-  redirect("/score/dashboard2");
+  redirect("/main_dashboard");
 }

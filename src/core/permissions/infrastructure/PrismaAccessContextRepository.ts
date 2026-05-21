@@ -1,5 +1,6 @@
 import { Prisma } from '@/generated/prisma/client';
 import prisma from '@/infrastructure/db/prisma/client';
+import { resolveEffectiveCompanyId } from '@/infrastructure/db/prisma/resolveEffectiveCompanyId';
 import { isDevAuthBypassEnabled } from '@/core/auth/auth-server';
 import { buildNavigation } from '@/core/navigation/buildNavigation';
 import type { AccessContextRepository } from '../domain/contracts/AccessContextRepository';
@@ -17,11 +18,12 @@ function isMissingRelation(error: unknown, table: string): boolean {
 
 export class PrismaAccessContextRepository implements AccessContextRepository {
   async getAccessContext(input: { userId: string; companyId: string; fallbackEmail?: string }): Promise<AccessContext> {
+    const companyId = await resolveEffectiveCompanyId(input.companyId);
     const [user, company, enabledModules, permissions] = await Promise.all([
       this.loadUser(input.userId, input.fallbackEmail),
-      this.loadCompany(input.companyId),
-      this.getEnabledModules(input.companyId),
-      this.getPermissions(input.userId, input.companyId),
+      this.loadCompany(companyId),
+      this.getEnabledModules(companyId),
+      this.getPermissions(input.userId, companyId),
     ]);
 
     const navigation = buildNavigation({ enabledModules, permissions });

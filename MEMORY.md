@@ -130,3 +130,20 @@ Studio               : 0.27.3
 
 **Aplicación futura:** Para módulos de evaluación monocompañía, normalizar el contexto de empresa en infraestructura/API antes de consultas o inserciones para evitar quiebres por envs de bypass o tenants desalineados.
 
+
+## 2026-05-21 — Aprendizaje
+
+**Contexto:** Correccion de rutas principales del sistema tras separar el dashboard central del dashboard de gestion de riesgo.
+
+**Regla aprendida:** El dashboard central post-login de Kiriox Enterprise vive en /main_dashboard. La ruta /score/dashboard2 queda reservada como dashboard del modulo de gestion de riesgo.
+
+**Aplicación futura:** Login, home, topbar y modulos core deben apuntar a /main_dashboard como entrada principal; cierres y accesos del dominio de riesgo pueden seguir usando /score/dashboard2 como dashboard especializado.
+
+## 2026-05-21 — Aprendizaje
+
+**Contexto:** Navegacion interna en desarrollo con `DEV_AUTH_BYPASS=1`.
+
+**Regla aprendida:** Cuando el entorno usa bypass de autenticacion, el `middleware` no debe forzar redireccion a `/login`, porque puede romper accesos internos validos durante construccion y pruebas del sistema.
+
+**Aplicación futura:** Si el entorno de desarrollo opera con auth bypass, permitir paso por `middleware` y delegar el contexto de acceso a la capa de auth/aplicacion en lugar de bloquear por ausencia de cookie JWT.
+

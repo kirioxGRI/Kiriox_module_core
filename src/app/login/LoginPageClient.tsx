@@ -51,9 +51,9 @@ export default function LoginPageClient({ companyName }: LoginPageClientProps) {
 
       if (typeof window !== "undefined") {
         sessionStorage.setItem(TAB_SESSION_KEY, "1");
-        window.location.assign("/score/dashboard2");
+        window.location.assign("/main_dashboard");
       } else {
-        router.replace("/score/dashboard2");
+        router.replace("/main_dashboard");
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "No se pudo iniciar sesión.";

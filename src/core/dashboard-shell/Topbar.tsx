@@ -93,7 +93,7 @@ export default function Topbar({ access, showScopeSelectors = false }: TopbarPro
             </span>
           )}
         </Link>
-        <Link href="/score/dashboard2" style={{ ...iconBtnStyle, textDecoration: 'none' }} title="Score Dashboard">
+        <Link href="/main_dashboard" style={{ ...iconBtnStyle, textDecoration: 'none' }} title="Dashboard principal">
           <LayoutGrid size={20} />
         </Link>
         <div ref={menuRef} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingLeft: '1rem', borderLeft: '1px solid var(--glass-border)', position: 'relative' }}>

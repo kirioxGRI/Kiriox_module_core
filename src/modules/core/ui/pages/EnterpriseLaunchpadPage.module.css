@@ -1,0 +1,65 @@
+.page {
+  position: relative;
+  min-height: 100vh;
+  padding: 2rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(86, 169, 255, 0.72), rgba(86, 169, 255, 0) 32%),
+    radial-gradient(circle at 88% 14%, rgba(123, 66, 255, 0.72), rgba(123, 66, 255, 0) 28%),
+    linear-gradient(120deg, #2b8cff 0%, #3f6dff 44%, #5b34e8 100%);
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 0.5rem;
+}
+
+.glowA,
+.glowB,
+.glowC {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(80px);
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+.glowA {
+  top: -10%;
+  left: -8%;
+  width: 420px;
+  height: 420px;
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.glowB {
+  top: 25%;
+  right: -12%;
+  width: 520px;
+  height: 520px;
+  background: rgba(157, 87, 255, 0.28);
+}
+
+.glowC {
+  bottom: -16%;
+  left: 28%;
+  width: 620px;
+  height: 620px;
+  background: rgba(59, 130, 246, 0.24);
+}
+
+@media (max-width: 860px) {
+  .page {
+    padding: 1rem;
+  }
+
+  .shell {
+    gap: 1.4rem;
+  }
+}

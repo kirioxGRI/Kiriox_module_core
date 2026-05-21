@@ -11,7 +11,7 @@ export const coreModule: KirioxModuleContract = {
     dependencies: [],
     nav: {
       label: "Dashboard",
-      href: "/score/dashboard2",
+      href: "/main_dashboard",
       icon: "LayoutDashboard",
       order: 10,
     },

@@ -13,7 +13,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const isLogin = pathname === '/login';
-  const isImmersive = pathname.startsWith('/score/simulacion') || pathname.startsWith('/app-simulation');
+  const isImmersive = pathname === '/main_dashboard' || pathname.startsWith('/score/simulacion') || pathname.startsWith('/app-simulation');
 
   const [access, setAccess] = useState<AccessContext | null>(null);
   const [navigation, setNavigation] = useState<ResolvedNavigationItem[]>([]);
@@ -27,6 +27,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         if (alive) setLoadingAccess(false);
         return;
       }
+
+      // Reset antes del fetch para evitar redirect prematuro al venir de ruta inmersiva
+      if (alive) setLoadingAccess(true);
 
       if (typeof window !== 'undefined') {
         sessionStorage.setItem(TAB_SESSION_KEY, '1');

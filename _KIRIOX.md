@@ -1,5 +1,16 @@
 # AGENTS.md --- Protocolo de Ingeniería Determinista para Agentes Kiriox
 
+# Module del sistema
+Gestión de riesgo 
+Gobierno de Auditoría 
+Plaft 
+Gobierno de IA 
+Ciberseguridad 
+Continuidad de negocios 
+Kiriox Academy 
+Kiriox Enterprise Marketplace 
+Kiriox Risk Average
+
 
 ## Arquitectura de desarrollo de Kiriox
 Explicación para un Experto (Orquestación, Desacoplamiento y Arquitectura Evolutiva)
