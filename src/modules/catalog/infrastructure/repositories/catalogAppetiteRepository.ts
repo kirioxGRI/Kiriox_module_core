@@ -1,5 +1,6 @@
 import prisma from "@/infrastructure/db/prisma/client";
 import { CatalogAppetite } from "../../domain/types";
+import { randomUUID } from "crypto";
 
 export class CatalogAppetiteRepository {
   async findAll(): Promise<CatalogAppetite[]> {
@@ -16,6 +17,7 @@ export class CatalogAppetiteRepository {
   async create(data: Partial<CatalogAppetite>): Promise<CatalogAppetite> {
     const result = await (prisma as any).catalog_appetite.create({
       data: {
+        id: data.id || randomUUID(),
         code: data.code || "",
         scope_type: data.scope_type || "GLOBAL",
         scope_id: data.scope_id || "00000000-0000-0000-0000-000000000000",

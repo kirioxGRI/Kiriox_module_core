@@ -1,5 +1,6 @@
 import prisma from "@/infrastructure/db/prisma/client";
 import { CatalogControlType } from "../../domain/types";
+import { randomUUID } from "crypto";
 
 export class CatalogControlTypeRepository {
   async findAll(): Promise<CatalogControlType[]> {
@@ -12,6 +13,7 @@ export class CatalogControlTypeRepository {
   async create(data: Partial<CatalogControlType>): Promise<CatalogControlType> {
     const result = await (prisma as any).catalog_control_type.create({
       data: {
+        id: data.id || randomUUID(),
         code: data.code || "",
         name: data.name || "",
         description: data.description || null,

@@ -1,5 +1,6 @@
 import prisma from "@/infrastructure/db/prisma/client";
 import { CatalogFrequency } from "../../domain/types";
+import { randomUUID } from "crypto";
 
 export class CatalogFrequencyRepository {
   async findAll(): Promise<CatalogFrequency[]> {
@@ -15,6 +16,7 @@ export class CatalogFrequencyRepository {
   async create(data: Partial<CatalogFrequency>): Promise<CatalogFrequency> {
     const result = await (prisma as any).catalog_activity_frequency.create({
       data: {
+        id: data.id || randomUUID(),
         code: data.code || "",
         name: data.name || "",
         sort_order: Number(data.sort_order) || 0,

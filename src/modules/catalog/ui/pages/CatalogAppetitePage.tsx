@@ -27,24 +27,27 @@ const LEVEL_COLORS: Record<string, string> = {
 };
 const SCOPE_TYPES = ['GLOBAL', 'COMPANY', 'OBJECTIVE', 'ELEMENT', 'ACTIVITY'];
 
-const COLOR = '#fb923c';
-const RGB   = '251,146,60';
+const COLOR = '#3b82f6';
+const RGB   = '59,130,246';
+
+const LBL: React.CSSProperties = {
+  fontSize: '0.8rem', fontWeight: 500, color: '#9babc4', marginBottom: 6, display: 'block',
+};
 
 const S = {
-  page:       { minHeight: '100vh', background: 'linear-gradient(180deg, #0d1634 0%, #080f23 100%)', padding: '0' } as React.CSSProperties,
-  header:     { display: 'flex', alignItems: 'center', gap: '1rem', padding: '2.5rem 2.5rem 2rem', marginBottom: '0' } as React.CSSProperties,
-  title:      { margin: 0, fontSize: '1.6rem', fontWeight: 800, color: '#f1f5f9' } as React.CSSProperties,
-  sub:        { margin: '0.25rem 0 0', fontSize: '0.82rem', color: '#64748b' } as React.CSSProperties,
-  card:       { background: 'rgba(13,22,52,0.85)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflow: 'hidden' } as React.CSSProperties,
-  th:         { padding: '0.7rem 1rem', fontSize: '0.63rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase' as const, letterSpacing: '0.06em', textAlign: 'left' as const },
-  td:         { padding: '0.75rem 1rem', fontSize: '0.8rem', color: '#cbd5e1', borderTop: '1px solid rgba(255,255,255,0.04)' } as React.CSSProperties,
-  input:      { width: '100%', background: 'rgba(2,6,23,0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '8px 10px', color: '#f1f5f9', fontSize: '0.82rem', outline: 'none', fontFamily: 'inherit' } as React.CSSProperties,
-  select:     { width: '100%', background: 'rgba(2,6,23,0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: '8px 10px', color: '#f1f5f9', fontSize: '0.82rem', outline: 'none', fontFamily: 'inherit' } as React.CSSProperties,
-  label:      { fontSize: '0.62rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase' as const, letterSpacing: '0.06em', marginBottom: 5, display: 'block' } as React.CSSProperties,
-  btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 8, background: COLOR, color: '#fff', border: 'none', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' } as React.CSSProperties,
-  btnDanger:  { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' } as React.CSSProperties,
-  btnGhost:   { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.04)', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.08)', fontWeight: 700, fontSize: '0.75rem', cursor: 'pointer' } as React.CSSProperties,
-  btnEdit:    { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', borderRadius: 7, background: `rgba(${RGB},0.1)`, color: COLOR, border: `1px solid rgba(${RGB},0.2)`, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 700 } as React.CSSProperties,
+  page:       { minHeight: '100vh', background: 'transparent', padding: '36px 20px 60px', width: '90%', margin: '0 auto' } as React.CSSProperties,
+  header:     { display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '0' } as React.CSSProperties,
+  title:      { margin: 0, fontSize: '1.15rem', fontWeight: 700, color: '#f1f5f9', lineHeight: 1.3 } as React.CSSProperties,
+  sub:        { margin: '2px 0 0', fontSize: '0.82rem', color: '#7b8fad' } as React.CSSProperties,
+  card:       { background: 'rgba(0, 0, 0, 0.18)', border: '1px solid rgba(255, 255, 255, 0.06)', borderRadius: 16, padding: '24px 28px', overflow: 'hidden' } as React.CSSProperties,
+  th:         { padding: '10px 16px', fontSize: '0.75rem', fontWeight: 600, color: '#7b8fad', textTransform: 'uppercase' as const, letterSpacing: '0.5px', textAlign: 'left' as const, borderBottom: '1px solid rgba(255, 255, 255, 0.08)' },
+  td:         { padding: '14px 16px', fontSize: '0.88rem', color: '#e7efff', borderBottom: '1px solid rgba(255,255,255,0.04)' } as React.CSSProperties,
+  input:      { width: '100%', background: 'rgba(15, 23, 42, 0.75)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: 10, padding: '10px 12px', color: '#e7efff', fontSize: '0.88rem', outline: 'none', fontFamily: 'inherit' } as React.CSSProperties,
+  select:     { width: '100%', background: 'rgba(15, 23, 42, 0.75)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: 10, padding: '10px 12px', color: '#e7efff', fontSize: '0.88rem', outline: 'none', fontFamily: 'inherit' } as React.CSSProperties,
+  btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, background: 'linear-gradient(180deg, #1e5fd6, #1148ad)', color: '#fff', border: '1px solid #2b73ef', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer' } as React.CSSProperties,
+  btnDanger:  { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 8, background: 'rgba(255, 255, 255, 0.04)', color: '#8b9ec0', border: '1px solid rgba(255, 255, 255, 0.06)', cursor: 'pointer' } as React.CSSProperties,
+  btnGhost:   { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, background: 'rgba(10, 23, 48, 0.35)', color: '#d9e8ff', border: '1px solid rgba(73, 111, 186, 0.4)', fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer' } as React.CSSProperties,
+  btnEdit:    { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 8, background: 'rgba(255, 255, 255, 0.04)', color: '#8b9ec0', border: '1px solid rgba(255, 255, 255, 0.06)', cursor: 'pointer' } as React.CSSProperties,
 };
 
 function LevelBadge({ level }: { level: string }) {
@@ -136,18 +139,19 @@ export function CatalogAppetitePage() {
 
   return (
     <div style={S.page}>
-      {/* Header */}
-      <div style={S.header}>
-        <div style={{ width: 44, height: 44, borderRadius: 12, background: `rgba(${RGB},0.15)`, border: `1px solid rgba(${RGB},0.3)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <ShieldAlert size={22} color={COLOR} />
-        </div>
-        <div>
-          <h1 style={S.title}>Apetito de riesgo</h1>
-          <p style={S.sub}>Mantenimiento de la tabla <code style={{ color: COLOR, fontSize: '0.75rem' }}>catalog_appetite</code></p>
-        </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem' }}>
-          <button style={S.btnPrimary} onClick={openNew}><Plus size={14} /> Nuevo registro</button>
-          <button style={S.btnGhost} onClick={handleClose}><X size={14} /> Cerrar</button>
+      <div style={{ marginBottom: '1.5rem' }}>
+        <div style={S.header}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, borderRadius: 8, background: 'rgba(59, 130, 246, 0.18)', color: '#60a5fa', flexShrink: 0, marginTop: 2 }}>
+            <ShieldAlert size={16} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <h1 style={S.title}>Apetito de riesgo</h1>
+            <p style={S.sub}>Mantenimiento de la tabla <code style={{ color: COLOR, fontSize: '0.75rem' }}>catalog_appetite</code></p>
+          </div>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <button style={S.btnPrimary} onClick={openNew}><Plus size={14} /> Nuevo registro</button>
+            <button style={S.btnGhost} onClick={handleClose}><X size={14} /> Cerrar</button>
+          </div>
         </div>
       </div>
 
@@ -159,43 +163,43 @@ export function CatalogAppetitePage() {
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1rem' }}>
             <div>
-              <label style={S.label}>Código *</label>
+              <label style={LBL}>Código *</label>
               <input style={S.input} value={form.code} onChange={field('code')} placeholder="ej. APT-001" />
             </div>
             <div>
-              <label style={S.label}>Tipo de alcance</label>
+              <label style={LBL}>Tipo de alcance</label>
               <select style={S.select} value={form.scope_type} onChange={field('scope_type')}>
                 {SCOPE_TYPES.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div>
-              <label style={S.label}>Nivel de apetito *</label>
+              <label style={LBL}>Nivel de apetito *</label>
               <select style={S.select} value={form.appetite_level} onChange={field('appetite_level')}>
                 {LEVELS.map(l => <option key={l} value={l}>{LEVEL_LABELS[l]}</option>)}
               </select>
             </div>
             <div>
-              <label style={S.label}>Métrica *</label>
+              <label style={LBL}>Métrica *</label>
               <input style={S.input} value={form.metric_name} onChange={field('metric_name')} placeholder="ej. Pérdida esperada" />
             </div>
             <div>
-              <label style={S.label}>Unidad</label>
+              <label style={LBL}>Unidad</label>
               <input style={S.input} value={form.metric_unit ?? ''} onChange={field('metric_unit')} placeholder="ej. COP, %" />
             </div>
             <div>
-              <label style={S.label}>Vigencia desde</label>
+              <label style={LBL}>Vigencia desde</label>
               <input style={S.input} type="date" value={form.effective_from} onChange={field('effective_from')} />
             </div>
             <div>
-              <label style={S.label}>Tolerancia mín.</label>
+              <label style={LBL}>Tolerancia mín.</label>
               <input style={S.input} type="number" step="0.01" value={form.tolerance_min ?? ''} onChange={field('tolerance_min')} placeholder="0.00" />
             </div>
             <div>
-              <label style={S.label}>Tolerancia máx.</label>
+              <label style={LBL}>Tolerancia máx.</label>
               <input style={S.input} type="number" step="0.01" value={form.tolerance_max ?? ''} onChange={field('tolerance_max')} placeholder="100.00" />
             </div>
             <div>
-              <label style={S.label}>Estado</label>
+              <label style={LBL}>Estado</label>
               <select style={S.select} value={form.is_active} onChange={field('is_active')}>
                 <option value="ACTIVE">Activo</option>
                 <option value="INACTIVE">Inactivo</option>
@@ -263,8 +267,8 @@ export function CatalogAppetitePage() {
                     </span>
                   ) : (
                     <span style={{ display: 'inline-flex', gap: '0.4rem' }}>
-                      <button style={S.btnEdit} onClick={() => openEdit(item)}><Pencil size={12} /> Editar</button>
-                      <button style={S.btnDanger} onClick={() => setConfirmDelete(item.id)}><Trash2 size={12} /></button>
+                      <button style={S.btnEdit} onClick={() => openEdit(item)} title="Editar"><Pencil size={14} /></button>
+                      <button style={S.btnDanger} onClick={() => setConfirmDelete(item.id)} title="Eliminar"><Trash2 size={14} /></button>
                     </span>
                   )}
                 </td>

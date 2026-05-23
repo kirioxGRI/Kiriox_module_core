@@ -247,8 +247,8 @@ export function CatalogProbabilityPage() {
                     </span>
                   ) : (
                     <span style={{ display: 'inline-flex', gap: '0.4rem' }}>
-                      <button style={S.btnEdit} onClick={() => openEdit(item)}><Pencil size={12} /> Editar</button>
-                      <button style={S.btnDanger} onClick={() => setConfirmDelete(item.catalog_probability_id)}><Trash2 size={12} /></button>
+                      <button style={S.btnEdit} onClick={() => openEdit(item)} title="Editar"><Pencil size={14} /></button>
+                      <button style={S.btnDanger} onClick={() => setConfirmDelete(item.catalog_probability_id)} title="Eliminar"><Trash2 size={14} /></button>
                     </span>
                   )}
                 </td>
