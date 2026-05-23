@@ -95,7 +95,7 @@ const catalogoModules = [
     rgb: "6,182,212",
   },
   {
-    title: "Control Type",
+    title: "Gestión de tipo de control",
     description: "Defina los tipos de control, su naturaleza y capacidades de mitigación y detección.",
     icon: Shield,
     href: "/modelo/gobernanza/catalogo/control-type",

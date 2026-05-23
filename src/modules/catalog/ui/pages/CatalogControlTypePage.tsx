@@ -164,7 +164,7 @@ export function CatalogControlTypePage() {
             <Shield size={16} />
           </div>
           <div style={{ flex: 1 }}>
-            <h1 style={S.title}>Control Type</h1>
+            <h1 style={S.title}>Gestión de tipo de control</h1>
             <p style={S.sub}>Mantenimiento de la tabla <code style={{ color: COLOR, fontSize: '0.75rem' }}>catalog_control_type</code></p>
           </div>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
