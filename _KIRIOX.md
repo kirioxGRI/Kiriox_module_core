@@ -1,15 +1,19 @@
 # AGENTS.md --- Protocolo de Ingeniería Determinista para Agentes Kiriox
 
-# Module del sistema
-Gestión de riesgo 
-Gobierno de Auditoría 
-Plaft 
-Gobierno de IA 
-Ciberseguridad 
-Continuidad de negocios 
-Kiriox Academy 
-Kiriox Enterprise Marketplace 
-Kiriox Risk Average
+# Módulos del sistema Kiriox GRI
+
+| moduleId | Título | Descripción funcional |
+|---|---|---|
+| `structural-risk` | Gestión de riesgo | Identifica, evalúa, prioriza y monitorea riesgos mediante matrices de impacto/probabilidad y análisis estructural por grafos. |
+| `company` | Gobierno de Auditoría | Planifica auditorías, gestiona hallazgos, evidencias, pruebas, responsables, recomendaciones y seguimiento. |
+| `incident` | Análisis preventivo | Detecta señales tempranas, debilidades, tendencias y escenarios de deterioro antes de que se conviertan en incidentes. |
+| `catalog` | PLAFT | Gestiona riesgos de lavado de activos, financiamiento del terrorismo, debida diligencia, alertas, perfiles y monitoreo transaccional. |
+| `linear-risk` | Gobierno de IA | Controla modelos, datos, sesgos, trazabilidad, riesgos algorítmicos, cumplimiento, explicabilidad y uso responsable de IA. |
+| `simulation` | Ciberseguridad | Gestiona amenazas, vulnerabilidades, controles, incidentes, activos críticos, madurez y exposición tecnológica. |
+| `monitoring` | Continuidad de negocios | Administra BIA, planes de continuidad, recuperación, pruebas, dependencias críticas y resiliencia operativa. |
+| `hechos-relevantes` | Kiriox Academy | Centro de formación, certificación y transferencia de conocimiento sobre riesgo, auditoría, IA, ciberseguridad y gobierno. |
+| `reportes` | Kiriox Risk Average | Índice agregado que resume el nivel de riesgo de áreas, procesos, controles, dominios o toda la organización. |
+| `plugins` | Kiriox Enterprise Marketplace | Ecosistema de módulos, plantillas, corpus, plugins, modelos, apps y extensiones empresariales para ampliar Kiriox. |
 
 
 ## Arquitectura de desarrollo de Kiriox

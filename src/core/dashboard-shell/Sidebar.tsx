@@ -172,9 +172,11 @@ export default function Sidebar({ items, loading = false }: SidebarProps) {
         width: collapsed ? "var(--sidebar-collapsed-width)" : "var(--sidebar-width)",
         height: "100vh", display: "flex", flexDirection: "column",
         padding: "1.25rem 0.75rem", borderRadius: "0", border: "none",
-        borderRight: "1px solid var(--glass-border)",
+        borderRight: "1px solid rgba(255,255,255,0.12)",
         transition: "width var(--transition-speed) ease",
-        margin: 0, background: "rgba(0,0,0,0.2)", zIndex: 100,
+        margin: 0,
+        background: "#1e3d7a",
+        zIndex: 100,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 0.75rem", marginBottom: "2rem" }}>

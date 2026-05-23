@@ -3,6 +3,8 @@ import type { KirioxModuleContract } from "@/shared/contracts/modules/module.con
 export const simulationModule: KirioxModuleContract = {
   manifest: {
     id: "simulation",
+    family: "risk",
+    backgroundColor: "#182f62",
     name: "Simulation",
     version: "0.1.0",
     description: "Módulo de simulaciones lineales y probabilísticas de Kiriox.",

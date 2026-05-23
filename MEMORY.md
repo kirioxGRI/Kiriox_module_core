@@ -147,3 +147,49 @@ Studio               : 0.27.3
 
 **Aplicación futura:** Si el entorno de desarrollo opera con auth bypass, permitir paso por `middleware` y delegar el contexto de acceso a la capa de auth/aplicacion en lugar de bloquear por ausencia de cookie JWT.
 
+## 2026-05-22 — Aprendizaje
+
+**Contexto:** Definición canónica de los módulos del launchpad en `/main_dashboard`.
+
+**Regla aprendida:** El launchpad de Kiriox GRI expone 10 módulos. Cada `KirioxOfficialModuleId` tiene un título y propósito funcional fijo que no debe cambiarse sin autorización explícita. El mapeo vigente es:
+
+| moduleId | Título en UI | Propósito |
+|---|---|---|
+| `structural-risk` | Gestión de riesgo | Matrices impacto/probabilidad y análisis estructural por grafos |
+| `company` | Gobierno de Auditoría | Auditorías, hallazgos, evidencias, recomendaciones y seguimiento |
+| `incident` | Análisis preventivo | Señales tempranas, tendencias y escenarios de deterioro pre-incidente |
+| `catalog` | PLAFT | Lavado de activos, debida diligencia, alertas y monitoreo transaccional |
+| `linear-risk` | Gobierno de IA | Modelos, sesgos, trazabilidad algorítmica y uso responsable de IA |
+| `simulation` | Ciberseguridad | Amenazas, vulnerabilidades, madurez y exposición tecnológica |
+| `monitoring` | Continuidad de negocios | BIA, planes de continuidad, recuperación y resiliencia operativa |
+| `hechos-relevantes` | Kiriox Academy | Formación, certificación y transferencia de conocimiento |
+| `reportes` | Kiriox Risk Average | Índice agregado de exposición al riesgo de la organización |
+| `plugins` | Kiriox Enterprise Marketplace | Módulos, plugins, plantillas y extensiones empresariales |
+
+**Aplicación futura:** Al agregar, renombrar o redescribir tarjetas del launchpad, actualizar simultáneamente `buildEnterpriseLaunchpadCards.ts`, `_KIRIOX.md` y esta entrada de memoria. La descripción funcional de cada módulo es la fuente de verdad para mensajes, tooltips y documentación.
+
+## 2026-05-22 — Aprendizaje
+
+**Contexto:** Unificación visual del shell Kiriox — eliminación de las 3 capas de colores al montar módulos.
+
+**Causa raíz identificada:** Cada módulo declaraba su propio fondo en CSS (`.page`, `.dashboard`, `outer div`), lo que generaba 3 bandas de color visibles: sidebar/topbar + main-content + el fondo del componente de página.
+
+**Regla aprendida — paleta canónica:**
+| Elemento | Color |
+|----------|-------|
+| Sidebar | `#1e3d7a` (sólido, sin blur) |
+| Topbar | `#1e3d7a` (sólido, `borderBottom: none`) |
+| `<main>` via AppShell | `#182f62` (desde `manifest.backgroundColor`) |
+| Contenedor raíz de página | `background: transparent; min-height: 100%` |
+| Cards / paneles | `background: rgba(0,0,0,0.18)` |
+| Overlays / drawers / modales | Mantienen su propio fondo opaco oscuro |
+
+**Regla aprendida — contract de módulo:**
+- Todo módulo debe declarar `family` (`platform` | `risk` | `marketplace`) y `backgroundColor: "#182f62"`.
+- Si el módulo **no debe aparecer en el menú lateral**, omitir el campo `nav` completamente.
+- El módulo `incident` tiene `family: "platform"` y **sin `nav`** — no es un módulo de riesgo y no publica menú.
+
+**Pipeline de color:** `manifest.backgroundColor` → `NavItem.backgroundColor` (via `buildNavigation.ts`) → `AppShell` resuelve módulo activo por pathname → aplica `background` inline a `<main>`. Fallback: `#182f62`.
+
+**Aplicación futura:** Al agregar un módulo nuevo o corregir colores, nunca poner fondo en el contenedor raíz de la página. El fondo de pantalla completa es responsabilidad exclusiva del contrato del módulo + AppShell.
+

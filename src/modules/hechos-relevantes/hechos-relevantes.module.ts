@@ -3,6 +3,8 @@ import type { KirioxModuleContract } from "@/shared/contracts/modules/module.con
 export const hechosRelevantesModule: KirioxModuleContract = {
   manifest: {
     id: "hechos-relevantes",
+    family: "risk",
+    backgroundColor: "#182f62",
     name: "Hechos Relevantes",
     version: "0.1.0",
     description: "Captura y monitoreo de hechos relevantes del mercado de valores dominicano usando búsqueda pública (Brave Search).",

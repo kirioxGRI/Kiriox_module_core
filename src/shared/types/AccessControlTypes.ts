@@ -10,6 +10,7 @@ export type ModuleCode =
   | 'simulation'
   | 'catalog'
   | 'company'
+  | 'incident'
   | 'monitoring'
   | 'hechos-relevantes'
   | 'reportes'

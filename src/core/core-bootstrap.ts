@@ -1,6 +1,7 @@
 import { registerCoreModule } from "@/core/module-registry";
 import { registerCatalogModule } from "@/core/module-registry/register-catalog-module";
 import { registerCompanyModule } from "@/core/module-registry/register-company-module";
+import { registerIncidentModule } from "@/core/module-registry/register-incident-module";
 import { registerLinearRiskModule } from "@/core/module-registry/register-linear-risk-module";
 import { registerSimulationModule } from "@/core/module-registry/register-simulation-module";
 import { registerStructuralRiskModule } from "@/core/module-registry/register-structural-risk-module";
@@ -19,6 +20,7 @@ export function bootstrapCore(): void {
   registerCoreModule();
   registerCatalogModule();
   registerCompanyModule();
+  registerIncidentModule();
   registerLinearRiskModule();
   registerStructuralRiskModule();
   registerSimulationModule();

@@ -3,6 +3,8 @@ import type { KirioxModuleContract } from "@/shared/contracts/modules/module.con
 export const pluginsModule: KirioxModuleContract = {
   manifest: {
     id: "plugins",
+    family: "marketplace",
+    backgroundColor: "#182f62",
     name: "Plugins",
     version: "0.1.0",
     description: "Gestión y administración de extensiones y plugins del sistema.",

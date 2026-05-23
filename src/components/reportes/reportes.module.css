@@ -1,7 +1,7 @@
 .dashboard {
   padding: 2rem;
-  background: linear-gradient(180deg, #0d1634 0%, #080f23 100%);
-  min-height: 100vh;
+  background: transparent;
+  min-height: 100%;
   font-family: 'Inter', sans-serif;
   color: #f8fafc;
 }
@@ -67,7 +67,7 @@
 }
 
 .btnSecondary {
-  background: rgba(15,23,42,0.6);
+  background: rgba(0,0,0,0.18);
   color: #e2e8f0;
   padding: 0.625rem 1.25rem;
   border-radius: 12px;
@@ -82,7 +82,7 @@
 }
 
 .btnSecondary:hover {
-  background: rgba(15,23,42,0.8);
+  background: rgba(0,0,0,0.28);
 }
 
 .kpiGrid {
@@ -93,7 +93,7 @@
 }
 
 .kpiCard {
-  background: linear-gradient(160deg, rgba(13,22,50,0.95), rgba(8,16,38,0.98));
+  background: rgba(0,0,0,0.18);
   padding: 1.5rem;
   border-radius: 14px;
   border: 1px solid rgba(255,255,255,0.07);
@@ -184,7 +184,7 @@
 }
 
 .reportCard {
-  background: linear-gradient(155deg, rgba(12,22,54,0.95), rgba(7,16,42,0.92));
+  background: rgba(0,0,0,0.18);
   border-radius: 14px;
   border: 1px solid rgba(129,140,248,0.2);
   padding: 1.75rem;
@@ -290,7 +290,7 @@
 }
 
 .cardAction {
-  background: rgba(15,23,42,0.4);
+  background: rgba(0,0,0,0.18);
   border: 1px solid rgba(148,163,184,0.25);
   padding: 0.625rem;
   border-radius: 8px;

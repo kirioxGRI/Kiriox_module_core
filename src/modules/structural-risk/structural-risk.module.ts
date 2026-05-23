@@ -3,6 +3,8 @@ import type { KirioxModuleContract } from "@/shared/contracts/modules/module.con
 export const structuralRiskModule: KirioxModuleContract = {
   manifest: {
     id: "structural-risk",
+    family: "risk",
+    backgroundColor: "#182f62",
     name: "Structural Risk",
     version: "0.1.0",
     description: "Módulo de captura, análisis y visualización de riesgo estructural por grafos.",

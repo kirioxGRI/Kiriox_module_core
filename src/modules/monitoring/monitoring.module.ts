@@ -3,6 +3,8 @@ import type { KirioxModuleContract } from "@/shared/contracts/modules/module.con
 export const monitoringModule: KirioxModuleContract = {
   manifest: {
     id: "monitoring",
+    family: "risk",
+    backgroundColor: "#182f62",
     name: "Monitoreo Ejecutivo",
     version: "0.1.0",
     description: "Dashboard ejecutivo de monitoreo de riesgos, controles, pruebas y evidencias.",

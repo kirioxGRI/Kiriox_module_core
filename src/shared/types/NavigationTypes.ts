@@ -9,4 +9,5 @@ export type NavItem = {
   badge?: string;
   disabled?: boolean;
   children?: NavItem[];
+  backgroundColor?: string;
 };

@@ -57,10 +57,10 @@ function lifecycleColor(code: string | null): string {
 }
 
 const CARD: React.CSSProperties = {
-  background: 'linear-gradient(155deg, rgba(12,22,54,0.95), rgba(7,16,42,0.92))',
-  border: '1px solid rgba(129,140,248,0.2)',
+  background: 'rgba(0,0,0,0.18)',
+  border: '1px solid rgba(255,255,255,0.07)',
   borderRadius: 14,
-  boxShadow: '0 12px 30px rgba(2,8,23,0.35)',
+  boxShadow: '0 12px 30px rgba(2,8,23,0.2)',
 };
 
 function avatarBg(initials: string): string {
@@ -153,7 +153,7 @@ export default function StructuralRiskDashboardPage() {
   }
 
   return (
-    <main style={{ minHeight: '100vh', padding: '1.2rem 1.5rem', background: 'linear-gradient(180deg, #0d1634 0%, #080f23 100%)' }}>
+    <main style={{ minHeight: '100%', padding: '1.2rem 1.5rem', background: 'transparent' }}>
       <section style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem', marginBottom: '0.8rem' }}>
         <button
           onClick={() => void handleNewEvaluation()}
@@ -183,7 +183,7 @@ export default function StructuralRiskDashboardPage() {
             padding: '0.62rem 1.2rem',
             borderRadius: 12,
             border: '1px solid rgba(148,163,184,0.35)',
-            background: 'rgba(15,23,42,0.6)',
+            background: 'rgba(0,0,0,0.18)',
             color: '#e2e8f0',
             fontSize: '0.9rem',
             fontWeight: 700,
@@ -216,7 +216,7 @@ export default function StructuralRiskDashboardPage() {
         ].map((card) => {
           const pct = stats.total > 0 ? ((card.value / stats.total) * 100).toFixed(1) : '0';
           return (
-            <div key={card.label} style={{ borderRadius: 14, border: '1px solid rgba(255,255,255,0.07)', background: 'linear-gradient(160deg, rgba(13,22,50,0.95), rgba(8,16,38,0.98))', padding: '1.1rem 1.2rem 0.9rem', position: 'relative', overflow: 'hidden' }}>
+            <div key={card.label} style={{ borderRadius: 14, border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(0,0,0,0.18)', padding: '1.1rem 1.2rem 0.9rem', position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg, ${card.color}88, ${card.color}22)` }} />
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.8rem' }}>
                 <p style={{ margin: 0, fontSize: '0.72rem', color: '#94a3b8', fontWeight: 600, lineHeight: 1.3, maxWidth: '70%' }}>{card.label}</p>

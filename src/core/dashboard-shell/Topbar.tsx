@@ -59,8 +59,9 @@ export default function Topbar({ access, showScopeSelectors = false }: TopbarPro
     <header style={{
       padding: '0.75rem 2rem', display: 'flex', alignItems: 'center',
       justifyContent: 'space-between', gap: '1rem',
-      borderBottom: '1px solid var(--glass-border)',
-      background: 'var(--background)', zIndex: 10,
+      borderBottom: 'none',
+      background: '#1e3d7a',
+      zIndex: 10,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
         <div style={{ flex: 0.5, color: 'white', fontSize: '1rem', fontWeight: 500, letterSpacing: '0.02em', fontStyle: 'italic', opacity: 0.9 }}>
@@ -115,6 +116,8 @@ export default function Topbar({ access, showScopeSelectors = false }: TopbarPro
               borderRadius: '12px', padding: '0.5rem',
               boxShadow: '0 12px 24px rgba(0,0,0,0.4)', zIndex: 100,
             }}>
+              <MenuLink href="/main_dashboard" icon={<LayoutGrid size={16} />}>Main dashboard</MenuLink>
+              <div style={{ height: 1, background: 'var(--glass-border)', margin: '0.5rem 0' }} />
               <MenuLink href="/gestion/dashboard_riesgo_estructural" icon={<FileText size={16} />}>Riesgo estructural</MenuLink>
               <MenuLink href="/gestion/dashboard_riesgo_lineal" icon={<ShieldCheck size={16} />}>Riesgo lineal</MenuLink>
               <MenuLink href="/admin/usuarios" icon={<Lock size={16} />}>Seguridad</MenuLink>

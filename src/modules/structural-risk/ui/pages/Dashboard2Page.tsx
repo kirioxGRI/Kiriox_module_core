@@ -103,6 +103,11 @@ export default function Dashboard2Page() {
 
   return (
     <div className={styles.page}>
+      <div className={styles.glowA} />
+      <div className={styles.glowB} />
+      <div className={styles.glowC} />
+
+      <div className={styles.content}>
       {/* Zona 1 — Header */}
       <Dashboard2Header
         nodeCount={nodes.length}
@@ -155,6 +160,7 @@ export default function Dashboard2Page() {
 
       {/* Zona 4 — Tarjetas ejecutivas */}
       <Dashboard2BottomStrip />
+      </div>
     </div>
   );
 }

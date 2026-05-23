@@ -5,3 +5,4 @@ export * from './CatalogAppetitePage';
 export * from './CatalogFrequencyPage';
 export * from './CatalogCriticalityPage';
 export * from './CatalogControlTypePage';
+export { default as PlaftDashboardPage } from './PlaftDashboardPage';

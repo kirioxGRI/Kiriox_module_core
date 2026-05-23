@@ -3,6 +3,8 @@ import type { KirioxModuleContract } from "@/shared/contracts/modules/module.con
 export const linearRiskModule: KirioxModuleContract = {
   manifest: {
     id: "linear-risk",
+    family: "risk",
+    backgroundColor: "#182f62",
     name: "Linear Risk",
     version: "0.1.0",
     description: "Módulo de gestión y evaluación de riesgo lineal de Kiriox.",

@@ -411,7 +411,7 @@ export function CompanyEditorPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #0d1634 0%, #080f23 100%)', color: '#f8fafc' }}>
+    <div style={{ minHeight: '100%', background: 'transparent', color: '#f8fafc' }}>
       {/* ═══ Header ═══ */}
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2.5rem 1.5rem 2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -463,7 +463,7 @@ export function CompanyEditorPage() {
               style={{
                 borderRadius: 12,
                 border: `1px solid ${card.color}33`,
-                background: 'linear-gradient(180deg, rgba(14,23,46,0.85) 0%, rgba(8,17,36,0.9) 100%)',
+                background: 'rgba(0,0,0,0.18)',
                 padding: '0.85rem 0.9rem',
                 display: 'flex',
                 alignItems: 'center',
@@ -509,7 +509,7 @@ export function CompanyEditorPage() {
       {/* ═══ Main content ═══ */}
       <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
         {/* Card: Nombre */}
-        <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+        <div style={{ background: 'rgba(0,0,0,0.18)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 34, height: 34, borderRadius: '10px', background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
               <Building2 size={16} />
@@ -533,7 +533,7 @@ export function CompanyEditorPage() {
         </div>
 
         {/* Card: Descripción */}
-        <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+        <div style={{ background: 'rgba(0,0,0,0.18)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 34, height: 34, borderRadius: '10px', background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981' }}>
               <Target size={16} />
@@ -585,7 +585,7 @@ export function CompanyEditorPage() {
             </div>
           </div>
 
-          <div style={{ background: 'rgba(15,23,42,0.4)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', overflow: 'hidden', backdropFilter: 'blur(10px)' }}>
+          <div style={{ background: 'rgba(0,0,0,0.18)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', overflow: 'hidden', backdropFilter: 'blur(10px)' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>

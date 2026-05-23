@@ -1,3 +1,8 @@
+export type KirioxModuleFamily =
+  | "platform"
+  | "risk"
+  | "marketplace";
+
 export type KirioxOfficialModuleId =
   | "core"
   | "incident"
@@ -33,6 +38,7 @@ export interface KirioxModuleNavDeclaration {
 
 export interface KirioxModuleManifest {
   id: KirioxOfficialModuleId;
+  family: KirioxModuleFamily;
   name: string;
   version: string;
   description?: string;
@@ -40,6 +46,7 @@ export interface KirioxModuleManifest {
   layers: KirioxModuleLayer[];
   dependencies?: KirioxOfficialModuleId[];
   nav?: KirioxModuleNavDeclaration;
+  backgroundColor?: string;
 }
 
 export interface KirioxModuleContext {

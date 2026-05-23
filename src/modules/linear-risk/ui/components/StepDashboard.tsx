@@ -131,7 +131,7 @@ export function StepDashboard({
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #0d1634 0%, #080f23 100%)', fontFamily: 'inherit' }}>
+    <div style={{ minHeight: '100%', background: 'transparent', fontFamily: 'inherit' }}>
       <div style={{ padding: '2.5rem 2.5rem 2rem', background: 'transparent' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
           <div>
@@ -169,7 +169,7 @@ export function StepDashboard({
                 style={{
                   padding: '0.65rem 1.2rem',
                   borderRadius: 12,
-                  background: 'rgba(15,23,42,0.78)',
+                  background: 'rgba(0,0,0,0.18)',
                   border: '1px solid rgba(148,163,184,0.3)',
                   color: '#cbd5e1',
                   fontSize: '0.85rem',
@@ -195,7 +195,7 @@ export function StepDashboard({
                 style={{
                   borderRadius: 14,
                   border: '1px solid rgba(255,255,255,0.07)',
-                  background: 'linear-gradient(160deg, rgba(13,22,50,0.95), rgba(8,16,38,0.98))',
+                  background: 'rgba(0,0,0,0.18)',
                   padding: '1.1rem 1.2rem 0.9rem',
                   position: 'relative',
                   overflow: 'hidden',
@@ -231,7 +231,7 @@ export function StepDashboard({
 
         <PluginZone pointId="linear-risk:dashboard:widget" label="Extensiones activas del módulo" />
 
-        <div style={{ borderRadius: 16, border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(9,18,48,0.85)', overflow: 'hidden' }}>
+        <div style={{ borderRadius: 16, border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(0,0,0,0.18)', overflow: 'hidden' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.3rem', borderBottom: '1px solid rgba(255,255,255,0.06)', flexWrap: 'wrap', gap: '0.7rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#3b82f6' }} />

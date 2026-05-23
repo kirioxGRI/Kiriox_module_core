@@ -3,6 +3,7 @@ import type { KirioxModuleContract } from "@/shared/contracts/modules/module.con
 export const coreModule: KirioxModuleContract = {
   manifest: {
     id: "core",
+    family: "platform",
     name: "Core",
     version: "0.1.0",
     description: "Módulo base principal de Kiriox.",
@@ -11,7 +12,7 @@ export const coreModule: KirioxModuleContract = {
     dependencies: [],
     nav: {
       label: "Dashboard",
-      href: "/main_dashboard",
+      href: "/score/dashboard2",
       icon: "LayoutDashboard",
       order: 10,
     },

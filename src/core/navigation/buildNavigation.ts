@@ -28,6 +28,7 @@ export function buildNavigation(access: NavigationAccessContext): NavItem[] {
       order: mod.manifest.nav!.order,
       module: mod.manifest.id,
       permission: mod.manifest.nav!.permission,
+      backgroundColor: mod.manifest.backgroundColor,
     }))
     .sort((a, b) => a.order - b.order);
 }

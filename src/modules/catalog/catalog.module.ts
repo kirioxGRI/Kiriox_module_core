@@ -3,6 +3,8 @@ import type { KirioxModuleContract } from "@/shared/contracts/modules/module.con
 export const catalogModule: KirioxModuleContract = {
   manifest: {
     id: "catalog",
+    family: "risk",
+    backgroundColor: "#182f62",
     name: "Catalog",
     version: "0.1.0",
     description: "Módulo de catálogos de gobernanza de Kiriox.",

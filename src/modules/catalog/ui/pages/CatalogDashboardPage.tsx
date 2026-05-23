@@ -123,8 +123,8 @@ function CatalogCard({ mod }: { mod: typeof catalogoModules[number] }) {
       onMouseLeave={() => setHovered(false)}
       style={{
         background: isHover
-          ? `linear-gradient(145deg, rgba(${mod.rgb},0.08) 0%, rgba(8,15,35,0.95) 100%)`
-          : "linear-gradient(145deg, rgba(13,22,52,0.9) 0%, rgba(8,15,35,0.95) 100%)",
+          ? `linear-gradient(145deg, rgba(${mod.rgb},0.10) 0%, rgba(15,35,80,0.80) 100%)`
+          : "rgba(0,0,0,0.18)",
         border: `1px solid rgba(${mod.rgb},${isHover ? "0.45" : "0.2"})`,
         borderRadius: "16px",
         padding: "1.5rem",
@@ -226,9 +226,9 @@ export function CatalogDashboardPage() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        minHeight: "100%",
         padding: "0",
-        background: "linear-gradient(180deg, #0d1634 0%, #080f23 100%)",
+        background: "transparent",
       }}
     >
       <div
