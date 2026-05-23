@@ -5,6 +5,8 @@ import { requireCsrf } from '@/core/auth/csrf';
 import { hashPassword } from '@/core/auth/password';
 import { Prisma } from '@/generated/prisma/client';
 
+export const dynamic = 'force-dynamic';
+
 function isAdmin(roleCode: string) {
   const code = (roleCode || '').trim().toLowerCase();
   return code === 'admin' || code === 'super_admin';
@@ -32,12 +34,15 @@ export async function GET(request: Request) {
         is_active: boolean | null; activation_status: string | null;
         created_at: Date | null; updated_at: Date | null;
         role_code: string | null; role_name: string | null;
+        company_name: string | null;
       }[]>(Prisma.sql`
         SELECT u.id, u.email, u.name, u.last_name, u.is_active, u.activation_status,
-               u.created_at, u.updated_at, r.code AS role_code, r.name AS role_name
+               u.created_at, u.updated_at, r.code AS role_code, r.name AS role_name,
+               c.name AS company_name, c.legal_name AS company_legal_name
         FROM public.users u
         LEFT JOIN public.map_users_x_roles mur ON mur.user_id = u.id AND COALESCE(mur.is_active, true) = true
         LEFT JOIN public.users_roles r ON r.id = mur.role_id AND COALESCE(r.is_active, true) = true
+        LEFT JOIN public.company c ON c.id = u.company_id
         WHERE u.company_id = ${companyId}::uuid
         ORDER BY u.created_at DESC NULLS LAST
       `);
@@ -50,10 +55,12 @@ export async function GET(request: Request) {
 
       for (const row of rows) {
         if (!grouped.has(row.id)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const r = row as any;
           grouped.set(row.id, {
             id: row.id, email: row.email, name: row.name, lastName: row.last_name,
             isActive: Boolean(row.is_active), activationStatus: row.activation_status ?? 'active',
-            createdAt: row.created_at, updatedAt: row.updated_at, companyName: null, roles: [],
+            createdAt: row.created_at, updatedAt: row.updated_at, companyName: r.company_legal_name || r.company_name || null, roles: [],
           });
         }
         if (row.role_code) {
@@ -65,7 +72,7 @@ export async function GET(request: Request) {
 
     const users = await prisma.users.findMany({
       include: {
-        company: { select: { name: true } },
+        company: { select: { name: true, legal_name: true } },
         map_users_x_roles: {
           where: { is_active: true },
           include: { users_roles: { select: { code: true, name: true } } }
@@ -78,7 +85,7 @@ export async function GET(request: Request) {
       id: u.id, email: u.email, name: u.name, lastName: u.last_name,
       isActive: Boolean(u.is_active), activationStatus: u.activation_status ?? 'active',
       createdAt: u.created_at, updatedAt: u.updated_at,
-      companyName: u.company?.name ?? null,
+      companyName: u.company?.legal_name || u.company?.name || null,
       roles: u.map_users_x_roles.map(r => ({ roleCode: r.users_roles.code, roleName: r.users_roles.name })),
     })));
   } catch (error: unknown) {

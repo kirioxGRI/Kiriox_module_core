@@ -11,12 +11,6 @@ export const companyModule: KirioxModuleContract = {
     status: "active",
     layers: ["domain", "application", "infrastructure", "api", "ui"],
     dependencies: ["core"],
-    nav: {
-      label: "Empresa",
-      href: "/gestion/dashboard_empresa",
-      icon: "Building2",
-      order: 15,
-    },
   },
 
   register() {

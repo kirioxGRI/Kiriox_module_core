@@ -227,20 +227,30 @@ export default function GovernanceProcessPage() {
     }
   };
 
-  /* ── Delete ─────────────────────────────────────── */
-  const handleDelete = async (id: string) => {
-    if (!confirm('¿Eliminar este proceso? Esta acción no se puede deshacer.')) return;
+  /* ── Toggle Active Status ───────────────────────── */
+  const handleToggleActive = async (p: ProcessRow) => {
     try {
-      const res = await fetch(`/api/governance/processes?id=${id}`, { method: 'DELETE' });
+      // Actualización optimista
+      setProcesses(prev => prev.map(item => item.id === p.id ? { ...item, isActive: !p.isActive } : item));
+      
+      const res = await fetch(`/api/governance/processes?id=${p.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive: !p.isActive }),
+      });
+      
       if (!res.ok) {
-        const d = await res.json().catch(() => ({}));
-        throw new Error(d.error || 'Error al eliminar');
+        throw new Error('Error al cambiar el estado');
       }
-      if (editingId === id) handleCancelEdit();
-      setProcesses(prev => prev.filter(p => p.id !== id));
-      fetchProcesses();
+      
+      // Si estamos editando el mismo registro, actualizamos también el formulario
+      if (editingId === p.id) {
+        setForm(prev => ({ ...prev, isActive: !p.isActive }));
+      }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al eliminar');
+      // Revertir en caso de error
+      setProcesses(prev => prev.map(item => item.id === p.id ? { ...item, isActive: p.isActive } : item));
+      setError(err instanceof Error ? err.message : 'Error al cambiar el estado');
     }
   };
 
@@ -389,6 +399,9 @@ export default function GovernanceProcessPage() {
             {success && <div className={styles.success} style={{ marginTop: '14px' }}>{success}</div>}
 
             <div className={styles.actions}>
+              <button type="button" className={styles.secondaryButton} onClick={() => router.push('/modelo/gobernanza/catalogo')} disabled={saving}>
+                <X size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} /> Cerrar
+              </button>
               <button type="button" className={styles.secondaryButton} onClick={() => router.back()} disabled={saving}>
                 <ArrowLeft size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} /> Cancelar
               </button>
@@ -463,10 +476,16 @@ export default function GovernanceProcessPage() {
                     </div>
 
                     {/* Col 4: badge */}
-                    <span className={`${styles.badge} ${p.isActive ? styles.badgeActive : styles.badgeInactive}`}>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleActive(p)}
+                      className={`${styles.badge} ${p.isActive ? styles.badgeActive : styles.badgeInactive}`}
+                      style={{ border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+                      title={`Haz clic para ${p.isActive ? 'inactivar' : 'activar'}`}
+                    >
                       <span className={styles.badgeDot} />
                       {p.isActive ? 'Activo' : 'Inactivo'}
-                    </span>
+                    </button>
 
                     {/* Col 5: actions */}
                     <div className={styles.rowActions}>
@@ -476,13 +495,6 @@ export default function GovernanceProcessPage() {
                         onClick={() => editingId === p.id ? handleCancelEdit() : handleStartEdit(p)}
                       >
                         {editingId === p.id ? <X size={14} /> : <Pencil size={14} />}
-                      </button>
-                      <button
-                        className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
-                        title="Eliminar"
-                        onClick={() => handleDelete(p.id)}
-                      >
-                        <Trash2 size={14} />
                       </button>
                     </div>
                   </div>

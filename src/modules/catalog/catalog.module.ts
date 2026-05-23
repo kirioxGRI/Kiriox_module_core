@@ -12,7 +12,7 @@ export const catalogModule: KirioxModuleContract = {
     layers: ["domain", "application", "infrastructure", "api", "ui"],
     dependencies: ["core"],
     nav: {
-      label: "Catálogo",
+      label: "Configurar",
       href: "/modelo/gobernanza/catalogo",
       icon: "BookOpen",
       order: 11,

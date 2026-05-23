@@ -25,7 +25,6 @@ export default function UserManagementPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const [rolePermissions, setRolePermissions] = useState<{ roleCode: string } | null>(null);
   const [resetPasswordUser, setResetPasswordUser] = useState<UserRow | null>(null);
   const [resetForm, setResetForm] = useState({ newPassword: '', confirmPassword: '' });
   const [resetError, setResetError] = useState<string | null>(null);
@@ -172,9 +171,6 @@ export default function UserManagementPage() {
                 </td>
                 <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                    <button onClick={() => setRolePermissions({ roleCode: user.roles?.[0]?.roleCode || '' })} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 6, padding: '0.4rem', cursor: 'pointer', color: 'var(--secondary)', display: 'flex', alignItems: 'center' }} title="Ver permisos">
-                      <ShieldCheck size={16} />
-                    </button>
                     {isActiveList && (
                       <>
                         <button onClick={() => handleOpenResetDialog(user)} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 6, padding: '0.4rem', cursor: 'pointer', color: '#fbbf24', display: 'flex', alignItems: 'center' }} title="Reset password">
@@ -243,20 +239,10 @@ export default function UserManagementPage() {
       {renderTable(false)}
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.25rem' }}>
-        <button onClick={() => router.back()} style={{ border: '1px solid rgba(148,163,184,0.45)', background: 'rgba(30,41,59,0.55)', color: '#e2e8f0', borderRadius: 10, padding: '0.75rem 1.25rem', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
+        <button onClick={() => router.push('/modelo/gobernanza/catalogo')} style={{ border: '1px solid rgba(148,163,184,0.45)', background: 'rgba(30,41,59,0.55)', color: '#e2e8f0', borderRadius: 10, padding: '0.75rem 1.25rem', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
           Cerrar
         </button>
       </div>
-
-      {rolePermissions && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)' }}>
-          <div className="glass-card" style={{ width: '100%', maxWidth: 500, padding: '2rem', position: 'relative' }}>
-            <button onClick={() => setRolePermissions(null)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--secondary)', cursor: 'pointer' }}><X size={18} /></button>
-            <h3 style={{ marginTop: 0 }}>Permisos del rol {rolePermissions.roleCode}</h3>
-            <p style={{ color: 'var(--secondary)' }}>No hay permisos asignados.</p>
-          </div>
-        </div>
-      )}
 
       {resetPasswordUser && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', padding: '1rem' }}>
