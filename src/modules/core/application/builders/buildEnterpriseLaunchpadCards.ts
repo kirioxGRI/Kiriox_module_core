@@ -57,6 +57,7 @@ const CARD_PRESENTATION: Partial<Record<KirioxOfficialModuleId, CardPresentation
   "linear-risk": {
     title: "Gobierno de IA",
     description: "Supervise el uso ético, seguro y responsable de la inteligencia artificial en la organización.",
+    href: "/gestion/dashboard_gob_ia",
     iconKey: "activity",
     accent: "blue",
     order: 40,
@@ -64,6 +65,7 @@ const CARD_PRESENTATION: Partial<Record<KirioxOfficialModuleId, CardPresentation
   "simulation": {
     title: "Ciberseguridad",
     description: "Identifique vulnerabilidades, simule ataques y gestione la postura de seguridad digital de la organización.",
+    href: "/gestion/dashboard_ciberseguridad",
     iconKey: "flask",
     accent: "violet",
     order: 50,
@@ -71,6 +73,7 @@ const CARD_PRESENTATION: Partial<Record<KirioxOfficialModuleId, CardPresentation
   "monitoring": {
     title: "Continuidad de negocios",
     description: "Diseñe, pruebe y active planes de continuidad para garantizar la resiliencia operativa ante interrupciones.",
+    href: "/gestion/dashboard_continuidad_negocios",
     iconKey: "pulse",
     accent: "blue",
     order: 60,
