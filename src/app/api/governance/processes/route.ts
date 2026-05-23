@@ -34,10 +34,106 @@ export async function GET(request: Request) {
         updatedAt: p.updated_at.toISOString(),
         elementTypeName: p.element_types?.name ?? 'General',
         elementTypeCode: p.element_types?.code ?? 'GEN',
+        elementTypeId: p.element_type_id,
+        companyId: p.company_id,
+        leaderId: p.leader_id,
       })),
     });
   } catch (error: unknown) {
     console.error('Error fetching governance processes:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request) {
+  const auth = await getAuthContext();
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const body = await request.json() as {
+      companyId: string;
+      elementTypeId: string;
+      leaderId?: string | null;
+      code: string;
+      name: string;
+      description?: string;
+      isActive?: boolean;
+    };
+
+    if (!body.companyId || !body.elementTypeId || !body.name || !body.code) {
+      return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 });
+    }
+
+    const created = await prisma.elements.create({
+      data: {
+        company_id: body.companyId,
+        element_type_id: body.elementTypeId,
+        leader_id: body.leaderId || null,
+        code: body.code.trim(),
+        name: body.name.trim(),
+        description: body.description || null,
+        is_active: body.isActive ?? true,
+      },
+    });
+
+    return NextResponse.json({ item: created }, { status: 201 });
+  } catch (error: unknown) {
+    console.error('Error creating process:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: Request) {
+  const auth = await getAuthContext();
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id') || '';
+    if (!id) return NextResponse.json({ error: 'id es obligatorio' }, { status: 400 });
+
+    const body = await request.json() as {
+      elementTypeId?: string;
+      leaderId?: string | null;
+      code?: string;
+      name?: string;
+      description?: string;
+      isActive?: boolean;
+    };
+
+    const updated = await prisma.elements.update({
+      where: { id },
+      data: {
+        ...(body.elementTypeId !== undefined && { element_type_id: body.elementTypeId }),
+        ...(body.leaderId !== undefined && { leader_id: body.leaderId || null }),
+        ...(body.code !== undefined && { code: body.code.trim() }),
+        ...(body.name !== undefined && { name: body.name.trim() }),
+        ...(body.description !== undefined && { description: body.description || null }),
+        ...(body.isActive !== undefined && { is_active: body.isActive }),
+        updated_at: new Date(),
+      },
+    });
+
+    return NextResponse.json({ item: updated });
+  } catch (error: unknown) {
+    console.error('Error updating process:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  const auth = await getAuthContext();
+  if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id') || '';
+    if (!id) return NextResponse.json({ error: 'id es obligatorio' }, { status: 400 });
+
+    await prisma.elements.delete({ where: { id } });
+    return NextResponse.json({ ok: true });
+  } catch (error: unknown) {
+    console.error('Error deleting process:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

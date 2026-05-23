@@ -110,6 +110,14 @@ const catalogoModules = [
     color: "#6366f1",
     rgb: "99,102,241",
   },
+  {
+    title: "Proceso",
+    description: "Gestione y defina los procesos vinculados al modelo de gobernanza.",
+    icon: Workflow,
+    href: "/gobierno/proceso",
+    color: "#3b82f6",
+    rgb: "59,130,246",
+  },
 ];
 
 function CatalogCard({ mod }: { mod: typeof catalogoModules[number] }) {

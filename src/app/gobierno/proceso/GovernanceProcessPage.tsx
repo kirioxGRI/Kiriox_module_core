@@ -3,37 +3,31 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-  Save, ArrowLeft, Pencil, Trash2,
-  ClipboardList, Plus, X,
+  Save, ArrowLeft, Pencil, Trash2, X,
+  Workflow, Plus,
 } from 'lucide-react';
-import styles from './GovernanceActivityNewPage.module.css';
+import styles from './GovernanceProcessPage.module.css';
 
 /* ── Types ──────────────────────────────────────────── */
 type CompanyOption = { id: string; name: string };
-type ProcessOption = { id: string; name: string; code: string };
+type ElementTypeOption = { id: string; name: string; code: string };
 type UserOption = { id: string; name: string | null; lastName: string | null; email: string };
 
-interface ActivityRow {
+interface ProcessRow {
   id: string;
+  code: string;
   name: string;
   description: string | null;
-  code: string;
   isActive: boolean;
   companyId: string;
-  elementId: string;
-  ownerId: string | null;
-  ownerName: string | null;
-  processName: string | null;
-  processCode: string | null;
+  elementTypeId: string;
+  elementTypeName: string | null;
+  leaderId: string | null;
   createdAt: string;
 }
 
-interface ActivityListResponse {
-  items: ActivityRow[];
-  total: number;
-  page: number;
-  limit: number;
-  pages: number;
+interface ProcessListResponse {
+  items: ProcessRow[];
 }
 
 /* ── Helpers ────────────────────────────────────────── */
@@ -48,27 +42,27 @@ function userLabel(u: UserOption): string {
 }
 
 /* ── Component ──────────────────────────────────────── */
-export default function GovernanceActivityNewPage() {
+export default function GovernanceProcessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const topCardRef = useRef<HTMLElement>(null);
 
   const companyIdParam = searchParams.get('company_id') || '';
-  const elementIdParam = searchParams.get('element_id') || '';
 
   /* ── Context data ───────────────────────────────── */
   const [companies, setCompanies] = useState<CompanyOption[]>([]);
-  const [processes, setProcesses] = useState<ProcessOption[]>([]);
+  const [elementTypes, setElementTypes] = useState<ElementTypeOption[]>([]);
   const [users, setUsers] = useState<UserOption[]>([]);
   const [loadingContext, setLoadingContext] = useState(true);
-  const [loadingProcesses, setLoadingProcesses] = useState(false);
+  const [loadingTypes, setLoadingTypes] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
 
   /* ── Form state (dual mode: create | edit) ──────── */
   const EMPTY_FORM = {
     companyId: companyIdParam,
-    elementId: elementIdParam,
-    ownerId: '',
+    elementTypeId: '',
+    leaderId: '',
+    code: '',
     name: '',
     description: '',
     isActive: true,
@@ -79,12 +73,11 @@ export default function GovernanceActivityNewPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  /* ── Activity list ──────────────────────────────── */
-  const [activities, setActivities] = useState<ActivityRow[]>([]);
+  /* ── Process list ──────────────────────────────── */
+  const [processes, setProcesses] = useState<ProcessRow[]>([]);
   const [listLoading, setListLoading] = useState(false);
-  const LIST_LIMIT = 50;
 
-  /* ── Fetch companies once ───────────────────────── */
+  /* ── Fetch companies and types (once) ──────────────── */
   useEffect(() => {
     let mounted = true;
     setLoadingContext(true);
@@ -102,31 +95,28 @@ export default function GovernanceActivityNewPage() {
       })
       .catch(err => { if (mounted) setError(`Error cargando empresas: ${err.message}`); })
       .finally(() => { if (mounted) setLoadingContext(false); });
-    return () => { mounted = false; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  /* ── Fetch processes & users when company changes ── */
-  useEffect(() => {
-    if (!form.companyId) { setProcesses([]); setUsers([]); return; }
-    let mounted = true;
-
-    setLoadingProcesses(true);
-    fetch(`/api/governance/processes?company_id=${form.companyId}`, { cache: 'no-store' })
+    setLoadingTypes(true);
+    fetch('/api/governance/element-types', { cache: 'no-store' })
       .then(async r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const data = await r.json();
         if (!mounted) return;
-        const items: ProcessOption[] = data.items || [];
-        setProcesses(items);
-        // only auto-select first if not in edit mode (editing preserves elementId)
-        if (!editingId) {
-          const exists = items.some(p => p.id === form.elementId);
-          if (!exists) setForm(prev => ({ ...prev, elementId: items[0]?.id || '' }));
-        }
+        const list: ElementTypeOption[] = data.items || [];
+        setElementTypes(list);
+        if (list.length > 0) setForm(prev => ({ ...prev, elementTypeId: list[0].id }));
       })
-      .catch(err => { if (mounted) setError(`Error procesos: ${err.message}`); })
-      .finally(() => { if (mounted) setLoadingProcesses(false); });
+      .catch(err => { if (mounted) setError(`Error cargando tipos de proceso: ${err.message}`); })
+      .finally(() => { if (mounted) setLoadingTypes(false); });
+
+    return () => { mounted = false; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* ── Fetch users when company changes ── */
+  useEffect(() => {
+    if (!form.companyId) { setUsers([]); return; }
+    let mounted = true;
 
     setLoadingUsers(true);
     fetch(`/api/admin/users?companyId=${form.companyId}`, { cache: 'no-store' })
@@ -140,39 +130,42 @@ export default function GovernanceActivityNewPage() {
       .finally(() => { if (mounted) setLoadingUsers(false); });
 
     return () => { mounted = false; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.companyId]);
 
-  /* ── Fetch activities list ──────────────────────── */
-  const fetchActivities = useCallback(async () => {
+  /* ── Fetch processes list ──────────────────────── */
+  const fetchProcesses = useCallback(async () => {
     if (!form.companyId) return;
     setListLoading(true);
     try {
       const r = await fetch(
-        `/api/governance/processes/activities?company_id=${form.companyId}&page=1&limit=${LIST_LIMIT}`,
+        `/api/governance/processes?company_id=${form.companyId}`,
         { cache: 'no-store' }
       );
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      const data: ActivityListResponse = await r.json();
-      setActivities(data.items);
+      const data: ProcessListResponse = await r.json();
+      
+      // Need to resolve leader names from users array manually or if backend returned it.
+      // We will map users in the render step since we fetch users for the company anyway.
+      setProcesses(data.items);
     } catch { /* silent */ }
     finally { setListLoading(false); }
   }, [form.companyId]);
 
-  useEffect(() => { fetchActivities(); }, [fetchActivities]);
+  useEffect(() => { fetchProcesses(); }, [fetchProcesses]);
 
-  /* ── Load activity into top form for editing ────── */
-  const handleStartEdit = (a: ActivityRow) => {
-    setEditingId(a.id);
+  /* ── Load process into top form for editing ────── */
+  const handleStartEdit = (p: ProcessRow) => {
+    setEditingId(p.id);
     setError(null);
     setSuccess(null);
     setForm({
-      companyId: a.companyId,
-      elementId: a.elementId,
-      ownerId: a.ownerId ?? '',
-      name: a.name,
-      description: a.description ?? '',
-      isActive: a.isActive,
+      companyId: p.companyId,
+      elementTypeId: p.elementTypeId || (elementTypes[0]?.id ?? ''),
+      leaderId: p.leaderId ?? '',
+      code: p.code,
+      name: p.name,
+      description: p.description ?? '',
+      isActive: p.isActive,
     });
     topCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -182,7 +175,7 @@ export default function GovernanceActivityNewPage() {
     setEditingId(null);
     setError(null);
     setSuccess(null);
-    setForm({ ...EMPTY_FORM });
+    setForm({ ...EMPTY_FORM, companyId: form.companyId, elementTypeId: elementTypes[0]?.id ?? '' });
   };
 
   /* ── Submit (create or update) ──────────────────── */
@@ -191,26 +184,28 @@ export default function GovernanceActivityNewPage() {
     setError(null);
     setSuccess(null);
     if (!form.companyId) { setError('La empresa es obligatoria.'); return; }
-    if (!form.elementId) { setError('El proceso es obligatorio.'); return; }
-    if (!form.name.trim()) { setError('El nombre de la actividad es obligatorio.'); return; }
+    if (!form.elementTypeId) { setError('El tipo de proceso es obligatorio.'); return; }
+    if (!form.code.trim()) { setError('El código es obligatorio.'); return; }
+    if (!form.name.trim()) { setError('El nombre del proceso es obligatorio.'); return; }
 
     setSaving(true);
     try {
       let res: Response;
       if (editingId) {
-        res = await fetch(`/api/governance/processes/activities?id=${editingId}`, {
+        res = await fetch(`/api/governance/processes?id=${editingId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: form.name,
+            code: form.code,
             description: form.description,
             isActive: form.isActive,
-            elementId: form.elementId,
-            ownerId: form.ownerId || null,
+            elementTypeId: form.elementTypeId,
+            leaderId: form.leaderId || null,
           }),
         });
       } else {
-        res = await fetch('/api/governance/processes/activities', {
+        res = await fetch('/api/governance/processes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(form),
@@ -220,10 +215,10 @@ export default function GovernanceActivityNewPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || data.error || 'Error al guardar');
 
-      setSuccess(editingId ? 'Actividad actualizada exitosamente.' : 'Actividad creada exitosamente.');
+      setSuccess(editingId ? 'Proceso actualizado exitosamente.' : 'Proceso creado exitosamente.');
       setEditingId(null);
-      setForm({ ...EMPTY_FORM });
-      fetchActivities();
+      setForm({ ...EMPTY_FORM, companyId: form.companyId, elementTypeId: elementTypes[0]?.id ?? '' });
+      fetchProcesses();
       setTimeout(() => setSuccess(null), 4000);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -234,16 +229,16 @@ export default function GovernanceActivityNewPage() {
 
   /* ── Delete ─────────────────────────────────────── */
   const handleDelete = async (id: string) => {
-    if (!confirm('¿Eliminar esta actividad? Esta acción no se puede deshacer.')) return;
+    if (!confirm('¿Eliminar este proceso? Esta acción no se puede deshacer.')) return;
     try {
-      const res = await fetch(`/api/governance/processes/activities?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/governance/processes?id=${id}`, { method: 'DELETE' });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
         throw new Error(d.error || 'Error al eliminar');
       }
       if (editingId === id) handleCancelEdit();
-      setActivities(prev => prev.filter(a => a.id !== id));
-      fetchActivities();
+      setProcesses(prev => prev.filter(p => p.id !== id));
+      fetchProcesses();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al eliminar');
     }
@@ -264,12 +259,12 @@ export default function GovernanceActivityNewPage() {
             </span>
             <div style={{ flex: 1 }}>
               <h1 className={styles.sectionTitle}>
-                {isEditing ? 'Editar Actividad' : 'Crear Nueva Actividad'}
+                {isEditing ? 'Editar Proceso' : 'Crear Nuevo Proceso'}
               </h1>
               <p className={styles.sectionSubtitle}>
                 {isEditing
                   ? 'Modifica los campos y guarda los cambios.'
-                  : 'Completa la información para registrar una nueva actividad.'}
+                  : 'Completa la información para registrar un nuevo proceso.'}
               </p>
             </div>
             {isEditing && (
@@ -288,7 +283,7 @@ export default function GovernanceActivityNewPage() {
                 <select
                   className={styles.input}
                   value={form.companyId}
-                  onChange={e => setForm(prev => ({ ...prev, companyId: e.target.value, elementId: '', ownerId: '' }))}
+                  onChange={e => setForm(prev => ({ ...prev, companyId: e.target.value, leaderId: '' }))}
                   disabled={loadingContext || saving}
                 >
                   {loadingContext && <option value="">Cargando empresas...</option>}
@@ -299,24 +294,24 @@ export default function GovernanceActivityNewPage() {
               </label>
 
               <label className={styles.field}>
-                <span>Proceso Vinculado</span>
+                <span>Tipo de Proceso</span>
                 <select
                   className={styles.input}
-                  value={form.elementId}
-                  onChange={e => setForm(prev => ({ ...prev, elementId: e.target.value }))}
-                  disabled={loadingProcesses || saving || !form.companyId}
+                  value={form.elementTypeId}
+                  onChange={e => setForm(prev => ({ ...prev, elementTypeId: e.target.value }))}
+                  disabled={loadingTypes || saving}
                 >
-                  <option value="">{loadingProcesses ? 'Cargando procesos...' : 'Seleccione Proceso'}</option>
-                  {processes.map(p => <option key={p.id} value={p.id}>[{p.code}] {p.name}</option>)}
+                  <option value="">{loadingTypes ? 'Cargando tipos...' : 'Seleccione Tipo'}</option>
+                  {elementTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </select>
               </label>
 
               <label className={styles.field}>
-                <span>Líder de la Actividad</span>
+                <span>Líder del Proceso</span>
                 <select
                   className={styles.input}
-                  value={form.ownerId}
-                  onChange={e => setForm(prev => ({ ...prev, ownerId: e.target.value }))}
+                  value={form.leaderId}
+                  onChange={e => setForm(prev => ({ ...prev, leaderId: e.target.value }))}
                   disabled={loadingUsers || saving || !form.companyId}
                 >
                   <option value="">{loadingUsers ? 'Cargando usuarios...' : 'Seleccione Líder'}</option>
@@ -325,7 +320,7 @@ export default function GovernanceActivityNewPage() {
               </label>
 
               <label className={styles.field}>
-                <span>Actividad Activa</span>
+                <span>Proceso Activo</span>
                 <div className={styles.toggleWrapper}>
                   <button
                     type="button"
@@ -337,44 +332,61 @@ export default function GovernanceActivityNewPage() {
                   >
                     <span className={styles.toggleDot} />
                   </button>
-                  <span className={styles.toggleLabel}>{form.isActive ? 'Sí, activa' : 'Inactiva'}</span>
+                  <span className={styles.toggleLabel}>{form.isActive ? 'Sí, activo' : 'Inactivo'}</span>
                 </div>
               </label>
             </div>
 
-            {/* Name */}
-            <label className={styles.field}>
-              <span>Nombre de la Actividad</span>
-              <div className={styles.inputWithIcon}>
-                <ClipboardList size={16} className={styles.fieldIcon} />
-                <input
-                  className={styles.input}
-                  value={form.name}
-                  onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Ej: Conciliación bancaria diaria"
-                  disabled={saving}
-                  required
-                />
-              </div>
-            </label>
+            {/* Row 2: Code and Name */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '14px', marginTop: '14px' }}>
+              <label className={styles.field}>
+                <span>Código</span>
+                <div className={styles.inputWithIcon}>
+                  <Workflow size={16} className={styles.fieldIcon} />
+                  <input
+                    className={styles.input}
+                    value={form.code}
+                    onChange={e => setForm(prev => ({ ...prev, code: e.target.value }))}
+                    placeholder="Ej: FIN-01"
+                    disabled={saving}
+                    required
+                  />
+                </div>
+              </label>
+
+              <label className={styles.field}>
+                <span>Nombre del Proceso</span>
+                <div className={styles.inputWithIcon}>
+                  <Workflow size={16} className={styles.fieldIcon} />
+                  <input
+                    className={styles.input}
+                    value={form.name}
+                    onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Ej: Gestión Financiera"
+                    disabled={saving}
+                    required
+                  />
+                </div>
+              </label>
+            </div>
 
             {/* Description */}
-            <label className={styles.field}>
+            <label className={styles.field} style={{ marginTop: '14px' }}>
               <span>Descripción / Alcance</span>
               <div className={styles.inputWithIcon}>
-                <ClipboardList size={16} className={styles.fieldIcon} />
+                <Workflow size={16} className={styles.fieldIcon} />
                 <input
                   className={styles.input}
                   value={form.description}
                   onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Describa el objetivo y las tareas principales de esta actividad..."
+                  placeholder="Describa el objetivo y las tareas principales de este proceso..."
                   disabled={saving}
                 />
               </div>
             </label>
 
-            {error && <div className={styles.error}>{error}</div>}
-            {success && <div className={styles.success}>{success}</div>}
+            {error && <div className={styles.error} style={{ marginTop: '14px' }}>{error}</div>}
+            {success && <div className={styles.success} style={{ marginTop: '14px' }}>{success}</div>}
 
             <div className={styles.actions}>
               <button type="button" className={styles.secondaryButton} onClick={() => router.back()} disabled={saving}>
@@ -384,95 +396,98 @@ export default function GovernanceActivityNewPage() {
                 <Save size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
                 {saving
                   ? (isEditing ? 'Actualizando...' : 'Guardando...')
-                  : (isEditing ? 'Actualizar Actividad' : 'Crear Actividad')}
+                  : (isEditing ? 'Actualizar Proceso' : 'Crear Proceso')}
               </button>
             </div>
           </form>
         </section>
 
-        {/* ══ CARD 2: Activity list ════════════════════ */}
+        {/* ══ CARD 2: Process list ════════════════════ */}
         <section className={styles.card}>
           <div className={styles.sectionHeader}>
-            <span className={styles.sectionIcon}><ClipboardList size={16} /></span>
+            <span className={styles.sectionIcon}><Workflow size={16} /></span>
             <div>
-              <h2 className={styles.sectionTitle}>Actividades Existentes</h2>
-              <p className={styles.sectionSubtitle}>Listado de actividades registradas en el sistema.</p>
+              <h2 className={styles.sectionTitle}>Procesos Existentes</h2>
+              <p className={styles.sectionSubtitle}>Listado de procesos registrados en el sistema.</p>
             </div>
           </div>
 
-          {listLoading && activities.length === 0 ? (
-            <p className={styles.emptyMsg}>Cargando actividades...</p>
-          ) : activities.length === 0 ? (
-            <p className={styles.emptyMsg}>No hay actividades registradas aún.</p>
+          {listLoading && processes.length === 0 ? (
+            <p className={styles.emptyMsg}>Cargando procesos...</p>
+          ) : processes.length === 0 ? (
+            <p className={styles.emptyMsg}>No hay procesos registrados aún.</p>
           ) : (
             <div className={styles.activityList}>
               {/* Header row */}
               <div className={styles.activityHeader}>
-                <span>Actividad</span>
-                <span>Empresa / Proceso</span>
+                <span>Proceso</span>
+                <span>Tipo</span>
                 <span>Líder</span>
                 <span>Estado</span>
                 <span></span>
               </div>
 
-              {activities.map(a => (
-                <div
-                  key={a.id}
-                  className={`${styles.activityRow} ${editingId === a.id ? styles.activityRowActive : ''}`}
-                >
-                  {/* Col 1: name + description */}
-                  <div className={styles.activityInfo}>
-                    <span className={styles.activityName}>{a.name}</span>
-                    <span className={styles.activityDesc}>{a.description || '—'}</span>
-                  </div>
+              {processes.map(p => {
+                const leader = users.find(u => u.id === p.leaderId);
+                const leaderName = leader ? userLabel(leader) : null;
+                
+                return (
+                  <div
+                    key={p.id}
+                    className={`${styles.activityRow} ${editingId === p.id ? styles.activityRowActive : ''}`}
+                  >
+                    {/* Col 1: code + name + description */}
+                    <div className={styles.activityInfo}>
+                      <span className={styles.activityName}>[{p.code}] {p.name}</span>
+                      <span className={styles.activityDesc}>{p.description || '—'}</span>
+                    </div>
 
-                  {/* Col 2: company / process */}
-                  <div className={styles.activityMeta}>
-                    {a.processCode && (
-                      <span className={styles.metaTag}>[{a.processCode}] {a.processName}</span>
-                    )}
-                  </div>
+                    {/* Col 2: element type */}
+                    <div className={styles.activityMeta}>
+                      <span className={styles.metaTag}>{p.elementTypeName || '—'}</span>
+                    </div>
 
-                  {/* Col 3: owner */}
-                  <div className={styles.activityOwner}>
-                    {a.ownerName ? (
-                      <>
-                        <span className={styles.avatar}>{initials(a.ownerName)}</span>
-                        <div className={styles.ownerText}>
-                          <span className={styles.ownerName}>{a.ownerName}</span>
-                          <span className={styles.ownerRole}>Líder de la actividad</span>
-                        </div>
-                      </>
-                    ) : (
-                      <span className={styles.ownerNone}>Sin asignar</span>
-                    )}
-                  </div>
+                    {/* Col 3: owner */}
+                    <div className={styles.activityOwner}>
+                      {leaderName ? (
+                        <>
+                          <span className={styles.avatar}>{initials(leaderName)}</span>
+                          <div className={styles.ownerText}>
+                            <span className={styles.ownerName}>{leaderName}</span>
+                            <span className={styles.ownerRole}>Líder del proceso</span>
+                          </div>
+                        </>
+                      ) : (
+                        <span className={styles.ownerNone}>Sin asignar</span>
+                      )}
+                    </div>
 
-                  {/* Col 4: badge */}
-                  <span className={`${styles.badge} ${a.isActive ? styles.badgeActive : styles.badgeInactive}`}>
-                    <span className={styles.badgeDot} />
-                    {a.isActive ? 'Activa' : 'Inactiva'}
-                  </span>
+                    {/* Col 4: badge */}
+                    <span className={`${styles.badge} ${p.isActive ? styles.badgeActive : styles.badgeInactive}`}>
+                      <span className={styles.badgeDot} />
+                      {p.isActive ? 'Activo' : 'Inactivo'}
+                    </span>
 
-                  {/* Col 5: actions */}
-                  <div className={styles.rowActions}>
-                    <button
-                      className={`${styles.iconBtn} ${editingId === a.id ? styles.iconBtnEditActive : ''}`}
-                      title="Editar"
-                      onClick={() => editingId === a.id ? handleCancelEdit() : handleStartEdit(a)}
-                    >
-                      {editingId === a.id ? <X size={14} /> : <Pencil size={14} />}
-                    </button>
-                    <button
-                      className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
-                      title="Eliminar"
-                      onClick={() => handleDelete(a.id)}
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                    {/* Col 5: actions */}
+                    <div className={styles.rowActions}>
+                      <button
+                        className={`${styles.iconBtn} ${editingId === p.id ? styles.iconBtnEditActive : ''}`}
+                        title="Editar"
+                        onClick={() => editingId === p.id ? handleCancelEdit() : handleStartEdit(p)}
+                      >
+                        {editingId === p.id ? <X size={14} /> : <Pencil size={14} />}
+                      </button>
+                      <button
+                        className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+                        title="Eliminar"
+                        onClick={() => handleDelete(p.id)}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>

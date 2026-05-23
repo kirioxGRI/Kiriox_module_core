@@ -46,6 +46,8 @@ export async function GET(request: NextRequest) {
       description: a.description,
       code: a.code,
       isActive: a.is_active,
+      companyId: a.company_id,
+      elementId: a.element_id,
       ownerId: a.owner_id,
       ownerName: a.owner_id ? (() => {
         const o = ownerMap.get(a.owner_id);
@@ -129,7 +131,11 @@ export async function PATCH(request: NextRequest) {
     if (!id) return NextResponse.json({ error: 'id es obligatorio' }, { status: 400 });
 
     const body = await request.json() as {
-      name?: string; description?: string; isActive?: boolean;
+      name?: string;
+      description?: string;
+      isActive?: boolean;
+      elementId?: string;
+      ownerId?: string | null;
     };
 
     const updated = await prisma.activities.update({
@@ -138,6 +144,8 @@ export async function PATCH(request: NextRequest) {
         ...(body.name !== undefined && { name: body.name.trim() }),
         ...(body.description !== undefined && { description: body.description || null }),
         ...(body.isActive !== undefined && { is_active: body.isActive }),
+        ...(body.elementId !== undefined && { element_id: body.elementId }),
+        ...(body.ownerId !== undefined && { owner_id: body.ownerId || null }),
         updated_at: new Date(),
       },
     });
