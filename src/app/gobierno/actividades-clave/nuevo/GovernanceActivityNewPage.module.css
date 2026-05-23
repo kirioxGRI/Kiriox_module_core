@@ -1,136 +1,193 @@
+/* ── Page root — transparent per core canon ─────────── */
 .page {
-  min-height: 100vh;
-  background: var(--background);
+  background: transparent;
+  min-height: 100%;
 }
 
 .container {
-  max-width: 1000px;
+  width: 80%;
   margin: 0 auto;
-  padding: 42px 20px 60px;
+  padding: 36px 20px 60px;
+  display: grid;
+  gap: 24px;
+}
+
+/* ── Section card ───────────────────────────────────── */
+.card {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  padding: 24px 28px;
   display: grid;
   gap: 18px;
 }
 
-.header {
-  display: grid;
-  gap: 8px;
+/* ── Section header (icon + title) ──────────────────── */
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-.headerWrapper {
-  position: relative;
-  padding-right: 48px;
-}
-
-.closeButton {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 1px solid rgba(73, 111, 186, 0.55);
-  background: rgba(10, 23, 48, 0.45);
-  color: #e2e8f0;
+.sectionIcon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
-.closeButton:hover {
-  background: rgba(30, 95, 214, 0.2);
-  border-color: rgba(96, 165, 250, 0.7);
-  transform: translateY(-1px);
-}
-
-.title {
+.sectionTitle {
   margin: 0;
   color: #f1f5f9;
-  font-size: 1.8rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
-.subtitle {
-  margin: 0;
-  color: #93a4c5;
-  font-size: 0.95rem;
+.sectionSubtitle {
+  margin: 2px 0 0;
+  color: #7b8fad;
+  font-size: 0.82rem;
 }
 
-.card {
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: #111a2e;
-  border-radius: 16px;
-  padding: 24px;
+/* ── Form row — 4 columns ──────────────────────────── */
+.formRow4 {
   display: grid;
-  gap: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 14px;
+  align-items: end;
 }
 
-.grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+@media (max-width: 1100px) {
+  .formRow4 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 680px) {
+  .formRow4 { grid-template-columns: 1fr; }
 }
 
+/* ── Field ──────────────────────────────────────────── */
 .field {
   display: grid;
-  gap: 8px;
-  color: #c6d2ea;
-  font-size: 0.85rem;
+  gap: 6px;
+  color: #9babc4;
+  font-size: 0.8rem;
+  font-weight: 500;
 }
 
-.input,
-.textarea {
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* ── Input / Select ─────────────────────────────────── */
+.input {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   color: #e7efff;
   border-radius: 10px;
-  padding: 12px;
+  padding: 10px 12px;
   outline: none;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
 }
 
-.input:focus,
-.textarea:focus {
+.input:focus {
   border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.18);
 }
 
-.textarea {
-  resize: vertical;
+/* ── Input with icon ────────────────────────────────── */
+.inputWithIcon {
+  position: relative;
 }
 
-.switchRow {
-  display: inline-flex;
+.inputWithIcon .input {
+  padding-left: 36px;
+}
+
+.fieldIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4d6384;
+  pointer-events: none;
+}
+
+/* ── Toggle switch ──────────────────────────────────── */
+.toggleWrapper {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  color: #c6d2ea;
-  cursor: pointer;
+  gap: 10px;
+  padding-top: 4px;
 }
 
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background 0.25s ease;
+  flex-shrink: 0;
+}
+
+.toggle.toggleOn {
+  background: #3b82f6;
+}
+
+.toggleDot {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.25s ease;
+}
+
+.toggleOn .toggleDot {
+  transform: translateX(20px);
+}
+
+.toggleLabel {
+  color: #b0c0d8;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+/* ── Actions ────────────────────────────────────────── */
 .actions {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .secondaryButton,
 .primaryButton {
   border-radius: 10px;
-  border: 1px solid rgba(73, 111, 186, 0.45);
-  background: rgba(10, 23, 48, 0.4);
+  border: 1px solid rgba(73, 111, 186, 0.4);
+  background: rgba(10, 23, 48, 0.35);
   color: #d9e8ff;
-  padding: 10px 20px;
+  padding: 9px 18px;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
 }
 
 .secondaryButton:hover {
-  background: rgba(30, 58, 138, 0.3);
-  border-color: rgba(96, 165, 250, 0.6);
+  background: rgba(30, 58, 138, 0.25);
+  border-color: rgba(96, 165, 250, 0.5);
 }
 
 .primaryButton {
@@ -140,31 +197,284 @@
 }
 
 .primaryButton:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.12);
   transform: translateY(-1px);
 }
 
 .primaryButton:disabled,
 .secondaryButton:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
   transform: none !important;
 }
 
+/* ── Feedback messages ──────────────────────────────── */
 .error {
   color: #fecaca;
-  background: rgba(123, 31, 52, 0.35);
-  border: 1px solid rgba(248, 113, 113, 0.4);
+  background: rgba(123, 31, 52, 0.3);
+  border: 1px solid rgba(248, 113, 113, 0.35);
   border-radius: 10px;
-  padding: 12px;
-  font-size: 0.9rem;
+  padding: 10px 14px;
+  font-size: 0.85rem;
 }
 
 .success {
   color: #d1fae5;
-  background: rgba(6, 95, 70, 0.35);
-  border: 1px solid rgba(52, 211, 153, 0.4);
+  background: rgba(6, 95, 70, 0.3);
+  border: 1px solid rgba(52, 211, 153, 0.35);
   border-radius: 10px;
-  padding: 12px;
-  font-size: 0.9rem;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+}
+
+/* ── Activity list ──────────────────────────────────── */
+.activityList {
+  display: grid;
+  gap: 0;
+}
+
+.activityRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease;
+}
+
+.activityRow:last-child {
+  border-bottom: none;
+}
+
+.activityRow:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.activityInfo {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.activityName {
+  color: #e7efff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activityDesc {
+  color: #6b7fa0;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Owner cell ─────────────────────────────────────── */
+.activityOwner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 160px;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ownerText {
+  display: grid;
+  gap: 1px;
+}
+
+.ownerName {
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.ownerRole {
+  color: #5a6e8a;
+  font-size: 0.72rem;
+}
+
+.ownerNone {
+  color: #5a6e8a;
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+/* ── Badge ──────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.badgeActive {
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+}
+
+.badgeActive .badgeDot {
+  background: #10b981;
+}
+
+.badgeInactive {
+  background: rgba(248, 113, 113, 0.12);
+  color: #fca5a5;
+}
+
+.badgeInactive .badgeDot {
+  background: #f87171;
+}
+
+/* ── Row action icons ───────────────────────────────── */
+.rowActions {
+  display: flex;
+  gap: 6px;
+}
+
+.iconBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+  color: #8b9ec0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.iconBtn:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(96, 165, 250, 0.3);
+  color: #93c5fd;
+}
+
+.iconBtnDanger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #fca5a5;
+}
+
+/* ── Pagination ─────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+}
+
+.paginationInfo {
+  color: #5a6e8a;
+  font-size: 0.78rem;
+}
+
+.paginationButtons {
+  display: flex;
+  gap: 4px;
+}
+
+.pageBtn {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  color: #8b9ec0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(96, 165, 250, 0.3);
+  color: #93c5fd;
+}
+
+.pageBtnActive {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+  color: #fff !important;
+}
+
+.pageBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ── Empty state ────────────────────────────────────── */
+.emptyMsg {
+  color: #5a6e8a;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 24px 0;
+}
+
+/* ── Inline edit row ────────────────────────────────── */
+.activityRowEditing {
+  background: rgba(59, 130, 246, 0.06);
+  border-radius: 10px;
+}
+
+.inlineEditGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 4px 0;
+}
+
+.editInput {
+  font-size: 0.85rem;
+  padding: 8px 10px;
+}
+
+.inlineEditActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconBtnSuccess:hover {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(52, 211, 153, 0.35);
+  color: #6ee7b7;
 }

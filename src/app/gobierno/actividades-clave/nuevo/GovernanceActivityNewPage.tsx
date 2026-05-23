@@ -1,21 +1,62 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { X, Save, ArrowLeft } from 'lucide-react';
+import {
+  Save, ArrowLeft, Pencil, Trash2, X, Check,
+  ClipboardList, Plus,
+} from 'lucide-react';
 import styles from './GovernanceActivityNewPage.module.css';
 
+/* ── Types ──────────────────────────────────────────── */
 type CompanyOption = { id: string; name: string };
 type ProcessOption = { id: string; name: string; code: string };
 type UserOption = { id: string; name: string | null; lastName: string | null; email: string };
 
+interface ActivityRow {
+  id: string;
+  name: string;
+  description: string | null;
+  code: string;
+  isActive: boolean;
+  ownerId: string | null;
+  ownerName: string | null;
+  processName: string | null;
+  processCode: string | null;
+  createdAt: string;
+}
+
+interface ActivityListResponse {
+  items: ActivityRow[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
+interface EditState {
+  id: string;
+  name: string;
+  description: string;
+  isActive: boolean;
+  saving: boolean;
+}
+
+/* ── Helpers ────────────────────────────────────────── */
+function initials(name: string | null): string {
+  if (!name) return '';
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase();
+}
+
+/* ── Component ──────────────────────────────────────── */
 export default function GovernanceActivityNewPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const companyIdParam = searchParams.get('company_id') || '';
   const elementIdParam = searchParams.get('element_id') || '';
 
+  /* context data */
   const [companies, setCompanies] = useState<CompanyOption[]>([]);
   const [processes, setProcesses] = useState<ProcessOption[]>([]);
   const [users, setUsers] = useState<UserOption[]>([]);
@@ -26,6 +67,7 @@ export default function GovernanceActivityNewPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  /* create form */
   const [form, setForm] = useState({
     companyId: companyIdParam,
     elementId: elementIdParam,
@@ -35,6 +77,16 @@ export default function GovernanceActivityNewPage() {
     isActive: true,
   });
 
+  /* activity list */
+  const [activities, setActivities] = useState<ActivityRow[]>([]);
+  const [listLoading, setListLoading] = useState(false);
+  const [listPage] = useState(1);
+  const LIST_LIMIT = 50;
+
+  /* inline edit state */
+  const [editState, setEditState] = useState<EditState | null>(null);
+
+  /* ── Fetch companies (once) ─────────────────────── */
   useEffect(() => {
     let mounted = true;
     setLoadingContext(true);
@@ -54,8 +106,10 @@ export default function GovernanceActivityNewPage() {
       .catch(err => { if (mounted) setError(`Error: ${err.message}`); })
       .finally(() => { if (mounted) setLoadingContext(false); });
     return () => { mounted = false; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /* ── Fetch processes & users when company changes ── */
   useEffect(() => {
     if (!form.companyId) { setProcesses([]); setUsers([]); return; }
     let mounted = true;
@@ -87,8 +141,31 @@ export default function GovernanceActivityNewPage() {
       .finally(() => { if (mounted) setLoadingUsers(false); });
 
     return () => { mounted = false; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.companyId]);
 
+  /* ── Fetch activities list ──────────────────────── */
+  const fetchActivities = useCallback(async (page: number) => {
+    if (!form.companyId) return;
+    setListLoading(true);
+    try {
+      const url = `/api/governance/processes/activities?company_id=${form.companyId}&page=${page}&limit=${LIST_LIMIT}`;
+      const r = await fetch(url, { cache: 'no-store' });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data: ActivityListResponse = await r.json();
+      setActivities(data.items);
+    } catch {
+      /* silent */
+    } finally {
+      setListLoading(false);
+    }
+  }, [form.companyId]);
+
+  useEffect(() => {
+    fetchActivities(1);
+  }, [fetchActivities]);
+
+  /* ── Create submit ──────────────────────────────── */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -107,7 +184,8 @@ export default function GovernanceActivityNewPage() {
       if (!res.ok) throw new Error(data.message || data.error || 'Error al crear la actividad');
       setSuccess('Actividad clave creada exitosamente.');
       setForm(prev => ({ ...prev, name: '', description: '', ownerId: '' }));
-      setTimeout(() => router.back(), 2000);
+      fetchActivities(1);
+      setTimeout(() => setSuccess(null), 4000);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
     } finally {
@@ -115,79 +193,264 @@ export default function GovernanceActivityNewPage() {
     }
   };
 
+  /* ── Delete ─────────────────────────────────────── */
+  const handleDelete = async (id: string) => {
+    if (!confirm('¿Eliminar esta actividad? Esta acción no se puede deshacer.')) return;
+    try {
+      const res = await fetch(`/api/governance/processes/activities?id=${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error || 'Error al eliminar');
+      }
+      fetchActivities(listPage);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al eliminar');
+    }
+  };
+
+  /* ── Start inline edit ──────────────────────────── */
+  const startEdit = (a: ActivityRow) => {
+    setEditState({
+      id: a.id,
+      name: a.name,
+      description: a.description ?? '',
+      isActive: a.isActive,
+      saving: false,
+    });
+  };
+
+  /* ── Save inline edit ───────────────────────────── */
+  const saveEdit = async () => {
+    if (!editState || !editState.name.trim()) return;
+    setEditState(prev => prev ? { ...prev, saving: true } : null);
+    try {
+      const res = await fetch(`/api/governance/processes/activities?id=${editState.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: editState.name,
+          description: editState.description,
+          isActive: editState.isActive,
+        }),
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error || 'Error al actualizar');
+      }
+      setEditState(null);
+      fetchActivities(listPage);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al actualizar');
+      setEditState(prev => prev ? { ...prev, saving: false } : null);
+    }
+  };
+
+  /* ── Render ─────────────────────────────────────── */
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        <div className={styles.headerWrapper}>
-          <button type="button" className={styles.closeButton} onClick={() => router.back()} aria-label="Volver">
-            <X size={20} />
-          </button>
-          <div className={styles.header}>
-            <h1 className={styles.title}>Nueva Actividad Clave</h1>
-            <p className={styles.subtitle}>Registra una nueva actividad de gobierno vinculada a un proceso y empresa.</p>
-          </div>
-        </div>
 
-        <form className={styles.card} onSubmit={handleSubmit}>
-          <div className={styles.grid}>
+        {/* ── Section 1: Create ──────────────────── */}
+        <section className={styles.card}>
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionIcon}><Plus size={16} /></span>
+            <div>
+              <h1 className={styles.sectionTitle}>Crear Nueva Actividad</h1>
+              <p className={styles.sectionSubtitle}>Completa la información para registrar una nueva actividad.</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className={styles.formRow4}>
+              <label className={styles.field}>
+                <span>Empresa</span>
+                <select className={styles.input} value={form.companyId} onChange={e => setForm(prev => ({ ...prev, companyId: e.target.value, elementId: '', ownerId: '' }))} disabled={loadingContext || saving}>
+                  {loadingContext && <option value="">Cargando empresas...</option>}
+                  {!loadingContext && companies.length === 0 && <option value="">Sin empresas disponibles</option>}
+                  {!loadingContext && companies.length > 0 && <option value="" disabled>Seleccione una empresa</option>}
+                  {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </label>
+
+              <label className={styles.field}>
+                <span>Proceso Vinculado</span>
+                <select className={styles.input} value={form.elementId} onChange={e => setForm(prev => ({ ...prev, elementId: e.target.value }))} disabled={loadingProcesses || saving || !form.companyId}>
+                  <option value="">{loadingProcesses ? 'Cargando procesos...' : 'Seleccione Proceso'}</option>
+                  {processes.map(p => <option key={p.id} value={p.id}>[{p.code}] {p.name}</option>)}
+                </select>
+              </label>
+
+              <label className={styles.field}>
+                <span>Líder de la Actividad</span>
+                <select className={styles.input} value={form.ownerId} onChange={e => setForm(prev => ({ ...prev, ownerId: e.target.value }))} disabled={loadingUsers || saving || !form.companyId}>
+                  <option value="">{loadingUsers ? 'Cargando usuarios...' : 'Seleccione Líder'}</option>
+                  {users.map(u => {
+                    const label = [u.name, u.lastName].filter(Boolean).join(' ') || u.email;
+                    return <option key={u.id} value={u.id}>{label}</option>;
+                  })}
+                </select>
+              </label>
+
+              <label className={styles.field}>
+                <span>Actividad Activa</span>
+                <div className={styles.toggleWrapper}>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={form.isActive}
+                    className={`${styles.toggle} ${form.isActive ? styles.toggleOn : ''}`}
+                    onClick={() => setForm(prev => ({ ...prev, isActive: !prev.isActive }))}
+                    disabled={saving}
+                  >
+                    <span className={styles.toggleDot} />
+                  </button>
+                  <span className={styles.toggleLabel}>{form.isActive ? 'Sí, activa' : 'Inactiva'}</span>
+                </div>
+              </label>
+            </div>
+
             <label className={styles.field}>
-              <span>Empresa</span>
-              <select className={styles.input} value={form.companyId} onChange={e => setForm(prev => ({ ...prev, companyId: e.target.value, elementId: '', ownerId: '' }))} disabled={loadingContext || saving}>
-                {loadingContext && <option value="">Cargando empresas...</option>}
-                {!loadingContext && companies.length === 0 && <option value="">Sin empresas disponibles</option>}
-                {!loadingContext && companies.length > 0 && <option value="" disabled>Seleccione una empresa</option>}
-                {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
+              <span>Nombre de la Actividad</span>
+              <div className={styles.inputWithIcon}>
+                <ClipboardList size={16} className={styles.fieldIcon} />
+                <input className={styles.input} value={form.name} onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))} placeholder="Ej: Conciliación bancaria diaria" disabled={saving} required />
+              </div>
             </label>
 
             <label className={styles.field}>
-              <span>Proceso Vinculado</span>
-              <select className={styles.input} value={form.elementId} onChange={e => setForm(prev => ({ ...prev, elementId: e.target.value }))} disabled={loadingProcesses || saving || !form.companyId}>
-                <option value="">{loadingProcesses ? 'Cargando procesos...' : 'Seleccione Proceso'}</option>
-                {processes.map(p => <option key={p.id} value={p.id}>[{p.code}] {p.name}</option>)}
-              </select>
+              <span>Descripción / Alcance</span>
+              <div className={styles.inputWithIcon}>
+                <ClipboardList size={16} className={styles.fieldIcon} />
+                <input className={styles.input} value={form.description} onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))} placeholder="Conciliación bancaria diaria – Verificación de saldos bancarios y registros contables." disabled={saving} />
+              </div>
             </label>
 
-            <label className={styles.field}>
-              <span>Líder de la Actividad</span>
-              <select className={styles.input} value={form.ownerId} onChange={e => setForm(prev => ({ ...prev, ownerId: e.target.value }))} disabled={loadingUsers || saving || !form.companyId}>
-                <option value="">{loadingUsers ? 'Cargando usuarios...' : 'Seleccione Líder'}</option>
-                {users.map(u => {
-                  const label = [u.name, u.lastName].filter(Boolean).join(' ') || u.email;
-                  return <option key={u.id} value={u.id}>{label}</option>;
-                })}
-              </select>
-            </label>
+            {error && <div className={styles.error}>{error}</div>}
+            {success && <div className={styles.success}>{success}</div>}
+
+            <div className={styles.actions}>
+              <button type="button" className={styles.secondaryButton} onClick={() => router.back()} disabled={saving}>
+                <ArrowLeft size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} /> Cancelar
+              </button>
+              <button type="submit" className={styles.primaryButton} disabled={saving}>
+                <Save size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                {saving ? 'Guardando...' : 'Crear Actividad'}
+              </button>
+            </div>
+          </form>
+        </section>
+
+        {/* ── Section 2: Existing ────────────────── */}
+        <section className={styles.card}>
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionIcon}><ClipboardList size={16} /></span>
+            <div>
+              <h2 className={styles.sectionTitle}>Actividades Existentes</h2>
+              <p className={styles.sectionSubtitle}>Listado de actividades registradas en el sistema.</p>
+            </div>
           </div>
 
-          <label className={styles.field}>
-            <span>Nombre de la Actividad</span>
-            <input className={styles.input} value={form.name} onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))} placeholder="Ej: Conciliación bancaria diaria" disabled={saving} required />
-          </label>
+          {listLoading && activities.length === 0 ? (
+            <p className={styles.emptyMsg}>Cargando actividades...</p>
+          ) : activities.length === 0 ? (
+            <p className={styles.emptyMsg}>No hay actividades registradas aún.</p>
+          ) : (
+            <div className={styles.activityList}>
+              {activities.map(a => {
+                const isEditing = editState?.id === a.id;
+                return (
+                  <div key={a.id} className={`${styles.activityRow} ${isEditing ? styles.activityRowEditing : ''}`}>
+                    {isEditing ? (
+                      /* ── Inline edit form ── */
+                      <div className={styles.inlineEditGrid}>
+                        <input
+                          className={`${styles.input} ${styles.editInput}`}
+                          value={editState.name}
+                          onChange={e => setEditState(prev => prev ? { ...prev, name: e.target.value } : null)}
+                          placeholder="Nombre de la actividad"
+                          disabled={editState.saving}
+                          autoFocus
+                        />
+                        <input
+                          className={`${styles.input} ${styles.editInput}`}
+                          value={editState.description}
+                          onChange={e => setEditState(prev => prev ? { ...prev, description: e.target.value } : null)}
+                          placeholder="Descripción / Alcance"
+                          disabled={editState.saving}
+                        />
+                        <div className={styles.inlineEditActions}>
+                          <button
+                            className={`${styles.toggle} ${editState.isActive ? styles.toggleOn : ''}`}
+                            type="button"
+                            role="switch"
+                            aria-checked={editState.isActive}
+                            onClick={() => setEditState(prev => prev ? { ...prev, isActive: !prev.isActive } : null)}
+                            disabled={editState.saving}
+                            title={editState.isActive ? 'Activa' : 'Inactiva'}
+                          >
+                            <span className={styles.toggleDot} />
+                          </button>
+                          <button
+                            className={`${styles.iconBtn} ${styles.iconBtnSuccess}`}
+                            title="Guardar"
+                            onClick={saveEdit}
+                            disabled={editState.saving || !editState.name.trim()}
+                          >
+                            <Check size={14} />
+                          </button>
+                          <button
+                            className={styles.iconBtn}
+                            title="Cancelar edición"
+                            onClick={() => setEditState(null)}
+                            disabled={editState.saving}
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      /* ── Read-only row ── */
+                      <>
+                        <div className={styles.activityInfo}>
+                          <span className={styles.activityName}>{a.name}</span>
+                          <span className={styles.activityDesc}>{a.description || '—'}</span>
+                        </div>
 
-          <label className={styles.field}>
-            <span>Descripción / Alcance</span>
-            <textarea className={styles.textarea} rows={5} value={form.description} onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))} placeholder="Describa el objetivo y las tareas principales de esta actividad..." disabled={saving} />
-          </label>
+                        <div className={styles.activityOwner}>
+                          {a.ownerName ? (
+                            <>
+                              <span className={styles.avatar}>{initials(a.ownerName)}</span>
+                              <div className={styles.ownerText}>
+                                <span className={styles.ownerName}>{a.ownerName}</span>
+                                <span className={styles.ownerRole}>Líder de la actividad</span>
+                              </div>
+                            </>
+                          ) : (
+                            <span className={styles.ownerNone}>Sin asignar</span>
+                          )}
+                        </div>
 
-          <label className={styles.switchRow}>
-            <input type="checkbox" checked={form.isActive} onChange={e => setForm(prev => ({ ...prev, isActive: e.target.checked }))} disabled={saving} />
-            <span>Actividad activa</span>
-          </label>
+                        <span className={`${styles.badge} ${a.isActive ? styles.badgeActive : styles.badgeInactive}`}>
+                          <span className={styles.badgeDot} />
+                          {a.isActive ? 'Activa' : 'Inactiva'}
+                        </span>
 
-          {error && <div className={styles.error}>{error}</div>}
-          {success && <div className={styles.success}>{success}</div>}
-
-          <div className={styles.actions}>
-            <button type="button" className={styles.secondaryButton} onClick={() => router.back()} disabled={saving}>
-              <ArrowLeft size={16} style={{ marginRight: 8, verticalAlign: 'middle' }} /> Cancelar
-            </button>
-            <button type="submit" className={styles.primaryButton} disabled={saving}>
-              <Save size={16} style={{ marginRight: 8, verticalAlign: 'middle' }} />
-              {saving ? 'Guardando...' : 'Crear Actividad'}
-            </button>
-          </div>
-        </form>
+                        <div className={styles.rowActions}>
+                          <button className={styles.iconBtn} title="Editar" onClick={() => startEdit(a)}>
+                            <Pencil size={14} />
+                          </button>
+                          <button className={`${styles.iconBtn} ${styles.iconBtnDanger}`} title="Eliminar" onClick={() => handleDelete(a.id)}>
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );
