@@ -380,14 +380,7 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-                <div>
-                  <h2 style={{ margin: 0, color: '#f8fafc', fontSize: '1.12rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
-                    Evaluación de riesgo
-                  </h2>
-                  <p style={{ margin: '0.22rem 0 0', color: '#8fa3c2', fontSize: '0.78rem', lineHeight: 1.45 }}>
-                    Complete el contexto general de la evaluación antes de continuar con el análisis.
-                  </p>
-                </div>
+                <div></div>
                 <span
                   style={{
                     display: 'inline-flex',
