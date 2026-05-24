@@ -65,7 +65,7 @@ export default function Topbar({ access, showScopeSelectors = false }: TopbarPro
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
         <div style={{ flex: 0.5, color: 'white', fontSize: '1rem', fontWeight: 500, letterSpacing: '0.02em', fontStyle: 'italic', opacity: 0.9 }}>
-          <span style={{ color: '#2563eb', fontWeight: 700 }}>Kiriox</span>, identifica lo que puede romper una Organización, antes de que ocurra.
+          Identifica lo que puede romper una organización, antes de que ocurra.
         </div>
         {showScopeSelectors && (
           <div style={{ display: 'flex', gap: '0.5rem' }}>

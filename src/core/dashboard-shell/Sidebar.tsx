@@ -197,11 +197,11 @@ export default function Sidebar({ items, loading = false }: SidebarProps) {
                 alt="Logo"
                 width={56}
                 height={16}
-                style={{ objectFit: "contain", width: "56px", height: "16px" }}
+                style={{ objectFit: "contain", width: "56px", height: "auto" }}
               />
             </div>
           ) : (
-            <Image src="/logo.svg" alt="Logo" width={180} height={44} style={{ objectFit: "contain", maxWidth: "180px", height: "auto" }} />
+            <Image src="/logo.svg" alt="Logo" width={180} height={44} style={{ objectFit: "contain", width: "180px", height: "auto" }} />
           )}
         </div>
       </div>

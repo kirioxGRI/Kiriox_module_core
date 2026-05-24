@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-  Save, ArrowLeft, Pencil, Trash2,
+  Save, Pencil, Trash2,
   ClipboardList, Plus, X,
 } from 'lucide-react';
 import styles from './GovernanceActivityNewPage.module.css';
@@ -47,11 +47,29 @@ function userLabel(u: UserOption): string {
   return [u.name, u.lastName].filter(Boolean).join(' ') || u.email;
 }
 
+/* ── Inline styles (header botones) ─────────────────── */
+const S = {
+  btnPrimary: {
+    display: 'inline-flex', alignItems: 'center', gap: 6,
+    padding: '9px 18px', borderRadius: 10,
+    background: 'linear-gradient(180deg, #1e5fd6, #1148ad)',
+    color: '#fff', border: '1px solid #2b73ef',
+    fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
+  } as React.CSSProperties,
+  btnGhost: {
+    display: 'inline-flex', alignItems: 'center', gap: 6,
+    padding: '9px 18px', borderRadius: 10,
+    background: 'rgba(10, 23, 48, 0.35)', color: '#d9e8ff',
+    border: '1px solid rgba(73, 111, 186, 0.4)',
+    fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
+  } as React.CSSProperties,
+};
+
 /* ── Component ──────────────────────────────────────── */
 export default function GovernanceActivityNewPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const topCardRef = useRef<HTMLElement>(null);
+  const formCardRef = useRef<HTMLElement>(null);
 
   const companyIdParam = searchParams.get('company_id') || '';
   const elementIdParam = searchParams.get('element_id') || '';
@@ -74,7 +92,8 @@ export default function GovernanceActivityNewPage() {
     isActive: true,
   };
   const [form, setForm] = useState(EMPTY_FORM);
-  const [editingId, setEditingId] = useState<string | null>(null); // null = create mode
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -119,7 +138,6 @@ export default function GovernanceActivityNewPage() {
         if (!mounted) return;
         const items: ProcessOption[] = data.items || [];
         setProcesses(items);
-        // only auto-select first if not in edit mode (editing preserves elementId)
         if (!editingId) {
           const exists = items.some(p => p.id === form.elementId);
           if (!exists) setForm(prev => ({ ...prev, elementId: items[0]?.id || '' }));
@@ -161,7 +179,17 @@ export default function GovernanceActivityNewPage() {
 
   useEffect(() => { fetchActivities(); }, [fetchActivities]);
 
-  /* ── Load activity into top form for editing ────── */
+  /* ── Open create form ──────────────────────────── */
+  function openNew() {
+    setEditingId(null);
+    setError(null);
+    setSuccess(null);
+    setForm({ ...EMPTY_FORM, companyId: form.companyId, elementId: processes[0]?.id || elementIdParam });
+    setShowForm(true);
+    setTimeout(() => formCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+  }
+
+  /* ── Load activity into form for editing ────────── */
   const handleStartEdit = (a: ActivityRow) => {
     setEditingId(a.id);
     setError(null);
@@ -174,11 +202,13 @@ export default function GovernanceActivityNewPage() {
       description: a.description ?? '',
       isActive: a.isActive,
     });
-    topCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setShowForm(true);
+    setTimeout(() => formCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
   };
 
-  /* ── Cancel edit → back to create mode ─────────── */
-  const handleCancelEdit = () => {
+  /* ── Close form ─────────────────────────────────── */
+  const handleCloseForm = () => {
+    setShowForm(false);
     setEditingId(null);
     setError(null);
     setSuccess(null);
@@ -220,11 +250,10 @@ export default function GovernanceActivityNewPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || data.error || 'Error al guardar');
 
-      setSuccess(editingId ? 'Actividad actualizada exitosamente.' : 'Actividad creada exitosamente.');
+      setShowForm(false);
       setEditingId(null);
       setForm({ ...EMPTY_FORM });
-      fetchActivities();
-      setTimeout(() => setSuccess(null), 4000);
+      void fetchActivities();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
     } finally {
@@ -241,9 +270,9 @@ export default function GovernanceActivityNewPage() {
         const d = await res.json().catch(() => ({}));
         throw new Error(d.error || 'Error al eliminar');
       }
-      if (editingId === id) handleCancelEdit();
+      if (editingId === id) handleCloseForm();
       setActivities(prev => prev.filter(a => a.id !== id));
-      fetchActivities();
+      void fetchActivities();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error al eliminar');
     }
@@ -256,147 +285,152 @@ export default function GovernanceActivityNewPage() {
     <div className={styles.page}>
       <div className={styles.container}>
 
-        {/* ══ CARD 1: Create / Edit form ═══════════════ */}
-        <section className={styles.card} ref={topCardRef}>
-          <div className={styles.sectionHeader}>
-            <span className={`${styles.sectionIcon} ${isEditing ? styles.sectionIconEdit : ''}`}>
-              {isEditing ? <Pencil size={16} /> : <Plus size={16} />}
-            </span>
-            <div style={{ flex: 1 }}>
-              <h1 className={styles.sectionTitle}>
-                {isEditing ? 'Editar Actividad' : 'Crear Nueva Actividad'}
-              </h1>
-              <p className={styles.sectionSubtitle}>
-                {isEditing
-                  ? 'Modifica los campos y guarda los cambios.'
-                  : 'Completa la información para registrar una nueva actividad.'}
-              </p>
-            </div>
-            {isEditing && (
-              <button className={styles.cancelEditBtn} onClick={handleCancelEdit} title="Cancelar edición">
+        {/* ══ INLINE FORM (condicional) ════════════════ */}
+        {showForm && (
+          <section className={styles.card} ref={formCardRef}>
+            <div className={styles.sectionHeader}>
+              <span className={`${styles.sectionIcon} ${isEditing ? styles.sectionIconEdit : ''}`}>
+                {isEditing ? <Pencil size={16} /> : <Plus size={16} />}
+              </span>
+              <div style={{ flex: 1 }}>
+                <h2 className={styles.sectionTitle}>
+                  {isEditing ? 'Editar Actividad' : 'Crear Nueva Actividad'}
+                </h2>
+                <p className={styles.sectionSubtitle}>
+                  {isEditing
+                    ? 'Modifica los campos y guarda los cambios.'
+                    : 'Completa la información para registrar una nueva actividad.'}
+                </p>
+              </div>
+              <button className={styles.cancelEditBtn} onClick={handleCloseForm} title="Cerrar">
                 <X size={16} />
-                <span>Cancelar edición</span>
+                <span>{isEditing ? 'Cancelar edición' : 'Cerrar'}</span>
               </button>
-            )}
-          </div>
+            </div>
 
-          <form onSubmit={handleSubmit}>
-            {/* Row 1: 4 fields */}
-            <div className={styles.formRow4}>
-              <label className={styles.field}>
-                <span>Empresa</span>
-                <select
-                  className={styles.input}
-                  value={form.companyId}
-                  onChange={e => setForm(prev => ({ ...prev, companyId: e.target.value, elementId: '', ownerId: '' }))}
-                  disabled={loadingContext || saving}
-                >
-                  {loadingContext && <option value="">Cargando empresas...</option>}
-                  {!loadingContext && companies.length === 0 && <option value="">Sin empresas disponibles</option>}
-                  {!loadingContext && companies.length > 0 && <option value="" disabled>Seleccione una empresa</option>}
-                  {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
-              </label>
-
-              <label className={styles.field}>
-                <span>Proceso Vinculado</span>
-                <select
-                  className={styles.input}
-                  value={form.elementId}
-                  onChange={e => setForm(prev => ({ ...prev, elementId: e.target.value }))}
-                  disabled={loadingProcesses || saving || !form.companyId}
-                >
-                  <option value="">{loadingProcesses ? 'Cargando procesos...' : 'Seleccione Proceso'}</option>
-                  {processes.map(p => <option key={p.id} value={p.id}>[{p.code}] {p.name}</option>)}
-                </select>
-              </label>
-
-              <label className={styles.field}>
-                <span>Líder de la Actividad</span>
-                <select
-                  className={styles.input}
-                  value={form.ownerId}
-                  onChange={e => setForm(prev => ({ ...prev, ownerId: e.target.value }))}
-                  disabled={loadingUsers || saving || !form.companyId}
-                >
-                  <option value="">{loadingUsers ? 'Cargando usuarios...' : 'Seleccione Líder'}</option>
-                  {users.map(u => <option key={u.id} value={u.id}>{userLabel(u)}</option>)}
-                </select>
-              </label>
-
-              <label className={styles.field}>
-                <span>Actividad Activa</span>
-                <div className={styles.toggleWrapper}>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={form.isActive}
-                    className={`${styles.toggle} ${form.isActive ? styles.toggleOn : ''}`}
-                    onClick={() => setForm(prev => ({ ...prev, isActive: !prev.isActive }))}
-                    disabled={saving}
+            <form onSubmit={handleSubmit}>
+              {/* Row 1: 4 fields */}
+              <div className={styles.formRow4}>
+                <label className={styles.field}>
+                  <span>Empresa</span>
+                  <select
+                    className={styles.input}
+                    value={form.companyId}
+                    onChange={e => setForm(prev => ({ ...prev, companyId: e.target.value, elementId: '', ownerId: '' }))}
+                    disabled={loadingContext || saving}
                   >
-                    <span className={styles.toggleDot} />
-                  </button>
-                  <span className={styles.toggleLabel}>{form.isActive ? 'Sí, activa' : 'Inactiva'}</span>
+                    {loadingContext && <option value="">Cargando empresas...</option>}
+                    {!loadingContext && companies.length === 0 && <option value="">Sin empresas disponibles</option>}
+                    {!loadingContext && companies.length > 0 && <option value="" disabled>Seleccione una empresa</option>}
+                    {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                </label>
+
+                <label className={styles.field}>
+                  <span>Proceso Vinculado</span>
+                  <select
+                    className={styles.input}
+                    value={form.elementId}
+                    onChange={e => setForm(prev => ({ ...prev, elementId: e.target.value }))}
+                    disabled={loadingProcesses || saving || !form.companyId}
+                  >
+                    <option value="">{loadingProcesses ? 'Cargando procesos...' : 'Seleccione Proceso'}</option>
+                    {processes.map(p => <option key={p.id} value={p.id}>[{p.code}] {p.name}</option>)}
+                  </select>
+                </label>
+
+                <label className={styles.field}>
+                  <span>Líder de la Actividad</span>
+                  <select
+                    className={styles.input}
+                    value={form.ownerId}
+                    onChange={e => setForm(prev => ({ ...prev, ownerId: e.target.value }))}
+                    disabled={loadingUsers || saving || !form.companyId}
+                  >
+                    <option value="">{loadingUsers ? 'Cargando usuarios...' : 'Seleccione Líder'}</option>
+                    {users.map(u => <option key={u.id} value={u.id}>{userLabel(u)}</option>)}
+                  </select>
+                </label>
+
+                <label className={styles.field}>
+                  <span>Actividad Activa</span>
+                  <div className={styles.toggleWrapper}>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={form.isActive}
+                      className={`${styles.toggle} ${form.isActive ? styles.toggleOn : ''}`}
+                      onClick={() => setForm(prev => ({ ...prev, isActive: !prev.isActive }))}
+                      disabled={saving}
+                    >
+                      <span className={styles.toggleDot} />
+                    </button>
+                    <span className={styles.toggleLabel}>{form.isActive ? 'Sí, activa' : 'Inactiva'}</span>
+                  </div>
+                </label>
+              </div>
+
+              {/* Name */}
+              <label className={styles.field}>
+                <span>Nombre de la Actividad</span>
+                <div className={styles.inputWithIcon}>
+                  <ClipboardList size={16} className={styles.fieldIcon} />
+                  <input
+                    className={styles.input}
+                    value={form.name}
+                    onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="Ej: Conciliación bancaria diaria"
+                    disabled={saving}
+                    required
+                  />
                 </div>
               </label>
-            </div>
 
-            {/* Name */}
-            <label className={styles.field}>
-              <span>Nombre de la Actividad</span>
-              <div className={styles.inputWithIcon}>
-                <ClipboardList size={16} className={styles.fieldIcon} />
-                <input
-                  className={styles.input}
-                  value={form.name}
-                  onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Ej: Conciliación bancaria diaria"
-                  disabled={saving}
-                  required
-                />
+              {/* Description */}
+              <label className={styles.field}>
+                <span>Descripción / Alcance</span>
+                <div className={styles.inputWithIcon}>
+                  <ClipboardList size={16} className={styles.fieldIcon} />
+                  <input
+                    className={styles.input}
+                    value={form.description}
+                    onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Describa el objetivo y las tareas principales de esta actividad..."
+                    disabled={saving}
+                  />
+                </div>
+              </label>
+
+              {error   && <div className={styles.error}>{error}</div>}
+              {success && <div className={styles.success}>{success}</div>}
+
+              <div className={styles.actions}>
+                <button type="submit" className={styles.primaryButton} disabled={saving}>
+                  <Save size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                  {saving
+                    ? (isEditing ? 'Actualizando...' : 'Guardando...')
+                    : (isEditing ? 'Actualizar Actividad' : 'Crear Actividad')}
+                </button>
               </div>
-            </label>
+            </form>
+          </section>
+        )}
 
-            {/* Description */}
-            <label className={styles.field}>
-              <span>Descripción / Alcance</span>
-              <div className={styles.inputWithIcon}>
-                <ClipboardList size={16} className={styles.fieldIcon} />
-                <input
-                  className={styles.input}
-                  value={form.description}
-                  onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Describa el objetivo y las tareas principales de esta actividad..."
-                  disabled={saving}
-                />
-              </div>
-            </label>
-
-            {error && <div className={styles.error}>{error}</div>}
-            {success && <div className={styles.success}>{success}</div>}
-
-            <div className={styles.actions}>
-              <button type="button" className={styles.secondaryButton} onClick={() => router.back()} disabled={saving}>
-                <ArrowLeft size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} /> Cancelar
-              </button>
-              <button type="submit" className={styles.primaryButton} disabled={saving}>
-                <Save size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-                {saving
-                  ? (isEditing ? 'Actualizando...' : 'Guardando...')
-                  : (isEditing ? 'Actualizar Actividad' : 'Crear Actividad')}
-              </button>
-            </div>
-          </form>
-        </section>
-
-        {/* ══ CARD 2: Activity list ════════════════════ */}
+        {/* ══ ACTIVITY LIST ════════════════════════════ */}
         <section className={styles.card}>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionIcon}><ClipboardList size={16} /></span>
-            <div>
+            <div style={{ flex: 1 }}>
               <h2 className={styles.sectionTitle}>Actividades Existentes</h2>
               <p className={styles.sectionSubtitle}>Listado de actividades registradas en el sistema.</p>
+            </div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <button style={S.btnPrimary} onClick={openNew}>
+                <Plus size={14} /> Nueva actividad
+              </button>
+              <button style={S.btnGhost} onClick={() => router.back()}>
+                <X size={14} /> Cerrar
+              </button>
             </div>
           </div>
 
@@ -406,7 +440,6 @@ export default function GovernanceActivityNewPage() {
             <p className={styles.emptyMsg}>No hay actividades registradas aún.</p>
           ) : (
             <div className={styles.activityList}>
-              {/* Header row */}
               <div className={styles.activityHeader}>
                 <span>Actividad</span>
                 <span>Empresa / Proceso</span>
@@ -420,20 +453,17 @@ export default function GovernanceActivityNewPage() {
                   key={a.id}
                   className={`${styles.activityRow} ${editingId === a.id ? styles.activityRowActive : ''}`}
                 >
-                  {/* Col 1: name + description */}
                   <div className={styles.activityInfo}>
                     <span className={styles.activityName}>{a.name}</span>
                     <span className={styles.activityDesc}>{a.description || '—'}</span>
                   </div>
 
-                  {/* Col 2: company / process */}
                   <div className={styles.activityMeta}>
                     {a.processCode && (
                       <span className={styles.metaTag}>[{a.processCode}] {a.processName}</span>
                     )}
                   </div>
 
-                  {/* Col 3: owner */}
                   <div className={styles.activityOwner}>
                     {a.ownerName ? (
                       <>
@@ -448,18 +478,16 @@ export default function GovernanceActivityNewPage() {
                     )}
                   </div>
 
-                  {/* Col 4: badge */}
                   <span className={`${styles.badge} ${a.isActive ? styles.badgeActive : styles.badgeInactive}`}>
                     <span className={styles.badgeDot} />
                     {a.isActive ? 'Activa' : 'Inactiva'}
                   </span>
 
-                  {/* Col 5: actions */}
                   <div className={styles.rowActions}>
                     <button
                       className={`${styles.iconBtn} ${editingId === a.id ? styles.iconBtnEditActive : ''}`}
-                      title="Editar"
-                      onClick={() => editingId === a.id ? handleCancelEdit() : handleStartEdit(a)}
+                      title={editingId === a.id ? 'Cerrar edición' : 'Editar'}
+                      onClick={() => editingId === a.id ? handleCloseForm() : handleStartEdit(a)}
                     >
                       {editingId === a.id ? <X size={14} /> : <Pencil size={14} />}
                     </button>

@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-  Save, ArrowLeft, Pencil, Trash2, X,
+  Save, Pencil, X,
   Workflow, Plus,
 } from 'lucide-react';
 import styles from './GovernanceProcessPage.module.css';
@@ -41,11 +41,29 @@ function userLabel(u: UserOption): string {
   return [u.name, u.lastName].filter(Boolean).join(' ') || u.email;
 }
 
+/* ── Inline styles (header — fuera de card) ─────────── */
+const S = {
+  btnPrimary: {
+    display: 'inline-flex', alignItems: 'center', gap: 6,
+    padding: '9px 18px', borderRadius: 10,
+    background: 'linear-gradient(180deg, #1e5fd6, #1148ad)',
+    color: '#fff', border: '1px solid #2b73ef',
+    fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
+  } as React.CSSProperties,
+  btnGhost: {
+    display: 'inline-flex', alignItems: 'center', gap: 6,
+    padding: '9px 18px', borderRadius: 10,
+    background: 'rgba(10, 23, 48, 0.35)', color: '#d9e8ff',
+    border: '1px solid rgba(73, 111, 186, 0.4)',
+    fontWeight: 600, fontSize: '0.82rem', cursor: 'pointer',
+  } as React.CSSProperties,
+};
+
 /* ── Component ──────────────────────────────────────── */
 export default function GovernanceProcessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const topCardRef = useRef<HTMLElement>(null);
+  const formCardRef = useRef<HTMLElement>(null);
 
   const companyIdParam = searchParams.get('company_id') || '';
 
@@ -68,7 +86,8 @@ export default function GovernanceProcessPage() {
     isActive: true,
   };
   const [form, setForm] = useState(EMPTY_FORM);
-  const [editingId, setEditingId] = useState<string | null>(null); // null = create mode
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -117,7 +136,6 @@ export default function GovernanceProcessPage() {
   useEffect(() => {
     if (!form.companyId) { setUsers([]); return; }
     let mounted = true;
-
     setLoadingUsers(true);
     fetch(`/api/admin/users?companyId=${form.companyId}`, { cache: 'no-store' })
       .then(async r => {
@@ -128,7 +146,6 @@ export default function GovernanceProcessPage() {
       })
       .catch(err => { if (mounted) setError(`Error líderes: ${err.message}`); })
       .finally(() => { if (mounted) setLoadingUsers(false); });
-
     return () => { mounted = false; };
   }, [form.companyId]);
 
@@ -143,9 +160,6 @@ export default function GovernanceProcessPage() {
       );
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const data: ProcessListResponse = await r.json();
-      
-      // Need to resolve leader names from users array manually or if backend returned it.
-      // We will map users in the render step since we fetch users for the company anyway.
       setProcesses(data.items);
     } catch { /* silent */ }
     finally { setListLoading(false); }
@@ -153,7 +167,17 @@ export default function GovernanceProcessPage() {
 
   useEffect(() => { fetchProcesses(); }, [fetchProcesses]);
 
-  /* ── Load process into top form for editing ────── */
+  /* ── Open create form ──────────────────────────── */
+  function openNew() {
+    setEditingId(null);
+    setError(null);
+    setSuccess(null);
+    setForm({ ...EMPTY_FORM, companyId: form.companyId, elementTypeId: elementTypes[0]?.id ?? '' });
+    setShowForm(true);
+    setTimeout(() => formCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+  }
+
+  /* ── Load process into form for editing ────────── */
   const handleStartEdit = (p: ProcessRow) => {
     setEditingId(p.id);
     setError(null);
@@ -167,11 +191,13 @@ export default function GovernanceProcessPage() {
       description: p.description ?? '',
       isActive: p.isActive,
     });
-    topCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setShowForm(true);
+    setTimeout(() => formCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
   };
 
-  /* ── Cancel edit → back to create mode ─────────── */
-  const handleCancelEdit = () => {
+  /* ── Close form ─────────────────────────────────── */
+  const handleCloseForm = () => {
+    setShowForm(false);
     setEditingId(null);
     setError(null);
     setSuccess(null);
@@ -183,10 +209,10 @@ export default function GovernanceProcessPage() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-    if (!form.companyId) { setError('La empresa es obligatoria.'); return; }
-    if (!form.elementTypeId) { setError('El tipo de proceso es obligatorio.'); return; }
-    if (!form.code.trim()) { setError('El código es obligatorio.'); return; }
-    if (!form.name.trim()) { setError('El nombre del proceso es obligatorio.'); return; }
+    if (!form.companyId)    { setError('La empresa es obligatoria.'); return; }
+    if (!form.elementTypeId){ setError('El tipo de proceso es obligatorio.'); return; }
+    if (!form.code.trim())  { setError('El código es obligatorio.'); return; }
+    if (!form.name.trim())  { setError('El nombre del proceso es obligatorio.'); return; }
 
     setSaving(true);
     try {
@@ -215,11 +241,10 @@ export default function GovernanceProcessPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || data.error || 'Error al guardar');
 
-      setSuccess(editingId ? 'Proceso actualizado exitosamente.' : 'Proceso creado exitosamente.');
+      setShowForm(false);
       setEditingId(null);
       setForm({ ...EMPTY_FORM, companyId: form.companyId, elementTypeId: elementTypes[0]?.id ?? '' });
-      fetchProcesses();
-      setTimeout(() => setSuccess(null), 4000);
+      void fetchProcesses();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Error desconocido');
     } finally {
@@ -230,25 +255,15 @@ export default function GovernanceProcessPage() {
   /* ── Toggle Active Status ───────────────────────── */
   const handleToggleActive = async (p: ProcessRow) => {
     try {
-      // Actualización optimista
       setProcesses(prev => prev.map(item => item.id === p.id ? { ...item, isActive: !p.isActive } : item));
-      
       const res = await fetch(`/api/governance/processes?id=${p.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: !p.isActive }),
       });
-      
-      if (!res.ok) {
-        throw new Error('Error al cambiar el estado');
-      }
-      
-      // Si estamos editando el mismo registro, actualizamos también el formulario
-      if (editingId === p.id) {
-        setForm(prev => ({ ...prev, isActive: !p.isActive }));
-      }
+      if (!res.ok) throw new Error('Error al cambiar el estado');
+      if (editingId === p.id) setForm(prev => ({ ...prev, isActive: !p.isActive }));
     } catch (err: unknown) {
-      // Revertir en caso de error
       setProcesses(prev => prev.map(item => item.id === p.id ? { ...item, isActive: p.isActive } : item));
       setError(err instanceof Error ? err.message : 'Error al cambiar el estado');
     }
@@ -261,167 +276,169 @@ export default function GovernanceProcessPage() {
     <div className={styles.page}>
       <div className={styles.container}>
 
-        {/* ══ CARD 1: Create / Edit form ═══════════════ */}
-        <section className={styles.card} ref={topCardRef}>
-          <div className={styles.sectionHeader}>
-            <span className={`${styles.sectionIcon} ${isEditing ? styles.sectionIconEdit : ''}`}>
-              {isEditing ? <Pencil size={16} /> : <Plus size={16} />}
-            </span>
-            <div style={{ flex: 1 }}>
-              <h1 className={styles.sectionTitle}>
-                {isEditing ? 'Editar Proceso' : 'Crear Nuevo Proceso'}
-              </h1>
-              <p className={styles.sectionSubtitle}>
-                {isEditing
-                  ? 'Modifica los campos y guarda los cambios.'
-                  : 'Completa la información para registrar un nuevo proceso.'}
-              </p>
-            </div>
-            {isEditing && (
-              <button className={styles.cancelEditBtn} onClick={handleCancelEdit} title="Cancelar edición">
-                <X size={16} />
-                <span>Cancelar edición</span>
-              </button>
-            )}
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            {/* Row 1: 4 fields */}
-            <div className={styles.formRow4}>
-              <label className={styles.field}>
-                <span>Empresa</span>
-                <select
-                  className={styles.input}
-                  value={form.companyId}
-                  onChange={e => setForm(prev => ({ ...prev, companyId: e.target.value, leaderId: '' }))}
-                  disabled={loadingContext || saving}
-                >
-                  {loadingContext && <option value="">Cargando empresas...</option>}
-                  {!loadingContext && companies.length === 0 && <option value="">Sin empresas disponibles</option>}
-                  {!loadingContext && companies.length > 0 && <option value="" disabled>Seleccione una empresa</option>}
-                  {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
-              </label>
-
-              <label className={styles.field}>
-                <span>Tipo de Proceso</span>
-                <select
-                  className={styles.input}
-                  value={form.elementTypeId}
-                  onChange={e => setForm(prev => ({ ...prev, elementTypeId: e.target.value }))}
-                  disabled={loadingTypes || saving}
-                >
-                  <option value="">{loadingTypes ? 'Cargando tipos...' : 'Seleccione Tipo'}</option>
-                  {elementTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                </select>
-              </label>
-
-              <label className={styles.field}>
-                <span>Líder del Proceso</span>
-                <select
-                  className={styles.input}
-                  value={form.leaderId}
-                  onChange={e => setForm(prev => ({ ...prev, leaderId: e.target.value }))}
-                  disabled={loadingUsers || saving || !form.companyId}
-                >
-                  <option value="">{loadingUsers ? 'Cargando usuarios...' : 'Seleccione Líder'}</option>
-                  {users.map(u => <option key={u.id} value={u.id}>{userLabel(u)}</option>)}
-                </select>
-              </label>
-
-              <label className={styles.field}>
-                <span>Proceso Activo</span>
-                <div className={styles.toggleWrapper}>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={form.isActive}
-                    className={`${styles.toggle} ${form.isActive ? styles.toggleOn : ''}`}
-                    onClick={() => setForm(prev => ({ ...prev, isActive: !prev.isActive }))}
-                    disabled={saving}
-                  >
-                    <span className={styles.toggleDot} />
-                  </button>
-                  <span className={styles.toggleLabel}>{form.isActive ? 'Sí, activo' : 'Inactivo'}</span>
-                </div>
-              </label>
-            </div>
-
-            {/* Row 2: Code and Name */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '14px', marginTop: '14px' }}>
-              <label className={styles.field}>
-                <span>Código</span>
-                <div className={styles.inputWithIcon}>
-                  <Workflow size={16} className={styles.fieldIcon} />
-                  <input
-                    className={styles.input}
-                    value={form.code}
-                    onChange={e => setForm(prev => ({ ...prev, code: e.target.value }))}
-                    placeholder="Ej: FIN-01"
-                    disabled={saving}
-                    required
-                  />
-                </div>
-              </label>
-
-              <label className={styles.field}>
-                <span>Nombre del Proceso</span>
-                <div className={styles.inputWithIcon}>
-                  <Workflow size={16} className={styles.fieldIcon} />
-                  <input
-                    className={styles.input}
-                    value={form.name}
-                    onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Ej: Gestión Financiera"
-                    disabled={saving}
-                    required
-                  />
-                </div>
-              </label>
-            </div>
-
-            {/* Description */}
-            <label className={styles.field} style={{ marginTop: '14px' }}>
-              <span>Descripción / Alcance</span>
-              <div className={styles.inputWithIcon}>
-                <Workflow size={16} className={styles.fieldIcon} />
-                <input
-                  className={styles.input}
-                  value={form.description}
-                  onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Describa el objetivo y las tareas principales de este proceso..."
-                  disabled={saving}
-                />
+        {/* ══ INLINE FORM (condicional) ════════════════ */}
+        {showForm && (
+          <section className={styles.card} ref={formCardRef}>
+            <div className={styles.sectionHeader}>
+              <span className={`${styles.sectionIcon} ${isEditing ? styles.sectionIconEdit : ''}`}>
+                {isEditing ? <Pencil size={16} /> : <Plus size={16} />}
+              </span>
+              <div style={{ flex: 1 }}>
+                <h2 className={styles.sectionTitle}>
+                  {isEditing ? 'Editar Proceso' : 'Crear Nuevo Proceso'}
+                </h2>
+                <p className={styles.sectionSubtitle}>
+                  {isEditing
+                    ? 'Modifica los campos y guarda los cambios.'
+                    : 'Completa la información para registrar un nuevo proceso.'}
+                </p>
               </div>
-            </label>
-
-            {error && <div className={styles.error} style={{ marginTop: '14px' }}>{error}</div>}
-            {success && <div className={styles.success} style={{ marginTop: '14px' }}>{success}</div>}
-
-            <div className={styles.actions}>
-              <button type="button" className={styles.secondaryButton} onClick={() => router.push('/modelo/gobernanza/catalogo')} disabled={saving}>
-                <X size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} /> Cerrar
-              </button>
-              <button type="button" className={styles.secondaryButton} onClick={() => router.back()} disabled={saving}>
-                <ArrowLeft size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} /> Cancelar
-              </button>
-              <button type="submit" className={styles.primaryButton} disabled={saving}>
-                <Save size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-                {saving
-                  ? (isEditing ? 'Actualizando...' : 'Guardando...')
-                  : (isEditing ? 'Actualizar Proceso' : 'Crear Proceso')}
+              <button className={styles.cancelEditBtn} onClick={handleCloseForm} title="Cerrar">
+                <X size={16} />
+                <span>{isEditing ? 'Cancelar edición' : 'Cerrar'}</span>
               </button>
             </div>
-          </form>
-        </section>
 
-        {/* ══ CARD 2: Process list ════════════════════ */}
+            <form onSubmit={handleSubmit}>
+              {/* Row 1: 4 fields */}
+              <div className={styles.formRow4}>
+                <label className={styles.field}>
+                  <span>Empresa</span>
+                  <select
+                    className={styles.input}
+                    value={form.companyId}
+                    onChange={e => setForm(prev => ({ ...prev, companyId: e.target.value, leaderId: '' }))}
+                    disabled={loadingContext || saving}
+                  >
+                    {loadingContext && <option value="">Cargando empresas...</option>}
+                    {!loadingContext && companies.length === 0 && <option value="">Sin empresas disponibles</option>}
+                    {!loadingContext && companies.length > 0 && <option value="" disabled>Seleccione una empresa</option>}
+                    {companies.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
+                </label>
+
+                <label className={styles.field}>
+                  <span>Tipo de Proceso</span>
+                  <select
+                    className={styles.input}
+                    value={form.elementTypeId}
+                    onChange={e => setForm(prev => ({ ...prev, elementTypeId: e.target.value }))}
+                    disabled={loadingTypes || saving}
+                  >
+                    <option value="">{loadingTypes ? 'Cargando tipos...' : 'Seleccione Tipo'}</option>
+                    {elementTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                </label>
+
+                <label className={styles.field}>
+                  <span>Líder del Proceso</span>
+                  <select
+                    className={styles.input}
+                    value={form.leaderId}
+                    onChange={e => setForm(prev => ({ ...prev, leaderId: e.target.value }))}
+                    disabled={loadingUsers || saving || !form.companyId}
+                  >
+                    <option value="">{loadingUsers ? 'Cargando usuarios...' : 'Seleccione Líder'}</option>
+                    {users.map(u => <option key={u.id} value={u.id}>{userLabel(u)}</option>)}
+                  </select>
+                </label>
+
+                <label className={styles.field}>
+                  <span>Proceso Activo</span>
+                  <div className={styles.toggleWrapper}>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={form.isActive}
+                      className={`${styles.toggle} ${form.isActive ? styles.toggleOn : ''}`}
+                      onClick={() => setForm(prev => ({ ...prev, isActive: !prev.isActive }))}
+                      disabled={saving}
+                    >
+                      <span className={styles.toggleDot} />
+                    </button>
+                    <span className={styles.toggleLabel}>{form.isActive ? 'Sí, activo' : 'Inactivo'}</span>
+                  </div>
+                </label>
+              </div>
+
+              {/* Row 2: Code and Name */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '14px', marginTop: '14px' }}>
+                <label className={styles.field}>
+                  <span>Código</span>
+                  <div className={styles.inputWithIcon}>
+                    <Workflow size={16} className={styles.fieldIcon} />
+                    <input
+                      className={styles.input}
+                      value={form.code}
+                      onChange={e => setForm(prev => ({ ...prev, code: e.target.value }))}
+                      placeholder="Ej: FIN-01"
+                      disabled={saving}
+                      required
+                    />
+                  </div>
+                </label>
+
+                <label className={styles.field}>
+                  <span>Nombre del Proceso</span>
+                  <div className={styles.inputWithIcon}>
+                    <Workflow size={16} className={styles.fieldIcon} />
+                    <input
+                      className={styles.input}
+                      value={form.name}
+                      onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Ej: Gestión Financiera"
+                      disabled={saving}
+                      required
+                    />
+                  </div>
+                </label>
+              </div>
+
+              {/* Description */}
+              <label className={styles.field} style={{ marginTop: '14px' }}>
+                <span>Descripción / Alcance</span>
+                <div className={styles.inputWithIcon}>
+                  <Workflow size={16} className={styles.fieldIcon} />
+                  <input
+                    className={styles.input}
+                    value={form.description}
+                    onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
+                    placeholder="Describa el objetivo y las tareas principales de este proceso..."
+                    disabled={saving}
+                  />
+                </div>
+              </label>
+
+              {error   && <div className={styles.error}   style={{ marginTop: '14px' }}>{error}</div>}
+              {success && <div className={styles.success} style={{ marginTop: '14px' }}>{success}</div>}
+
+              <div className={styles.actions}>
+                <button type="submit" className={styles.primaryButton} disabled={saving}>
+                  <Save size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
+                  {saving
+                    ? (isEditing ? 'Actualizando...' : 'Guardando...')
+                    : (isEditing ? 'Actualizar Proceso' : 'Crear Proceso')}
+                </button>
+              </div>
+            </form>
+          </section>
+        )}
+
+        {/* ══ PROCESS LIST ════════════════════════════ */}
         <section className={styles.card}>
           <div className={styles.sectionHeader}>
             <span className={styles.sectionIcon}><Workflow size={16} /></span>
-            <div>
+            <div style={{ flex: 1 }}>
               <h2 className={styles.sectionTitle}>Procesos Existentes</h2>
               <p className={styles.sectionSubtitle}>Listado de procesos registrados en el sistema.</p>
+            </div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <button style={S.btnPrimary} onClick={openNew}>
+                <Plus size={14} /> Nuevo proceso
+              </button>
+              <button style={S.btnGhost} onClick={() => router.push('/modelo/gobernanza/catalogo')}>
+                <X size={14} /> Cerrar
+              </button>
             </div>
           </div>
 
@@ -431,7 +448,6 @@ export default function GovernanceProcessPage() {
             <p className={styles.emptyMsg}>No hay procesos registrados aún.</p>
           ) : (
             <div className={styles.activityList}>
-              {/* Header row */}
               <div className={styles.activityHeader}>
                 <span>Proceso</span>
                 <span>Tipo</span>
@@ -443,24 +459,21 @@ export default function GovernanceProcessPage() {
               {processes.map(p => {
                 const leader = users.find(u => u.id === p.leaderId);
                 const leaderName = leader ? userLabel(leader) : null;
-                
+
                 return (
                   <div
                     key={p.id}
                     className={`${styles.activityRow} ${editingId === p.id ? styles.activityRowActive : ''}`}
                   >
-                    {/* Col 1: code + name + description */}
                     <div className={styles.activityInfo}>
                       <span className={styles.activityName}>[{p.code}] {p.name}</span>
                       <span className={styles.activityDesc}>{p.description || '—'}</span>
                     </div>
 
-                    {/* Col 2: element type */}
                     <div className={styles.activityMeta}>
                       <span className={styles.metaTag}>{p.elementTypeName || '—'}</span>
                     </div>
 
-                    {/* Col 3: owner */}
                     <div className={styles.activityOwner}>
                       {leaderName ? (
                         <>
@@ -475,7 +488,6 @@ export default function GovernanceProcessPage() {
                       )}
                     </div>
 
-                    {/* Col 4: badge */}
                     <button
                       type="button"
                       onClick={() => handleToggleActive(p)}
@@ -487,12 +499,11 @@ export default function GovernanceProcessPage() {
                       {p.isActive ? 'Activo' : 'Inactivo'}
                     </button>
 
-                    {/* Col 5: actions */}
                     <div className={styles.rowActions}>
                       <button
                         className={`${styles.iconBtn} ${editingId === p.id ? styles.iconBtnEditActive : ''}`}
-                        title="Editar"
-                        onClick={() => editingId === p.id ? handleCancelEdit() : handleStartEdit(p)}
+                        title={editingId === p.id ? 'Cerrar edición' : 'Editar'}
+                        onClick={() => editingId === p.id ? handleCloseForm() : handleStartEdit(p)}
                       >
                         {editingId === p.id ? <X size={14} /> : <Pencil size={14} />}
                       </button>

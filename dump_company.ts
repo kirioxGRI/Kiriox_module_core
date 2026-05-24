@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { PrismaClient } from './src/generated/prisma/index.js';
 import * as fs from 'fs';
 

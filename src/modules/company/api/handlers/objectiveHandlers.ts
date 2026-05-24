@@ -57,8 +57,15 @@ export async function deleteObjectiveHandler(request: Request) {
     }
     await useCase.delete(objectiveId);
     return NextResponse.json({ ok: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Handler Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    const code = error?.code ?? error?.meta?.code ?? '';
+    if (code === '23503' || error?.message?.includes('foreign key') || error?.message?.includes('violates')) {
+      return NextResponse.json(
+        { error: 'No se puede eliminar el objetivo porque tiene registros relacionados (riesgos, controles u otros). Elimine primero los registros asociados.' },
+        { status: 409 }
+      );
+    }
+    return NextResponse.json({ error: "Error al eliminar el objetivo." }, { status: 500 });
   }
 }

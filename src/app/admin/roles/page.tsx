@@ -154,7 +154,7 @@ export default function RolesDashboard() {
         </div>
       )}
 
-      <RoleEditorModal isOpen={isModalOpen} role={selectedRole} onClose={() => setIsModalOpen(false)} onSave={handleSave} />
+      <RoleEditorModal isOpen={isModalOpen} role={selectedRole as Record<string, unknown> | null} onClose={() => setIsModalOpen(false)} onSave={handleSave} />
     </div>
   );
 }
