@@ -129,6 +129,34 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id') || '';
     if (!id) return NextResponse.json({ error: 'id es obligatorio' }, { status: 400 });
 
+    const [process, activitiesCount, incidentsCount] = await Promise.all([
+      prisma.elements.findUnique({
+        where: { id },
+        select: { id: true, code: true, name: true, company_id: true },
+      }),
+      prisma.activities.count({ where: { element_id: id } }),
+      prisma.incident_register.count({ where: { element_id: id } }),
+    ]);
+
+    if (!process) {
+      return NextResponse.json({ error: 'El proceso no existe o ya fue eliminado.' }, { status: 404 });
+    }
+
+    const effectiveCompanyId = await resolveEffectiveCompanyId(auth.tenantId);
+    if (process.company_id !== effectiveCompanyId) {
+      return NextResponse.json({ error: 'No tiene acceso para eliminar este proceso.' }, { status: 403 });
+    }
+
+    if (activitiesCount > 0 || incidentsCount > 0) {
+      const reasons: string[] = [];
+      if (activitiesCount > 0) reasons.push(`${activitiesCount} actividad(es) vinculada(s)`);
+      if (incidentsCount > 0) reasons.push(`${incidentsCount} incidente(s) vinculado(s)`);
+
+      return NextResponse.json({
+        error: `No se puede eliminar físicamente el proceso [${process.code}] ${process.name} porque tiene ${reasons.join(' y ')}.`,
+      }, { status: 409 });
+    }
+
     await prisma.elements.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (error: unknown) {

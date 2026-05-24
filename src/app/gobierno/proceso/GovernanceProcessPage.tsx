@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Save, Pencil, X,
-  Workflow, Plus,
+  Workflow, Plus, Trash2,
 } from 'lucide-react';
 import styles from './GovernanceProcessPage.module.css';
 
@@ -273,6 +273,36 @@ export default function GovernanceProcessPage() {
     }
   };
 
+  const handleDelete = async (p: ProcessRow) => {
+    const confirmed = window.confirm(
+      `¿Está seguro de eliminar físicamente el proceso [${p.code}] ${p.name}? Esta acción no se puede deshacer.`
+    );
+
+    if (!confirmed) return;
+
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const res = await fetch(`/api/governance/processes?id=${p.id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Error al eliminar el proceso');
+
+      if (editingId === p.id) {
+        handleCloseForm();
+      }
+
+      setProcesses((prev) => prev.filter((item) => item.id !== p.id));
+      setSuccess(`Proceso [${p.code}] eliminado correctamente.`);
+      void fetchProcesses();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al eliminar el proceso');
+    }
+  };
+
   const isEditing = editingId !== null;
 
   /* ── Render ─────────────────────────────────────── */
@@ -446,6 +476,13 @@ export default function GovernanceProcessPage() {
             </div>
           </div>
 
+          {!showForm && error && (
+            <div className={styles.error}>{error}</div>
+          )}
+          {!showForm && success && (
+            <div className={styles.success}>{success}</div>
+          )}
+
           {listLoading && processes.length === 0 ? (
             <p className={styles.emptyMsg}>Cargando procesos...</p>
           ) : processes.length === 0 ? (
@@ -505,11 +542,20 @@ export default function GovernanceProcessPage() {
 
                     <div className={styles.rowActions}>
                       <button
+                        type="button"
                         className={`${styles.iconBtn} ${editingId === p.id ? styles.iconBtnEditActive : ''}`}
                         title={editingId === p.id ? 'Cerrar edición' : 'Editar'}
                         onClick={() => editingId === p.id ? handleCloseForm() : handleStartEdit(p)}
                       >
                         {editingId === p.id ? <X size={14} /> : <Pencil size={14} />}
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+                        title="Eliminar"
+                        onClick={() => void handleDelete(p)}
+                      >
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </div>

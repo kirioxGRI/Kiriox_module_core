@@ -1,42 +1,26 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Filter, Globe, Search, Plus, Calendar, Tag, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Filter, Globe, Search, Plus, Calendar, Tag, X, Trash2 } from 'lucide-react';
 import { BuscarHechosPanel } from './BuscarHechosPanel';
 import { PluginZone } from '@/core/plugin-engine/PluginZone';
 
-const HECHOS_RELEVANTES = [
-  {
-    id: 'HR-2026-001',
-    titulo: 'Nueva circular SUGEF sobre gestión de riesgo operativo',
-    fuente: 'SUGEF',
-    impacto: 'Alto',
-    tipo: 'Regulatorio',
-    fecha: '2026-04-12',
-    descripcion: 'SUGEF publicó la circular SUGEF 2-26 que establece nuevos requerimientos de reporte para eventos de pérdida operativa con impacto ≥ USD 50,000.',
-    accion: 'Revisión de políticas',
-  },
-  {
-    id: 'HR-2026-002',
-    titulo: 'Condena penal a red de lavado vinculada al sector bancario regional',
-    fuente: 'Poder Judicial',
-    impacto: 'Medio',
-    tipo: 'Legal',
-    fecha: '2026-04-09',
-    descripcion: 'Sentencia condenatoria a organización criminal que utilizó cuentas en entidades bancarias de la región para blanqueo de capitales por USD 3.2M.',
-    accion: 'Revisión de vínculos',
-  },
-  {
-    id: 'HR-2026-003',
-    titulo: 'Alerta GAFILAT sobre nuevas tipologías de financiamiento del terrorismo',
-    fuente: 'GAFILAT',
-    impacto: 'Alto',
-    tipo: 'Inteligencia',
-    fecha: '2026-04-05',
-    descripcion: 'GAFILAT emitió alerta regional sobre el uso de criptoactivos y plataformas P2P para financiamiento de actividades terroristas en Latinoamérica.',
-    accion: 'Capacitación y alerta',
-  },
-];
+type IncidentRow = {
+  id: string;
+  code: string;
+  title: string;
+  description: string;
+  occurredAt: string;
+  detectedAt: string;
+  type: string;
+  status: string;
+  observedImpact: string;
+  reportedBy: string;
+  createdAt: string;
+  elementId: string;
+  elementCode: string | null;
+  elementName: string | null;
+};
 
 const IMPACTO_COLOR: Record<string, string> = {
   Alto:  '#ef4444',
@@ -53,8 +37,67 @@ function Badge({ label, bg, text }: { label: string; bg: string; text: string })
 }
 
 export function HechosRelevantesTab() {
-  const [selected, setSelected] = useState<(typeof HECHOS_RELEVANTES)[0] | null>(null);
+  const [selected, setSelected] = useState<IncidentRow | null>(null);
   const [buscarOpen, setBuscarOpen] = useState(false);
+  const [items, setItems] = useState<IncidentRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  async function loadIncidents() {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/hechos-relevantes/incidents', { cache: 'no-store' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error cargando incidentes');
+      setItems(Array.isArray(data.items) ? data.items : []);
+      setError(null);
+    } catch (err) {
+      setItems([]);
+      setError(err instanceof Error ? err.message : 'Error cargando incidentes');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    void loadIncidents();
+  }, []);
+
+  function inferImpact(status: string): string {
+    const normalized = status.trim().toLowerCase();
+    if (normalized === 'en proceso') return 'Alto';
+    if (normalized === 'corregido') return 'Medio';
+    return 'Bajo';
+  }
+
+  function formatDate(value: string): string {
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return value;
+    return parsed.toISOString().slice(0, 10);
+  }
+
+  async function handleDelete(incident: IncidentRow) {
+    const confirmed = window.confirm(
+      `¿Está seguro de eliminar físicamente el incidente [${incident.code}] ${incident.title}? Esta acción no se puede deshacer.`
+    );
+    if (!confirmed) return;
+
+    setDeletingId(incident.id);
+    setError(null);
+
+    try {
+      const res = await fetch(`/api/hechos-relevantes/incidents?id=${incident.id}`, { method: 'DELETE' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Error al eliminar incidente');
+      if (selected?.id === incident.id) setSelected(null);
+      setItems((prev) => prev.filter((item) => item.id !== incident.id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al eliminar incidente');
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   return (
     <>
@@ -81,8 +124,24 @@ export function HechosRelevantesTab() {
       {/* Cards */}
       <PluginZone pointId="incident:dashboard:widget" label="Extensiones activas del módulo" />
 
+      {error && (
+        <div style={{ color: '#fecaca', background: 'rgba(123, 31, 52, 0.3)', border: '1px solid rgba(248, 113, 113, 0.35)', borderRadius: 10, padding: '10px 14px', fontSize: '0.85rem', marginBottom: '0.85rem' }}>
+          {error}
+        </div>
+      )}
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-        {HECHOS_RELEVANTES.map((hr) => (
+        {loading ? (
+          <div style={{ background: 'rgba(15,23,42,0.7)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '18px 20px', color: '#94a3b8' }}>
+            Cargando incidentes...
+          </div>
+        ) : items.length === 0 ? (
+          <div style={{ background: 'rgba(15,23,42,0.7)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '18px 20px', color: '#94a3b8' }}>
+            No hay incidentes registrados.
+          </div>
+        ) : items.map((hr) => {
+          const impacto = inferImpact(hr.status);
+          return (
           <div
             key={hr.id}
             onClick={() => setSelected(hr)}
@@ -99,26 +158,40 @@ export function HechosRelevantesTab() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '10px' }}>
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 700 }}>{hr.id}</span>
+                  <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 700 }}>{hr.code}</span>
                   <span style={{ width: 3, height: 3, borderRadius: '50%', background: '#334155' }} />
-                  <Badge label={hr.tipo} bg="rgba(59,130,246,0.1)" text="#60a5fa" />
-                  <Badge label={`Impacto ${hr.impacto}`} bg={`${IMPACTO_COLOR[hr.impacto]}18`} text={IMPACTO_COLOR[hr.impacto]} />
+                  <Badge label={hr.type} bg="rgba(59,130,246,0.1)" text="#60a5fa" />
+                  <Badge label={`Impacto ${impacto}`} bg={`${IMPACTO_COLOR[impacto]}18`} text={IMPACTO_COLOR[impacto]} />
+                  {hr.elementCode && <Badge label={hr.elementCode} bg="rgba(148,163,184,0.12)" text="#cbd5e1" />}
                 </div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#f1f5f9', lineHeight: 1.35 }}>{hr.titulo}</div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#f1f5f9', lineHeight: 1.35 }}>{hr.title}</div>
               </div>
-              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+              <div style={{ textAlign: 'right', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
                 <div style={{ fontSize: '0.72rem', color: '#64748b', marginBottom: 2 }}>
-                  <Calendar size={11} style={{ display: 'inline', marginRight: 4 }} />{hr.fecha}
+                  <Calendar size={11} style={{ display: 'inline', marginRight: 4 }} />{formatDate(hr.occurredAt)}
                 </div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>{hr.fuente}</div>
+                <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>{hr.status}</div>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    void handleDelete(hr);
+                  }}
+                  disabled={deletingId === hr.id}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(248,113,113,0.24)', borderRadius: 8, padding: '6px 10px', color: '#fca5a5', cursor: 'pointer', fontSize: '0.76rem', fontWeight: 700, opacity: deletingId === hr.id ? 0.6 : 1 }}
+                >
+                  <Trash2 size={12} />
+                  {deletingId === hr.id ? 'Eliminando...' : 'Eliminar'}
+                </button>
               </div>
             </div>
-            <p style={{ margin: '0 0 10px', fontSize: '0.85rem', color: '#94a3b8', lineHeight: 1.55 }}>{hr.descripcion}</p>
+            <p style={{ margin: '0 0 10px', fontSize: '0.85rem', color: '#94a3b8', lineHeight: 1.55 }}>{hr.description}</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.77rem', color: '#3b82f6', fontWeight: 700 }}>
-              <Tag size={12} /> Acción sugerida: {hr.accion}
+              <Tag size={12} /> Proceso vinculado: {hr.elementName || 'Sin proceso'}
             </div>
           </div>
-        ))}
+        );
+        })}
       </div>
 
       {/* Drawer */}
@@ -134,10 +207,10 @@ export function HechosRelevantesTab() {
             <div style={{ padding: '1.75rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-                  <Badge label={selected.tipo} bg="rgba(59,130,246,0.1)" text="#60a5fa" />
-                  <Badge label={`Impacto ${selected.impacto}`} bg={`${IMPACTO_COLOR[selected.impacto]}18`} text={IMPACTO_COLOR[selected.impacto]} />
+                  <Badge label={selected.type} bg="rgba(59,130,246,0.1)" text="#60a5fa" />
+                  <Badge label={`Impacto ${inferImpact(selected.status)}`} bg={`${IMPACTO_COLOR[inferImpact(selected.status)]}18`} text={IMPACTO_COLOR[inferImpact(selected.status)]} />
                 </div>
-                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#f1f5f9', lineHeight: 1.3 }}>{selected.titulo}</h3>
+                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#f1f5f9', lineHeight: 1.3 }}>{selected.title}</h3>
               </div>
               <button onClick={() => setSelected(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#64748b' }}>
                 <X size={18} />
@@ -146,10 +219,12 @@ export function HechosRelevantesTab() {
             <div style={{ flex: 1, overflowY: 'auto', padding: '1.75rem 2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem' }}>
                 {[
-                  { label: 'Fuente', value: selected.fuente },
-                  { label: 'Fecha', value: selected.fecha },
-                  { label: 'Tipo', value: selected.tipo },
-                  { label: 'Impacto', value: selected.impacto },
+                  { label: 'Código', value: selected.code },
+                  { label: 'Fecha', value: formatDate(selected.occurredAt) },
+                  { label: 'Tipo', value: selected.type },
+                  { label: 'Estado', value: selected.status },
+                  { label: 'Proceso', value: selected.elementName || 'Sin proceso' },
+                  { label: 'Reportado por', value: selected.reportedBy },
                 ].map((f) => (
                   <div key={f.label} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '12px 14px' }}>
                     <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', marginBottom: 4 }}>{f.label}</div>
@@ -159,18 +234,23 @@ export function HechosRelevantesTab() {
               </div>
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '14px 16px' }}>
                 <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', marginBottom: 8 }}>Descripción</div>
-                <p style={{ margin: 0, fontSize: '0.87rem', color: '#cbd5e1', lineHeight: 1.65 }}>{selected.descripcion}</p>
+                <p style={{ margin: 0, fontSize: '0.87rem', color: '#cbd5e1', lineHeight: 1.65 }}>{selected.description}</p>
               </div>
               <div style={{ background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.18)', borderRadius: '10px', padding: '14px 16px' }}>
-                <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', marginBottom: 8 }}>Acción sugerida</div>
+                <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 800, textTransform: 'uppercase', marginBottom: 8 }}>Impacto observado</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.88rem', fontWeight: 700, color: '#60a5fa' }}>
-                  <Tag size={14} /> {selected.accion}
+                  <Tag size={14} /> {selected.observedImpact}
                 </div>
               </div>
             </div>
             <div style={{ padding: '1.25rem 2rem', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', gap: '0.75rem' }}>
-              <button style={{ flex: 1, background: '#3b82f6', border: 'none', borderRadius: '10px', padding: '10px', fontSize: '0.82rem', fontWeight: 800, color: '#fff', cursor: 'pointer' }}>
-                Vincular a riesgo
+              <button
+                type="button"
+                onClick={() => void handleDelete(selected)}
+                disabled={deletingId === selected.id}
+                style={{ flex: 1, background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(248,113,113,0.24)', borderRadius: '10px', padding: '10px', fontSize: '0.82rem', fontWeight: 800, color: '#fca5a5', cursor: 'pointer', opacity: deletingId === selected.id ? 0.6 : 1 }}
+              >
+                {deletingId === selected.id ? 'Eliminando...' : 'Eliminar incidente'}
               </button>
               <button onClick={() => setSelected(null)} style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '10px', fontSize: '0.82rem', fontWeight: 700, color: '#94a3b8', cursor: 'pointer' }}>
                 Cerrar
