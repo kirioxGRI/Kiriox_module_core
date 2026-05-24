@@ -193,3 +193,10 @@ Studio               : 0.27.3
 
 **Aplicación futura:** Al agregar un módulo nuevo o corregir colores, nunca poner fondo en el contenedor raíz de la página. El fondo de pantalla completa es responsabilidad exclusiva del contrato del módulo + AppShell.
 
+## 2026-05-23 — Aprendizaje
+
+**Contexto:** Eliminación de evaluaciones `run_ra` bloqueada por incidentes registrados en `/validacion/eventos?tab=hechos-relevantes`.
+
+**Regla aprendida:** `public.incident_register` no debe mantener FKs duras hacia `run_ra_controls` ni `run_ra_risks`. Los incidentes son evidencia operacional auditable y deben sobrevivir al ciclo de vida de evaluaciones lineales; cualquier referencia a riesgo/control de una corrida debe tratarse como referencia informativa o snapshot, no como dependencia de borrado.
+
+**Aplicación futura:** Al modelar incidentes, hallazgos, evidencias o eventos persistentes, no acoplarlos físicamente a artefactos efímeros de una evaluación (`run_*`). Usar entidades maestras estables o referencias desacopladas para preservar trazabilidad histórica y evitar bloqueos de cascada.

@@ -161,7 +161,11 @@ export default function GovernanceProcessPage() {
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const data: ProcessListResponse = await r.json();
       setProcesses(data.items);
-    } catch { /* silent */ }
+      setError(null);
+    } catch (err) {
+      setProcesses([]);
+      setError(err instanceof Error ? `Error cargando procesos: ${err.message}` : 'Error cargando procesos.');
+    }
     finally { setListLoading(false); }
   }, [form.companyId]);
 

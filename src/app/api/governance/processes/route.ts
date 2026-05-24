@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/infrastructure/db/prisma/client';
 import { getAuthContext } from '@/core/auth/auth-server';
+import { resolveEffectiveCompanyId } from '@/infrastructure/db/prisma/resolveEffectiveCompanyId';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -9,13 +10,11 @@ export async function GET(request: Request) {
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
-  const companyId = (searchParams.get('company_id') || searchParams.get('companyId') || '').trim();
-
-  if (!companyId || !UUID_REGEX.test(companyId)) {
-    return NextResponse.json({ items: [] });
-  }
 
   try {
+    const requestedCompanyId = (searchParams.get('company_id') || searchParams.get('companyId') || '').trim();
+    const companyId = await resolveEffectiveCompanyId(UUID_REGEX.test(requestedCompanyId) ? requestedCompanyId : auth.tenantId);
+
     const processes = await prisma.elements.findMany({
       where: { company_id: companyId },
       include: { element_types: true, _count: { select: { activities: true } } },

@@ -358,7 +358,6 @@ export type run_ra_controlsWhereInput = {
   next_execution_date?: Prisma.DateTimeNullableFilter<"run_ra_controls"> | Date | string | null
   next_review_date?: Prisma.DateTimeNullableFilter<"run_ra_controls"> | Date | string | null
   graph_activities_dependencies?: Prisma.Graph_activities_dependenciesListRelationFilter
-  incident_register?: Prisma.Incident_registerListRelationFilter
   map_run_ra_risk_controls?: Prisma.Map_run_ra_risk_controlsListRelationFilter
   run_ra_control_tests?: Prisma.Run_ra_control_testsListRelationFilter
   catalog_controls_category?: Prisma.XOR<Prisma.Catalog_controls_categoryNullableScalarRelationFilter, Prisma.catalog_controls_categoryWhereInput> | null
@@ -393,7 +392,6 @@ export type run_ra_controlsOrderByWithRelationInput = {
   next_execution_date?: Prisma.SortOrderInput | Prisma.SortOrder
   next_review_date?: Prisma.SortOrderInput | Prisma.SortOrder
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesOrderByRelationAggregateInput
-  incident_register?: Prisma.incident_registerOrderByRelationAggregateInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsOrderByRelationAggregateInput
   run_ra_control_tests?: Prisma.run_ra_control_testsOrderByRelationAggregateInput
   catalog_controls_category?: Prisma.catalog_controls_categoryOrderByWithRelationInput
@@ -431,7 +429,6 @@ export type run_ra_controlsWhereUniqueInput = Prisma.AtLeast<{
   next_execution_date?: Prisma.DateTimeNullableFilter<"run_ra_controls"> | Date | string | null
   next_review_date?: Prisma.DateTimeNullableFilter<"run_ra_controls"> | Date | string | null
   graph_activities_dependencies?: Prisma.Graph_activities_dependenciesListRelationFilter
-  incident_register?: Prisma.Incident_registerListRelationFilter
   map_run_ra_risk_controls?: Prisma.Map_run_ra_risk_controlsListRelationFilter
   run_ra_control_tests?: Prisma.Run_ra_control_testsListRelationFilter
   catalog_controls_category?: Prisma.XOR<Prisma.Catalog_controls_categoryNullableScalarRelationFilter, Prisma.catalog_controls_categoryWhereInput> | null
@@ -517,7 +514,6 @@ export type run_ra_controlsCreateInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
@@ -552,7 +548,6 @@ export type run_ra_controlsUncheckedCreateInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -577,7 +572,6 @@ export type run_ra_controlsUpdateInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
@@ -612,7 +606,6 @@ export type run_ra_controlsUncheckedUpdateInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -934,22 +927,6 @@ export type run_ra_controlsUpdateOneWithoutGraph_activities_dependenciesNestedIn
   update?: Prisma.XOR<Prisma.XOR<Prisma.run_ra_controlsUpdateToOneWithWhereWithoutGraph_activities_dependenciesInput, Prisma.run_ra_controlsUpdateWithoutGraph_activities_dependenciesInput>, Prisma.run_ra_controlsUncheckedUpdateWithoutGraph_activities_dependenciesInput>
 }
 
-export type run_ra_controlsCreateNestedOneWithoutIncident_registerInput = {
-  create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutIncident_registerInput, Prisma.run_ra_controlsUncheckedCreateWithoutIncident_registerInput>
-  connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutIncident_registerInput
-  connect?: Prisma.run_ra_controlsWhereUniqueInput
-}
-
-export type run_ra_controlsUpdateOneWithoutIncident_registerNestedInput = {
-  create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutIncident_registerInput, Prisma.run_ra_controlsUncheckedCreateWithoutIncident_registerInput>
-  connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutIncident_registerInput
-  upsert?: Prisma.run_ra_controlsUpsertWithoutIncident_registerInput
-  disconnect?: Prisma.run_ra_controlsWhereInput | boolean
-  delete?: Prisma.run_ra_controlsWhereInput | boolean
-  connect?: Prisma.run_ra_controlsWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.run_ra_controlsUpdateToOneWithWhereWithoutIncident_registerInput, Prisma.run_ra_controlsUpdateWithoutIncident_registerInput>, Prisma.run_ra_controlsUncheckedUpdateWithoutIncident_registerInput>
-}
-
 export type run_ra_controlsCreateNestedOneWithoutMap_run_ra_risk_controlsInput = {
   create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutMap_run_ra_risk_controlsInput, Prisma.run_ra_controlsUncheckedCreateWithoutMap_run_ra_risk_controlsInput>
   connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutMap_run_ra_risk_controlsInput
@@ -1112,7 +1089,6 @@ export type run_ra_controlsCreateWithoutCatalog_control_typeInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
@@ -1145,7 +1121,6 @@ export type run_ra_controlsUncheckedCreateWithoutCatalog_control_typeInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -1223,7 +1198,6 @@ export type run_ra_controlsCreateWithoutCatalog_controls_categoryInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
@@ -1256,7 +1230,6 @@ export type run_ra_controlsUncheckedCreateWithoutCatalog_controls_categoryInput 
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -1307,7 +1280,6 @@ export type run_ra_controlsCreateWithoutCatalog_controls_frequencyInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
@@ -1340,7 +1312,6 @@ export type run_ra_controlsUncheckedCreateWithoutCatalog_controls_frequencyInput
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -1390,7 +1361,6 @@ export type run_ra_controlsCreateWithoutGraph_activities_dependenciesInput = {
   cobertura?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
@@ -1424,7 +1394,6 @@ export type run_ra_controlsUncheckedCreateWithoutGraph_activities_dependenciesIn
   cobertura?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -1464,7 +1433,6 @@ export type run_ra_controlsUpdateWithoutGraph_activities_dependenciesInput = {
   cobertura?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
@@ -1498,139 +1466,6 @@ export type run_ra_controlsUncheckedUpdateWithoutGraph_activities_dependenciesIn
   cobertura?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-}
-
-export type run_ra_controlsCreateWithoutIncident_registerInput = {
-  id?: string
-  code?: string | null
-  name: string
-  description?: string | null
-  is_existing?: boolean
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
-  source_control_id?: string | null
-  design?: number | null
-  implementation?: number | null
-  operation?: number | null
-  id_risk?: string | null
-  cobertura?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  next_execution_date?: Date | string | null
-  next_review_date?: Date | string | null
-  graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
-  run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
-  catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
-  catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
-  catalog_controls_frequency?: Prisma.catalog_controls_frequencyCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
-  run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_controlsInput
-  run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_controlsInput
-  run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
-}
-
-export type run_ra_controlsUncheckedCreateWithoutIncident_registerInput = {
-  id?: string
-  run_ra_id: string
-  code?: string | null
-  name: string
-  description?: string | null
-  control_type?: string | null
-  control_nature?: string | null
-  owner_id?: string | null
-  frequency?: string | null
-  is_existing?: boolean
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
-  source_control_id?: string | null
-  design?: number | null
-  implementation?: number | null
-  operation?: number | null
-  id_risk?: string | null
-  cobertura?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  next_execution_date?: Date | string | null
-  next_review_date?: Date | string | null
-  graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-}
-
-export type run_ra_controlsCreateOrConnectWithoutIncident_registerInput = {
-  where: Prisma.run_ra_controlsWhereUniqueInput
-  create: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutIncident_registerInput, Prisma.run_ra_controlsUncheckedCreateWithoutIncident_registerInput>
-}
-
-export type run_ra_controlsUpsertWithoutIncident_registerInput = {
-  update: Prisma.XOR<Prisma.run_ra_controlsUpdateWithoutIncident_registerInput, Prisma.run_ra_controlsUncheckedUpdateWithoutIncident_registerInput>
-  create: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutIncident_registerInput, Prisma.run_ra_controlsUncheckedCreateWithoutIncident_registerInput>
-  where?: Prisma.run_ra_controlsWhereInput
-}
-
-export type run_ra_controlsUpdateToOneWithWhereWithoutIncident_registerInput = {
-  where?: Prisma.run_ra_controlsWhereInput
-  data: Prisma.XOR<Prisma.run_ra_controlsUpdateWithoutIncident_registerInput, Prisma.run_ra_controlsUncheckedUpdateWithoutIncident_registerInput>
-}
-
-export type run_ra_controlsUpdateWithoutIncident_registerInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  is_existing?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  source_control_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  design?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  implementation?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  operation?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  id_risk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cobertura?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
-  run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
-  catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
-  catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
-  catalog_controls_frequency?: Prisma.catalog_controls_frequencyUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
-  run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_controlsNestedInput
-  run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_controlsNestedInput
-  run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
-}
-
-export type run_ra_controlsUncheckedUpdateWithoutIncident_registerInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  run_ra_id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  control_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  control_nature?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  owner_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  frequency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  is_existing?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  source_control_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  design?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  implementation?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  operation?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  id_risk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cobertura?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -1655,7 +1490,6 @@ export type run_ra_controlsCreateWithoutMap_run_ra_risk_controlsInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
@@ -1689,7 +1523,6 @@ export type run_ra_controlsUncheckedCreateWithoutMap_run_ra_risk_controlsInput =
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -1729,7 +1562,6 @@ export type run_ra_controlsUpdateWithoutMap_run_ra_risk_controlsInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
@@ -1763,7 +1595,6 @@ export type run_ra_controlsUncheckedUpdateWithoutMap_run_ra_risk_controlsInput =
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -1787,7 +1618,6 @@ export type run_ra_controlsCreateWithoutRun_raInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
@@ -1820,7 +1650,6 @@ export type run_ra_controlsUncheckedCreateWithoutRun_raInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -1871,7 +1700,6 @@ export type run_ra_controlsCreateWithoutRun_ra_control_testsInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
@@ -1905,7 +1733,6 @@ export type run_ra_controlsUncheckedCreateWithoutRun_ra_control_testsInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -1945,7 +1772,6 @@ export type run_ra_controlsUpdateWithoutRun_ra_control_testsInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
@@ -1979,7 +1805,6 @@ export type run_ra_controlsUncheckedUpdateWithoutRun_ra_control_testsInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2003,7 +1828,6 @@ export type run_ra_controlsCreateWithoutRun_ra_evidenceInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
@@ -2037,7 +1861,6 @@ export type run_ra_controlsUncheckedCreateWithoutRun_ra_evidenceInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -2077,7 +1900,6 @@ export type run_ra_controlsUpdateWithoutRun_ra_evidenceInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
@@ -2111,7 +1933,6 @@ export type run_ra_controlsUncheckedUpdateWithoutRun_ra_evidenceInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2135,7 +1956,6 @@ export type run_ra_controlsCreateWithoutRun_ra_monitoringInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
@@ -2169,7 +1989,6 @@ export type run_ra_controlsUncheckedCreateWithoutRun_ra_monitoringInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -2209,7 +2028,6 @@ export type run_ra_controlsUpdateWithoutRun_ra_monitoringInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
@@ -2243,7 +2061,6 @@ export type run_ra_controlsUncheckedUpdateWithoutRun_ra_monitoringInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2267,7 +2084,6 @@ export type run_ra_controlsCreateWithoutUsersInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
@@ -2300,7 +2116,6 @@ export type run_ra_controlsUncheckedCreateWithoutUsersInput = {
   next_execution_date?: Date | string | null
   next_review_date?: Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutRun_ra_controlsInput
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_controlsInput
@@ -2374,7 +2189,6 @@ export type run_ra_controlsUpdateWithoutCatalog_control_typeInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
@@ -2407,7 +2221,6 @@ export type run_ra_controlsUncheckedUpdateWithoutCatalog_control_typeInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2478,7 +2291,6 @@ export type run_ra_controlsUpdateWithoutCatalog_controls_categoryInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
@@ -2511,7 +2323,6 @@ export type run_ra_controlsUncheckedUpdateWithoutCatalog_controls_categoryInput 
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2582,7 +2393,6 @@ export type run_ra_controlsUpdateWithoutCatalog_controls_frequencyInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
@@ -2615,7 +2425,6 @@ export type run_ra_controlsUncheckedUpdateWithoutCatalog_controls_frequencyInput
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2686,7 +2495,6 @@ export type run_ra_controlsUpdateWithoutRun_raInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
@@ -2719,7 +2527,6 @@ export type run_ra_controlsUncheckedUpdateWithoutRun_raInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2790,7 +2597,6 @@ export type run_ra_controlsUpdateWithoutUsersInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
@@ -2823,7 +2629,6 @@ export type run_ra_controlsUncheckedUpdateWithoutUsersInput = {
   next_execution_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_control_tests?: Prisma.run_ra_control_testsUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2860,7 +2665,6 @@ export type run_ra_controlsUncheckedUpdateManyWithoutUsersInput = {
 
 export type Run_ra_controlsCountOutputType = {
   graph_activities_dependencies: number
-  incident_register: number
   map_run_ra_risk_controls: number
   run_ra_control_tests: number
   run_ra_evidence: number
@@ -2869,7 +2673,6 @@ export type Run_ra_controlsCountOutputType = {
 
 export type Run_ra_controlsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   graph_activities_dependencies?: boolean | Run_ra_controlsCountOutputTypeCountGraph_activities_dependenciesArgs
-  incident_register?: boolean | Run_ra_controlsCountOutputTypeCountIncident_registerArgs
   map_run_ra_risk_controls?: boolean | Run_ra_controlsCountOutputTypeCountMap_run_ra_risk_controlsArgs
   run_ra_control_tests?: boolean | Run_ra_controlsCountOutputTypeCountRun_ra_control_testsArgs
   run_ra_evidence?: boolean | Run_ra_controlsCountOutputTypeCountRun_ra_evidenceArgs
@@ -2891,13 +2694,6 @@ export type Run_ra_controlsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Ty
  */
 export type Run_ra_controlsCountOutputTypeCountGraph_activities_dependenciesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.graph_activities_dependenciesWhereInput
-}
-
-/**
- * Run_ra_controlsCountOutputType without action
- */
-export type Run_ra_controlsCountOutputTypeCountIncident_registerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.incident_registerWhereInput
 }
 
 /**
@@ -2952,7 +2748,6 @@ export type run_ra_controlsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   next_execution_date?: boolean
   next_review_date?: boolean
   graph_activities_dependencies?: boolean | Prisma.run_ra_controls$graph_activities_dependenciesArgs<ExtArgs>
-  incident_register?: boolean | Prisma.run_ra_controls$incident_registerArgs<ExtArgs>
   map_run_ra_risk_controls?: boolean | Prisma.run_ra_controls$map_run_ra_risk_controlsArgs<ExtArgs>
   run_ra_control_tests?: boolean | Prisma.run_ra_controls$run_ra_control_testsArgs<ExtArgs>
   catalog_controls_category?: boolean | Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs>
@@ -3050,7 +2845,6 @@ export type run_ra_controlsSelectScalar = {
 export type run_ra_controlsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "run_ra_id" | "code" | "name" | "description" | "control_type" | "control_nature" | "owner_id" | "frequency" | "is_existing" | "is_active" | "created_at" | "updated_at" | "source_control_id" | "design" | "implementation" | "operation" | "id_risk" | "cobertura" | "next_execution_date" | "next_review_date", ExtArgs["result"]["run_ra_controls"]>
 export type run_ra_controlsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   graph_activities_dependencies?: boolean | Prisma.run_ra_controls$graph_activities_dependenciesArgs<ExtArgs>
-  incident_register?: boolean | Prisma.run_ra_controls$incident_registerArgs<ExtArgs>
   map_run_ra_risk_controls?: boolean | Prisma.run_ra_controls$map_run_ra_risk_controlsArgs<ExtArgs>
   run_ra_control_tests?: boolean | Prisma.run_ra_controls$run_ra_control_testsArgs<ExtArgs>
   catalog_controls_category?: boolean | Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs>
@@ -3081,7 +2875,6 @@ export type $run_ra_controlsPayload<ExtArgs extends runtime.Types.Extensions.Int
   name: "run_ra_controls"
   objects: {
     graph_activities_dependencies: Prisma.$graph_activities_dependenciesPayload<ExtArgs>[]
-    incident_register: Prisma.$incident_registerPayload<ExtArgs>[]
     map_run_ra_risk_controls: Prisma.$map_run_ra_risk_controlsPayload<ExtArgs>[]
     run_ra_control_tests: Prisma.$run_ra_control_testsPayload<ExtArgs>[]
     catalog_controls_category: Prisma.$catalog_controls_categoryPayload<ExtArgs> | null
@@ -3509,7 +3302,6 @@ readonly fields: run_ra_controlsFieldRefs;
 export interface Prisma__run_ra_controlsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   graph_activities_dependencies<T extends Prisma.run_ra_controls$graph_activities_dependenciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$graph_activities_dependenciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$graph_activities_dependenciesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  incident_register<T extends Prisma.run_ra_controls$incident_registerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$incident_registerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$incident_registerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   map_run_ra_risk_controls<T extends Prisma.run_ra_controls$map_run_ra_risk_controlsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$map_run_ra_risk_controlsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$map_run_ra_risk_controlsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   run_ra_control_tests<T extends Prisma.run_ra_controls$run_ra_control_testsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$run_ra_control_testsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$run_ra_control_testsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   catalog_controls_category<T extends Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs>>): Prisma.Prisma__catalog_controls_categoryClient<runtime.Types.Result.GetResult<Prisma.$catalog_controls_categoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3991,30 +3783,6 @@ export type run_ra_controls$graph_activities_dependenciesArgs<ExtArgs extends ru
   take?: number
   skip?: number
   distinct?: Prisma.Graph_activities_dependenciesScalarFieldEnum | Prisma.Graph_activities_dependenciesScalarFieldEnum[]
-}
-
-/**
- * run_ra_controls.incident_register
- */
-export type run_ra_controls$incident_registerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the incident_register
-   */
-  select?: Prisma.incident_registerSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the incident_register
-   */
-  omit?: Prisma.incident_registerOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.incident_registerInclude<ExtArgs> | null
-  where?: Prisma.incident_registerWhereInput
-  orderBy?: Prisma.incident_registerOrderByWithRelationInput | Prisma.incident_registerOrderByWithRelationInput[]
-  cursor?: Prisma.incident_registerWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.Incident_registerScalarFieldEnum | Prisma.Incident_registerScalarFieldEnum[]
 }
 
 /**

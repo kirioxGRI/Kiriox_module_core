@@ -15,6 +15,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 /**
  * Model incident_register
  * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
  */
 export type incident_registerModel = runtime.Types.Result.DefaultSelection<Prisma.$incident_registerPayload>
 
@@ -401,9 +402,7 @@ export type incident_registerWhereInput = {
   loss_currency?: Prisma.StringNullableFilter<"incident_register"> | string | null
   loss_description?: Prisma.StringNullableFilter<"incident_register"> | string | null
   catalog_ra_valoration?: Prisma.XOR<Prisma.Catalog_ra_valorationNullableScalarRelationFilter, Prisma.catalog_ra_valorationWhereInput> | null
-  run_ra_controls?: Prisma.XOR<Prisma.Run_ra_controlsNullableScalarRelationFilter, Prisma.run_ra_controlsWhereInput> | null
   elements?: Prisma.XOR<Prisma.ElementsScalarRelationFilter, Prisma.elementsWhereInput>
-  run_ra_risks?: Prisma.XOR<Prisma.Run_ra_risksNullableScalarRelationFilter, Prisma.run_ra_risksWhereInput> | null
   catalog_activity_criticality_level?: Prisma.XOR<Prisma.Catalog_activity_criticality_levelScalarRelationFilter, Prisma.catalog_activity_criticality_levelWhereInput>
 }
 
@@ -437,9 +436,7 @@ export type incident_registerOrderByWithRelationInput = {
   loss_currency?: Prisma.SortOrderInput | Prisma.SortOrder
   loss_description?: Prisma.SortOrderInput | Prisma.SortOrder
   catalog_ra_valoration?: Prisma.catalog_ra_valorationOrderByWithRelationInput
-  run_ra_controls?: Prisma.run_ra_controlsOrderByWithRelationInput
   elements?: Prisma.elementsOrderByWithRelationInput
-  run_ra_risks?: Prisma.run_ra_risksOrderByWithRelationInput
   catalog_activity_criticality_level?: Prisma.catalog_activity_criticality_levelOrderByWithRelationInput
 }
 
@@ -476,9 +473,7 @@ export type incident_registerWhereUniqueInput = Prisma.AtLeast<{
   loss_currency?: Prisma.StringNullableFilter<"incident_register"> | string | null
   loss_description?: Prisma.StringNullableFilter<"incident_register"> | string | null
   catalog_ra_valoration?: Prisma.XOR<Prisma.Catalog_ra_valorationNullableScalarRelationFilter, Prisma.catalog_ra_valorationWhereInput> | null
-  run_ra_controls?: Prisma.XOR<Prisma.Run_ra_controlsNullableScalarRelationFilter, Prisma.run_ra_controlsWhereInput> | null
   elements?: Prisma.XOR<Prisma.ElementsScalarRelationFilter, Prisma.elementsWhereInput>
-  run_ra_risks?: Prisma.XOR<Prisma.Run_ra_risksNullableScalarRelationFilter, Prisma.run_ra_risksWhereInput> | null
   catalog_activity_criticality_level?: Prisma.XOR<Prisma.Catalog_activity_criticality_levelScalarRelationFilter, Prisma.catalog_activity_criticality_levelWhereInput>
 }, "id" | "incident_code">
 
@@ -560,6 +555,8 @@ export type incident_registerCreateInput = {
   occurred_at: Date | string
   detected_at: Date | string
   reported_by: string
+  risk_id?: string | null
+  control_id?: string | null
   control_name_if_not_registered?: string | null
   incident_type: string
   cause?: string | null
@@ -577,9 +574,7 @@ export type incident_registerCreateInput = {
   loss_currency?: string | null
   loss_description?: string | null
   catalog_ra_valoration?: Prisma.catalog_ra_valorationCreateNestedOneWithoutIncident_registerInput
-  run_ra_controls?: Prisma.run_ra_controlsCreateNestedOneWithoutIncident_registerInput
   elements: Prisma.elementsCreateNestedOneWithoutIncident_registerInput
-  run_ra_risks?: Prisma.run_ra_risksCreateNestedOneWithoutIncident_registerInput
   catalog_activity_criticality_level: Prisma.catalog_activity_criticality_levelCreateNestedOneWithoutIncident_registerInput
 }
 
@@ -622,6 +617,8 @@ export type incident_registerUpdateInput = {
   occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reported_by?: Prisma.StringFieldUpdateOperationsInput | string
+  risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  control_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   incident_type?: Prisma.StringFieldUpdateOperationsInput | string
   cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -639,9 +636,7 @@ export type incident_registerUpdateInput = {
   loss_currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   catalog_ra_valoration?: Prisma.catalog_ra_valorationUpdateOneWithoutIncident_registerNestedInput
-  run_ra_controls?: Prisma.run_ra_controlsUpdateOneWithoutIncident_registerNestedInput
   elements?: Prisma.elementsUpdateOneRequiredWithoutIncident_registerNestedInput
-  run_ra_risks?: Prisma.run_ra_risksUpdateOneWithoutIncident_registerNestedInput
   catalog_activity_criticality_level?: Prisma.catalog_activity_criticality_levelUpdateOneRequiredWithoutIncident_registerNestedInput
 }
 
@@ -715,6 +710,8 @@ export type incident_registerUpdateManyMutationInput = {
   occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reported_by?: Prisma.StringFieldUpdateOperationsInput | string
+  risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  control_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   incident_type?: Prisma.StringFieldUpdateOperationsInput | string
   cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1001,90 +998,6 @@ export type incident_registerUncheckedUpdateManyWithoutElementsNestedInput = {
   deleteMany?: Prisma.incident_registerScalarWhereInput | Prisma.incident_registerScalarWhereInput[]
 }
 
-export type incident_registerCreateNestedManyWithoutRun_ra_controlsInput = {
-  create?: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_controlsInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_controlsInput> | Prisma.incident_registerCreateWithoutRun_ra_controlsInput[] | Prisma.incident_registerUncheckedCreateWithoutRun_ra_controlsInput[]
-  connectOrCreate?: Prisma.incident_registerCreateOrConnectWithoutRun_ra_controlsInput | Prisma.incident_registerCreateOrConnectWithoutRun_ra_controlsInput[]
-  createMany?: Prisma.incident_registerCreateManyRun_ra_controlsInputEnvelope
-  connect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-}
-
-export type incident_registerUncheckedCreateNestedManyWithoutRun_ra_controlsInput = {
-  create?: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_controlsInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_controlsInput> | Prisma.incident_registerCreateWithoutRun_ra_controlsInput[] | Prisma.incident_registerUncheckedCreateWithoutRun_ra_controlsInput[]
-  connectOrCreate?: Prisma.incident_registerCreateOrConnectWithoutRun_ra_controlsInput | Prisma.incident_registerCreateOrConnectWithoutRun_ra_controlsInput[]
-  createMany?: Prisma.incident_registerCreateManyRun_ra_controlsInputEnvelope
-  connect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-}
-
-export type incident_registerUpdateManyWithoutRun_ra_controlsNestedInput = {
-  create?: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_controlsInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_controlsInput> | Prisma.incident_registerCreateWithoutRun_ra_controlsInput[] | Prisma.incident_registerUncheckedCreateWithoutRun_ra_controlsInput[]
-  connectOrCreate?: Prisma.incident_registerCreateOrConnectWithoutRun_ra_controlsInput | Prisma.incident_registerCreateOrConnectWithoutRun_ra_controlsInput[]
-  upsert?: Prisma.incident_registerUpsertWithWhereUniqueWithoutRun_ra_controlsInput | Prisma.incident_registerUpsertWithWhereUniqueWithoutRun_ra_controlsInput[]
-  createMany?: Prisma.incident_registerCreateManyRun_ra_controlsInputEnvelope
-  set?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  disconnect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  delete?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  connect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  update?: Prisma.incident_registerUpdateWithWhereUniqueWithoutRun_ra_controlsInput | Prisma.incident_registerUpdateWithWhereUniqueWithoutRun_ra_controlsInput[]
-  updateMany?: Prisma.incident_registerUpdateManyWithWhereWithoutRun_ra_controlsInput | Prisma.incident_registerUpdateManyWithWhereWithoutRun_ra_controlsInput[]
-  deleteMany?: Prisma.incident_registerScalarWhereInput | Prisma.incident_registerScalarWhereInput[]
-}
-
-export type incident_registerUncheckedUpdateManyWithoutRun_ra_controlsNestedInput = {
-  create?: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_controlsInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_controlsInput> | Prisma.incident_registerCreateWithoutRun_ra_controlsInput[] | Prisma.incident_registerUncheckedCreateWithoutRun_ra_controlsInput[]
-  connectOrCreate?: Prisma.incident_registerCreateOrConnectWithoutRun_ra_controlsInput | Prisma.incident_registerCreateOrConnectWithoutRun_ra_controlsInput[]
-  upsert?: Prisma.incident_registerUpsertWithWhereUniqueWithoutRun_ra_controlsInput | Prisma.incident_registerUpsertWithWhereUniqueWithoutRun_ra_controlsInput[]
-  createMany?: Prisma.incident_registerCreateManyRun_ra_controlsInputEnvelope
-  set?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  disconnect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  delete?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  connect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  update?: Prisma.incident_registerUpdateWithWhereUniqueWithoutRun_ra_controlsInput | Prisma.incident_registerUpdateWithWhereUniqueWithoutRun_ra_controlsInput[]
-  updateMany?: Prisma.incident_registerUpdateManyWithWhereWithoutRun_ra_controlsInput | Prisma.incident_registerUpdateManyWithWhereWithoutRun_ra_controlsInput[]
-  deleteMany?: Prisma.incident_registerScalarWhereInput | Prisma.incident_registerScalarWhereInput[]
-}
-
-export type incident_registerCreateNestedManyWithoutRun_ra_risksInput = {
-  create?: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_risksInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_risksInput> | Prisma.incident_registerCreateWithoutRun_ra_risksInput[] | Prisma.incident_registerUncheckedCreateWithoutRun_ra_risksInput[]
-  connectOrCreate?: Prisma.incident_registerCreateOrConnectWithoutRun_ra_risksInput | Prisma.incident_registerCreateOrConnectWithoutRun_ra_risksInput[]
-  createMany?: Prisma.incident_registerCreateManyRun_ra_risksInputEnvelope
-  connect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-}
-
-export type incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput = {
-  create?: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_risksInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_risksInput> | Prisma.incident_registerCreateWithoutRun_ra_risksInput[] | Prisma.incident_registerUncheckedCreateWithoutRun_ra_risksInput[]
-  connectOrCreate?: Prisma.incident_registerCreateOrConnectWithoutRun_ra_risksInput | Prisma.incident_registerCreateOrConnectWithoutRun_ra_risksInput[]
-  createMany?: Prisma.incident_registerCreateManyRun_ra_risksInputEnvelope
-  connect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-}
-
-export type incident_registerUpdateManyWithoutRun_ra_risksNestedInput = {
-  create?: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_risksInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_risksInput> | Prisma.incident_registerCreateWithoutRun_ra_risksInput[] | Prisma.incident_registerUncheckedCreateWithoutRun_ra_risksInput[]
-  connectOrCreate?: Prisma.incident_registerCreateOrConnectWithoutRun_ra_risksInput | Prisma.incident_registerCreateOrConnectWithoutRun_ra_risksInput[]
-  upsert?: Prisma.incident_registerUpsertWithWhereUniqueWithoutRun_ra_risksInput | Prisma.incident_registerUpsertWithWhereUniqueWithoutRun_ra_risksInput[]
-  createMany?: Prisma.incident_registerCreateManyRun_ra_risksInputEnvelope
-  set?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  disconnect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  delete?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  connect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  update?: Prisma.incident_registerUpdateWithWhereUniqueWithoutRun_ra_risksInput | Prisma.incident_registerUpdateWithWhereUniqueWithoutRun_ra_risksInput[]
-  updateMany?: Prisma.incident_registerUpdateManyWithWhereWithoutRun_ra_risksInput | Prisma.incident_registerUpdateManyWithWhereWithoutRun_ra_risksInput[]
-  deleteMany?: Prisma.incident_registerScalarWhereInput | Prisma.incident_registerScalarWhereInput[]
-}
-
-export type incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput = {
-  create?: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_risksInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_risksInput> | Prisma.incident_registerCreateWithoutRun_ra_risksInput[] | Prisma.incident_registerUncheckedCreateWithoutRun_ra_risksInput[]
-  connectOrCreate?: Prisma.incident_registerCreateOrConnectWithoutRun_ra_risksInput | Prisma.incident_registerCreateOrConnectWithoutRun_ra_risksInput[]
-  upsert?: Prisma.incident_registerUpsertWithWhereUniqueWithoutRun_ra_risksInput | Prisma.incident_registerUpsertWithWhereUniqueWithoutRun_ra_risksInput[]
-  createMany?: Prisma.incident_registerCreateManyRun_ra_risksInputEnvelope
-  set?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  disconnect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  delete?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  connect?: Prisma.incident_registerWhereUniqueInput | Prisma.incident_registerWhereUniqueInput[]
-  update?: Prisma.incident_registerUpdateWithWhereUniqueWithoutRun_ra_risksInput | Prisma.incident_registerUpdateWithWhereUniqueWithoutRun_ra_risksInput[]
-  updateMany?: Prisma.incident_registerUpdateManyWithWhereWithoutRun_ra_risksInput | Prisma.incident_registerUpdateManyWithWhereWithoutRun_ra_risksInput[]
-  deleteMany?: Prisma.incident_registerScalarWhereInput | Prisma.incident_registerScalarWhereInput[]
-}
-
 export type incident_registerCreateWithoutCatalog_activity_criticality_levelInput = {
   id?: string
   incident_code: string
@@ -1093,6 +1006,8 @@ export type incident_registerCreateWithoutCatalog_activity_criticality_levelInpu
   occurred_at: Date | string
   detected_at: Date | string
   reported_by: string
+  risk_id?: string | null
+  control_id?: string | null
   control_name_if_not_registered?: string | null
   incident_type: string
   cause?: string | null
@@ -1110,9 +1025,7 @@ export type incident_registerCreateWithoutCatalog_activity_criticality_levelInpu
   loss_currency?: string | null
   loss_description?: string | null
   catalog_ra_valoration?: Prisma.catalog_ra_valorationCreateNestedOneWithoutIncident_registerInput
-  run_ra_controls?: Prisma.run_ra_controlsCreateNestedOneWithoutIncident_registerInput
   elements: Prisma.elementsCreateNestedOneWithoutIncident_registerInput
-  run_ra_risks?: Prisma.run_ra_risksCreateNestedOneWithoutIncident_registerInput
 }
 
 export type incident_registerUncheckedCreateWithoutCatalog_activity_criticality_levelInput = {
@@ -1213,6 +1126,8 @@ export type incident_registerCreateWithoutCatalog_ra_valorationInput = {
   occurred_at: Date | string
   detected_at: Date | string
   reported_by: string
+  risk_id?: string | null
+  control_id?: string | null
   control_name_if_not_registered?: string | null
   incident_type: string
   cause?: string | null
@@ -1229,9 +1144,7 @@ export type incident_registerCreateWithoutCatalog_ra_valorationInput = {
   loss_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   loss_currency?: string | null
   loss_description?: string | null
-  run_ra_controls?: Prisma.run_ra_controlsCreateNestedOneWithoutIncident_registerInput
   elements: Prisma.elementsCreateNestedOneWithoutIncident_registerInput
-  run_ra_risks?: Prisma.run_ra_risksCreateNestedOneWithoutIncident_registerInput
   catalog_activity_criticality_level: Prisma.catalog_activity_criticality_levelCreateNestedOneWithoutIncident_registerInput
 }
 
@@ -1299,6 +1212,8 @@ export type incident_registerCreateWithoutElementsInput = {
   occurred_at: Date | string
   detected_at: Date | string
   reported_by: string
+  risk_id?: string | null
+  control_id?: string | null
   control_name_if_not_registered?: string | null
   incident_type: string
   cause?: string | null
@@ -1316,8 +1231,6 @@ export type incident_registerCreateWithoutElementsInput = {
   loss_currency?: string | null
   loss_description?: string | null
   catalog_ra_valoration?: Prisma.catalog_ra_valorationCreateNestedOneWithoutIncident_registerInput
-  run_ra_controls?: Prisma.run_ra_controlsCreateNestedOneWithoutIncident_registerInput
-  run_ra_risks?: Prisma.run_ra_risksCreateNestedOneWithoutIncident_registerInput
   catalog_activity_criticality_level: Prisma.catalog_activity_criticality_levelCreateNestedOneWithoutIncident_registerInput
 }
 
@@ -1377,178 +1290,6 @@ export type incident_registerUpdateManyWithWhereWithoutElementsInput = {
   data: Prisma.XOR<Prisma.incident_registerUpdateManyMutationInput, Prisma.incident_registerUncheckedUpdateManyWithoutElementsInput>
 }
 
-export type incident_registerCreateWithoutRun_ra_controlsInput = {
-  id?: string
-  incident_code: string
-  title: string
-  description: string
-  occurred_at: Date | string
-  detected_at: Date | string
-  reported_by: string
-  control_name_if_not_registered?: string | null
-  incident_type: string
-  cause?: string | null
-  observed_impact: string
-  status?: string
-  initial_evidence?: string | null
-  requires_root_cause_analysis?: boolean
-  due_date?: Date | string | null
-  closed_at?: Date | string | null
-  lesson_learned?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  is_loss_event?: boolean
-  loss_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: string | null
-  loss_description?: string | null
-  catalog_ra_valoration?: Prisma.catalog_ra_valorationCreateNestedOneWithoutIncident_registerInput
-  elements: Prisma.elementsCreateNestedOneWithoutIncident_registerInput
-  run_ra_risks?: Prisma.run_ra_risksCreateNestedOneWithoutIncident_registerInput
-  catalog_activity_criticality_level: Prisma.catalog_activity_criticality_levelCreateNestedOneWithoutIncident_registerInput
-}
-
-export type incident_registerUncheckedCreateWithoutRun_ra_controlsInput = {
-  id?: string
-  incident_code: string
-  title: string
-  description: string
-  occurred_at: Date | string
-  detected_at: Date | string
-  reported_by: string
-  element_id: string
-  risk_id?: string | null
-  control_name_if_not_registered?: string | null
-  incident_type: string
-  cause?: string | null
-  observed_impact: string
-  severity_id: string
-  status?: string
-  initial_evidence?: string | null
-  requires_root_cause_analysis?: boolean
-  action_plan_id?: string | null
-  due_date?: Date | string | null
-  closed_at?: Date | string | null
-  lesson_learned?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  is_loss_event?: boolean
-  loss_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: string | null
-  loss_description?: string | null
-}
-
-export type incident_registerCreateOrConnectWithoutRun_ra_controlsInput = {
-  where: Prisma.incident_registerWhereUniqueInput
-  create: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_controlsInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_controlsInput>
-}
-
-export type incident_registerCreateManyRun_ra_controlsInputEnvelope = {
-  data: Prisma.incident_registerCreateManyRun_ra_controlsInput | Prisma.incident_registerCreateManyRun_ra_controlsInput[]
-  skipDuplicates?: boolean
-}
-
-export type incident_registerUpsertWithWhereUniqueWithoutRun_ra_controlsInput = {
-  where: Prisma.incident_registerWhereUniqueInput
-  update: Prisma.XOR<Prisma.incident_registerUpdateWithoutRun_ra_controlsInput, Prisma.incident_registerUncheckedUpdateWithoutRun_ra_controlsInput>
-  create: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_controlsInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_controlsInput>
-}
-
-export type incident_registerUpdateWithWhereUniqueWithoutRun_ra_controlsInput = {
-  where: Prisma.incident_registerWhereUniqueInput
-  data: Prisma.XOR<Prisma.incident_registerUpdateWithoutRun_ra_controlsInput, Prisma.incident_registerUncheckedUpdateWithoutRun_ra_controlsInput>
-}
-
-export type incident_registerUpdateManyWithWhereWithoutRun_ra_controlsInput = {
-  where: Prisma.incident_registerScalarWhereInput
-  data: Prisma.XOR<Prisma.incident_registerUpdateManyMutationInput, Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_controlsInput>
-}
-
-export type incident_registerCreateWithoutRun_ra_risksInput = {
-  id?: string
-  incident_code: string
-  title: string
-  description: string
-  occurred_at: Date | string
-  detected_at: Date | string
-  reported_by: string
-  control_name_if_not_registered?: string | null
-  incident_type: string
-  cause?: string | null
-  observed_impact: string
-  status?: string
-  initial_evidence?: string | null
-  requires_root_cause_analysis?: boolean
-  due_date?: Date | string | null
-  closed_at?: Date | string | null
-  lesson_learned?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  is_loss_event?: boolean
-  loss_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: string | null
-  loss_description?: string | null
-  catalog_ra_valoration?: Prisma.catalog_ra_valorationCreateNestedOneWithoutIncident_registerInput
-  run_ra_controls?: Prisma.run_ra_controlsCreateNestedOneWithoutIncident_registerInput
-  elements: Prisma.elementsCreateNestedOneWithoutIncident_registerInput
-  catalog_activity_criticality_level: Prisma.catalog_activity_criticality_levelCreateNestedOneWithoutIncident_registerInput
-}
-
-export type incident_registerUncheckedCreateWithoutRun_ra_risksInput = {
-  id?: string
-  incident_code: string
-  title: string
-  description: string
-  occurred_at: Date | string
-  detected_at: Date | string
-  reported_by: string
-  element_id: string
-  control_id?: string | null
-  control_name_if_not_registered?: string | null
-  incident_type: string
-  cause?: string | null
-  observed_impact: string
-  severity_id: string
-  status?: string
-  initial_evidence?: string | null
-  requires_root_cause_analysis?: boolean
-  action_plan_id?: string | null
-  due_date?: Date | string | null
-  closed_at?: Date | string | null
-  lesson_learned?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  is_loss_event?: boolean
-  loss_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: string | null
-  loss_description?: string | null
-}
-
-export type incident_registerCreateOrConnectWithoutRun_ra_risksInput = {
-  where: Prisma.incident_registerWhereUniqueInput
-  create: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_risksInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_risksInput>
-}
-
-export type incident_registerCreateManyRun_ra_risksInputEnvelope = {
-  data: Prisma.incident_registerCreateManyRun_ra_risksInput | Prisma.incident_registerCreateManyRun_ra_risksInput[]
-  skipDuplicates?: boolean
-}
-
-export type incident_registerUpsertWithWhereUniqueWithoutRun_ra_risksInput = {
-  where: Prisma.incident_registerWhereUniqueInput
-  update: Prisma.XOR<Prisma.incident_registerUpdateWithoutRun_ra_risksInput, Prisma.incident_registerUncheckedUpdateWithoutRun_ra_risksInput>
-  create: Prisma.XOR<Prisma.incident_registerCreateWithoutRun_ra_risksInput, Prisma.incident_registerUncheckedCreateWithoutRun_ra_risksInput>
-}
-
-export type incident_registerUpdateWithWhereUniqueWithoutRun_ra_risksInput = {
-  where: Prisma.incident_registerWhereUniqueInput
-  data: Prisma.XOR<Prisma.incident_registerUpdateWithoutRun_ra_risksInput, Prisma.incident_registerUncheckedUpdateWithoutRun_ra_risksInput>
-}
-
-export type incident_registerUpdateManyWithWhereWithoutRun_ra_risksInput = {
-  where: Prisma.incident_registerScalarWhereInput
-  data: Prisma.XOR<Prisma.incident_registerUpdateManyMutationInput, Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksInput>
-}
-
 export type incident_registerCreateManyCatalog_activity_criticality_levelInput = {
   id?: string
   incident_code: string
@@ -1587,6 +1328,8 @@ export type incident_registerUpdateWithoutCatalog_activity_criticality_levelInpu
   occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reported_by?: Prisma.StringFieldUpdateOperationsInput | string
+  risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  control_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   incident_type?: Prisma.StringFieldUpdateOperationsInput | string
   cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1604,9 +1347,7 @@ export type incident_registerUpdateWithoutCatalog_activity_criticality_levelInpu
   loss_currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   catalog_ra_valoration?: Prisma.catalog_ra_valorationUpdateOneWithoutIncident_registerNestedInput
-  run_ra_controls?: Prisma.run_ra_controlsUpdateOneWithoutIncident_registerNestedInput
   elements?: Prisma.elementsUpdateOneRequiredWithoutIncident_registerNestedInput
-  run_ra_risks?: Prisma.run_ra_risksUpdateOneWithoutIncident_registerNestedInput
 }
 
 export type incident_registerUncheckedUpdateWithoutCatalog_activity_criticality_levelInput = {
@@ -1707,6 +1448,8 @@ export type incident_registerUpdateWithoutCatalog_ra_valorationInput = {
   occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reported_by?: Prisma.StringFieldUpdateOperationsInput | string
+  risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  control_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   incident_type?: Prisma.StringFieldUpdateOperationsInput | string
   cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1723,9 +1466,7 @@ export type incident_registerUpdateWithoutCatalog_ra_valorationInput = {
   loss_amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   loss_currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  run_ra_controls?: Prisma.run_ra_controlsUpdateOneWithoutIncident_registerNestedInput
   elements?: Prisma.elementsUpdateOneRequiredWithoutIncident_registerNestedInput
-  run_ra_risks?: Prisma.run_ra_risksUpdateOneWithoutIncident_registerNestedInput
   catalog_activity_criticality_level?: Prisma.catalog_activity_criticality_levelUpdateOneRequiredWithoutIncident_registerNestedInput
 }
 
@@ -1827,6 +1568,8 @@ export type incident_registerUpdateWithoutElementsInput = {
   occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reported_by?: Prisma.StringFieldUpdateOperationsInput | string
+  risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  control_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   incident_type?: Prisma.StringFieldUpdateOperationsInput | string
   cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1844,8 +1587,6 @@ export type incident_registerUpdateWithoutElementsInput = {
   loss_currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   catalog_ra_valoration?: Prisma.catalog_ra_valorationUpdateOneWithoutIncident_registerNestedInput
-  run_ra_controls?: Prisma.run_ra_controlsUpdateOneWithoutIncident_registerNestedInput
-  run_ra_risks?: Prisma.run_ra_risksUpdateOneWithoutIncident_registerNestedInput
   catalog_activity_criticality_level?: Prisma.catalog_activity_criticality_levelUpdateOneRequiredWithoutIncident_registerNestedInput
 }
 
@@ -1909,246 +1650,6 @@ export type incident_registerUncheckedUpdateManyWithoutElementsInput = {
   loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type incident_registerCreateManyRun_ra_controlsInput = {
-  id?: string
-  incident_code: string
-  title: string
-  description: string
-  occurred_at: Date | string
-  detected_at: Date | string
-  reported_by: string
-  element_id: string
-  risk_id?: string | null
-  control_name_if_not_registered?: string | null
-  incident_type: string
-  cause?: string | null
-  observed_impact: string
-  severity_id: string
-  status?: string
-  initial_evidence?: string | null
-  requires_root_cause_analysis?: boolean
-  action_plan_id?: string | null
-  due_date?: Date | string | null
-  closed_at?: Date | string | null
-  lesson_learned?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  is_loss_event?: boolean
-  loss_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: string | null
-  loss_description?: string | null
-}
-
-export type incident_registerUpdateWithoutRun_ra_controlsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  incident_code?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  reported_by?: Prisma.StringFieldUpdateOperationsInput | string
-  control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  incident_type?: Prisma.StringFieldUpdateOperationsInput | string
-  cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  observed_impact?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  initial_evidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  requires_root_cause_analysis?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  due_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lesson_learned?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  is_loss_event?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  loss_amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  catalog_ra_valoration?: Prisma.catalog_ra_valorationUpdateOneWithoutIncident_registerNestedInput
-  elements?: Prisma.elementsUpdateOneRequiredWithoutIncident_registerNestedInput
-  run_ra_risks?: Prisma.run_ra_risksUpdateOneWithoutIncident_registerNestedInput
-  catalog_activity_criticality_level?: Prisma.catalog_activity_criticality_levelUpdateOneRequiredWithoutIncident_registerNestedInput
-}
-
-export type incident_registerUncheckedUpdateWithoutRun_ra_controlsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  incident_code?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  reported_by?: Prisma.StringFieldUpdateOperationsInput | string
-  element_id?: Prisma.StringFieldUpdateOperationsInput | string
-  risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  incident_type?: Prisma.StringFieldUpdateOperationsInput | string
-  cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  observed_impact?: Prisma.StringFieldUpdateOperationsInput | string
-  severity_id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  initial_evidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  requires_root_cause_analysis?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  action_plan_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  due_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lesson_learned?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  is_loss_event?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  loss_amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type incident_registerUncheckedUpdateManyWithoutRun_ra_controlsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  incident_code?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  reported_by?: Prisma.StringFieldUpdateOperationsInput | string
-  element_id?: Prisma.StringFieldUpdateOperationsInput | string
-  risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  incident_type?: Prisma.StringFieldUpdateOperationsInput | string
-  cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  observed_impact?: Prisma.StringFieldUpdateOperationsInput | string
-  severity_id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  initial_evidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  requires_root_cause_analysis?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  action_plan_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  due_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lesson_learned?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  is_loss_event?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  loss_amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type incident_registerCreateManyRun_ra_risksInput = {
-  id?: string
-  incident_code: string
-  title: string
-  description: string
-  occurred_at: Date | string
-  detected_at: Date | string
-  reported_by: string
-  element_id: string
-  control_id?: string | null
-  control_name_if_not_registered?: string | null
-  incident_type: string
-  cause?: string | null
-  observed_impact: string
-  severity_id: string
-  status?: string
-  initial_evidence?: string | null
-  requires_root_cause_analysis?: boolean
-  action_plan_id?: string | null
-  due_date?: Date | string | null
-  closed_at?: Date | string | null
-  lesson_learned?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  is_loss_event?: boolean
-  loss_amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: string | null
-  loss_description?: string | null
-}
-
-export type incident_registerUpdateWithoutRun_ra_risksInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  incident_code?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  reported_by?: Prisma.StringFieldUpdateOperationsInput | string
-  control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  incident_type?: Prisma.StringFieldUpdateOperationsInput | string
-  cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  observed_impact?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  initial_evidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  requires_root_cause_analysis?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  due_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lesson_learned?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  is_loss_event?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  loss_amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  catalog_ra_valoration?: Prisma.catalog_ra_valorationUpdateOneWithoutIncident_registerNestedInput
-  run_ra_controls?: Prisma.run_ra_controlsUpdateOneWithoutIncident_registerNestedInput
-  elements?: Prisma.elementsUpdateOneRequiredWithoutIncident_registerNestedInput
-  catalog_activity_criticality_level?: Prisma.catalog_activity_criticality_levelUpdateOneRequiredWithoutIncident_registerNestedInput
-}
-
-export type incident_registerUncheckedUpdateWithoutRun_ra_risksInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  incident_code?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  reported_by?: Prisma.StringFieldUpdateOperationsInput | string
-  element_id?: Prisma.StringFieldUpdateOperationsInput | string
-  control_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  incident_type?: Prisma.StringFieldUpdateOperationsInput | string
-  cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  observed_impact?: Prisma.StringFieldUpdateOperationsInput | string
-  severity_id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  initial_evidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  requires_root_cause_analysis?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  action_plan_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  due_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lesson_learned?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  is_loss_event?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  loss_amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
-export type incident_registerUncheckedUpdateManyWithoutRun_ra_risksInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  incident_code?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  occurred_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  detected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  reported_by?: Prisma.StringFieldUpdateOperationsInput | string
-  element_id?: Prisma.StringFieldUpdateOperationsInput | string
-  control_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  control_name_if_not_registered?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  incident_type?: Prisma.StringFieldUpdateOperationsInput | string
-  cause?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  observed_impact?: Prisma.StringFieldUpdateOperationsInput | string
-  severity_id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  initial_evidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  requires_root_cause_analysis?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  action_plan_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  due_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  closed_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  lesson_learned?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  is_loss_event?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  loss_amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  loss_currency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  loss_description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-}
-
 
 
 export type incident_registerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2181,9 +1682,7 @@ export type incident_registerSelect<ExtArgs extends runtime.Types.Extensions.Int
   loss_currency?: boolean
   loss_description?: boolean
   catalog_ra_valoration?: boolean | Prisma.incident_register$catalog_ra_valorationArgs<ExtArgs>
-  run_ra_controls?: boolean | Prisma.incident_register$run_ra_controlsArgs<ExtArgs>
   elements?: boolean | Prisma.elementsDefaultArgs<ExtArgs>
-  run_ra_risks?: boolean | Prisma.incident_register$run_ra_risksArgs<ExtArgs>
   catalog_activity_criticality_level?: boolean | Prisma.catalog_activity_criticality_levelDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["incident_register"]>
 
@@ -2217,9 +1716,7 @@ export type incident_registerSelectCreateManyAndReturn<ExtArgs extends runtime.T
   loss_currency?: boolean
   loss_description?: boolean
   catalog_ra_valoration?: boolean | Prisma.incident_register$catalog_ra_valorationArgs<ExtArgs>
-  run_ra_controls?: boolean | Prisma.incident_register$run_ra_controlsArgs<ExtArgs>
   elements?: boolean | Prisma.elementsDefaultArgs<ExtArgs>
-  run_ra_risks?: boolean | Prisma.incident_register$run_ra_risksArgs<ExtArgs>
   catalog_activity_criticality_level?: boolean | Prisma.catalog_activity_criticality_levelDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["incident_register"]>
 
@@ -2253,9 +1750,7 @@ export type incident_registerSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   loss_currency?: boolean
   loss_description?: boolean
   catalog_ra_valoration?: boolean | Prisma.incident_register$catalog_ra_valorationArgs<ExtArgs>
-  run_ra_controls?: boolean | Prisma.incident_register$run_ra_controlsArgs<ExtArgs>
   elements?: boolean | Prisma.elementsDefaultArgs<ExtArgs>
-  run_ra_risks?: boolean | Prisma.incident_register$run_ra_risksArgs<ExtArgs>
   catalog_activity_criticality_level?: boolean | Prisma.catalog_activity_criticality_levelDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["incident_register"]>
 
@@ -2293,23 +1788,17 @@ export type incident_registerSelectScalar = {
 export type incident_registerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "incident_code" | "title" | "description" | "occurred_at" | "detected_at" | "reported_by" | "element_id" | "risk_id" | "control_id" | "control_name_if_not_registered" | "incident_type" | "cause" | "observed_impact" | "severity_id" | "status" | "initial_evidence" | "requires_root_cause_analysis" | "action_plan_id" | "due_date" | "closed_at" | "lesson_learned" | "created_at" | "updated_at" | "is_loss_event" | "loss_amount" | "loss_currency" | "loss_description", ExtArgs["result"]["incident_register"]>
 export type incident_registerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   catalog_ra_valoration?: boolean | Prisma.incident_register$catalog_ra_valorationArgs<ExtArgs>
-  run_ra_controls?: boolean | Prisma.incident_register$run_ra_controlsArgs<ExtArgs>
   elements?: boolean | Prisma.elementsDefaultArgs<ExtArgs>
-  run_ra_risks?: boolean | Prisma.incident_register$run_ra_risksArgs<ExtArgs>
   catalog_activity_criticality_level?: boolean | Prisma.catalog_activity_criticality_levelDefaultArgs<ExtArgs>
 }
 export type incident_registerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   catalog_ra_valoration?: boolean | Prisma.incident_register$catalog_ra_valorationArgs<ExtArgs>
-  run_ra_controls?: boolean | Prisma.incident_register$run_ra_controlsArgs<ExtArgs>
   elements?: boolean | Prisma.elementsDefaultArgs<ExtArgs>
-  run_ra_risks?: boolean | Prisma.incident_register$run_ra_risksArgs<ExtArgs>
   catalog_activity_criticality_level?: boolean | Prisma.catalog_activity_criticality_levelDefaultArgs<ExtArgs>
 }
 export type incident_registerIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   catalog_ra_valoration?: boolean | Prisma.incident_register$catalog_ra_valorationArgs<ExtArgs>
-  run_ra_controls?: boolean | Prisma.incident_register$run_ra_controlsArgs<ExtArgs>
   elements?: boolean | Prisma.elementsDefaultArgs<ExtArgs>
-  run_ra_risks?: boolean | Prisma.incident_register$run_ra_risksArgs<ExtArgs>
   catalog_activity_criticality_level?: boolean | Prisma.catalog_activity_criticality_levelDefaultArgs<ExtArgs>
 }
 
@@ -2317,9 +1806,7 @@ export type $incident_registerPayload<ExtArgs extends runtime.Types.Extensions.I
   name: "incident_register"
   objects: {
     catalog_ra_valoration: Prisma.$catalog_ra_valorationPayload<ExtArgs> | null
-    run_ra_controls: Prisma.$run_ra_controlsPayload<ExtArgs> | null
     elements: Prisma.$elementsPayload<ExtArgs>
-    run_ra_risks: Prisma.$run_ra_risksPayload<ExtArgs> | null
     catalog_activity_criticality_level: Prisma.$catalog_activity_criticality_levelPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -2746,9 +2233,7 @@ readonly fields: incident_registerFieldRefs;
 export interface Prisma__incident_registerClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   catalog_ra_valoration<T extends Prisma.incident_register$catalog_ra_valorationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.incident_register$catalog_ra_valorationArgs<ExtArgs>>): Prisma.Prisma__catalog_ra_valorationClient<runtime.Types.Result.GetResult<Prisma.$catalog_ra_valorationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  run_ra_controls<T extends Prisma.incident_register$run_ra_controlsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.incident_register$run_ra_controlsArgs<ExtArgs>>): Prisma.Prisma__run_ra_controlsClient<runtime.Types.Result.GetResult<Prisma.$run_ra_controlsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   elements<T extends Prisma.elementsDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.elementsDefaultArgs<ExtArgs>>): Prisma.Prisma__elementsClient<runtime.Types.Result.GetResult<Prisma.$elementsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  run_ra_risks<T extends Prisma.incident_register$run_ra_risksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.incident_register$run_ra_risksArgs<ExtArgs>>): Prisma.Prisma__run_ra_risksClient<runtime.Types.Result.GetResult<Prisma.$run_ra_risksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   catalog_activity_criticality_level<T extends Prisma.catalog_activity_criticality_levelDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.catalog_activity_criticality_levelDefaultArgs<ExtArgs>>): Prisma.Prisma__catalog_activity_criticality_levelClient<runtime.Types.Result.GetResult<Prisma.$catalog_activity_criticality_levelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3224,44 +2709,6 @@ export type incident_register$catalog_ra_valorationArgs<ExtArgs extends runtime.
    */
   include?: Prisma.catalog_ra_valorationInclude<ExtArgs> | null
   where?: Prisma.catalog_ra_valorationWhereInput
-}
-
-/**
- * incident_register.run_ra_controls
- */
-export type incident_register$run_ra_controlsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the run_ra_controls
-   */
-  select?: Prisma.run_ra_controlsSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the run_ra_controls
-   */
-  omit?: Prisma.run_ra_controlsOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.run_ra_controlsInclude<ExtArgs> | null
-  where?: Prisma.run_ra_controlsWhereInput
-}
-
-/**
- * incident_register.run_ra_risks
- */
-export type incident_register$run_ra_risksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the run_ra_risks
-   */
-  select?: Prisma.run_ra_risksSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the run_ra_risks
-   */
-  omit?: Prisma.run_ra_risksOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.run_ra_risksInclude<ExtArgs> | null
-  where?: Prisma.run_ra_risksWhereInput
 }
 
 /**

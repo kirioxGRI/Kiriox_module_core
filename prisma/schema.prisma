@@ -713,6 +713,7 @@ model graph_run_sa {
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model incident_register {
   id                                 String                             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   incident_code                      String                             @unique @db.VarChar(50)
@@ -743,9 +744,7 @@ model incident_register {
   loss_currency                      String?                            @db.VarChar(10)
   loss_description                   String?
   catalog_ra_valoration              catalog_ra_valoration?             @relation(fields: [action_plan_id], references: [id], map: "fk_incident_action_plan")
-  run_ra_controls                    run_ra_controls?                   @relation(fields: [control_id], references: [id], map: "fk_incident_control")
   elements                           elements                           @relation(fields: [element_id], references: [id], map: "fk_incident_element")
-  run_ra_risks                       run_ra_risks?                      @relation(fields: [risk_id], references: [id], map: "fk_incident_risk")
   catalog_activity_criticality_level catalog_activity_criticality_level @relation(fields: [severity_id], references: [id], map: "fk_incident_severity")
 }
 
@@ -1208,7 +1207,6 @@ model run_ra_controls {
   next_execution_date           DateTime?                       @db.Timestamptz(6)
   next_review_date              DateTime?                       @db.Timestamptz(6)
   graph_activities_dependencies graph_activities_dependencies[]
-  incident_register             incident_register[]
   map_run_ra_risk_controls      map_run_ra_risk_controls[]
   run_ra_control_tests          run_ra_control_tests[]
   catalog_controls_category     catalog_controls_category?      @relation(fields: [control_nature], references: [id], onUpdate: NoAction, map: "fk_run_ra_controls_control_nature")
@@ -1338,7 +1336,6 @@ model run_ra_risks {
   id_valoration            String?                    @db.Uuid
   objective_id             String?                    @db.Uuid
   next_review_date         DateTime?                  @db.Timestamptz(6)
-  incident_register        incident_register[]
   map_run_ra_risk_controls map_run_ra_risk_controls[]
   run_ra_evidence          run_ra_evidence[]
   run_ra_monitoring        run_ra_monitoring[]

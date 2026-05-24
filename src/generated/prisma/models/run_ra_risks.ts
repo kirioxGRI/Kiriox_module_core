@@ -310,7 +310,6 @@ export type run_ra_risksWhereInput = {
   id_valoration?: Prisma.UuidNullableFilter<"run_ra_risks"> | string | null
   objective_id?: Prisma.UuidNullableFilter<"run_ra_risks"> | string | null
   next_review_date?: Prisma.DateTimeNullableFilter<"run_ra_risks"> | Date | string | null
-  incident_register?: Prisma.Incident_registerListRelationFilter
   map_run_ra_risk_controls?: Prisma.Map_run_ra_risk_controlsListRelationFilter
   run_ra_evidence?: Prisma.Run_ra_evidenceListRelationFilter
   run_ra_monitoring?: Prisma.Run_ra_monitoringListRelationFilter
@@ -345,7 +344,6 @@ export type run_ra_risksOrderByWithRelationInput = {
   id_valoration?: Prisma.SortOrderInput | Prisma.SortOrder
   objective_id?: Prisma.SortOrderInput | Prisma.SortOrder
   next_review_date?: Prisma.SortOrderInput | Prisma.SortOrder
-  incident_register?: Prisma.incident_registerOrderByRelationAggregateInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsOrderByRelationAggregateInput
   run_ra_evidence?: Prisma.run_ra_evidenceOrderByRelationAggregateInput
   run_ra_monitoring?: Prisma.run_ra_monitoringOrderByRelationAggregateInput
@@ -383,7 +381,6 @@ export type run_ra_risksWhereUniqueInput = Prisma.AtLeast<{
   id_valoration?: Prisma.UuidNullableFilter<"run_ra_risks"> | string | null
   objective_id?: Prisma.UuidNullableFilter<"run_ra_risks"> | string | null
   next_review_date?: Prisma.DateTimeNullableFilter<"run_ra_risks"> | Date | string | null
-  incident_register?: Prisma.Incident_registerListRelationFilter
   map_run_ra_risk_controls?: Prisma.Map_run_ra_risk_controlsListRelationFilter
   run_ra_evidence?: Prisma.Run_ra_evidenceListRelationFilter
   run_ra_monitoring?: Prisma.Run_ra_monitoringListRelationFilter
@@ -467,7 +464,6 @@ export type run_ra_risksCreateInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
@@ -502,7 +498,6 @@ export type run_ra_risksUncheckedCreateInput = {
   id_valoration?: string | null
   objective_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
@@ -527,7 +522,6 @@ export type run_ra_risksUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
@@ -562,7 +556,6 @@ export type run_ra_risksUncheckedUpdateInput = {
   id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
@@ -647,14 +640,14 @@ export type run_ra_risksOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type Run_ra_risksNullableScalarRelationFilter = {
-  is?: Prisma.run_ra_risksWhereInput | null
-  isNot?: Prisma.run_ra_risksWhereInput | null
-}
-
 export type Run_ra_risksScalarRelationFilter = {
   is?: Prisma.run_ra_risksWhereInput
   isNot?: Prisma.run_ra_risksWhereInput
+}
+
+export type Run_ra_risksNullableScalarRelationFilter = {
+  is?: Prisma.run_ra_risksWhereInput | null
+  isNot?: Prisma.run_ra_risksWhereInput | null
 }
 
 export type run_ra_risksCountOrderByAggregateInput = {
@@ -897,22 +890,6 @@ export type run_ra_risksUncheckedUpdateManyWithoutCompany_objectiveNestedInput =
   deleteMany?: Prisma.run_ra_risksScalarWhereInput | Prisma.run_ra_risksScalarWhereInput[]
 }
 
-export type run_ra_risksCreateNestedOneWithoutIncident_registerInput = {
-  create?: Prisma.XOR<Prisma.run_ra_risksCreateWithoutIncident_registerInput, Prisma.run_ra_risksUncheckedCreateWithoutIncident_registerInput>
-  connectOrCreate?: Prisma.run_ra_risksCreateOrConnectWithoutIncident_registerInput
-  connect?: Prisma.run_ra_risksWhereUniqueInput
-}
-
-export type run_ra_risksUpdateOneWithoutIncident_registerNestedInput = {
-  create?: Prisma.XOR<Prisma.run_ra_risksCreateWithoutIncident_registerInput, Prisma.run_ra_risksUncheckedCreateWithoutIncident_registerInput>
-  connectOrCreate?: Prisma.run_ra_risksCreateOrConnectWithoutIncident_registerInput
-  upsert?: Prisma.run_ra_risksUpsertWithoutIncident_registerInput
-  disconnect?: Prisma.run_ra_risksWhereInput | boolean
-  delete?: Prisma.run_ra_risksWhereInput | boolean
-  connect?: Prisma.run_ra_risksWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.run_ra_risksUpdateToOneWithWhereWithoutIncident_registerInput, Prisma.run_ra_risksUpdateWithoutIncident_registerInput>, Prisma.run_ra_risksUncheckedUpdateWithoutIncident_registerInput>
-}
-
 export type run_ra_risksCreateNestedOneWithoutMap_run_ra_risk_controlsInput = {
   create?: Prisma.XOR<Prisma.run_ra_risksCreateWithoutMap_run_ra_risk_controlsInput, Prisma.run_ra_risksUncheckedCreateWithoutMap_run_ra_risk_controlsInput>
   connectOrCreate?: Prisma.run_ra_risksCreateOrConnectWithoutMap_run_ra_risk_controlsInput
@@ -1046,7 +1023,6 @@ export type run_ra_risksCreateWithoutActivitiesInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
@@ -1079,7 +1055,6 @@ export type run_ra_risksUncheckedCreateWithoutActivitiesInput = {
   id_valoration?: string | null
   objective_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
@@ -1157,7 +1132,6 @@ export type run_ra_risksCreateWithoutCatalog_ra_valorationInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
@@ -1190,7 +1164,6 @@ export type run_ra_risksUncheckedCreateWithoutCatalog_ra_valorationInput = {
   source_risk_id?: string | null
   objective_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
@@ -1241,7 +1214,6 @@ export type run_ra_risksCreateWithoutCatalog_risk_categoryInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
@@ -1274,7 +1246,6 @@ export type run_ra_risksUncheckedCreateWithoutCatalog_risk_categoryInput = {
   id_valoration?: string | null
   objective_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
@@ -1325,7 +1296,6 @@ export type run_ra_risksCreateWithoutCompany_objectiveInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
@@ -1358,7 +1328,6 @@ export type run_ra_risksUncheckedCreateWithoutCompany_objectiveInput = {
   source_risk_id?: string | null
   id_valoration?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
@@ -1392,138 +1361,6 @@ export type run_ra_risksUpdateManyWithWhereWithoutCompany_objectiveInput = {
   data: Prisma.XOR<Prisma.run_ra_risksUpdateManyMutationInput, Prisma.run_ra_risksUncheckedUpdateManyWithoutCompany_objectiveInput>
 }
 
-export type run_ra_risksCreateWithoutIncident_registerInput = {
-  id?: string
-  code?: string | null
-  name: string
-  description?: string | null
-  cause: string
-  event: string
-  consequence: string
-  affected_objective: string
-  affected_stakeholder?: string | null
-  risk_type?: string | null
-  risk_subtype?: string | null
-  owner_id?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  source_risk_id?: string | null
-  next_review_date?: Date | string | null
-  map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
-  run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
-  run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
-  run_ra_risk_analysis?: Prisma.run_ra_risk_analysisCreateNestedOneWithoutRun_ra_risksInput
-  run_ra_risk_treatment?: Prisma.run_ra_risk_treatmentCreateNestedManyWithoutRun_ra_risksInput
-  catalog_ra_valoration?: Prisma.catalog_ra_valorationCreateNestedOneWithoutRun_ra_risksInput
-  catalog_risk_category?: Prisma.catalog_risk_categoryCreateNestedOneWithoutRun_ra_risksInput
-  activities?: Prisma.activitiesCreateNestedOneWithoutRun_ra_risksInput
-  company_objective?: Prisma.company_objectiveCreateNestedOneWithoutRun_ra_risksInput
-  run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_risksInput
-}
-
-export type run_ra_risksUncheckedCreateWithoutIncident_registerInput = {
-  id?: string
-  run_ra_id: string
-  code?: string | null
-  name: string
-  description?: string | null
-  cause: string
-  event: string
-  consequence: string
-  affected_objective: string
-  affected_stakeholder?: string | null
-  risk_category?: string | null
-  risk_type?: string | null
-  risk_subtype?: string | null
-  owner_id?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  activity_id?: string | null
-  source_risk_id?: string | null
-  id_valoration?: string | null
-  objective_id?: string | null
-  next_review_date?: Date | string | null
-  map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
-  run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
-  run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
-  run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUncheckedCreateNestedOneWithoutRun_ra_risksInput
-  run_ra_risk_treatment?: Prisma.run_ra_risk_treatmentUncheckedCreateNestedManyWithoutRun_ra_risksInput
-}
-
-export type run_ra_risksCreateOrConnectWithoutIncident_registerInput = {
-  where: Prisma.run_ra_risksWhereUniqueInput
-  create: Prisma.XOR<Prisma.run_ra_risksCreateWithoutIncident_registerInput, Prisma.run_ra_risksUncheckedCreateWithoutIncident_registerInput>
-}
-
-export type run_ra_risksUpsertWithoutIncident_registerInput = {
-  update: Prisma.XOR<Prisma.run_ra_risksUpdateWithoutIncident_registerInput, Prisma.run_ra_risksUncheckedUpdateWithoutIncident_registerInput>
-  create: Prisma.XOR<Prisma.run_ra_risksCreateWithoutIncident_registerInput, Prisma.run_ra_risksUncheckedCreateWithoutIncident_registerInput>
-  where?: Prisma.run_ra_risksWhereInput
-}
-
-export type run_ra_risksUpdateToOneWithWhereWithoutIncident_registerInput = {
-  where?: Prisma.run_ra_risksWhereInput
-  data: Prisma.XOR<Prisma.run_ra_risksUpdateWithoutIncident_registerInput, Prisma.run_ra_risksUncheckedUpdateWithoutIncident_registerInput>
-}
-
-export type run_ra_risksUpdateWithoutIncident_registerInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cause?: Prisma.StringFieldUpdateOperationsInput | string
-  event?: Prisma.StringFieldUpdateOperationsInput | string
-  consequence?: Prisma.StringFieldUpdateOperationsInput | string
-  affected_objective?: Prisma.StringFieldUpdateOperationsInput | string
-  affected_stakeholder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  risk_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  risk_subtype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  owner_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
-  run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
-  run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
-  run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUpdateOneWithoutRun_ra_risksNestedInput
-  run_ra_risk_treatment?: Prisma.run_ra_risk_treatmentUpdateManyWithoutRun_ra_risksNestedInput
-  catalog_ra_valoration?: Prisma.catalog_ra_valorationUpdateOneWithoutRun_ra_risksNestedInput
-  catalog_risk_category?: Prisma.catalog_risk_categoryUpdateOneWithoutRun_ra_risksNestedInput
-  activities?: Prisma.activitiesUpdateOneWithoutRun_ra_risksNestedInput
-  company_objective?: Prisma.company_objectiveUpdateOneWithoutRun_ra_risksNestedInput
-  run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_risksNestedInput
-}
-
-export type run_ra_risksUncheckedUpdateWithoutIncident_registerInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  run_ra_id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  cause?: Prisma.StringFieldUpdateOperationsInput | string
-  event?: Prisma.StringFieldUpdateOperationsInput | string
-  consequence?: Prisma.StringFieldUpdateOperationsInput | string
-  affected_objective?: Prisma.StringFieldUpdateOperationsInput | string
-  affected_stakeholder?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  risk_category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  risk_type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  risk_subtype?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  owner_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  activity_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
-  run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
-  run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
-  run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUncheckedUpdateOneWithoutRun_ra_risksNestedInput
-  run_ra_risk_treatment?: Prisma.run_ra_risk_treatmentUncheckedUpdateManyWithoutRun_ra_risksNestedInput
-}
-
 export type run_ra_risksCreateWithoutMap_run_ra_risk_controlsInput = {
   id?: string
   code?: string | null
@@ -1541,7 +1378,6 @@ export type run_ra_risksCreateWithoutMap_run_ra_risk_controlsInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisCreateNestedOneWithoutRun_ra_risksInput
@@ -1575,7 +1411,6 @@ export type run_ra_risksUncheckedCreateWithoutMap_run_ra_risk_controlsInput = {
   id_valoration?: string | null
   objective_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUncheckedCreateNestedOneWithoutRun_ra_risksInput
@@ -1615,7 +1450,6 @@ export type run_ra_risksUpdateWithoutMap_run_ra_risk_controlsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUpdateOneWithoutRun_ra_risksNestedInput
@@ -1649,7 +1483,6 @@ export type run_ra_risksUncheckedUpdateWithoutMap_run_ra_risk_controlsInput = {
   id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUncheckedUpdateOneWithoutRun_ra_risksNestedInput
@@ -1673,7 +1506,6 @@ export type run_ra_risksCreateWithoutRun_raInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
@@ -1706,7 +1538,6 @@ export type run_ra_risksUncheckedCreateWithoutRun_raInput = {
   id_valoration?: string | null
   objective_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
@@ -1757,7 +1588,6 @@ export type run_ra_risksCreateWithoutRun_ra_evidenceInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisCreateNestedOneWithoutRun_ra_risksInput
@@ -1791,7 +1621,6 @@ export type run_ra_risksUncheckedCreateWithoutRun_ra_evidenceInput = {
   id_valoration?: string | null
   objective_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUncheckedCreateNestedOneWithoutRun_ra_risksInput
@@ -1831,7 +1660,6 @@ export type run_ra_risksUpdateWithoutRun_ra_evidenceInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUpdateOneWithoutRun_ra_risksNestedInput
@@ -1865,7 +1693,6 @@ export type run_ra_risksUncheckedUpdateWithoutRun_ra_evidenceInput = {
   id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUncheckedUpdateOneWithoutRun_ra_risksNestedInput
@@ -1889,7 +1716,6 @@ export type run_ra_risksCreateWithoutRun_ra_monitoringInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisCreateNestedOneWithoutRun_ra_risksInput
@@ -1923,7 +1749,6 @@ export type run_ra_risksUncheckedCreateWithoutRun_ra_monitoringInput = {
   id_valoration?: string | null
   objective_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUncheckedCreateNestedOneWithoutRun_ra_risksInput
@@ -1963,7 +1788,6 @@ export type run_ra_risksUpdateWithoutRun_ra_monitoringInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUpdateOneWithoutRun_ra_risksNestedInput
@@ -1997,7 +1821,6 @@ export type run_ra_risksUncheckedUpdateWithoutRun_ra_monitoringInput = {
   id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisUncheckedUpdateOneWithoutRun_ra_risksNestedInput
@@ -2021,7 +1844,6 @@ export type run_ra_risksCreateWithoutRun_ra_risk_analysisInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
@@ -2055,7 +1877,6 @@ export type run_ra_risksUncheckedCreateWithoutRun_ra_risk_analysisInput = {
   id_valoration?: string | null
   objective_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
@@ -2095,7 +1916,6 @@ export type run_ra_risksUpdateWithoutRun_ra_risk_analysisInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
@@ -2129,7 +1949,6 @@ export type run_ra_risksUncheckedUpdateWithoutRun_ra_risk_analysisInput = {
   id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
@@ -2153,7 +1972,6 @@ export type run_ra_risksCreateWithoutRun_ra_risk_treatmentInput = {
   updated_at?: Date | string
   source_risk_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_risksInput
@@ -2187,7 +2005,6 @@ export type run_ra_risksUncheckedCreateWithoutRun_ra_risk_treatmentInput = {
   id_valoration?: string | null
   objective_id?: string | null
   next_review_date?: Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedCreateNestedManyWithoutRun_ra_risksInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedCreateNestedManyWithoutRun_ra_risksInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_risksInput
@@ -2227,7 +2044,6 @@ export type run_ra_risksUpdateWithoutRun_ra_risk_treatmentInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
@@ -2261,7 +2077,6 @@ export type run_ra_risksUncheckedUpdateWithoutRun_ra_risk_treatmentInput = {
   id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
@@ -2308,7 +2123,6 @@ export type run_ra_risksUpdateWithoutActivitiesInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
@@ -2341,7 +2155,6 @@ export type run_ra_risksUncheckedUpdateWithoutActivitiesInput = {
   id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
@@ -2412,7 +2225,6 @@ export type run_ra_risksUpdateWithoutCatalog_ra_valorationInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
@@ -2445,7 +2257,6 @@ export type run_ra_risksUncheckedUpdateWithoutCatalog_ra_valorationInput = {
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
@@ -2516,7 +2327,6 @@ export type run_ra_risksUpdateWithoutCatalog_risk_categoryInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
@@ -2549,7 +2359,6 @@ export type run_ra_risksUncheckedUpdateWithoutCatalog_risk_categoryInput = {
   id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
@@ -2620,7 +2429,6 @@ export type run_ra_risksUpdateWithoutCompany_objectiveInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
@@ -2653,7 +2461,6 @@ export type run_ra_risksUncheckedUpdateWithoutCompany_objectiveInput = {
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
@@ -2724,7 +2531,6 @@ export type run_ra_risksUpdateWithoutRun_raInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   source_risk_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_risksNestedInput
@@ -2757,7 +2563,6 @@ export type run_ra_risksUncheckedUpdateWithoutRun_raInput = {
   id_valoration?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   objective_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  incident_register?: Prisma.incident_registerUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_risksNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_risksNestedInput
@@ -2794,7 +2599,6 @@ export type run_ra_risksUncheckedUpdateManyWithoutRun_raInput = {
  */
 
 export type Run_ra_risksCountOutputType = {
-  incident_register: number
   map_run_ra_risk_controls: number
   run_ra_evidence: number
   run_ra_monitoring: number
@@ -2802,7 +2606,6 @@ export type Run_ra_risksCountOutputType = {
 }
 
 export type Run_ra_risksCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  incident_register?: boolean | Run_ra_risksCountOutputTypeCountIncident_registerArgs
   map_run_ra_risk_controls?: boolean | Run_ra_risksCountOutputTypeCountMap_run_ra_risk_controlsArgs
   run_ra_evidence?: boolean | Run_ra_risksCountOutputTypeCountRun_ra_evidenceArgs
   run_ra_monitoring?: boolean | Run_ra_risksCountOutputTypeCountRun_ra_monitoringArgs
@@ -2817,13 +2620,6 @@ export type Run_ra_risksCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types
    * Select specific fields to fetch from the Run_ra_risksCountOutputType
    */
   select?: Prisma.Run_ra_risksCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * Run_ra_risksCountOutputType without action
- */
-export type Run_ra_risksCountOutputTypeCountIncident_registerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.incident_registerWhereInput
 }
 
 /**
@@ -2877,7 +2673,6 @@ export type run_ra_risksSelect<ExtArgs extends runtime.Types.Extensions.Internal
   id_valoration?: boolean
   objective_id?: boolean
   next_review_date?: boolean
-  incident_register?: boolean | Prisma.run_ra_risks$incident_registerArgs<ExtArgs>
   map_run_ra_risk_controls?: boolean | Prisma.run_ra_risks$map_run_ra_risk_controlsArgs<ExtArgs>
   run_ra_evidence?: boolean | Prisma.run_ra_risks$run_ra_evidenceArgs<ExtArgs>
   run_ra_monitoring?: boolean | Prisma.run_ra_risks$run_ra_monitoringArgs<ExtArgs>
@@ -2975,7 +2770,6 @@ export type run_ra_risksSelectScalar = {
 
 export type run_ra_risksOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "run_ra_id" | "code" | "name" | "description" | "cause" | "event" | "consequence" | "affected_objective" | "affected_stakeholder" | "risk_category" | "risk_type" | "risk_subtype" | "owner_id" | "created_at" | "updated_at" | "activity_id" | "source_risk_id" | "id_valoration" | "objective_id" | "next_review_date", ExtArgs["result"]["run_ra_risks"]>
 export type run_ra_risksInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  incident_register?: boolean | Prisma.run_ra_risks$incident_registerArgs<ExtArgs>
   map_run_ra_risk_controls?: boolean | Prisma.run_ra_risks$map_run_ra_risk_controlsArgs<ExtArgs>
   run_ra_evidence?: boolean | Prisma.run_ra_risks$run_ra_evidenceArgs<ExtArgs>
   run_ra_monitoring?: boolean | Prisma.run_ra_risks$run_ra_monitoringArgs<ExtArgs>
@@ -3006,7 +2800,6 @@ export type run_ra_risksIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types
 export type $run_ra_risksPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "run_ra_risks"
   objects: {
-    incident_register: Prisma.$incident_registerPayload<ExtArgs>[]
     map_run_ra_risk_controls: Prisma.$map_run_ra_risk_controlsPayload<ExtArgs>[]
     run_ra_evidence: Prisma.$run_ra_evidencePayload<ExtArgs>[]
     run_ra_monitoring: Prisma.$run_ra_monitoringPayload<ExtArgs>[]
@@ -3434,7 +3227,6 @@ readonly fields: run_ra_risksFieldRefs;
  */
 export interface Prisma__run_ra_risksClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  incident_register<T extends Prisma.run_ra_risks$incident_registerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_risks$incident_registerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$incident_registerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   map_run_ra_risk_controls<T extends Prisma.run_ra_risks$map_run_ra_risk_controlsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_risks$map_run_ra_risk_controlsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$map_run_ra_risk_controlsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   run_ra_evidence<T extends Prisma.run_ra_risks$run_ra_evidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_risks$run_ra_evidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$run_ra_evidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   run_ra_monitoring<T extends Prisma.run_ra_risks$run_ra_monitoringArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_risks$run_ra_monitoringArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$run_ra_monitoringPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3893,30 +3685,6 @@ export type run_ra_risksDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many run_ra_risks to delete.
    */
   limit?: number
-}
-
-/**
- * run_ra_risks.incident_register
- */
-export type run_ra_risks$incident_registerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the incident_register
-   */
-  select?: Prisma.incident_registerSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the incident_register
-   */
-  omit?: Prisma.incident_registerOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.incident_registerInclude<ExtArgs> | null
-  where?: Prisma.incident_registerWhereInput
-  orderBy?: Prisma.incident_registerOrderByWithRelationInput | Prisma.incident_registerOrderByWithRelationInput[]
-  cursor?: Prisma.incident_registerWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.Incident_registerScalarFieldEnum | Prisma.Incident_registerScalarFieldEnum[]
 }
 
 /**
