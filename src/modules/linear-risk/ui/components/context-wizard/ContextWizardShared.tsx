@@ -6,11 +6,13 @@ import {
   BarChart3,
   BriefcaseBusiness,
   CheckCircle2,
+  Info,
   Loader2,
   Save,
   Scale,
   ShieldCheck,
   ShieldPlus,
+  Copy,
   Target,
   X,
 } from 'lucide-react';
@@ -80,21 +82,25 @@ export const APPETITE_OPTIONS = [
   { value: 'muy_alto', label: 'Muy alto', color: '#ef4444' },
 ] as const;
 
+export const WIZARD_SURFACE_BG = 'rgba(0, 0, 0, 0.18)';
+export const WIZARD_SURFACE_BORDER = '1px solid rgba(255,255,255,0.06)';
+export const WIZARD_SURFACE_SHADOW = '0 10px 28px rgba(3,8,20,0.14)';
+
 export const CARD: React.CSSProperties = {
-  background: 'linear-gradient(160deg, rgba(13,22,50,0.97), rgba(7,16,42,0.95))',
-  border: '1px solid rgba(255,255,255,0.07)',
-  borderRadius: 14,
+  background: WIZARD_SURFACE_BG,
+  border: WIZARD_SURFACE_BORDER,
+  borderRadius: 16,
   padding: '1.5rem',
 };
 
 export const INPUT_S: React.CSSProperties = {
   width: '100%',
-  background: 'rgba(17,35,77,0.5)',
-  border: '1px solid rgba(120,149,210,0.2)',
+  background: 'rgba(15, 23, 42, 0.75)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
   borderRadius: 10,
-  color: '#e2e8f0',
-  fontSize: '0.82rem',
-  padding: '0.6rem 0.75rem',
+  color: '#e7efff',
+  fontSize: '0.88rem',
+  padding: '10px 12px',
   outline: 'none',
   boxSizing: 'border-box',
   fontFamily: 'inherit',
@@ -107,19 +113,19 @@ export const TEXTAREA_S: React.CSSProperties = {
 };
 
 export const LABEL_S: React.CSSProperties = {
-  fontSize: '0.73rem',
-  fontWeight: 600,
-  color: '#64748b',
+  fontSize: '0.8rem',
+  fontWeight: 500,
+  color: '#9babc4',
   display: 'block',
-  marginBottom: '0.4rem',
+  marginBottom: 6,
 };
 
 export const SECTION_HDR: React.CSSProperties = {
-  fontSize: '0.68rem',
+  fontSize: '0.75rem',
   fontWeight: 700,
-  color: '#3b4a6b',
+  color: '#7b8fad',
   textTransform: 'uppercase',
-  letterSpacing: '0.07em',
+  letterSpacing: '0.5px',
   margin: '0 0 1rem',
   display: 'flex',
   alignItems: 'center',
@@ -231,39 +237,82 @@ export function SectionBlock({
   title,
   color,
   Icon,
+  subtitle,
+  badge,
+  hideIcon,
   children,
 }: {
   title: string;
   color: string;
   Icon: React.ComponentType<{ size?: number; color?: string }>;
+  subtitle?: string;
+  badge?: string;
+  hideIcon?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <section
       style={{
-        borderRadius: 14,
-        border: '1px solid rgba(255,255,255,0.07)',
-        borderLeft: `4px solid ${color}`,
-        background: 'rgba(9,18,48,0.88)',
-        padding: '1.4rem 1.5rem 1.2rem',
+        borderRadius: 22,
+        borderTop: WIZARD_SURFACE_BORDER,
+        borderRight: WIZARD_SURFACE_BORDER,
+        borderBottom: WIZARD_SURFACE_BORDER,
+        borderLeft: `3px solid ${color}`,
+        background: WIZARD_SURFACE_BG,
+        padding: '1.15rem 1.4rem 1.2rem',
+        boxShadow: WIZARD_SURFACE_SHADOW,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.1rem' }}>
-        <div
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 8,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: `${color}22`,
-            border: `1px solid ${color}55`,
-          }}
-        >
-          <Icon size={15} color={color} />
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.8rem' }}>
+          {hideIcon ? null : (
+            <div
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: `${color}18`,
+                border: `1px solid ${color}44`,
+                boxShadow: `inset 0 0 0 1px ${color}12`,
+              }}
+            >
+              <Icon size={18} color={color} />
+            </div>
+          )}
+          <div>
+            <h3 style={{ margin: 0, color: title.toLowerCase().includes('evaluación') ? '#f8fafc' : color, fontSize: '0.98rem', fontWeight: 800 }}>
+              {title}
+            </h3>
+            {subtitle ? (
+              <p style={{ margin: '0.18rem 0 0', color: '#97a8c4', fontSize: '0.76rem', lineHeight: 1.45 }}>
+                {subtitle}
+              </p>
+            ) : null}
+          </div>
         </div>
-        <h3 style={{ margin: 0, color, fontSize: '1rem', fontWeight: 800 }}>{title}</h3>
+        {badge ? (
+          <span
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              padding: '0.42rem 0.75rem',
+              borderRadius: 999,
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              color: '#9fb0cb',
+              fontSize: '0.74rem',
+              fontWeight: 700,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Info size={13} />
+            {badge}
+          </span>
+        ) : null}
       </div>
       {children}
     </section>
@@ -399,7 +448,7 @@ export function EvaluacionTab({ runRaId }: { runRaId: string }) {
             <div style={{ position: 'relative' }}>
               <textarea
                 maxLength={maxChars}
-                style={{ ...TEXTAREA_S, minHeight: 80, paddingBottom: '1.4rem' }}
+                style={{ ...TEXTAREA_S, minHeight: 80, padding: '10px 12px 1.4rem' }}
                 value={form.objetivo}
                 onChange={set('objetivo')}
                 placeholder="¿Qué busca determinar esta evaluación?..."
@@ -422,7 +471,7 @@ export function EvaluacionTab({ runRaId }: { runRaId: string }) {
             <div style={{ position: 'relative' }}>
               <textarea
                 maxLength={maxChars}
-                style={{ ...TEXTAREA_S, minHeight: 80, paddingBottom: '1.4rem' }}
+                style={{ ...TEXTAREA_S, minHeight: 80, padding: '10px 12px 1.4rem' }}
                 value={form.alcance}
                 onChange={set('alcance')}
                 placeholder="¿Qué procesos, unidades y periodos cubre?..."
@@ -437,9 +486,9 @@ export function EvaluacionTab({ runRaId }: { runRaId: string }) {
         <div
           style={{
             border: '1px solid rgba(245,158,11,0.25)',
-            borderRadius: 12,
-            padding: '1rem',
-            background: 'rgba(245,158,11,0.04)',
+            borderRadius: 18,
+            padding: '1rem 1rem 1.1rem',
+            background: 'rgba(255,255,255,0.03)',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.9rem',
@@ -493,9 +542,9 @@ export function EvaluacionTab({ runRaId }: { runRaId: string }) {
 
       <div
         style={{
-          marginTop: '0.5rem',
-          padding: '1.25rem',
-          borderRadius: 16,
+          marginTop: '0.55rem',
+          padding: '1.15rem 1.2rem',
+          borderRadius: 18,
           background: 'rgba(255,255,255,0.03)',
           border: '1px solid rgba(255,255,255,0.08)',
           display: 'flex',
@@ -747,8 +796,8 @@ export function ExitDialog({
         style={{
           width: 'min(92vw, 440px)',
           borderRadius: 22,
-          background: 'linear-gradient(160deg, rgba(13,22,50,0.99), rgba(7,16,42,0.98))',
-          border: '1px solid rgba(255,255,255,0.1)',
+          background: 'rgba(0, 0, 0, 0.18)',
+          border: '1px solid rgba(255,255,255,0.06)',
           boxShadow: '0 32px 60px rgba(0,0,0,0.5)',
           padding: '2rem 1.75rem',
           display: 'flex',
@@ -843,5 +892,41 @@ export function ExitDialog({
       </div>
       <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
     </div>
+  );
+}
+
+export function CopyRunCodeButton({ value }: { value: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      return;
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => void handleCopy()}
+      title={copied ? 'Copiado' : 'Copiar ID'}
+      style={{
+        width: 28,
+        height: 28,
+        borderRadius: 8,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: copied ? 'rgba(59,130,246,0.14)' : 'rgba(255,255,255,0.03)',
+        border: `1px solid ${copied ? 'rgba(59,130,246,0.26)' : 'rgba(255,255,255,0.08)'}`,
+        color: copied ? '#93c5fd' : '#9fb0cb',
+        cursor: 'pointer',
+      }}
+    >
+      <Copy size={14} />
+    </button>
   );
 }

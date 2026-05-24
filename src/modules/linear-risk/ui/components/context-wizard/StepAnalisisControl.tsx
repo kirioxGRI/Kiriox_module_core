@@ -186,7 +186,7 @@ export function StepAnalisisControl({ runRaId }: { runRaId: string }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', width: '100%' }}>
       {error && <ErrorAlert message={error} />}
-      <div style={{ ...CARD, padding: '1.1rem 1.4rem', border: '1px solid rgba(59,130,246,0.25)' }}>
+      <div style={{ ...CARD, padding: '1.1rem 1.4rem', border: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ marginBottom: '0.85rem' }}>
           <p style={{ margin: 0, fontWeight: 800, fontSize: '1.08rem', color: '#f1f5f9' }}>Riesgos evaluados</p>
           <p style={{ margin: '0.18rem 0 0', fontSize: '0.73rem', color: '#64748b' }}>Resumen del riesgo seleccionado y su evaluación actual.</p>
@@ -340,7 +340,17 @@ export function StepAnalisisControl({ runRaId }: { runRaId: string }) {
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.2rem', alignItems: 'stretch', width: '100%' }}>
-        <section style={{ ...CARD, padding: '1rem', borderTop: '3px solid #3b82f6', border: '1px solid rgba(59,130,246,0.45)', boxShadow: '0 0 0 1px rgba(59,130,246,0.15), 0 4px 24px rgba(0,0,0,0.4)', background: 'linear-gradient(160deg, rgba(15,28,65,0.98), rgba(7,16,42,0.96))' }}>
+        <section
+          style={{
+            ...CARD,
+            padding: '1rem',
+            borderTop: '3px solid #3b82f6',
+            borderRight: '1px solid rgba(255,255,255,0.06)',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
+            borderLeft: '1px solid rgba(255,255,255,0.06)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.24)',
+          }}
+        >
           <p style={{ ...SECTION_HDR, marginBottom: '0.55rem' }}>Controles mitigantes del riesgo</p>
           
           <div style={{ display: 'grid', gridTemplateColumns: '1.12fr 0.58fr 0.78fr 0.58fr 0.7fr 0.7fr 0.7fr 0.6fr 0.6fr 0.7fr 0.35fr 0.35fr', gap: '0.45rem', alignItems: 'center' }}>

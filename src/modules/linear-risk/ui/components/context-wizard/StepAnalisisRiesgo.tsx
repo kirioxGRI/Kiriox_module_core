@@ -295,7 +295,7 @@ export function StepAnalisisRiesgo({ runRaId }: { runRaId: string }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
-      <div style={{ ...CARD, border: '1px solid rgba(56,189,248,0.28)', background: 'linear-gradient(135deg, rgba(8,30,72,0.72), rgba(8,18,51,0.96) 52%, rgba(8,12,40,0.98))', width: '100%', padding: '1.2rem' }}>
+      <div style={{ ...CARD, border: '1px solid rgba(255,255,255,0.06)', width: '100%', padding: '1.2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.8rem', marginBottom: '0.9rem' }}>
           <div>
             <p style={{ ...SECTION_HDR, color: '#7dd3fc', marginBottom: '0.2rem', fontSize: '1.05rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}><BarChart3 size={16} /> Análisis de riesgo</p>
@@ -328,7 +328,7 @@ export function StepAnalisisRiesgo({ runRaId }: { runRaId: string }) {
         </div>
         {error && <ErrorAlert message={error} />}
         <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: '0.8rem', alignItems: 'stretch' }}>
-          <div style={{ border: '1px solid rgba(125,211,252,0.18)', borderRadius: 14, padding: '0.8rem', background: 'rgba(13,23,56,0.5)' }}>
+          <div style={{ border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '0.8rem', background: 'rgba(15, 23, 42, 0.42)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.45rem' }}>
               <input
                 style={{ ...INPUT_S, fontSize: '0.72rem', gridColumn: '1 / span 2' }}
@@ -349,13 +349,13 @@ export function StepAnalisisRiesgo({ runRaId }: { runRaId: string }) {
               </select>
             </div>
           </div>
-          <div style={{ border: '1px solid rgba(167,139,250,0.22)', borderRadius: 14, padding: '0.8rem', background: 'rgba(34,19,62,0.35)' }}>
+          <div style={{ border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '0.8rem', background: 'rgba(15, 23, 42, 0.42)' }}>
             <p style={{ margin: '0 0 0.6rem 0', color: '#e2e8f0', fontWeight: 700 }}>Evaluación del riesgo</p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.6rem' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '110px 1fr', gap: '0.45rem', alignItems: 'center', border: '1px solid rgba(148,163,184,0.2)', borderRadius: 10, padding: '0.4rem 0.5rem' }}>
                 <span style={{ color: '#e2e8f0', fontSize: '0.75rem', fontWeight: 700 }}>Impacto</span>
                 <select
-                  style={{ ...INPUT_S, fontSize: '0.72rem', paddingTop: '0.45rem', paddingBottom: '0.45rem' }}
+                  style={{ ...INPUT_S, fontSize: '0.72rem', padding: '0.45rem 12px' }}
                   value={form.impact_id}
                   onChange={(e) => setForm((f) => ({ ...f, impact_id: e.target.value }))}
                 >
@@ -370,7 +370,7 @@ export function StepAnalisisRiesgo({ runRaId }: { runRaId: string }) {
               <div style={{ display: 'grid', gridTemplateColumns: '110px 1fr', gap: '0.45rem', alignItems: 'center', border: '1px solid rgba(148,163,184,0.2)', borderRadius: 10, padding: '0.4rem 0.5rem' }}>
                 <span style={{ color: '#e2e8f0', fontSize: '0.75rem', fontWeight: 700 }}>Probabilidad</span>
                 <select
-                  style={{ ...INPUT_S, fontSize: '0.72rem', paddingTop: '0.45rem', paddingBottom: '0.45rem' }}
+                  style={{ ...INPUT_S, fontSize: '0.72rem', padding: '0.45rem 12px' }}
                   value={form.probability_id}
                   onChange={(e) => setForm((f) => ({ ...f, probability_id: e.target.value }))}
                 >
@@ -428,8 +428,8 @@ export function StepAnalisisRiesgo({ runRaId }: { runRaId: string }) {
       </div>
       <div style={{
         ...CARD,
-        border: '1px solid rgba(167,139,250,0.3)',
-        background: 'linear-gradient(145deg, rgba(99,102,241,0.16), rgba(7,16,42,0.93))',
+        border: '1px solid rgba(255,255,255,0.06)',
+        background: 'rgba(0, 0, 0, 0.18)',
         padding: '1rem',
         width: '100%',
       }}>
@@ -445,7 +445,7 @@ export function StepAnalisisRiesgo({ runRaId }: { runRaId: string }) {
             const ringFillPct = Math.max(0, Math.min(100, (totalInherente / toleranceMax) * 100));
             const ringAngle = Math.max(0, Math.min(360, Math.round((ringFillPct / 100) * 360)));
             return (
-              <div style={{ width: 420, marginTop: '-0.2rem', border: '1px solid rgba(129,140,248,0.28)', borderRadius: 14, padding: '0.8rem 0.9rem', background: 'linear-gradient(160deg, rgba(19,35,74,0.94), rgba(10,22,54,0.92))', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+              <div style={{ width: 420, marginTop: '-0.2rem', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14, padding: '0.8rem 0.9rem', background: 'rgba(15, 23, 42, 0.42)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
                 <div>
                   <div style={{ color: '#fb7185', fontSize: '2rem', fontWeight: 900, lineHeight: 1 }}>{appetiteLabel}</div>
                   <div style={{ color: '#cbd5e1', fontSize: '0.95rem', fontWeight: 800, marginTop: 8 }}>APETITO DE RIESGO</div>
@@ -528,4 +528,3 @@ export function StepAnalisisRiesgo({ runRaId }: { runRaId: string }) {
     </div>
   );
 }
-

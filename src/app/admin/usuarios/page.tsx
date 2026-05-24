@@ -213,9 +213,14 @@ export default function UserManagementPage() {
         <p style={{ color: 'var(--secondary)', margin: 0, maxWidth: '600px' }}>
           Administre el acceso institucional y la gobernanza de identidades para el cumplimiento regulatorio.
         </p>
-        <Link href="/admin/usuarios/nuevo" style={{ background: 'var(--primary)', color: 'white', border: 'none', padding: '0.75rem 1.25rem', borderRadius: 10, fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
-          + Crear usuario
-        </Link>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <button onClick={() => router.push('/modelo/gobernanza/catalogo')} style={{ border: '1px solid rgba(148,163,184,0.45)', background: 'rgba(30,41,59,0.55)', color: '#e2e8f0', borderRadius: 10, padding: '0.75rem 1.25rem', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
+            Cerrar
+          </button>
+          <Link href="/admin/usuarios/nuevo" style={{ background: 'var(--primary)', color: 'white', border: 'none', padding: '0.75rem 1.25rem', borderRadius: 10, fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
+            + Crear usuario
+          </Link>
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
@@ -238,11 +243,7 @@ export default function UserManagementPage() {
       {renderTable(true)}
       {renderTable(false)}
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.25rem' }}>
-        <button onClick={() => router.push('/modelo/gobernanza/catalogo')} style={{ border: '1px solid rgba(148,163,184,0.45)', background: 'rgba(30,41,59,0.55)', color: '#e2e8f0', borderRadius: 10, padding: '0.75rem 1.25rem', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
-          Cerrar
-        </button>
-      </div>
+
 
       {resetPasswordUser && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', padding: '1rem' }}>

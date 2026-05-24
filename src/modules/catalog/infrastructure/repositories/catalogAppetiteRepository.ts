@@ -11,7 +11,7 @@ export class CatalogAppetiteRepository {
         { created_at: "desc" }
       ],
     });
-    return data;
+    return data.map((d: any) => ({ ...d, is_active: d.is_active ? "ACTIVE" : "INACTIVE" }));
   }
 
   async create(data: Partial<CatalogAppetite>): Promise<CatalogAppetite> {
@@ -27,10 +27,10 @@ export class CatalogAppetiteRepository {
         metric_name: data.metric_name || "",
         metric_unit: data.metric_unit || null,
         effective_from: data.effective_from ? new Date(data.effective_from) : new Date(),
-        is_active: data.is_active || "ACTIVE",
+        is_active: data.is_active !== "INACTIVE",
       },
     });
-    return result;
+    return { ...result, is_active: result.is_active ? "ACTIVE" : "INACTIVE" };
   }
 
   async update(id: string, data: Partial<CatalogAppetite>): Promise<CatalogAppetite | null> {
@@ -45,11 +45,11 @@ export class CatalogAppetiteRepository {
         metric_name: data.metric_name,
         metric_unit: data.metric_unit,
         effective_from: data.effective_from ? new Date(data.effective_from) : undefined,
-        is_active: data.is_active,
+        is_active: data.is_active ? data.is_active !== "INACTIVE" : undefined,
         updated_at: new Date()
       },
     });
-    return result;
+    return { ...result, is_active: result.is_active ? "ACTIVE" : "INACTIVE" };
   }
 
   async delete(id: string): Promise<void> {

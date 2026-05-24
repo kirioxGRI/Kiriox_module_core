@@ -200,3 +200,22 @@ Studio               : 0.27.3
 **Regla aprendida:** `public.incident_register` no debe mantener FKs duras hacia `run_ra_controls` ni `run_ra_risks`. Los incidentes son evidencia operacional auditable y deben sobrevivir al ciclo de vida de evaluaciones lineales; cualquier referencia a riesgo/control de una corrida debe tratarse como referencia informativa o snapshot, no como dependencia de borrado.
 
 **AplicaciÃ³n futura:** Al modelar incidentes, hallazgos, evidencias o eventos persistentes, no acoplarlos fÃ­sicamente a artefactos efÃ­meros de una evaluaciÃ³n (`run_*`). Usar entidades maestras estables o referencias desacopladas para preservar trazabilidad histÃ³rica y evitar bloqueos de cascada.
+
+## 2026-05-24 — Aprendizaje
+
+**Contexto:** Sincronización de Nombre Comercial con Razón Social (legal_name).
+
+**Regla aprendida:** En el formulario de Empresa (CompanyEditorPage.tsx), el campo "Nombre Comercial" (
+ame) debe actualizar simultáneamente el campo legal_name al momento de enviar el payload a la API, garantizando consistencia en public.company.
+
+**Aplicación futura:** Para interfaces que soliciten un nombre principal pero la base de datos requiera otros campos obligatorios derivados (como legal_name), mapearlos automáticamente en el cliente o API usando el valor provisto, salvo que existan campos separados explícitos.
+
+
+## 2026-05-24 — Aprendizaje
+
+**Contexto:** Error al cargar la página de apetito de riesgo (/modelo/gobernanza/catalogo/apetito) con tabla catalog_appetite.
+
+**Regla aprendida:** El campo is_active en PostgreSQL a menudo se crea como boolean, pero en ocasiones schema.prisma puede estar desactualizado tipándolo como String. Esto causa errores internos de serialización de Prisma al hacer findMany. Al corregir el esquema a Boolean, el repositorio de persistencia debe mapear ese Boolean al tipo string (e.g. ACTIVE / INACTIVE) que espera la capa de dominio/UI.
+
+**Aplicación futura:** Si una tabla no carga datos a pesar de existir, verificar si hay un desajuste de tipos (string vs boolean) entre la base de datos real (psql) y el schema.prisma. Tras corregirlo, siempre ejecutar npx prisma generate y adaptar el mapeo en el repository correspondiente.
+

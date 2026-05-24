@@ -120,7 +120,10 @@ export async function getKirioxSession(module: KirioxOfficialModuleId): Promise<
 
   const promise = (async () => {
     if (lm.availability) {
-      const status = await lm.availability({ expectedInputs: [{ type: 'text', languages: ['es'] }] });
+      const status = await lm.availability({
+        expectedInputs: [{ type: 'text', languages: ['es'] }],
+        expectedOutputs: [{ type: 'text', languages: ['es'] }],
+      });
       if (status === 'unavailable') throw new Error('Gemini Nano no disponible en este equipo.');
       if (status === 'downloadable' || status === 'downloading') throw new Error('El modelo se está descargando. Intenta en unos minutos.');
     }

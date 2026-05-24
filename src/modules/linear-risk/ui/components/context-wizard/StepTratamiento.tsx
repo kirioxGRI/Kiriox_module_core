@@ -201,21 +201,21 @@ export function StepTratamiento({ runRaId }: { runRaId: string }) {
       {error && <div style={{ gridColumn: '1/-1' }}><ErrorAlert message={error} /></div>}
 
       {/* ── Left panel ── */}
-      <section style={{ ...CARD, padding: '1rem', border: '1px solid rgba(99,102,241,0.25)' }}>
+      <section style={{ ...CARD, padding: '1rem', border: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.9rem' }}>
           <h3 style={{ margin: 0, color: '#e2e8f0', fontSize: '1rem', fontWeight: 800 }}>Riesgos seleccionados</h3>
           <span style={{ borderRadius: 8, background: 'rgba(99,102,241,0.28)', color: '#c4b5fd', padding: '0.18rem 0.55rem', fontWeight: 800, fontSize: '0.75rem' }}>{filteredRisks.length}</span>
         </div>
         <div style={{ position: 'relative', marginBottom: '0.8rem' }}>
           <span style={{ position: 'absolute', left: '0.65rem', top: '50%', transform: 'translateY(-50%)', color: '#475569', pointerEvents: 'none' }}>🔍</span>
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar riesgo..." style={{ ...INPUT_S, paddingLeft: '2rem' }} />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar riesgo..." style={{ ...INPUT_S, padding: '10px 12px 10px 2rem' }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '65vh', overflowY: 'auto', paddingRight: 2 }}>
           {filteredRisks.map((r) => {
             const b = riskLevelBadge(r.inherent_score);
             const active = selectedRisk?.id === r.id;
             return (
-              <button key={r.id} onClick={() => setSelectedRiskId(r.id)} style={{ textAlign: 'left', borderRadius: 12, cursor: 'pointer', padding: '0.8rem 0.9rem', border: `1px solid ${active ? 'rgba(59,130,246,0.5)' : 'rgba(71,85,105,0.28)'}`, background: active ? 'linear-gradient(135deg, rgba(30,58,138,0.28), rgba(10,20,50,0.92))' : 'rgba(7,16,42,0.55)', boxShadow: active ? '0 0 0 1px rgba(59,130,246,0.18)' : 'none' }}>
+              <button key={r.id} onClick={() => setSelectedRiskId(r.id)} style={{ textAlign: 'left', borderRadius: 12, cursor: 'pointer', padding: '0.8rem 0.9rem', border: `1px solid ${active ? 'rgba(59,130,246,0.32)' : 'rgba(255,255,255,0.06)'}`, background: active ? 'rgba(59,130,246,0.12)' : 'rgba(15,23,42,0.42)', boxShadow: active ? '0 0 0 1px rgba(59,130,246,0.12)' : 'none' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.25rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span style={{ width: 8, height: 8, borderRadius: '50%', background: b.color, flexShrink: 0, display: 'inline-block', marginTop: 2 }} />
@@ -234,7 +234,7 @@ export function StepTratamiento({ runRaId }: { runRaId: string }) {
       {/* ── Right panel ── */}
       <section style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
         {/* Top info card */}
-        <div style={{ ...CARD, border: '1px solid rgba(99,102,241,0.22)', padding: '1.1rem 1.4rem' }}>
+        <div style={{ ...CARD, border: '1px solid rgba(255,255,255,0.06)', padding: '1.1rem 1.4rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1.5rem' }}>
             <div>
               <p style={{ margin: 0, color: '#a78bfa', fontWeight: 900, fontSize: '1.55rem', letterSpacing: '-0.02em', lineHeight: 1.1 }}>
@@ -278,7 +278,7 @@ export function StepTratamiento({ runRaId }: { runRaId: string }) {
         </div>
 
         {/* Actions table card */}
-        <div style={{ ...CARD, border: '1px solid rgba(59,130,246,0.2)', padding: '1.1rem 1.2rem' }}>
+        <div style={{ ...CARD, border: '1px solid rgba(255,255,255,0.06)', padding: '1.1rem 1.2rem' }}>
           <h3 style={{ margin: '0 0 0.9rem 0', color: '#e2e8f0', fontSize: '1rem', fontWeight: 800 }}>Acciones del plan de tratamiento</h3>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>

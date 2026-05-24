@@ -75,7 +75,8 @@ export function CatalogAppetitePage() {
     try {
       const res  = await fetch('/api/catalogo/apetito');
       const data = await res.json() as { items: Appetite[] };
-      setItems(data.items ?? []);
+      const sorted = (data.items ?? []).sort((a, b) => (a.tolerance_min ?? 0) - (b.tolerance_min ?? 0));
+      setItems(sorted);
     } finally { setLoading(false); }
   }
 

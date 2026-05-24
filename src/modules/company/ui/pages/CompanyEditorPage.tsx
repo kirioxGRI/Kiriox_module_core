@@ -375,7 +375,7 @@ export function CompanyEditorPage() {
     setSaving(true);
     try {
       const r = await fetch('/api/core/company', { method: form.id ? 'PUT' : 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ id: form.id || undefined, name: form.name.trim(), legalName: form.legalName.trim(), description: form.description.trim(), status: form.status, createdAt: form.createdAt, updatedAt: form.updatedAt }) });
+        body: JSON.stringify({ id: form.id || undefined, name: form.name.trim(), legalName: form.name.trim(), description: form.description.trim(), status: form.status, createdAt: form.createdAt, updatedAt: form.updatedAt }) });
       const p = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(p?.message || p?.error || 'Error al guardar');
       await loadRecords(String(p?.item?.id ?? '') || undefined);

@@ -157,7 +157,7 @@ export function StepValoracion({ runRaId }: { runRaId: string }) {
           { label: 'Riesgo residual total', value: data.summary.total_residual.toFixed(2), hint: 'Después de controles existentes', color: '#34d399', icon: <ShieldCheck size={16} color="#34d399" /> },
           { label: 'Reducción total', value: `${data.summary.total_reduction.toFixed(2)} (${data.summary.total_reduction_percent.toFixed(1)}%)`, hint: 'Reducción del riesgo inherente', color: '#38bdf8', icon: <Activity size={16} color="#38bdf8" /> },
         ].map((card) => (
-          <div key={card.label} style={{ ...CARD, padding: '1rem', border: '1px solid rgba(129,140,248,0.24)', background: 'linear-gradient(145deg, rgba(12,26,64,0.95), rgba(7,16,42,0.92))' }}>
+          <div key={card.label} style={{ ...CARD, padding: '1rem', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.55rem', color: '#cbd5e1', fontWeight: 700, marginBottom: '0.55rem', textAlign: 'center' }}>
               {card.icon}<span>{card.label.toUpperCase()}</span>
             </div>
@@ -165,7 +165,7 @@ export function StepValoracion({ runRaId }: { runRaId: string }) {
               <div style={{ color: '#94a3b8', fontSize: '0.72rem', marginTop: '0.45rem' }}>{card.hint}</div>
           </div>
         ))}
-        <div style={{ ...CARD, padding: '1rem', border: '1px solid rgba(129,140,248,0.24)', background: 'linear-gradient(145deg, rgba(14,24,58,0.95), rgba(9,16,40,0.92))' }}>
+        <div style={{ ...CARD, padding: '1rem', border: '1px solid rgba(255,255,255,0.06)' }}>
           <div style={{ color: '#c4b5fd', fontWeight: 800, marginBottom: '0.7rem', textAlign: 'center' }}>DECISIONES DISPONIBLES</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, minmax(70px, 1fr))', gap: '0.5rem' }}>
             {[
@@ -185,7 +185,7 @@ export function StepValoracion({ runRaId }: { runRaId: string }) {
         </div>
       </section>
 
-      <section style={{ ...CARD, padding: 0, border: '1px solid rgba(129,140,248,0.24)', overflow: 'hidden' }}>
+      <section style={{ ...CARD, padding: 0, border: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1400 }}>
             <thead>
@@ -272,7 +272,7 @@ export function StepValoracion({ runRaId }: { runRaId: string }) {
         </div>
       </section>
 
-      <section style={{ ...CARD, border: '1px solid rgba(124,58,237,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+      <section style={{ ...CARD, border: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', color: '#cbd5e1', fontSize: '0.82rem' }}>
           <Info size={18} color="#a78bfa" />
           <span>La decisión seleccionada determinará las acciones a seguir y el tratamiento que se le dará a cada riesgo identificado.</span>

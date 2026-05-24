@@ -47,7 +47,7 @@ export type Catalog_appetiteMinAggregateOutputType = {
   metric_name: string | null
   metric_unit: string | null
   effective_from: Date | null
-  is_active: string | null
+  is_active: boolean | null
   approved_by: string | null
   approved_at: Date | null
   created_at: Date | null
@@ -65,7 +65,7 @@ export type Catalog_appetiteMaxAggregateOutputType = {
   metric_name: string | null
   metric_unit: string | null
   effective_from: Date | null
-  is_active: string | null
+  is_active: boolean | null
   approved_by: string | null
   approved_at: Date | null
   created_at: Date | null
@@ -254,7 +254,7 @@ export type Catalog_appetiteGroupByOutputType = {
   metric_name: string
   metric_unit: string | null
   effective_from: Date
-  is_active: string
+  is_active: boolean
   approved_by: string | null
   approved_at: Date | null
   created_at: Date
@@ -295,7 +295,7 @@ export type catalog_appetiteWhereInput = {
   metric_name?: Prisma.StringFilter<"catalog_appetite"> | string
   metric_unit?: Prisma.StringNullableFilter<"catalog_appetite"> | string | null
   effective_from?: Prisma.DateTimeFilter<"catalog_appetite"> | Date | string
-  is_active?: Prisma.StringFilter<"catalog_appetite"> | string
+  is_active?: Prisma.BoolFilter<"catalog_appetite"> | boolean
   approved_by?: Prisma.UuidNullableFilter<"catalog_appetite"> | string | null
   approved_at?: Prisma.DateTimeNullableFilter<"catalog_appetite"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"catalog_appetite"> | Date | string
@@ -334,7 +334,7 @@ export type catalog_appetiteWhereUniqueInput = Prisma.AtLeast<{
   metric_name?: Prisma.StringFilter<"catalog_appetite"> | string
   metric_unit?: Prisma.StringNullableFilter<"catalog_appetite"> | string | null
   effective_from?: Prisma.DateTimeFilter<"catalog_appetite"> | Date | string
-  is_active?: Prisma.StringFilter<"catalog_appetite"> | string
+  is_active?: Prisma.BoolFilter<"catalog_appetite"> | boolean
   approved_by?: Prisma.UuidNullableFilter<"catalog_appetite"> | string | null
   approved_at?: Prisma.DateTimeNullableFilter<"catalog_appetite"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"catalog_appetite"> | Date | string
@@ -378,7 +378,7 @@ export type catalog_appetiteScalarWhereWithAggregatesInput = {
   metric_name?: Prisma.StringWithAggregatesFilter<"catalog_appetite"> | string
   metric_unit?: Prisma.StringNullableWithAggregatesFilter<"catalog_appetite"> | string | null
   effective_from?: Prisma.DateTimeWithAggregatesFilter<"catalog_appetite"> | Date | string
-  is_active?: Prisma.StringWithAggregatesFilter<"catalog_appetite"> | string
+  is_active?: Prisma.BoolWithAggregatesFilter<"catalog_appetite"> | boolean
   approved_by?: Prisma.UuidNullableWithAggregatesFilter<"catalog_appetite"> | string | null
   approved_at?: Prisma.DateTimeNullableWithAggregatesFilter<"catalog_appetite"> | Date | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"catalog_appetite"> | Date | string
@@ -396,7 +396,7 @@ export type catalog_appetiteCreateInput = {
   metric_name: string
   metric_unit?: string | null
   effective_from: Date | string
-  is_active: string
+  is_active: boolean
   approved_by?: string | null
   approved_at?: Date | string | null
   created_at?: Date | string
@@ -414,7 +414,7 @@ export type catalog_appetiteUncheckedCreateInput = {
   metric_name: string
   metric_unit?: string | null
   effective_from: Date | string
-  is_active: string
+  is_active: boolean
   approved_by?: string | null
   approved_at?: Date | string | null
   created_at?: Date | string
@@ -432,7 +432,7 @@ export type catalog_appetiteUpdateInput = {
   metric_name?: Prisma.StringFieldUpdateOperationsInput | string
   metric_unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effective_from?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  is_active?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   approved_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -450,7 +450,7 @@ export type catalog_appetiteUncheckedUpdateInput = {
   metric_name?: Prisma.StringFieldUpdateOperationsInput | string
   metric_unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effective_from?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  is_active?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   approved_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -468,7 +468,7 @@ export type catalog_appetiteCreateManyInput = {
   metric_name: string
   metric_unit?: string | null
   effective_from: Date | string
-  is_active: string
+  is_active: boolean
   approved_by?: string | null
   approved_at?: Date | string | null
   created_at?: Date | string
@@ -486,7 +486,7 @@ export type catalog_appetiteUpdateManyMutationInput = {
   metric_name?: Prisma.StringFieldUpdateOperationsInput | string
   metric_unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effective_from?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  is_active?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   approved_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -504,7 +504,7 @@ export type catalog_appetiteUncheckedUpdateManyInput = {
   metric_name?: Prisma.StringFieldUpdateOperationsInput | string
   metric_unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effective_from?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  is_active?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   approved_by?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approved_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -677,7 +677,7 @@ export type $catalog_appetitePayload<ExtArgs extends runtime.Types.Extensions.In
     metric_name: string
     metric_unit: string | null
     effective_from: Date
-    is_active: string
+    is_active: boolean
     approved_by: string | null
     approved_at: Date | null
     created_at: Date
@@ -1115,7 +1115,7 @@ export interface catalog_appetiteFieldRefs {
   readonly metric_name: Prisma.FieldRef<"catalog_appetite", 'String'>
   readonly metric_unit: Prisma.FieldRef<"catalog_appetite", 'String'>
   readonly effective_from: Prisma.FieldRef<"catalog_appetite", 'DateTime'>
-  readonly is_active: Prisma.FieldRef<"catalog_appetite", 'String'>
+  readonly is_active: Prisma.FieldRef<"catalog_appetite", 'Boolean'>
   readonly approved_by: Prisma.FieldRef<"catalog_appetite", 'String'>
   readonly approved_at: Prisma.FieldRef<"catalog_appetite", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"catalog_appetite", 'DateTime'>
