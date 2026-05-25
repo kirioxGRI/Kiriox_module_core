@@ -377,24 +377,6 @@ export function StepDashboard({
                               {ev.status === 'COMPLETADA' ? <Eye size={13} /> : ev.status === 'EN TRATAMIENTO' ? <FolderOpen size={13} /> : <Play size={13} />}
                             </button>
                             <button
-                              onClick={() => onOpenEvaluation(ev.id, ev.code)}
-                              style={{
-                                width: 28,
-                                height: 28,
-                                borderRadius: 7,
-                                cursor: 'pointer',
-                                background: 'rgba(167,139,250,0.12)',
-                                border: '1px solid rgba(167,139,250,0.3)',
-                                color: '#a78bfa',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}
-                              title="Ver"
-                            >
-                              <Eye size={13} />
-                            </button>
-                            <button
                               onClick={() => handleDelete(ev.id, ev.code)}
                               style={{
                                 width: 28,

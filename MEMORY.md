@@ -219,3 +219,19 @@ ame) debe actualizar simultáneamente el campo legal_name al momento de enviar el
 
 **Aplicación futura:** Si una tabla no carga datos a pesar de existir, verificar si hay un desajuste de tipos (string vs boolean) entre la base de datos real (psql) y el schema.prisma. Tras corregirlo, siempre ejecutar npx prisma generate y adaptar el mapeo en el repository correspondiente.
 
+
+## 2026-05-25 - Aprendizaje
+
+**Contexto:** Personalizacion visual de pasos en el wizard de riesgo lineal.
+
+**Regla aprendida:** El paso 2 del wizard de riesgo lineal (StepAnalisisRiesgo.tsx) requiere mostrar contextualizada la actividad seleccionada en el paso 1. En lugar de texto descriptivo plano, se utiliza un badge enriquecido con degradados (linear-gradient) y bordes semitransparentes en consonancia con la estetica premium de Kiriox (glassmorphism/fondos oscuros).
+
+**Aplicacion futura:** En Wizards de varios pasos, arrastrar metadata (como nombres de entidades del paso previo) y mostrarlos como badges estilizados en la cabecera de las tarjetas para guiar visualmente el flujo de captura sin saturar de texto.
+
+## 2026-05-25 - Aprendizaje
+
+**Contexto:** Discrepancia del riesgo residual lineal entre formulas del backend y frontend.
+
+**Regla aprendida:** El score de riesgo residual lineal debe ser homogeneo. La formula canonica es la aditiva (residual = max(0, inherent - totalReduction)). Las rutas de guardado (API) deben usar esta formula al persistir residual_risk_score, en lugar del producto de impactos/probabilidades redondeados. Asimismo, el heatmap del paso 4 requiere mapear explicitamente en el repositorio de valoracion los campos de posicion residual_impact_pos, residual_probability_pos e identifiers del owner desde la DB y el rationale JSON.
+
+**Aplicacion futura:** Al modificar calculos de riesgos lineales, contrastar siempre el controlador de API, la UI del paso de control/valoracion y el fallback del repositorio. Todos deben resolver de forma determinista la formula aditiva.

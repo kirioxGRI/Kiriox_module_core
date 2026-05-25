@@ -190,7 +190,7 @@ export function StepAnalisisRiesgo({ runRaId }: { runRaId: string }) {
     setForm(ANALYSIS_EMPTY);
     setError(null);
     setShowForm(true);
-    setTimeout(() => formCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    setTimeout(() => formCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
   }
 
   function closeForm() {
@@ -261,7 +261,7 @@ export function StepAnalisisRiesgo({ runRaId }: { runRaId: string }) {
     });
     setError(null);
     setShowForm(true);
-    setTimeout(() => formCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    setTimeout(() => formCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
   }
 
   if (loading) return <LoaderSection />;
@@ -295,9 +295,22 @@ export function StepAnalisisRiesgo({ runRaId }: { runRaId: string }) {
               <p style={{ ...SECTION_HDR, color: '#7dd3fc', marginBottom: '0.2rem', fontSize: '1.05rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
                 <BarChart3 size={16} /> {form.id ? 'Editar riesgo' : 'Nuevo riesgo'}
               </p>
-              <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.74rem' }}>
-                Complete los campos y guarde para agregar al listado.
-              </p>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                marginTop: '0.3rem',
+                padding: '0.35rem 0.9rem',
+                borderRadius: 10,
+                background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(124,58,237,0.15))',
+                border: '1px solid rgba(99,102,241,0.3)',
+                fontSize: '0.74rem',
+                fontWeight: 700,
+                color: '#a5b4fc',
+              }}>
+                <span style={{ color: '#7dd3fc', fontWeight: 800 }}>Actividad:</span>
+                {meta.evaluated_activity || 'Sin definir'}
+              </span>
             </div>
             <button
               type="button"

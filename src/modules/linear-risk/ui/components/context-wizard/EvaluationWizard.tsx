@@ -490,7 +490,7 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
         )}
       </div>
 
-      <div style={{ flex: 1, padding: step === 1 ? '2.5rem 2rem 2rem' : '1.45rem 2rem 2rem', maxWidth: step === 1 ? 1380 : (step === 2 || step === 3 || step === 4 || step === 5) ? '96%' : 1152, width: '100%', margin: '0 auto', boxSizing: 'border-box', display: step === 1 ? 'flex' : undefined, alignItems: step === 1 ? 'center' : undefined, justifyContent: step === 1 ? 'center' : undefined }}>
+      <div style={{ flex: 1, padding: step === 1 ? '2.5rem 2rem 2rem' : (step === 2 || step === 3) ? '2.8rem 2rem 2rem' : '1.45rem 2rem 2rem', maxWidth: step === 1 ? 1380 : (step === 2 || step === 3 || step === 4 || step === 5) ? '96%' : 1152, width: '100%', margin: '0 auto', boxSizing: 'border-box', display: step === 1 ? 'flex' : undefined, alignItems: step === 1 ? 'center' : undefined, justifyContent: step === 1 ? 'center' : undefined }}>
         {step !== 1 && step !== 2 && step !== 3 && (
           <div style={{ marginBottom: '1.35rem' }}>
             <h2 style={{ margin: 0, fontSize: '1.3rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.025em' }}>

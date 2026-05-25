@@ -385,7 +385,8 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
       prisma.$queryRaw<any[]>(Prisma.sql`
         SELECT id::text, name, element_id::text 
         FROM public.activities 
-        WHERE is_active = true 
+        WHERE (company_id = ${companyId}::uuid OR company_id IS NULL)
+          AND is_active = true 
         ORDER BY name ASC
       `),
     ]);
@@ -537,7 +538,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT catalog_impact_id::text AS id, name, description, ordinal::int, numeric_value::float8 FROM public.catalog_ra_impact WHERE is_active = true ORDER BY ordinal ASC`),
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT catalog_probability_id::text AS id, name, description, ordinal::int, numeric_value::float8 FROM public.catalog_ra_probability WHERE is_active = true ORDER BY ordinal ASC`),
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text AS id, descripcion, peso::float8 FROM public.pesos ORDER BY id ASC`),
-      prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, name FROM public.activities ORDER BY name ASC`),
+      prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, name FROM public.activities WHERE (company_id = ${companyId}::uuid OR company_id IS NULL) AND is_active = true ORDER BY name ASC`),
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, COALESCE(name,'') AS name, COALESCE(last_name,'') AS last_name FROM public.users WHERE company_id = ${companyId}::uuid AND is_active = true ORDER BY name ASC`),
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, name FROM public.run_ra_controls WHERE run_ra_id = ${runRaId}::uuid AND is_existing = true AND is_active = true ORDER BY name ASC`),
       prisma.$queryRaw<any[]>(Prisma.sql`
@@ -930,7 +931,10 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
           r.id_valoration::text AS id_valoration,
           ra.inherent_risk_score::float8 AS inherent_score,
           ra.residual_risk_score::float8 AS residual_score,
-          ra.calculation_rationale
+          ra.calculation_rationale,
+          r.owner_id::text AS owner_id,
+          ra.impact_score::float8 AS impact_score,
+          ra.probability_score::float8 AS probability_score
         FROM public.run_ra_risks r
         LEFT JOIN public.run_ra_risk_analysis ra ON ra.run_ra_risk_id = r.id
         LEFT JOIN public.activities a ON a.id = r.activity_id
@@ -1062,6 +1066,9 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
         rationale = riskRow.calculation_rationale as Record<string, unknown>;
       }
 
+      const ownerMatch = ownersRaw.find((o) => o.id === riskRow.owner_id);
+      const ownerName = ownerMatch ? `${ownerMatch.name} ${ownerMatch.last_name}`.trim() : '';
+
       return {
         id: String(riskRow.id),
         code: String(riskRow.code ?? ''),
@@ -1079,6 +1086,12 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
         inherent_level_color: inherentLevel?.color ?? null,
         weight: Number(rationale?.peso_value ?? 0) || 0,
         id_valoration: riskRow.id_valoration ?? null,
+        owner_id: riskRow.owner_id ?? null,
+        owner: ownerName || '-',
+        impact_score: riskRow.impact_score ? Number(riskRow.impact_score) : null,
+        probability_score: riskRow.probability_score ? Number(riskRow.probability_score) : null,
+        residual_impact_pos: rationale?.residual_impact ? Number(rationale.residual_impact) : null,
+        residual_probability_pos: rationale?.residual_probability ? Number(rationale.residual_probability) : null,
       };
     });
 

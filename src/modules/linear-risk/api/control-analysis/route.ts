@@ -311,7 +311,21 @@ export const POST = withAccess({ module: 'linear-risk', permission: 'read' }, as
     const residualProbability = Math.max(1, Math.round(baseProbability * (1 - 0.50 * factor)));
     const prev = parseJson(analysis[0].calculation_rationale);
     const weight = typeof prev.peso_value === 'number' ? prev.peso_value : 1;
-    const residualScore = Number((residualImpact * residualProbability * weight).toFixed(2));
+
+    const inherent = Number(analysis[0].inherent_risk_score ?? 0);
+    let totalReduction = 0;
+    for (const control of controls) {
+      const design = Math.min(5, Math.max(1, Number(control.design ?? 3)));
+      const implementation = Math.min(5, Math.max(1, Number(control.implementation ?? 3)));
+      const operation = Math.min(5, Math.max(1, Number(control.operation ?? 3)));
+      const cobertura = Math.min(100, Math.max(0, Number(control.cobertura ?? 75)));
+
+      const internalEff = (design / 5 * 0.35) + (implementation / 5 * 0.30) + (operation / 5 * 0.35);
+      const overall = Number((internalEff * (cobertura / 100)).toFixed(4));
+      totalReduction += inherent * overall;
+    }
+    const finalResidual = Math.max(0, inherent - totalReduction);
+    const residualScore = Number(finalResidual.toFixed(2));
 
     const rationale = JSON.stringify({
       ...prev,
