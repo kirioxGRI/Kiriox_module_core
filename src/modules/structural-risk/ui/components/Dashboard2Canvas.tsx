@@ -55,7 +55,7 @@ function buildStylesheet(_mode: Dashboard2Mode) {
     },
     // ── DOMINIO: triángulo azul ────────────────────────────────────────
     {
-      selector: 'node[nodeType ^= "DOM"]:not([nodeType *= "ELEM"])',
+      selector: '.is-domain-node',
       style: {
         shape:              'hexagon' as const,
         'background-color': '#3b82f6',
@@ -206,6 +206,10 @@ function toVizNode(node: OverviewNode): CytoscapeElementDefinition {
 
   const t        = Math.min(1, degree / 30);
   const vizColor = t > 0.5 ? NODE_HUB_COLOR : NODE_BASE_COLOR;
+  const classes: string[] = [];
+
+  if (node.is_hard_gate) classes.push('is-hard-gate');
+  if (nodeType.startsWith('DOM') && !nodeType.includes('ELEM')) classes.push('is-domain-node');
 
   return {
     data: {
@@ -221,7 +225,7 @@ function toVizNode(node: OverviewNode): CytoscapeElementDefinition {
       is_hard_gate:     node.is_hard_gate,
       is_dependency_root: node.is_dependency_root,
     },
-    classes: node.is_hard_gate ? 'is-hard-gate' : undefined,
+    classes: classes.length > 0 ? classes.join(' ') : undefined,
   };
 }
 
