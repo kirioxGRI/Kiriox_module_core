@@ -1,13 +1,21 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, ChevronLeft, ChevronRight, FileText, Loader2, LogOut, ShieldCheck, X } from 'lucide-react';
+import { Building2, CheckCircle2, ChevronLeft, ChevronRight, FileText, Globe, Loader2, LogOut, Network, Save, ShieldCheck, X } from 'lucide-react';
 import { CARD, CopyRunCodeButton, ExitDialog, STEPS, WIZARD_SURFACE_BG, WIZARD_SURFACE_BORDER, WIZARD_SURFACE_SHADOW } from './ContextWizardShared';
 import { StepAnalisisRiesgo } from './StepAnalisisRiesgo';
 import { StepAnalisisControl } from './StepAnalisisControl';
 import { StepValoracion } from './StepValoracion';
 import { StepTratamiento } from './StepTratamiento';
 import { EvaluacionTab, ExternoTab, InternoTab } from './ContextWizardShared';
+
+const STEP_ONE_FLOW = [
+  { id: 1, title: 'Definir contexto', subtitle: 'Entender el entorno' },
+  { id: 2, title: 'Identificar riesgos', subtitle: 'Reconocer amenazas' },
+  { id: 3, title: 'Evaluar controles', subtitle: 'Revisar y analizar' },
+  { id: 4, title: 'Calcular exposición', subtitle: 'Determinar el nivel de riesgo' },
+  { id: 5, title: 'Definir tratamiento', subtitle: 'Seleccionar acciones' },
+] as const;
 
 function StepPlaceholder({ step }: { step: typeof STEPS[number] }) {
   return (
@@ -132,6 +140,7 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
   };
   const lifecycleUi = lifecycleMap[lifecycleCode] ?? lifecycleMap.DRAFT;
   const current = STEPS[step - 1];
+  const stepOneProgress = Math.max(progressPercent, 20);
 
   async function handleGenerateReport() {
     setGeneratingReport(true);
@@ -213,182 +222,330 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
         position: 'sticky', top: 0, zIndex: 100, backdropFilter: 'blur(12px)',
         padding: '1rem 1.4rem 0.35rem',
       }}>
-        <div style={{
-          maxWidth: 1380,
-          margin: '0 auto',
-          background: WIZARD_SURFACE_BG,
-          border: WIZARD_SURFACE_BORDER,
-          borderRadius: 22,
-          boxShadow: WIZARD_SURFACE_SHADOW,
-          overflow: 'hidden',
-        }}>
+        {step === 1 ? (
           <div style={{
-            padding: '0.95rem 1.15rem 0.8rem',
-            display: 'flex', alignItems: 'center', gap: '0.9rem', flexWrap: 'wrap',
+            maxWidth: 1380,
+            margin: '0 auto',
+            background: 'linear-gradient(180deg, rgba(13,35,86,0.98) 0%, rgba(11,32,79,0.96) 100%)',
+            border: '1px solid rgba(117,145,199,0.18)',
+            borderRadius: 24,
+            boxShadow: '0 18px 34px rgba(2,8,23,0.18)',
+            overflow: 'hidden',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flex: 1, minWidth: 0 }}>
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 14,
+            <div style={{
+              padding: '1.1rem 1.2rem 0.9rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '1rem',
+              flexWrap: 'wrap',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    width: 46,
+                    height: 46,
+                    borderRadius: 14,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'linear-gradient(180deg, rgba(32,75,162,0.42) 0%, rgba(24,61,132,0.28) 100%)',
+                    border: '1px solid rgba(118,157,232,0.24)',
+                    boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.03)',
+                    flexShrink: 0,
+                  }}
+                >
+                  <ShieldCheck size={22} color="#a9c8ff" />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', minWidth: 0, flexWrap: 'wrap' }}>
+                  <h2 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#f2f7ff', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
+                    Evaluación de riesgo
+                  </h2>
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.38rem',
+                    background: 'rgba(251,191,36,0.08)',
+                    border: '1px solid rgba(251,191,36,0.3)',
+                    borderRadius: 999,
+                    padding: '0.22rem 0.82rem',
+                    fontSize: '0.66rem',
+                    fontWeight: 800,
+                    color: '#fbbf24',
+                    letterSpacing: '0.04em',
+                    lineHeight: 1,
+                  }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fbbf24' }} />
+                    {lifecycleUi.label}
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  background: 'rgba(124,58,237,0.14)',
-                  border: '1px solid rgba(167,139,250,0.28)',
-                  boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)',
-                  flexShrink: 0,
-                }}
-              >
-                <ShieldCheck size={24} color="#c084fc" />
-              </div>
-              <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#e7efff', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
-                Evaluación de riesgo
-              </h2>
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
-                background: lifecycleUi.bg, border: `1px solid ${lifecycleUi.border}`,
-                borderRadius: 999, padding: '0.2rem 0.62rem',
-                fontSize: '0.62rem', fontWeight: 700, color: lifecycleUi.color, letterSpacing: '0.06em',
-              }}>
-                <span style={{ width: 5, height: 5, borderRadius: '50%', background: lifecycleUi.color }} />
-                {`${lifecycleUi.label} (${progressPercent}%)`}
-              </span>
-            </div>
+                  gap: '0.55rem',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: 14,
+                  padding: '0.45rem 0.8rem 0.45rem 0.95rem',
+                  minHeight: 44,
+                }}>
+                  <span style={{ fontSize: '0.71rem', color: '#7b8fad', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    ID evaluación
+                  </span>
+                  <code style={{ fontSize: '0.92rem', color: '#22d3ee', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.04em' }}>
+                    {runRaCode || runRaId.slice(0, 16) + '…'}
+                  </code>
+                  <CopyRunCodeButton value={runRaCode || runRaId} />
+                </div>
 
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '0.55rem',
-              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: 12, padding: '0.45rem 0.85rem',
-            }}>
-              <span style={{ fontSize: '0.71rem', color: '#7b8fad', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                ID evaluación
-              </span>
-              <code style={{ fontSize: '0.92rem', color: '#22d3ee', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.04em' }}>
-                {runRaCode || runRaId.slice(0, 16) + '…'}
-              </code>
-              <CopyRunCodeButton value={runRaCode || runRaId} />
-            </div>
-
-            <span style={{ fontSize: '0.72rem', color: '#8ca0be', fontWeight: 700, whiteSpace: 'nowrap' }}>
-              Paso {step} / {STEPS.length}
-            </span>
-
-            <button
-              onClick={() => {
-                if (lifecycleCode === 'COMPLETED') {
-                  onExit('draft');
-                } else {
-                  setShowExit(true);
-                }
-              }}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.4rem',
-                padding: '0.45rem 0.9rem', borderRadius: 12,
-                background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
-                color: '#fda4af', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
-              }}>
-              <LogOut size={13} /> Salir
-            </button>
-          </div>
-
-          <div style={{ padding: '0 0.8rem 0.8rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-            {step === 1 && (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '0.75rem', padding: '0 0.15rem' }}>
-                {['Contexto', 'Contexto', 'Contexto'].map((label, index) => (
-                  <button
-                    key={`${label}-top-${index}`}
-                    type="button"
-                    onClick={
-                      index === 0
-                        ? () => setShowEvaluationContextModal(true)
-                        : index === 1
-                          ? () => setShowExternalContextModal(true)
-                          : () => setShowInternalContextModal(true)
+                <button
+                  onClick={() => {
+                    if (lifecycleCode === 'COMPLETED') {
+                      onExit('draft');
+                    } else {
+                      setShowExit(true);
                     }
-                    style={{
-                      borderRadius: 14,
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      background: 'rgba(255,255,255,0.03)',
-                      padding: '0.8rem 0.95rem',
-                      color: '#d9e8ff',
-                      fontSize: '0.82rem',
-                      fontWeight: 700,
-                      textAlign: 'left',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            )}
-            {step >= 2 && step <= 5 && (
-              <div style={{
-                margin: '0 0.35rem',
-                padding: '0.68rem 0.9rem',
-                borderRadius: 14,
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.05)',
-                color: '#c4b5fd',
-                fontSize: '0.74rem',
-                fontWeight: 700,
-              }}>
-                Proceso evaluado: {evaluatedProcess || 'No definido en paso 1'}
-              </div>
-            )}
-
-            <div style={{
-              display: 'flex',
-              alignItems: 'stretch',
-              overflowX: 'auto',
-              gap: '0.45rem',
-              padding: '0.1rem 0.15rem 0.15rem',
-              background: 'rgba(255,255,255,0.02)',
-              border: '1px solid rgba(255,255,255,0.05)',
-              borderRadius: 18,
-            }}>
-              {STEPS.map((s, i) => {
-                const active = s.id === step;
-                const done = s.id < step;
-                return (
-                  <button key={s.key} onClick={() => setStep(s.id)} style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.72rem 0.95rem',
-                    background: active ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.02)',
-                    border: `1px solid ${active ? 'rgba(59,130,246,0.22)' : 'rgba(255,255,255,0.05)'}`,
-                    borderRadius: 14,
-                    cursor: 'pointer',
-                    color: active ? '#93c5fd' : done ? '#6ee7b7' : '#6f83a3',
-                    fontSize: '0.76rem',
-                    fontWeight: active ? 700 : 600,
-                    whiteSpace: 'nowrap',
-                    transition: 'color .15s',
-                    flexShrink: 0,
+                  }}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '0.42rem',
+                    padding: '0.72rem 1rem', borderRadius: 14,
+                    background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.22)',
+                    color: '#fda4af', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
+                    minHeight: 44,
                   }}>
-                    <span style={{
-                      width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '0.62rem', fontWeight: 800,
-                      background: active ? 'rgba(59,130,246,0.18)' : done ? 'rgba(16,185,129,0.14)' : 'rgba(255,255,255,0.05)',
-                      border: `1px solid ${active ? 'rgba(59,130,246,0.28)' : done ? 'rgba(16,185,129,0.24)' : 'rgba(255,255,255,0.08)'}`,
-                      color: active ? '#93c5fd' : done ? '#6ee7b7' : '#8ca0be',
-                    }}>
-                      {done ? <CheckCircle2 size={10} /> : s.id}
-                    </span>
-                    <s.Icon size={13} />
-                    {s.label}
-                    {i < STEPS.length - 1 && <ChevronRight size={11} style={{ marginLeft: '0.1rem', color: 'rgba(140,160,190,0.45)' }} />}
-                  </button>
-                );
-              })}
+                  <LogOut size={13} /> Salir
+                </button>
+              </div>
+            </div>
+
+            <div style={{ padding: '0 1.2rem 1rem' }}>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+                gap: '1rem',
+                padding: '0.68rem 0 0.82rem',
+                borderBottom: '1px solid rgba(255,255,255,0.08)',
+              }}>
+                {STEP_ONE_FLOW.map((item, index) => {
+                  const active = item.id === step;
+                  const done = item.id < step;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setStep(item.id)}
+                      style={{
+                        position: 'relative',
+                        display: 'grid',
+                        gridTemplateColumns: index < STEP_ONE_FLOW.length - 1 ? '34px minmax(0, 1fr) 14px' : '34px minmax(0, 1fr)',
+                        alignItems: 'center',
+                        gap: '0.7rem',
+                        background: 'transparent',
+                        border: 'none',
+                        padding: '0.16rem 0',
+                        color: active ? '#f3f8ff' : done ? '#d8ffe8' : '#d5e1f4',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        minWidth: 0,
+                        width: '100%',
+                      }}
+                    >
+                      <span style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: '50%',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: active ? 'linear-gradient(180deg, #68a5ff 0%, #4b89ff 100%)' : 'rgba(255,255,255,0.02)',
+                        border: `1px solid ${active ? 'rgba(147,197,253,0.42)' : done ? 'rgba(110,231,183,0.24)' : 'rgba(255,255,255,0.14)'}`,
+                        color: active ? '#ffffff' : done ? '#86efac' : '#d7e6ff',
+                        boxShadow: active ? '0 0 18px rgba(59,130,246,0.22)' : 'none',
+                        flexShrink: 0,
+                        fontSize: '0.86rem',
+                        fontWeight: 800,
+                      }}>
+                        {item.id}
+                      </span>
+                      <span style={{ minWidth: 0, flex: 1 }}>
+                        <span style={{ display: 'block', fontSize: '0.79rem', fontWeight: active ? 800 : 700, color: 'inherit', whiteSpace: 'nowrap', lineHeight: 1.15 }}>
+                          {item.title}
+                        </span>
+                        <span style={{ display: 'block', marginTop: '0.18rem', fontSize: '0.71rem', color: active ? '#b8d2ff' : '#94a9ca', whiteSpace: 'nowrap', lineHeight: 1.15 }}>
+                          {item.subtitle}
+                        </span>
+                      </span>
+                      {index < STEP_ONE_FLOW.length - 1 ? (
+                        <ChevronRight size={14} style={{ color: 'rgba(173,196,229,0.72)', flexShrink: 0 }} />
+                      ) : null}
+                      {active ? (
+                        <span style={{
+                          position: 'absolute',
+                          left: 0,
+                          right: index < STEP_ONE_FLOW.length - 1 ? 18 : 0,
+                          bottom: '-0.84rem',
+                          height: 2,
+                          borderRadius: 999,
+                          background: '#5ea0ff',
+                        }} />
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div style={{
+            maxWidth: 1380,
+            margin: '0 auto',
+            background: WIZARD_SURFACE_BG,
+            border: WIZARD_SURFACE_BORDER,
+            borderRadius: 22,
+            boxShadow: WIZARD_SURFACE_SHADOW,
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              padding: '0.95rem 1.15rem 0.8rem',
+              display: 'flex', alignItems: 'center', gap: '0.9rem', flexWrap: 'wrap',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 14,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(124,58,237,0.14)',
+                    border: '1px solid rgba(167,139,250,0.28)',
+                    boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)',
+                    flexShrink: 0,
+                  }}
+                >
+                  <ShieldCheck size={24} color="#c084fc" />
+                </div>
+                <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#e7efff', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
+                  Evaluación de riesgo
+                </h2>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+                  background: lifecycleUi.bg, border: `1px solid ${lifecycleUi.border}`,
+                  borderRadius: 999, padding: '0.2rem 0.62rem',
+                  fontSize: '0.62rem', fontWeight: 700, color: lifecycleUi.color, letterSpacing: '0.06em',
+                }}>
+                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: lifecycleUi.color }} />
+                  {`${lifecycleUi.label} (${progressPercent}%)`}
+                </span>
+              </div>
+
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '0.55rem',
+                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: 12, padding: '0.45rem 0.85rem',
+              }}>
+                <span style={{ fontSize: '0.71rem', color: '#7b8fad', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  ID evaluación
+                </span>
+                <code style={{ fontSize: '0.92rem', color: '#22d3ee', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.04em' }}>
+                  {runRaCode || runRaId.slice(0, 16) + '…'}
+                </code>
+                <CopyRunCodeButton value={runRaCode || runRaId} />
+              </div>
+
+              <span style={{ fontSize: '0.72rem', color: '#8ca0be', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                Paso {step} / {STEPS.length}
+              </span>
+
+              <button
+                onClick={() => {
+                  if (lifecycleCode === 'COMPLETED') {
+                    onExit('draft');
+                  } else {
+                    setShowExit(true);
+                  }
+                }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.4rem',
+                  padding: '0.45rem 0.9rem', borderRadius: 12,
+                  background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
+                  color: '#fda4af', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
+                }}>
+                <LogOut size={13} /> Salir
+              </button>
+            </div>
+
+            <div style={{ padding: '0 0.8rem 0.8rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+              {step >= 2 && step <= 5 && (
+                <div style={{
+                  margin: '0 0.35rem',
+                  padding: '0.68rem 0.9rem',
+                  borderRadius: 14,
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.05)',
+                  color: '#c4b5fd',
+                  fontSize: '0.74rem',
+                  fontWeight: 700,
+                }}>
+                  Proceso evaluado: {evaluatedProcess || 'No definido en paso 1'}
+                </div>
+              )}
+
+              <div style={{
+                display: 'flex',
+                alignItems: 'stretch',
+                overflowX: 'auto',
+                gap: '0.45rem',
+                padding: '0.1rem 0.15rem 0.15rem',
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.05)',
+                borderRadius: 18,
+              }}>
+                {STEPS.map((s, i) => {
+                  const active = s.id === step;
+                  const done = s.id < step;
+                  return (
+                    <button key={s.key} onClick={() => setStep(s.id)} style={{
+                      display: 'flex', alignItems: 'center', gap: '0.5rem',
+                      padding: '0.72rem 0.95rem',
+                      background: active ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.02)',
+                      border: `1px solid ${active ? 'rgba(59,130,246,0.22)' : 'rgba(255,255,255,0.05)'}`,
+                      borderRadius: 14,
+                      cursor: 'pointer',
+                      color: active ? '#93c5fd' : done ? '#6ee7b7' : '#6f83a3',
+                      fontSize: '0.76rem',
+                      fontWeight: active ? 700 : 600,
+                      whiteSpace: 'nowrap',
+                      transition: 'color .15s',
+                      flexShrink: 0,
+                    }}>
+                      <span style={{
+                        width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '0.62rem', fontWeight: 800,
+                        background: active ? 'rgba(59,130,246,0.18)' : done ? 'rgba(16,185,129,0.14)' : 'rgba(255,255,255,0.05)',
+                        border: `1px solid ${active ? 'rgba(59,130,246,0.28)' : done ? 'rgba(16,185,129,0.24)' : 'rgba(255,255,255,0.08)'}`,
+                        color: active ? '#93c5fd' : done ? '#6ee7b7' : '#8ca0be',
+                      }}>
+                        {done ? <CheckCircle2 size={10} /> : s.id}
+                      </span>
+                      <s.Icon size={13} />
+                      {s.label}
+                      {i < STEPS.length - 1 && <ChevronRight size={11} style={{ marginLeft: '0.1rem', color: 'rgba(140,160,190,0.45)' }} />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      <div style={{ flex: 1, padding: '1.45rem 2rem 2rem', maxWidth: (step === 2 || step === 3 || step === 4 || step === 5) ? '96%' : 1152, width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
+      <div style={{ flex: 1, padding: step === 1 ? '0.85rem 2rem 2rem' : '1.45rem 2rem 2rem', maxWidth: step === 1 ? 1380 : (step === 2 || step === 3 || step === 4 || step === 5) ? '96%' : 1152, width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
         {step !== 1 && step !== 2 && step !== 3 && (
           <div style={{ marginBottom: '1.35rem' }}>
             <h2 style={{ margin: 0, fontSize: '1.3rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.025em' }}>
@@ -401,7 +558,88 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
         )}
 
         {step === 1
-          ? null
+          ? (
+            <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ padding: '0 0.1rem' }}>
+                <h3 style={{ margin: 0, fontSize: '1.14rem', fontWeight: 800, color: '#eef5ff', letterSpacing: '-0.02em' }}>
+                  Selecciona el tipo de contexto a definir
+                </h3>
+                <p style={{ margin: '0.45rem 0 0', fontSize: '0.85rem', color: '#a8bddf', lineHeight: 1.6 }}>
+                  El contexto es la base para identificar y evaluar los riesgos de manera efectiva.
+                </p>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.4rem' }}>
+                {[
+                  {
+                    key: 'interno',
+                    title: 'Contexto interno',
+                    description: 'Define los aspectos internos del activo o proceso, incluyendo estructura, recursos, procesos y objetivos.',
+                    Icon: Building2,
+                    onClick: () => setShowInternalContextModal(true),
+                  },
+                  {
+                    key: 'externo',
+                    title: 'Contexto externo',
+                    description: 'Analiza factores externos que pueden influir en el activo o proceso, como proveedores, regulaciones y terceros.',
+                    Icon: Network,
+                    onClick: () => setShowExternalContextModal(true),
+                  },
+                  {
+                    key: 'general',
+                    title: 'Contexto general',
+                    description: 'Establece el panorama general del entorno, incluyendo alcance, dependencias y criterios de evaluación.',
+                    Icon: Globe,
+                    onClick: () => setShowEvaluationContextModal(true),
+                  },
+                ].map((card) => (
+                  <button
+                    key={card.key}
+                    type="button"
+                    onClick={card.onClick}
+                    style={{
+                      minHeight: 172,
+                      borderRadius: 18,
+                      border: '1px solid rgba(125,157,212,0.24)',
+                      background: 'linear-gradient(180deg, rgba(21,49,110,0.58) 0%, rgba(12,34,84,0.78) 100%)',
+                      boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.02)',
+                      padding: '1.25rem 1.25rem 1.15rem',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'stretch',
+                      gap: '1rem',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <div style={{
+                      width: 42,
+                      height: 42,
+                      borderRadius: 12,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      background: 'linear-gradient(180deg, rgba(54,112,228,0.42) 0%, rgba(37,99,235,0.2) 100%)',
+                      border: '1px solid rgba(96,165,250,0.22)',
+                    }}>
+                      <card.Icon size={20} color="#8fc0ff" />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#eef5ff' }}>
+                          {card.title}
+                        </h4>
+                        <ChevronRight size={16} color="#c6d7f3" style={{ marginLeft: 'auto', flexShrink: 0 }} />
+                      </div>
+                      <p style={{ margin: '0.75rem 0 0', fontSize: '0.84rem', color: '#b1c5e4', lineHeight: 1.55 }}>
+                        {card.description}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </section>
+          )
           : step === 2
             ? <StepAnalisisRiesgo runRaId={runRaId} />
             : step === 3
@@ -417,94 +655,165 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
         position: 'sticky', bottom: 0, zIndex: 100,
         padding: '0 1.4rem 1rem', backdropFilter: 'blur(12px)',
       }}>
-        <div style={{
-          maxWidth: 1380,
-          margin: '0 auto',
-          background: WIZARD_SURFACE_BG,
-          border: WIZARD_SURFACE_BORDER,
-          borderRadius: 22,
-          boxShadow: WIZARD_SURFACE_SHADOW,
-          padding: '0.8rem 1.15rem',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
-        }}>
-          <button
-            onClick={() => setStep((s) => Math.max(1, s - 1))}
-            disabled={step === 1}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '0.45rem',
-              padding: '0.6rem 1.05rem', borderRadius: 12,
-              background: step === 1 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.05)',
-              border: `1px solid ${step === 1 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.09)'}`,
-              color: step === 1 ? '#41516e' : '#a8b6cc', fontSize: '0.8rem', fontWeight: 700,
-              cursor: step === 1 ? 'not-allowed' : 'pointer',
-            }}>
-            <ChevronLeft size={14} /> Anterior
-          </button>
-
-          <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
-            {STEPS.map((s) => (
-              <div key={s.id} style={{
-                width: s.id === step ? 22 : 6, height: 6, borderRadius: 999,
-                background: s.id === step ? '#3b82f6' : s.id < step ? '#34d399' : 'rgba(255,255,255,0.1)',
-                transition: 'all .2s',
-              }} />
-            ))}
-          </div>
-
-          {step < STEPS.length ? (
+        {step === 1 ? (
+          <div style={{
+            maxWidth: 1380,
+            margin: '0 auto',
+            background: 'linear-gradient(180deg, rgba(9,30,74,0.96) 0%, rgba(7,26,67,0.9) 100%)',
+            border: '1px solid rgba(115,146,205,0.18)',
+            borderRadius: 18,
+            boxShadow: '0 20px 40px rgba(2,8,23,0.24)',
+            padding: '0.85rem 1.25rem',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            alignItems: 'center',
+            gap: '1rem',
+          }}>
             <button
-              onClick={() => setStep((s) => s + 1)}
+              type="button"
+              onClick={() => onExit('draft')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.55rem',
+                padding: '0.75rem 1.1rem',
+                borderRadius: 10,
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#d7e6ff',
+                fontSize: '0.84rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                justifySelf: 'start',
+              }}>
+              <Save size={14} />
+              Guardar borrador
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', minWidth: 0 }}>
+              <span style={{ fontSize: '0.82rem', color: '#9bb5d9' }}>Progreso</span>
+              <span style={{ fontSize: '1rem', color: '#56a1ff', fontWeight: 800, minWidth: 36 }}>{stepOneProgress}%</span>
+              <div style={{
+                width: 'min(240px, 100%)',
+                height: 6,
+                borderRadius: 999,
+                background: 'rgba(255,255,255,0.08)',
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  width: `${stepOneProgress}%`,
+                  height: '100%',
+                  borderRadius: 999,
+                  background: 'linear-gradient(90deg, #4f92ff 0%, #3b82f6 100%)',
+                }} />
+              </div>
+            </div>
+
+            <button
+              onClick={() => setStep((s) => Math.min(STEPS.length, s + 1))}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.45rem',
+                padding: '0.82rem 1.2rem', borderRadius: 12,
+                background: 'linear-gradient(135deg, #4b95ff, #337cff)',
+                border: '1px solid rgba(96,165,250,0.34)',
+                color: '#fff', fontSize: '0.92rem', fontWeight: 800, cursor: 'pointer',
+                boxShadow: '0 10px 24px rgba(59,130,246,0.22)',
+                justifySelf: 'end',
+              }}>
+              Siguiente <ChevronRight size={16} />
+            </button>
+          </div>
+        ) : (
+          <div style={{
+            maxWidth: 1380,
+            margin: '0 auto',
+            background: WIZARD_SURFACE_BG,
+            border: WIZARD_SURFACE_BORDER,
+            borderRadius: 22,
+            boxShadow: WIZARD_SURFACE_SHADOW,
+            padding: '0.8rem 1.15rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
+          }}>
+            <button
+              onClick={() => setStep((s) => Math.max(1, s - 1))}
+              disabled={step === 1}
               style={{
                 display: 'flex', alignItems: 'center', gap: '0.45rem',
-                padding: '0.6rem 1.1rem', borderRadius: 12,
-                background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
-                border: '1px solid rgba(59,130,246,0.32)',
-                color: '#fff', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer',
-                boxShadow: '0 8px 18px rgba(59,130,246,0.18)',
+                padding: '0.6rem 1.05rem', borderRadius: 12,
+                background: step === 1 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.05)',
+                border: `1px solid ${step === 1 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.09)'}`,
+                color: step === 1 ? '#41516e' : '#a8b6cc', fontSize: '0.8rem', fontWeight: 700,
+                cursor: step === 1 ? 'not-allowed' : 'pointer',
               }}>
-              Siguiente <ChevronRight size={14} />
+              <ChevronLeft size={14} /> Anterior
             </button>
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <button
-                onClick={handleGenerateReport}
-                disabled={generatingReport}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '0.45rem',
-                  padding: '0.6rem 1.05rem', borderRadius: 12,
-                  background: 'rgba(59,130,246,0.08)',
-                  border: '1px solid rgba(59,130,246,0.2)',
-                  color: '#93c5fd', fontSize: '0.8rem', fontWeight: 700,
-                  cursor: generatingReport ? 'not-allowed' : 'pointer',
-                  opacity: generatingReport ? 0.7 : 1,
-                }}
-              >
-                {generatingReport
-                  ? <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> Generando…</>
-                  : <><FileText size={14} /> Generar informe</>}
-              </button>
 
+            <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
+              {STEPS.map((s) => (
+                <div key={s.id} style={{
+                  width: s.id === step ? 22 : 6, height: 6, borderRadius: 999,
+                  background: s.id === step ? '#3b82f6' : s.id < step ? '#34d399' : 'rgba(255,255,255,0.1)',
+                  transition: 'all .2s',
+                }} />
+              ))}
+            </div>
+
+            {step < STEPS.length ? (
               <button
-                onClick={handleFinalize}
-                disabled={finalizing || lifecycleCode === 'COMPLETED'}
+                onClick={() => setStep((s) => s + 1)}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.45rem',
                   padding: '0.6rem 1.1rem', borderRadius: 12,
-                  background: 'linear-gradient(135deg, #10b981, #059669)',
-                  border: '1px solid rgba(16,185,129,0.34)',
-                  color: '#fff', fontSize: '0.8rem', fontWeight: 700,
-                  cursor: (finalizing || lifecycleCode === 'COMPLETED') ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 8px 18px rgba(16,185,129,0.16)',
-                  opacity: (finalizing || lifecycleCode === 'COMPLETED') ? 0.7 : 1,
-                }}
-              >
-                {finalizing
-                  ? <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> Finalizando…</>
-                  : <><CheckCircle2 size={14} /> Finalizar evaluación</>}
+                  background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                  border: '1px solid rgba(59,130,246,0.32)',
+                  color: '#fff', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer',
+                  boxShadow: '0 8px 18px rgba(59,130,246,0.18)',
+                }}>
+                Siguiente <ChevronRight size={14} />
               </button>
-            </div>
-          )}
-        </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <button
+                  onClick={handleGenerateReport}
+                  disabled={generatingReport}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '0.45rem',
+                    padding: '0.6rem 1.05rem', borderRadius: 12,
+                    background: 'rgba(59,130,246,0.08)',
+                    border: '1px solid rgba(59,130,246,0.2)',
+                    color: '#93c5fd', fontSize: '0.8rem', fontWeight: 700,
+                    cursor: generatingReport ? 'not-allowed' : 'pointer',
+                    opacity: generatingReport ? 0.7 : 1,
+                  }}
+                >
+                  {generatingReport
+                    ? <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> Generando…</>
+                    : <><FileText size={14} /> Generar informe</>}
+                </button>
+
+                <button
+                  onClick={handleFinalize}
+                  disabled={finalizing || lifecycleCode === 'COMPLETED'}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '0.45rem',
+                    padding: '0.6rem 1.1rem', borderRadius: 12,
+                    background: 'linear-gradient(135deg, #10b981, #059669)',
+                    border: '1px solid rgba(16,185,129,0.34)',
+                    color: '#fff', fontSize: '0.8rem', fontWeight: 700,
+                    cursor: (finalizing || lifecycleCode === 'COMPLETED') ? 'not-allowed' : 'pointer',
+                    boxShadow: '0 8px 18px rgba(16,185,129,0.16)',
+                    opacity: (finalizing || lifecycleCode === 'COMPLETED') ? 0.7 : 1,
+                  }}
+                >
+                  {finalizing
+                    ? <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> Finalizando…</>
+                    : <><CheckCircle2 size={14} /> Finalizar evaluación</>}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {showExit && (
