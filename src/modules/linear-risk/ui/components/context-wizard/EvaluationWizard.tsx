@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, ChevronLeft, ChevronRight, FileText, Loader2, LogOut, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, ChevronRight, FileText, Loader2, LogOut, ShieldCheck, X } from 'lucide-react';
 import { CARD, CopyRunCodeButton, ExitDialog, STEPS, WIZARD_SURFACE_BG, WIZARD_SURFACE_BORDER, WIZARD_SURFACE_SHADOW } from './ContextWizardShared';
-import { StepContexto } from './StepContexto';
 import { StepAnalisisRiesgo } from './StepAnalisisRiesgo';
 import { StepAnalisisControl } from './StepAnalisisControl';
 import { StepValoracion } from './StepValoracion';
 import { StepTratamiento } from './StepTratamiento';
+import { EvaluacionTab, ExternoTab, InternoTab } from './ContextWizardShared';
 
 function StepPlaceholder({ step }: { step: typeof STEPS[number] }) {
   return (
@@ -57,6 +57,9 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
   const [lifecycleCode, setLifecycleCode] = useState('DRAFT');
   const [progressPercent, setProgressPercent] = useState(0);
   const [finalizing, setFinalizing] = useState(false);
+  const [showEvaluationContextModal, setShowEvaluationContextModal] = useState(false);
+  const [showExternalContextModal, setShowExternalContextModal] = useState(false);
+  const [showInternalContextModal, setShowInternalContextModal] = useState(false);
 
   useEffect(() => {
     async function loadMeta() {
@@ -291,6 +294,36 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
           </div>
 
           <div style={{ padding: '0 0.8rem 0.8rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+            {step === 1 && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '0.75rem', padding: '0 0.15rem' }}>
+                {['Contexto', 'Contexto', 'Contexto'].map((label, index) => (
+                  <button
+                    key={`${label}-top-${index}`}
+                    type="button"
+                    onClick={
+                      index === 0
+                        ? () => setShowEvaluationContextModal(true)
+                        : index === 1
+                          ? () => setShowExternalContextModal(true)
+                          : () => setShowInternalContextModal(true)
+                    }
+                    style={{
+                      borderRadius: 14,
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      background: 'rgba(255,255,255,0.03)',
+                      padding: '0.8rem 0.95rem',
+                      color: '#d9e8ff',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
             {step >= 2 && step <= 5 && (
               <div style={{
                 margin: '0 0.35rem',
@@ -368,39 +401,7 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
         )}
 
         {step === 1
-          ? (
-            <section
-              style={{
-                ...CARD,
-                borderRadius: 22,
-                padding: '1.2rem 1.2rem 1.3rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
-                <div></div>
-                <span
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.35rem',
-                    padding: '0.42rem 0.75rem',
-                    borderRadius: 999,
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    color: '#9fb0cb',
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                  }}
-                >
-                  Paso inicial
-                </span>
-              </div>
-              <StepContexto runRaId={runRaId} />
-            </section>
-          )
+          ? null
           : step === 2
             ? <StepAnalisisRiesgo runRaId={runRaId} />
             : step === 3
@@ -513,6 +514,168 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
           onDelete={handleDelete}
           deleting={deleting}
         />
+      )}
+      {showEvaluationContextModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 220,
+            background: 'rgba(2, 6, 23, 0.7)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.25rem',
+          }}
+        >
+          <div
+            style={{
+              width: 'min(1100px, 96vw)',
+              maxHeight: '88vh',
+              overflowY: 'auto',
+              ...CARD,
+              borderRadius: 22,
+              padding: '1.2rem 1.2rem 1.3rem',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <h3 style={{ margin: 0, color: '#f8fafc', fontSize: '1rem', fontWeight: 800 }}>Contexto evaluación</h3>
+                <p style={{ margin: '0.2rem 0 0', color: '#97a8c4', fontSize: '0.76rem', lineHeight: 1.45 }}>
+                  Define el alcance, el proceso y el apetito general de riesgo.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowEvaluationContextModal(false)}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 10,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  color: '#9fb0cb',
+                  cursor: 'pointer',
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <EvaluacionTab runRaId={runRaId} />
+          </div>
+        </div>
+      )}
+      {showExternalContextModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 220,
+            background: 'rgba(2, 6, 23, 0.7)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.25rem',
+          }}
+        >
+          <div
+            style={{
+              width: 'min(1100px, 96vw)',
+              maxHeight: '88vh',
+              overflowY: 'auto',
+              ...CARD,
+              borderRadius: 22,
+              padding: '1.2rem 1.2rem 1.3rem',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <h3 style={{ margin: 0, color: '#f8fafc', fontSize: '1rem', fontWeight: 800 }}>Contexto externo</h3>
+                <p style={{ margin: '0.2rem 0 0', color: '#97a8c4', fontSize: '0.76rem', lineHeight: 1.45 }}>
+                  Factores externos que pueden influir en los riesgos.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowExternalContextModal(false)}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 10,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  color: '#9fb0cb',
+                  cursor: 'pointer',
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <ExternoTab runRaId={runRaId} />
+          </div>
+        </div>
+      )}
+      {showInternalContextModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 220,
+            background: 'rgba(2, 6, 23, 0.7)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.25rem',
+          }}
+        >
+          <div
+            style={{
+              width: 'min(1100px, 96vw)',
+              maxHeight: '88vh',
+              overflowY: 'auto',
+              ...CARD,
+              borderRadius: 22,
+              padding: '1.2rem 1.2rem 1.3rem',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '1rem' }}>
+              <div>
+                <h3 style={{ margin: 0, color: '#f8fafc', fontSize: '1rem', fontWeight: 800 }}>Contexto interno</h3>
+                <p style={{ margin: '0.2rem 0 0', color: '#97a8c4', fontSize: '0.76rem', lineHeight: 1.45 }}>
+                  Recursos, capacidades y factores internos de la organización.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowInternalContextModal(false)}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 10,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  color: '#9fb0cb',
+                  cursor: 'pointer',
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <InternoTab runRaId={runRaId} />
+          </div>
+        </div>
       )}
       <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
     </div>
