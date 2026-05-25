@@ -13,7 +13,7 @@ const STEP_ONE_FLOW = [
   { id: 1, title: 'Definir contexto', subtitle: 'Entender el entorno' },
   { id: 2, title: 'Identificar riesgos', subtitle: 'Reconocer amenazas' },
   { id: 3, title: 'Evaluar controles', subtitle: 'Revisar y analizar' },
-  { id: 4, title: 'Calcular exposición', subtitle: 'Determinar el nivel de riesgo' },
+  { id: 4, title: 'Tratamiento', subtitle: 'Definir acciones' },
   { id: 5, title: 'Definir tratamiento', subtitle: 'Seleccionar acciones' },
 ] as const;
 
@@ -219,7 +219,7 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
       display: 'flex', flexDirection: 'column', fontFamily: 'inherit',
     }}>
       <div style={{
-        position: 'sticky', top: 0, zIndex: 100, backdropFilter: 'blur(12px)',
+        position: 'relative',
         padding: '1rem 1.4rem 0.35rem',
       }}>
         {step === 1 ? (
@@ -490,8 +490,8 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
         )}
       </div>
 
-      <div style={{ flex: 1, padding: step === 1 ? '2.5rem 2rem 2rem' : (step === 2 || step === 3) ? '2.8rem 2rem 2rem' : '1.45rem 2rem 2rem', maxWidth: step === 1 ? 1380 : (step === 2 || step === 3 || step === 4 || step === 5) ? '96%' : 1152, width: '100%', margin: '0 auto', boxSizing: 'border-box', display: step === 1 ? 'flex' : undefined, alignItems: step === 1 ? 'center' : undefined, justifyContent: step === 1 ? 'center' : undefined }}>
-        {step !== 1 && step !== 2 && step !== 3 && (
+      <div style={{ flex: 1, padding: step === 1 ? '2.5rem 2rem 2rem' : (step === 2 || step === 3) ? '2.8rem 2rem 2rem' : (step === 4 || step === 5) ? '2.25rem 2rem 2rem' : '1.45rem 2rem 2rem', maxWidth: step === 1 ? 1380 : (step === 2 || step === 3 || step === 4 || step === 5) ? '96%' : 1152, width: '100%', margin: '0 auto', boxSizing: 'border-box', display: step === 1 ? 'flex' : undefined, alignItems: step === 1 ? 'center' : undefined, justifyContent: step === 1 ? 'center' : undefined }}>
+        {step !== 1 && step !== 2 && step !== 3 && step !== 4 && step !== 5 && (
           <div style={{ marginBottom: '1.35rem' }}>
             <h2 style={{ margin: 0, fontSize: '1.3rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.025em' }}>
               {current.label}
@@ -589,8 +589,8 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
       </div>
 
       <div style={{
-        position: 'sticky', bottom: 0, zIndex: 100,
-        padding: '0 1.4rem 1rem', backdropFilter: 'blur(12px)',
+        position: 'relative',
+        padding: '0 1.4rem 1rem',
       }}>
         {step === 1 ? (
           <div style={{
