@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 
 import React, { useEffect, useState } from 'react';
-import { Activity, AlertTriangle, Bell, CheckCircle2, Eye, FileText, Flame, Info, ShieldCheck, ShieldPlus, TrendingUp, X } from 'lucide-react';
+import { Activity, AlertTriangle, Bell, CheckCircle2, FileText, Flame, Info, ShieldCheck, ShieldPlus, TrendingUp, X } from 'lucide-react';
 import { CARD, ErrorAlert, extractError, INPUT_S, LoaderSection } from './ContextWizardShared';
 import { HeatMapModal } from './StepAnalisisControlHeatMap';
 
@@ -238,32 +238,27 @@ export function StepValoracion({ runRaId }: { runRaId: string }) {
                       : 'No definido'}
                   </td>
                   <td style={{ padding: '0.62rem 0.62rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                      <select
-                        value={r.id_valoration || ''}
-                        onChange={(e) => void handleChangeDecision(r.id, e.target.value)}
-                        disabled={Boolean(savingDecisionByRisk[r.id])}
-                        style={{
-                          ...INPUT_S,
-                          width: 118,
-                          minWidth: 118,
-                          padding: '0.36rem 0.45rem',
-                          fontSize: '0.62rem',
-                          borderRadius: 9,
-                          border: '1px solid rgba(56,189,248,0.45)',
-                          background: 'rgba(2,16,42,0.78)',
-                          color: '#e2e8f0',
-                        }}
-                      >
-                        <option value="">Decisión</option>
-                        {(data.catalogs?.valoration ?? []).map((opt) => (
-                          <option key={opt.id} value={opt.id} style={{ background: '#ffffff', color: '#000000' }}>{opt.label || opt.decision}</option>
-                        ))}
-                      </select>
-                      <button type="button" title="Ver detalle del riesgo" style={{ borderRadius: 9, border: '1px solid rgba(59,130,246,0.45)', background: 'rgba(37,99,235,0.16)', color: '#93c5fd', width: 28, height: 28, cursor: 'pointer' }}>
-                      <Eye size={14} />
-                      </button>
-                    </div>
+                    <select
+                      value={r.id_valoration || ''}
+                      onChange={(e) => void handleChangeDecision(r.id, e.target.value)}
+                      disabled={Boolean(savingDecisionByRisk[r.id])}
+                      style={{
+                        ...INPUT_S,
+                        width: 118,
+                        minWidth: 118,
+                        padding: '0.36rem 0.45rem',
+                        fontSize: '0.62rem',
+                        borderRadius: 9,
+                        border: '1px solid rgba(56,189,248,0.45)',
+                        background: 'rgba(2,16,42,0.78)',
+                        color: '#e2e8f0',
+                      }}
+                    >
+                      <option value="">Decisión</option>
+                      {(data.catalogs?.valoration ?? []).map((opt) => (
+                        <option key={opt.id} value={opt.id} style={{ background: '#ffffff', color: '#000000' }}>{opt.label || opt.decision}</option>
+                      ))}
+                    </select>
                   </td>
                 </tr>
               ))}
