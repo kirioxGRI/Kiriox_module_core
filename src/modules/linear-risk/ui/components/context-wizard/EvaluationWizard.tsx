@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Building2, CheckCircle2, ChevronLeft, ChevronRight, FileText, Globe, Loader2, LogOut, Network, Save, ShieldCheck, X } from 'lucide-react';
+import { Building2, CheckCircle2, ChevronLeft, ChevronRight, FileText, Globe, Loader2, LogOut, Save, Users, X } from 'lucide-react';
 import { CARD, CopyRunCodeButton, ExitDialog, STEPS, WIZARD_SURFACE_BG, WIZARD_SURFACE_BORDER, WIZARD_SURFACE_SHADOW } from './ContextWizardShared';
 import { StepAnalisisRiesgo } from './StepAnalisisRiesgo';
 import { StepAnalisisControl } from './StepAnalisisControl';
@@ -223,17 +223,13 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
         padding: '1rem 1.4rem 0.35rem',
       }}>
         {step === 1 ? (
-          <div style={{
-            maxWidth: 1380,
-            margin: '0 auto',
-            background: 'linear-gradient(180deg, rgba(13,35,86,0.98) 0%, rgba(11,32,79,0.96) 100%)',
-            border: '1px solid rgba(117,145,199,0.18)',
-            borderRadius: 24,
-            boxShadow: '0 18px 34px rgba(2,8,23,0.18)',
-            overflow: 'hidden',
-          }}>
+          <>
+            {/* Title row — sin card, solo línea inferior */}
             <div style={{
-              padding: '1.1rem 1.2rem 0.9rem',
+              maxWidth: 1380,
+              margin: '0 auto',
+              borderBottom: '1px solid rgba(117,145,199,0.18)',
+              padding: '0.85rem 0.4rem',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -241,35 +237,19 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
               flexWrap: 'wrap',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', flex: 1, minWidth: 0 }}>
-                <div
-                  style={{
-                    width: 46,
-                    height: 46,
-                    borderRadius: 14,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: 'linear-gradient(180deg, rgba(32,75,162,0.42) 0%, rgba(24,61,132,0.28) 100%)',
-                    border: '1px solid rgba(118,157,232,0.24)',
-                    boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.03)',
-                    flexShrink: 0,
-                  }}
-                >
-                  <ShieldCheck size={22} color="#a9c8ff" />
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', minWidth: 0, flexWrap: 'wrap' }}>
-                  <h2 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#f2f7ff', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', minWidth: 0, flexWrap: 'wrap' }}>
+                  <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#f2f7ff', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
                     Evaluación de riesgo
                   </h2>
                   <span style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '0.38rem',
-                    background: 'rgba(251,191,36,0.08)',
-                    border: '1px solid rgba(251,191,36,0.3)',
+                    gap: '0.4rem',
+                    background: 'rgba(251,191,36,0.1)',
+                    border: '1px solid rgba(251,191,36,0.35)',
                     borderRadius: 999,
-                    padding: '0.22rem 0.82rem',
-                    fontSize: '0.66rem',
+                    padding: '0.28rem 0.95rem',
+                    fontSize: '0.7rem',
                     fontWeight: 800,
                     color: '#fbbf24',
                     letterSpacing: '0.04em',
@@ -287,15 +267,14 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
                   alignItems: 'center',
                   gap: '0.55rem',
                   background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: 14,
-                  padding: '0.45rem 0.8rem 0.45rem 0.95rem',
-                  minHeight: 44,
+                  padding: '0.5rem 0.9rem 0.5rem 1rem',
                 }}>
-                  <span style={{ fontSize: '0.71rem', color: '#7b8fad', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                    ID evaluación
+                  <span style={{ fontSize: '0.7rem', color: '#7b8fad', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    ID Evaluación
                   </span>
-                  <code style={{ fontSize: '0.92rem', color: '#22d3ee', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.04em' }}>
+                  <code style={{ fontSize: '0.88rem', color: '#22d3ee', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.03em' }}>
                     {runRaCode || runRaId.slice(0, 16) + '…'}
                   </code>
                   <CopyRunCodeButton value={runRaCode || runRaId} />
@@ -310,24 +289,22 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
                     }
                   }}
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '0.42rem',
-                    padding: '0.72rem 1rem', borderRadius: 14,
-                    background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.22)',
-                    color: '#fda4af', fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
-                    minHeight: 44,
+                    display: 'flex', alignItems: 'center', gap: '0.45rem',
+                    padding: '0.6rem 1.05rem', borderRadius: 12,
+                    background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.28)',
+                    color: '#fda4af', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
                   }}>
-                  <LogOut size={13} /> Salir
+                  <LogOut size={14} /> Salir
                 </button>
               </div>
             </div>
 
-            <div style={{ padding: '0 1.2rem 1rem' }}>
+            {/* Step bar — fuera del card, sobre el fondo de página */}
+            <div style={{ maxWidth: 1380, margin: '0 auto', padding: '1.8rem 0.4rem 0.2rem' }}>
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
-                gap: '1rem',
-                padding: '0.68rem 0 0.82rem',
-                borderBottom: '1px solid rgba(255,255,255,0.08)',
+                gap: '0.5rem',
               }}>
                 {STEP_ONE_FLOW.map((item, index) => {
                   const active = item.id === step;
@@ -339,13 +316,12 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
                       onClick={() => setStep(item.id)}
                       style={{
                         position: 'relative',
-                        display: 'grid',
-                        gridTemplateColumns: index < STEP_ONE_FLOW.length - 1 ? '34px minmax(0, 1fr) 14px' : '34px minmax(0, 1fr)',
+                        display: 'flex',
                         alignItems: 'center',
-                        gap: '0.7rem',
+                        gap: '0.75rem',
                         background: 'transparent',
                         border: 'none',
-                        padding: '0.16rem 0',
+                        padding: '0.4rem 0',
                         color: active ? '#f3f8ff' : done ? '#d8ffe8' : '#d5e1f4',
                         cursor: 'pointer',
                         textAlign: 'left',
@@ -354,39 +330,39 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
                       }}
                     >
                       <span style={{
-                        width: 32,
-                        height: 32,
+                        width: 36,
+                        height: 36,
                         borderRadius: '50%',
                         display: 'inline-flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: active ? 'linear-gradient(180deg, #68a5ff 0%, #4b89ff 100%)' : 'rgba(255,255,255,0.02)',
-                        border: `1px solid ${active ? 'rgba(147,197,253,0.42)' : done ? 'rgba(110,231,183,0.24)' : 'rgba(255,255,255,0.14)'}`,
+                        background: active ? 'linear-gradient(180deg, #68a5ff 0%, #4b89ff 100%)' : 'rgba(255,255,255,0.06)',
+                        border: `1.5px solid ${active ? 'rgba(147,197,253,0.5)' : done ? 'rgba(110,231,183,0.28)' : 'rgba(255,255,255,0.18)'}`,
                         color: active ? '#ffffff' : done ? '#86efac' : '#d7e6ff',
-                        boxShadow: active ? '0 0 18px rgba(59,130,246,0.22)' : 'none',
+                        boxShadow: active ? '0 0 20px rgba(59,130,246,0.28)' : 'none',
                         flexShrink: 0,
-                        fontSize: '0.86rem',
+                        fontSize: '0.9rem',
                         fontWeight: 800,
                       }}>
                         {item.id}
                       </span>
                       <span style={{ minWidth: 0, flex: 1 }}>
-                        <span style={{ display: 'block', fontSize: '0.79rem', fontWeight: active ? 800 : 700, color: 'inherit', whiteSpace: 'nowrap', lineHeight: 1.15 }}>
+                        <span style={{ display: 'block', fontSize: '0.86rem', fontWeight: active ? 800 : 700, color: 'inherit', whiteSpace: 'nowrap', lineHeight: 1.2 }}>
                           {item.title}
                         </span>
-                        <span style={{ display: 'block', marginTop: '0.18rem', fontSize: '0.71rem', color: active ? '#b8d2ff' : '#94a9ca', whiteSpace: 'nowrap', lineHeight: 1.15 }}>
+                        <span style={{ display: 'block', marginTop: '0.2rem', fontSize: '0.74rem', color: active ? '#b8d2ff' : '#7a90b0', whiteSpace: 'nowrap', lineHeight: 1.2 }}>
                           {item.subtitle}
                         </span>
                       </span>
                       {index < STEP_ONE_FLOW.length - 1 ? (
-                        <ChevronRight size={14} style={{ color: 'rgba(173,196,229,0.72)', flexShrink: 0 }} />
+                        <ChevronRight size={15} style={{ color: 'rgba(140,165,200,0.6)', flexShrink: 0 }} />
                       ) : null}
                       {active ? (
                         <span style={{
                           position: 'absolute',
                           left: 0,
-                          right: index < STEP_ONE_FLOW.length - 1 ? 18 : 0,
-                          bottom: '-0.84rem',
+                          right: index < STEP_ONE_FLOW.length - 1 ? 20 : 0,
+                          bottom: '-0.25rem',
                           height: 2,
                           borderRadius: 999,
                           background: '#5ea0ff',
@@ -397,155 +373,124 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
                 })}
               </div>
             </div>
-          </div>
+          </>
         ) : (
-          <div style={{
-            maxWidth: 1380,
-            margin: '0 auto',
-            background: WIZARD_SURFACE_BG,
-            border: WIZARD_SURFACE_BORDER,
-            borderRadius: 22,
-            boxShadow: WIZARD_SURFACE_SHADOW,
-            overflow: 'hidden',
-          }}>
+          <>
+            {/* Title row — igual que paso 1 */}
             <div style={{
-              padding: '0.95rem 1.15rem 0.8rem',
-              display: 'flex', alignItems: 'center', gap: '0.9rem', flexWrap: 'wrap',
+              maxWidth: 1380,
+              margin: '0 auto',
+              borderBottom: '1px solid rgba(117,145,199,0.18)',
+              padding: '0.85rem 0.4rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '1rem',
+              flexWrap: 'wrap',
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flex: 1, minWidth: 0 }}>
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 14,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: 'rgba(124,58,237,0.14)',
-                    border: '1px solid rgba(167,139,250,0.28)',
-                    boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)',
-                    flexShrink: 0,
-                  }}
-                >
-                  <ShieldCheck size={24} color="#c084fc" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', minWidth: 0, flexWrap: 'wrap' }}>
+                  <h2 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#f2f7ff', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
+                    Evaluación de riesgo
+                  </h2>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                    background: lifecycleUi.bg, border: `1px solid ${lifecycleUi.border}`,
+                    borderRadius: 999, padding: '0.28rem 0.95rem',
+                    fontSize: '0.7rem', fontWeight: 800, color: lifecycleUi.color, letterSpacing: '0.04em', lineHeight: 1,
+                  }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: lifecycleUi.color }} />
+                    {lifecycleUi.label}
+                  </span>
                 </div>
-                <h2 style={{ margin: 0, fontSize: '1rem', fontWeight: 800, color: '#e7efff', letterSpacing: '-0.01em', whiteSpace: 'nowrap' }}>
-                  Evaluación de riesgo
-                </h2>
-                <span style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
-                  background: lifecycleUi.bg, border: `1px solid ${lifecycleUi.border}`,
-                  borderRadius: 999, padding: '0.2rem 0.62rem',
-                  fontSize: '0.62rem', fontWeight: 700, color: lifecycleUi.color, letterSpacing: '0.06em',
-                }}>
-                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: lifecycleUi.color }} />
-                  {`${lifecycleUi.label} (${progressPercent}%)`}
-                </span>
               </div>
 
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: '0.55rem',
-                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-                borderRadius: 12, padding: '0.45rem 0.85rem',
-              }}>
-                <span style={{ fontSize: '0.71rem', color: '#7b8fad', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  ID evaluación
-                </span>
-                <code style={{ fontSize: '0.92rem', color: '#22d3ee', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.04em' }}>
-                  {runRaCode || runRaId.slice(0, 16) + '…'}
-                </code>
-                <CopyRunCodeButton value={runRaCode || runRaId} />
-              </div>
-
-              <span style={{ fontSize: '0.72rem', color: '#8ca0be', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                Paso {step} / {STEPS.length}
-              </span>
-
-              <button
-                onClick={() => {
-                  if (lifecycleCode === 'COMPLETED') {
-                    onExit('draft');
-                  } else {
-                    setShowExit(true);
-                  }
-                }}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '0.4rem',
-                  padding: '0.45rem 0.9rem', borderRadius: 12,
-                  background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
-                  color: '#fda4af', fontSize: '0.74rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '0.55rem',
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 14, padding: '0.5rem 0.9rem 0.5rem 1rem',
                 }}>
-                <LogOut size={13} /> Salir
-              </button>
+                  <span style={{ fontSize: '0.7rem', color: '#7b8fad', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    ID Evaluación
+                  </span>
+                  <code style={{ fontSize: '0.88rem', color: '#22d3ee', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.03em' }}>
+                    {runRaCode || runRaId.slice(0, 16) + '…'}
+                  </code>
+                  <CopyRunCodeButton value={runRaCode || runRaId} />
+                </div>
+                <button
+                  onClick={() => { if (lifecycleCode === 'COMPLETED') { onExit('draft'); } else { setShowExit(true); } }}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '0.45rem',
+                    padding: '0.6rem 1.05rem', borderRadius: 12,
+                    background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.28)',
+                    color: '#fda4af', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
+                  }}>
+                  <LogOut size={14} /> Salir
+                </button>
+              </div>
             </div>
 
-            <div style={{ padding: '0 0.8rem 0.8rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-              {step >= 2 && step <= 5 && (
-                <div style={{
-                  margin: '0 0.35rem',
-                  padding: '0.68rem 0.9rem',
-                  borderRadius: 14,
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.05)',
-                  color: '#c4b5fd',
-                  fontSize: '0.74rem',
-                  fontWeight: 700,
-                }}>
-                  Proceso evaluado: {evaluatedProcess || 'No definido en paso 1'}
-                </div>
-              )}
-
-              <div style={{
-                display: 'flex',
-                alignItems: 'stretch',
-                overflowX: 'auto',
-                gap: '0.45rem',
-                padding: '0.1rem 0.15rem 0.15rem',
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(255,255,255,0.05)',
-                borderRadius: 18,
-              }}>
-                {STEPS.map((s, i) => {
-                  const active = s.id === step;
-                  const done = s.id < step;
+            {/* Step bar — igual que paso 1 */}
+            <div style={{ maxWidth: 1380, margin: '0 auto', padding: '1.8rem 0.4rem 0.2rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '0.5rem' }}>
+                {STEP_ONE_FLOW.map((item, index) => {
+                  const active = item.id === step;
+                  const done = item.id < step;
                   return (
-                    <button key={s.key} onClick={() => setStep(s.id)} style={{
-                      display: 'flex', alignItems: 'center', gap: '0.5rem',
-                      padding: '0.72rem 0.95rem',
-                      background: active ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.02)',
-                      border: `1px solid ${active ? 'rgba(59,130,246,0.22)' : 'rgba(255,255,255,0.05)'}`,
-                      borderRadius: 14,
-                      cursor: 'pointer',
-                      color: active ? '#93c5fd' : done ? '#6ee7b7' : '#6f83a3',
-                      fontSize: '0.76rem',
-                      fontWeight: active ? 700 : 600,
-                      whiteSpace: 'nowrap',
-                      transition: 'color .15s',
-                      flexShrink: 0,
-                    }}>
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setStep(item.id)}
+                      style={{
+                        position: 'relative',
+                        display: 'flex', alignItems: 'center', gap: '0.75rem',
+                        background: 'transparent', border: 'none',
+                        padding: '0.4rem 0',
+                        color: active ? '#f3f8ff' : done ? '#d8ffe8' : '#d5e1f4',
+                        cursor: 'pointer', textAlign: 'left', minWidth: 0, width: '100%',
+                      }}
+                    >
                       <span style={{
-                        width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '0.62rem', fontWeight: 800,
-                        background: active ? 'rgba(59,130,246,0.18)' : done ? 'rgba(16,185,129,0.14)' : 'rgba(255,255,255,0.05)',
-                        border: `1px solid ${active ? 'rgba(59,130,246,0.28)' : done ? 'rgba(16,185,129,0.24)' : 'rgba(255,255,255,0.08)'}`,
-                        color: active ? '#93c5fd' : done ? '#6ee7b7' : '#8ca0be',
+                        width: 36, height: 36, borderRadius: '50%',
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                        background: active ? 'linear-gradient(180deg, #68a5ff 0%, #4b89ff 100%)' : done ? 'rgba(16,185,129,0.14)' : 'rgba(255,255,255,0.06)',
+                        border: `1.5px solid ${active ? 'rgba(147,197,253,0.5)' : done ? 'rgba(110,231,183,0.28)' : 'rgba(255,255,255,0.18)'}`,
+                        color: active ? '#ffffff' : done ? '#86efac' : '#d7e6ff',
+                        boxShadow: active ? '0 0 20px rgba(59,130,246,0.28)' : 'none',
+                        flexShrink: 0, fontSize: '0.9rem', fontWeight: 800,
                       }}>
-                        {done ? <CheckCircle2 size={10} /> : s.id}
+                        {done ? <CheckCircle2 size={14} /> : item.id}
                       </span>
-                      <s.Icon size={13} />
-                      {s.label}
-                      {i < STEPS.length - 1 && <ChevronRight size={11} style={{ marginLeft: '0.1rem', color: 'rgba(140,160,190,0.45)' }} />}
+                      <span style={{ minWidth: 0, flex: 1 }}>
+                        <span style={{ display: 'block', fontSize: '0.86rem', fontWeight: active ? 800 : 700, color: 'inherit', whiteSpace: 'nowrap', lineHeight: 1.2 }}>
+                          {item.title}
+                        </span>
+                        <span style={{ display: 'block', marginTop: '0.2rem', fontSize: '0.74rem', color: active ? '#b8d2ff' : '#7a90b0', whiteSpace: 'nowrap', lineHeight: 1.2 }}>
+                          {item.subtitle}
+                        </span>
+                      </span>
+                      {index < STEP_ONE_FLOW.length - 1 && (
+                        <ChevronRight size={15} style={{ color: 'rgba(140,165,200,0.6)', flexShrink: 0 }} />
+                      )}
+                      {active && (
+                        <span style={{
+                          position: 'absolute', left: 0,
+                          right: index < STEP_ONE_FLOW.length - 1 ? 20 : 0,
+                          bottom: '-0.25rem', height: 2, borderRadius: 999, background: '#5ea0ff',
+                        }} />
+                      )}
                     </button>
                   );
                 })}
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
 
-      <div style={{ flex: 1, padding: step === 1 ? '0.85rem 2rem 2rem' : '1.45rem 2rem 2rem', maxWidth: step === 1 ? 1380 : (step === 2 || step === 3 || step === 4 || step === 5) ? '96%' : 1152, width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
+      <div style={{ flex: 1, padding: step === 1 ? '2.5rem 2rem 2rem' : '1.45rem 2rem 2rem', maxWidth: step === 1 ? 1380 : (step === 2 || step === 3 || step === 4 || step === 5) ? '96%' : 1152, width: '100%', margin: '0 auto', boxSizing: 'border-box', display: step === 1 ? 'flex' : undefined, alignItems: step === 1 ? 'center' : undefined, justifyContent: step === 1 ? 'center' : undefined }}>
         {step !== 1 && step !== 2 && step !== 3 && (
           <div style={{ marginBottom: '1.35rem' }}>
             <h2 style={{ margin: 0, fontSize: '1.3rem', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.025em' }}>
@@ -559,15 +504,7 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
 
         {step === 1
           ? (
-            <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ padding: '0 0.1rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1.14rem', fontWeight: 800, color: '#eef5ff', letterSpacing: '-0.02em' }}>
-                  Selecciona el tipo de contexto a definir
-                </h3>
-                <p style={{ margin: '0.45rem 0 0', fontSize: '0.85rem', color: '#a8bddf', lineHeight: 1.6 }}>
-                  El contexto es la base para identificar y evaluar los riesgos de manera efectiva.
-                </p>
-              </div>
+            <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.4rem' }}>
                 {[
@@ -582,7 +519,7 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
                     key: 'externo',
                     title: 'Contexto externo',
                     description: 'Analiza factores externos que pueden influir en el activo o proceso, como proveedores, regulaciones y terceros.',
-                    Icon: Network,
+                    Icon: Users,
                     onClick: () => setShowExternalContextModal(true),
                   },
                   {
@@ -659,11 +596,8 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
           <div style={{
             maxWidth: 1380,
             margin: '0 auto',
-            background: 'linear-gradient(180deg, rgba(9,30,74,0.96) 0%, rgba(7,26,67,0.9) 100%)',
-            border: '1px solid rgba(115,146,205,0.18)',
-            borderRadius: 18,
-            boxShadow: '0 20px 40px rgba(2,8,23,0.24)',
-            padding: '0.85rem 1.25rem',
+            borderTop: '1px solid rgba(117,145,199,0.18)',
+            padding: '0.85rem 0.4rem',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             alignItems: 'center',
@@ -728,11 +662,8 @@ export function EvaluationWizard({ runRaId, runRaCode, onExit }: {
           <div style={{
             maxWidth: 1380,
             margin: '0 auto',
-            background: WIZARD_SURFACE_BG,
-            border: WIZARD_SURFACE_BORDER,
-            borderRadius: 22,
-            boxShadow: WIZARD_SURFACE_SHADOW,
-            padding: '0.8rem 1.15rem',
+            borderTop: '1px solid rgba(117,145,199,0.18)',
+            padding: '0.85rem 0.4rem',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
           }}>
             <button

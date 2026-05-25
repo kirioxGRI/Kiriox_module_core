@@ -261,7 +261,7 @@
 
 .activityHeader {
   display: grid;
-  grid-template-columns: 5fr 1fr 1.2fr auto auto;
+  grid-template-columns: 3fr 2fr 1.5fr auto auto;
   gap: 20px;
   padding: 10px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -270,11 +270,12 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  text-align: left;
 }
 
 .activityRow {
   display: grid;
-  grid-template-columns: 5fr 1fr 1.2fr auto auto;
+  grid-template-columns: 3fr 2fr 1.5fr auto auto;
   align-items: center;
   gap: 20px;
   padding: 14px 16px;
@@ -303,6 +304,8 @@
 .activityMeta {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .metaTag {

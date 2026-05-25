@@ -442,7 +442,7 @@ export default function GovernanceActivityNewPage() {
             <div className={styles.activityList}>
               <div className={styles.activityHeader}>
                 <span>Actividad</span>
-                <span>Empresa / Proceso</span>
+                <span style={{ textAlign: 'left' }}>Proceso</span>
                 <span>Líder</span>
                 <span>Estado</span>
                 <span></span>
