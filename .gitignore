@@ -22,3 +22,4 @@ prisma/migrations/dev/
 
 xdata/tmp/
 xdata/backups/
+env.txt
