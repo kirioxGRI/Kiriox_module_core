@@ -170,7 +170,7 @@ export class PrismaMonitoringRepository implements IMonitoringRepository {
         )) AS responsible_name
       FROM public.monitoring_event me
       LEFT JOIN sev s ON s.id = me.criticality_level_id
-      LEFT JOIN public.users u ON u.id::text = me.responsible_id::text
+      LEFT JOIN public.security_users u ON u.id::text = me.responsible_id::text
       WHERE me.current_value  IS NOT NULL
         AND me.threshold_value IS NOT NULL
         AND me.current_value > me.threshold_value
@@ -203,7 +203,7 @@ export class PrismaMonitoringRepository implements IMonitoringRepository {
         TRIM(COALESCE(u.name || ' ' || COALESCE(u.last_name,''), u.name, u.email)) AS responsible_name
       FROM public.monitoring_event me
       LEFT JOIN sev s ON s.id = me.criticality_level_id
-      LEFT JOIN public.users u ON u.id::text = me.responsible_id::text
+      LEFT JOIN public.security_users u ON u.id::text = me.responsible_id::text
       WHERE me.category = ${category} AND me.trigger_type = ${triggerType}
       ORDER BY CASE me.status WHEN 'active' THEN 0 WHEN 'monitored' THEN 1 ELSE 2 END, me.event_date DESC
       LIMIT 50

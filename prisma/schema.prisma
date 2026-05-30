@@ -325,7 +325,7 @@ model company {
   graph_activities_dependencies graph_activities_dependencies[]
   graph_map_run_sa_activities   graph_map_run_sa_activities[]
   graph_run_sa                  graph_run_sa[]
-  users                         users[]
+  security_users                security_users[]
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -610,21 +610,21 @@ model graph_map_activity_resource_dependency {
 }
 
 model graph_map_run_sa_activities {
-  id               String       @id(map: "graph_run_sa_activities_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  company_id       String       @db.Uuid
-  run_sa_id        String       @db.Uuid
-  activity_id      String       @db.Uuid
-  selected_by      String       @db.Uuid
-  selected_at      DateTime     @default(now()) @db.Timestamptz(6)
-  is_active        Boolean      @default(true)
-  created_at       DateTime     @default(now()) @db.Timestamptz(6)
-  updated_at       DateTime     @default(now()) @db.Timestamptz(6)
+  id               String         @id(map: "graph_run_sa_activities_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id       String         @db.Uuid
+  run_sa_id        String         @db.Uuid
+  activity_id      String         @db.Uuid
+  selected_by      String         @db.Uuid
+  selected_at      DateTime       @default(now()) @db.Timestamptz(6)
+  is_active        Boolean        @default(true)
+  created_at       DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime       @default(now()) @db.Timestamptz(6)
   impact_code      String?
   criticality_code String?
-  activities       activities   @relation(fields: [activity_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "graph_run_sa_activities_activity_id_fkey")
-  company          company      @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "graph_run_sa_activities_company_id_fkey")
-  graph_run_sa     graph_run_sa @relation(fields: [run_sa_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "graph_run_sa_activities_run_sa_id_fkey")
-  users            users        @relation(fields: [selected_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "graph_run_sa_activities_selected_by_fkey")
+  activities       activities     @relation(fields: [activity_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "graph_run_sa_activities_activity_id_fkey")
+  company          company        @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "graph_run_sa_activities_company_id_fkey")
+  graph_run_sa     graph_run_sa   @relation(fields: [run_sa_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "graph_run_sa_activities_run_sa_id_fkey")
+  security_users   security_users @relation(fields: [selected_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "graph_run_sa_activities_selected_by_fkey")
 
   @@unique([run_sa_id, activity_id], map: "ux_graph_run_sa_activities_run_activity")
   @@index([is_active], map: "ix_graph_run_sa_activities_active")
@@ -674,7 +674,7 @@ model graph_run_lifecycle_history {
   changed_at                                                                                             DateTime                     @default(now()) @db.Timestamp(6)
   is_current                                                                                             Boolean                      @default(true)
   metadata                                                                                               Json?
-  users                                                                                                  users                        @relation(fields: [changed_by], references: [id], onUpdate: NoAction, map: "fk_graph_run_lifecycle_history_changed_by")
+  security_users                                                                                         security_users               @relation(fields: [changed_by], references: [id], onUpdate: NoAction, map: "fk_graph_run_lifecycle_history_changed_by")
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle graph_catalog_run_lifecycle? @relation("graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle", fields: [from_lifecycle_id], references: [id], onUpdate: NoAction, map: "fk_graph_run_lifecycle_history_from_lifecycle")
   graph_run_sa                                                                                           graph_run_sa                 @relation(fields: [run_sa_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_graph_run_lifecycle_history_graph_run_sa")
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle   graph_catalog_run_lifecycle  @relation("graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle", fields: [to_lifecycle_id], references: [id], onUpdate: NoAction, map: "fk_graph_run_lifecycle_history_to_lifecycle")
@@ -704,7 +704,7 @@ model graph_run_sa {
   graph_risk_cascade          graph_risk_cascade[]
   graph_run_lifecycle_history graph_run_lifecycle_history[]
   company                     company                       @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_graph_run_sa_company")
-  users                       users                         @relation(fields: [created_by], references: [id], onUpdate: NoAction, map: "fk_graph_run_sa_created_by")
+  security_users              security_users                @relation(fields: [created_by], references: [id], onUpdate: NoAction, map: "fk_graph_run_sa_created_by")
 
   @@unique([company_id, code], map: "uq_graph_run_sa_company_code")
   @@index([company_id], map: "idx_graph_run_sa_company_id")
@@ -749,6 +749,22 @@ model incident_register {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model map_role_x_permission {
+  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role_id          String           @db.Uuid
+  permission_code  String
+  is_active        Boolean          @default(true)
+  created_at       DateTime         @default(now()) @db.Timestamp(6)
+  updated_at       DateTime         @default(now()) @db.Timestamp(6)
+  users_permission users_permission @relation(fields: [permission_code], references: [code], onDelete: Cascade, onUpdate: NoAction, map: "fk_map_role_x_permission_permission")
+  security_roles   security_roles   @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_map_role_x_permission_role")
+
+  @@unique([role_id, permission_code], map: "uq_map_role_x_permission")
+  @@index([permission_code], map: "idx_map_role_x_permission_permission_code")
+  @@index([role_id], map: "idx_map_role_x_permission_role_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model map_run_ra_risk_controls {
   id                           String                         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   run_ra_risk_id               String                         @db.Uuid
@@ -770,30 +786,14 @@ model map_run_ra_risk_controls {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model map_users_x_roles {
-  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id     String      @db.Uuid
-  role_id     String      @db.Uuid
-  is_active   Boolean     @default(true)
-  created_at  DateTime    @default(now()) @db.Timestamp(6)
-  updated_at  DateTime    @default(now()) @db.Timestamp(6)
-  users       users       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_map_users_x_roles_user")
-  users_roles users_roles @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model map_role_x_permission {
-  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  role_id          String           @db.Uuid
-  permission_code  String
-  is_active        Boolean          @default(true)
-  created_at       DateTime         @default(now()) @db.Timestamp(6)
-  updated_at       DateTime         @default(now()) @db.Timestamp(6)
-  users_roles      users_roles      @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_map_role_x_permission_role")
-  users_permission users_permission @relation(fields: [permission_code], references: [code], onDelete: Cascade, onUpdate: NoAction, map: "fk_map_role_x_permission_permission")
-
-  @@unique([role_id, permission_code], map: "uq_map_role_x_permission")
-  @@index([permission_code], map: "idx_map_role_x_permission_permission_code")
-  @@index([role_id], map: "idx_map_role_x_permission_role_id")
+  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String         @db.Uuid
+  role_id        String         @db.Uuid
+  is_active      Boolean        @default(true)
+  created_at     DateTime       @default(now()) @db.Timestamp(6)
+  updated_at     DateTime       @default(now()) @db.Timestamp(6)
+  security_users security_users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_map_users_x_roles_user")
+  security_roles security_roles @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -1228,7 +1228,7 @@ model run_ra_controls {
   catalog_controls_category     catalog_controls_category?      @relation(fields: [control_nature], references: [id], onUpdate: NoAction, map: "fk_run_ra_controls_control_nature")
   catalog_control_type          catalog_control_type?           @relation(fields: [control_type], references: [id], onUpdate: NoAction, map: "fk_run_ra_controls_control_type")
   catalog_controls_frequency    catalog_controls_frequency?     @relation(fields: [frequency], references: [id], onUpdate: NoAction, map: "fk_run_ra_controls_frequency")
-  users                         users?                          @relation(fields: [owner_id], references: [id], onUpdate: NoAction, map: "fk_run_ra_controls_owner")
+  security_users                security_users?                 @relation(fields: [owner_id], references: [id], onUpdate: NoAction, map: "fk_run_ra_controls_owner")
   run_ra                        run_ra                          @relation(fields: [run_ra_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   run_ra_evidence               run_ra_evidence[]
   run_ra_monitoring             run_ra_monitoring[]
@@ -1370,9 +1370,22 @@ model run_ra_risks {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model users {
-  id                          String                        @id(map: "security_users_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email                       String                        @unique(map: "security_users_email_key") @db.VarChar(255)
+model security_roles {
+  id                    String                  @id(map: "role_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                  String                  @unique(map: "role_code_key")
+  name                  String
+  description           String?
+  is_active             Boolean                 @default(true)
+  created_at            DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime                @default(now()) @db.Timestamptz(6)
+  map_role_x_permission map_role_x_permission[]
+  map_users_x_roles     map_users_x_roles[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model security_users {
+  id                          String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                       String                        @unique @db.VarChar(255)
   password_hash               String
   name                        String?                       @db.VarChar(255)
   last_name                   String?
@@ -1392,7 +1405,7 @@ model users {
   graph_run_sa                graph_run_sa[]
   map_users_x_roles           map_users_x_roles[]
   run_ra_controls             run_ra_controls[]
-  company                     company?                      @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  company                     company?                      @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_company_id_fkey")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -1405,17 +1418,4 @@ model users_permission {
   created_at            DateTime                @default(now()) @db.Timestamptz(6)
   updated_at            DateTime                @default(now()) @db.Timestamptz(6)
   map_role_x_permission map_role_x_permission[]
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model users_roles {
-  id                    String                  @id(map: "role_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  code                  String                  @unique(map: "role_code_key")
-  name                  String
-  description           String?
-  is_active             Boolean                 @default(true)
-  created_at            DateTime                @default(now()) @db.Timestamptz(6)
-  updated_at            DateTime                @default(now()) @db.Timestamptz(6)
-  map_role_x_permission map_role_x_permission[]
-  map_users_x_roles     map_users_x_roles[]
 }

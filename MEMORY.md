@@ -251,3 +251,19 @@ ame) debe actualizar simultáneamente el campo legal_name al momento de enviar el
 **Regla aprendida:** Para que el RBAC se refleje en la navegacion y en las tarjetas del launchpad, cada modulo visible debe declarar `manifest.nav.permission`. Si el modulo no declara ese permiso, puede seguir visible aunque el backend ya restrinja sus endpoints.
 
 **Aplicacion futura:** Al agregar o ajustar permisos por modulo, sincronizar siempre la capa de autorizacion backend con `nav.permission` en los manifests de los modulos visibles.
+
+## 2026-05-30 - Aprendizaje
+
+**Contexto:** Renombre del maestro de usuarios desde `public.users` a `public.security_users` con Prisma ya regenerado.
+
+**Regla aprendida:** En Kiriox, la entidad canonica de autenticacion y membresia ahora es `security_users`. Cuando Prisma se alinea con ese cambio, no basta con actualizar el schema: tambien deben migrarse todos los `prisma.users`/`tx.users`, el SQL crudo `public.users` y las relaciones derivadas como `map_users_x_roles.users`, que pasan a `security_users`.
+
+**Aplicacion futura:** Ante renombres de tablas o modelos base, validar siempre tres capas en la misma intervencion: delegado Prisma, SQL crudo y nombres de relaciones generadas por Prisma en rutas administrativas, auth y repositorios.
+
+## 2026-05-30 - Aprendizaje
+
+**Contexto:** Renombre del maestro de roles desde `public.users_roles` a `public.security_roles` con Prisma ya regenerado.
+
+**Regla aprendida:** En Kiriox, el catalogo canonico de roles internos ahora vive en `security_roles`. Cuando se regenera Prisma tras este cambio, deben migrarse simultaneamente el SQL crudo `public.users_roles`, los delegados `prisma.users_roles`/`tx.users_roles` y las relaciones derivadas como `map_users_x_roles.users_roles`, que pasan a `security_roles`.
+
+**Aplicacion futura:** En cambios de naming del modelo RBAC, validar siempre en conjunto usuario, rol y tablas puente para mantener consistente el eje `security_users -> map_users_x_roles -> security_roles -> map_role_x_permission`.

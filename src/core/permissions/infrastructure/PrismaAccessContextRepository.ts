@@ -62,7 +62,7 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
       const rows = await prisma.$queryRaw<Row[]>(Prisma.sql`
         SELECT EXISTS (
           SELECT 1
-          FROM public.users u
+          FROM public.security_users u
           WHERE u.id = ${userId}::uuid
             AND u.company_id = ${effectiveCompanyId}::uuid
             AND COALESCE(u.is_active, true) = true
@@ -71,7 +71,7 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
 
       return Boolean(rows[0]?.exists);
     } catch (err) {
-      if (isMissingRelation(err, 'public.users')) return false;
+      if (isMissingRelation(err, 'public.security_users')) return false;
       throw err;
     }
   }
@@ -92,12 +92,12 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
     try {
       rows = await prisma.$queryRaw<Row[]>(Prisma.sql`
         SELECT u.id, u.username, u.email
-        FROM public.users u
+        FROM public.security_users u
         WHERE u.id = ${userId}::uuid
         LIMIT 1
       `);
     } catch (err) {
-      if (!isMissingRelation(err, 'public.users')) throw err;
+      if (!isMissingRelation(err, 'public.security_users')) throw err;
     }
     const row = rows[0];
     return { id: userId, name: row?.username ?? 'Usuario', email: row?.email ?? fallbackEmail ?? '' };
@@ -126,11 +126,11 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
     try {
       const rows = await prisma.$queryRaw<Row[]>(Prisma.sql`
         SELECT DISTINCT r.code
-        FROM public.users u
+        FROM public.security_users u
         JOIN public.map_users_x_roles mur
           ON mur.user_id = u.id
          AND COALESCE(mur.is_active, true) = true
-        JOIN public.users_roles r
+        JOIN public.security_roles r
           ON r.id = mur.role_id
          AND COALESCE(r.is_active, true) = true
         WHERE u.id = ${userId}::uuid
@@ -143,7 +143,7 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
         .filter(Boolean);
     } catch (err) {
       if (isMissingRelation(err, 'public.map_users_x_roles')) return [];
-      if (isMissingRelation(err, 'public.users_roles')) return [];
+      if (isMissingRelation(err, 'public.security_roles')) return [];
       throw err;
     }
   }
@@ -154,11 +154,11 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
     try {
       const rows = await prisma.$queryRaw<Row[]>(Prisma.sql`
         SELECT DISTINCT p.code
-        FROM public.users u
+        FROM public.security_users u
         JOIN public.map_users_x_roles mur
           ON mur.user_id = u.id
          AND COALESCE(mur.is_active, true) = true
-        JOIN public.users_roles r
+        JOIN public.security_roles r
           ON r.id = mur.role_id
          AND COALESCE(r.is_active, true) = true
         JOIN public.map_role_x_permission mrp
@@ -177,7 +177,7 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
       if (isMissingRelation(err, 'public.map_role_x_permission')) return [];
       if (isMissingRelation(err, 'public.users_permission')) return [];
       if (isMissingRelation(err, 'public.map_users_x_roles')) return [];
-      if (isMissingRelation(err, 'public.users_roles')) return [];
+      if (isMissingRelation(err, 'public.security_roles')) return [];
       throw err;
     }
   }

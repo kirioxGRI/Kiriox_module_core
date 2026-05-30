@@ -20,7 +20,7 @@ export async function GET() {
         COALESCE(u.username, u.email)            AS full_name,
         u.email,
         u.username
-      FROM public.users u
+      FROM public.security_users u
       WHERE COALESCE(u.is_active, true) = true
       ORDER BY COALESCE(u.username, u.email) ASC
     `);

@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     // Resolve owner names
     const ownerIds = [...new Set(items.map(i => i.owner_id).filter(Boolean))] as string[];
     const owners = ownerIds.length > 0
-      ? await prisma.users.findMany({
+      ? await prisma.security_users.findMany({
           where: { id: { in: ownerIds } },
           select: { id: true, name: true, last_name: true, email: true },
         })

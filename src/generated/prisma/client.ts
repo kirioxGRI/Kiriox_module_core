@@ -277,6 +277,11 @@ export type graph_run_sa = Prisma.graph_run_saModel
  */
 export type incident_register = Prisma.incident_registerModel
 /**
+ * Model map_role_x_permission
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type map_role_x_permission = Prisma.map_role_x_permissionModel
+/**
  * Model map_run_ra_risk_controls
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
  */
@@ -286,11 +291,6 @@ export type map_run_ra_risk_controls = Prisma.map_run_ra_risk_controlsModel
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
  */
 export type map_users_x_roles = Prisma.map_users_x_rolesModel
-/**
- * Model map_role_x_permission
- * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
- */
-export type map_role_x_permission = Prisma.map_role_x_permissionModel
 /**
  * Model monitoring_due_item
  * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -427,17 +427,17 @@ export type run_ra_risk_treatment = Prisma.run_ra_risk_treatmentModel
  */
 export type run_ra_risks = Prisma.run_ra_risksModel
 /**
- * Model users
+ * Model security_roles
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
  */
-export type users = Prisma.usersModel
+export type security_roles = Prisma.security_rolesModel
+/**
+ * Model security_users
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type security_users = Prisma.security_usersModel
 /**
  * Model users_permission
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
  */
 export type users_permission = Prisma.users_permissionModel
-/**
- * Model users_roles
- * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
- */
-export type users_roles = Prisma.users_rolesModel

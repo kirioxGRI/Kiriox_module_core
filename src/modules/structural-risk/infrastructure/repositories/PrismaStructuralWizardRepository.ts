@@ -94,7 +94,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
       FROM public.graph_run_lifecycle_history h
       LEFT JOIN public.graph_catalog_run_lifecycle lf ON lf.id = h.from_lifecycle_id
       LEFT JOIN public.graph_catalog_run_lifecycle lt ON lt.id = h.to_lifecycle_id
-      LEFT JOIN public.users u ON u.id = h.changed_by
+      LEFT JOIN public.security_users u ON u.id = h.changed_by
       WHERE h.run_sa_id = ${runSaId}::uuid
       ORDER BY h.changed_at DESC
     `);
@@ -319,14 +319,14 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
           ra.criticality_code::text AS criticality_code
         FROM public.activities a
         JOIN public.elements e ON e.id = a.element_id
-        LEFT JOIN public.users u ON u.id = a.owner_id
+        LEFT JOIN public.security_users u ON u.id = a.owner_id
         LEFT JOIN public.graph_map_run_sa_activities ra ON ra.activity_id = a.id AND ra.run_sa_id = ${runSaId}::uuid
         WHERE a.company_id = ${companyId}::uuid AND a.is_active = true
         ORDER BY a.name ASC
       `),
       prisma.$queryRaw<WizardPersonRow[]>(Prisma.sql`
         SELECT u.id::text, trim(concat_ws(' ', u.name, u.last_name)) AS full_name, u.email
-        FROM public.users u
+        FROM public.security_users u
         WHERE u.company_id = ${companyId}::uuid AND coalesce(u.is_active, true) = true
         ORDER BY full_name ASC NULLS LAST, u.email ASC
       `),
@@ -356,7 +356,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
         FROM public.graph_activities_dependencies d
         JOIN public.activities a ON a.id = d.activity_id
         LEFT JOIN public.activities da ON da.id = d.dependency_activity_id
-        LEFT JOIN public.users up ON up.id = d.dependency_person_id
+        LEFT JOIN public.security_users up ON up.id = d.dependency_person_id
         JOIN public.company_resource_catalog r ON r.id_resource = d.dependency_resource_id
         JOIN public.graph_activities_failure_effect fe ON fe.id = d.failure_effect_id
         JOIN public.graph_activities_dependency_strength ds ON ds.id = d.dependency_strength_id
@@ -378,7 +378,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
         FROM public.graph_map_activity_resource_dependency m
         JOIN public.activities a ON a.id = m.activity_id
         JOIN public.graph_activity_resource r ON r.resource_id = m.resource_id
-        LEFT JOIN public.users u ON u.id = r.owner_id
+        LEFT JOIN public.security_users u ON u.id = r.owner_id
         LEFT JOIN public.company_resource_catalog tr ON tr.id_resource::text = r.resource_type
         LEFT JOIN public.graph_activities_failure_effect fe ON fe.code = m.failure_effect
         LEFT JOIN public.graph_activities_dependency_strength ds ON ds.code = m.dependency_strength
@@ -436,7 +436,7 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
         JOIN public.run_ra_risks rr ON rr.id = c.id_risk
         JOIN public.run_ra r ON r.id = rr.run_ra_id
         LEFT JOIN public.catalog_control_type ct ON ct.id = c.control_type
-        LEFT JOIN public.users u ON u.id = c.owner_id
+        LEFT JOIN public.security_users u ON u.id = c.owner_id
         WHERE r.company_id = ${companyId}::uuid
       `),
     ]);

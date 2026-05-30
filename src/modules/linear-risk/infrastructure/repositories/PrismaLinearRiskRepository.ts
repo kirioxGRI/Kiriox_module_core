@@ -539,7 +539,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT catalog_probability_id::text AS id, name, description, ordinal::int, numeric_value::float8 FROM public.catalog_ra_probability WHERE is_active = true ORDER BY ordinal ASC`),
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text AS id, descripcion, peso::float8 FROM public.pesos ORDER BY id ASC`),
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, name FROM public.activities WHERE (company_id = ${companyId}::uuid OR company_id IS NULL) AND is_active = true ORDER BY name ASC`),
-      prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, COALESCE(name,'') AS name, COALESCE(last_name,'') AS last_name FROM public.users WHERE company_id = ${companyId}::uuid AND is_active = true ORDER BY name ASC`),
+      prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, COALESCE(name,'') AS name, COALESCE(last_name,'') AS last_name FROM public.security_users WHERE company_id = ${companyId}::uuid AND is_active = true ORDER BY name ASC`),
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, name FROM public.run_ra_controls WHERE run_ra_id = ${runRaId}::uuid AND is_existing = true AND is_active = true ORDER BY name ASC`),
       prisma.$queryRaw<any[]>(Prisma.sql`
         SELECT
@@ -799,7 +799,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, name FROM public.catalog_control_type`),
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, name FROM public.catalog_controls_category WHERE is_active = true`),
       prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, name FROM public.catalog_controls_frequency WHERE is_active = true`),
-      prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, name FROM public.users WHERE company_id = ${companyId}::uuid AND is_active = true`),
+      prisma.$queryRaw<any[]>(Prisma.sql`SELECT id::text, name FROM public.security_users WHERE company_id = ${companyId}::uuid AND is_active = true`),
     ]);
 
     return {
@@ -997,7 +997,7 @@ export class PrismaLinearRiskRepository implements LinearRiskRepository {
       `),
       prisma.$queryRaw<any[]>(Prisma.sql`
         SELECT id::text, COALESCE(name, '') AS name, COALESCE(last_name, '') AS last_name
-        FROM public.users
+        FROM public.security_users
         WHERE company_id = ${companyId}::uuid
           AND is_active = true
         ORDER BY name ASC, last_name ASC

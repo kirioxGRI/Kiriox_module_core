@@ -110,7 +110,7 @@ export class CompanyRepository {
         (SELECT COUNT(*)::int FROM public.run_ra_risks WHERE ${hasCompany ? Prisma.sql`run_ra_id IN (SELECT id FROM public.run_ra WHERE company_id = ${companyId}::uuid)` : Prisma.sql`1=1`}) AS risks_count,
         (SELECT COUNT(*)::int FROM public.run_ra_controls WHERE ${hasCompany ? Prisma.sql`run_ra_id IN (SELECT id FROM public.run_ra WHERE company_id = ${companyId}::uuid)` : Prisma.sql`1=1`}) AS controls_count,
         (SELECT COUNT(*)::int FROM public.run_ra_control_tests WHERE ${hasCompany ? Prisma.sql`run_ra_id IN (SELECT id FROM public.run_ra WHERE company_id = ${companyId}::uuid)` : Prisma.sql`1=1`}) AS tests_count,
-        (SELECT COUNT(*)::int FROM public.users WHERE ${hasCompany ? Prisma.sql`company_id = ${companyId}::uuid` : Prisma.sql`1=1`}) AS users_count
+        (SELECT COUNT(*)::int FROM public.security_users WHERE ${hasCompany ? Prisma.sql`company_id = ${companyId}::uuid` : Prisma.sql`1=1`}) AS users_count
     `);
     return rows[0] || { elements_count: 0, activities_count: 0, risks_count: 0, controls_count: 0, tests_count: 0, users_count: 0 };
   }

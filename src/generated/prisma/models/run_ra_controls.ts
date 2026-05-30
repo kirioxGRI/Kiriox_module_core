@@ -363,7 +363,7 @@ export type run_ra_controlsWhereInput = {
   catalog_controls_category?: Prisma.XOR<Prisma.Catalog_controls_categoryNullableScalarRelationFilter, Prisma.catalog_controls_categoryWhereInput> | null
   catalog_control_type?: Prisma.XOR<Prisma.Catalog_control_typeNullableScalarRelationFilter, Prisma.catalog_control_typeWhereInput> | null
   catalog_controls_frequency?: Prisma.XOR<Prisma.Catalog_controls_frequencyNullableScalarRelationFilter, Prisma.catalog_controls_frequencyWhereInput> | null
-  users?: Prisma.XOR<Prisma.UsersNullableScalarRelationFilter, Prisma.usersWhereInput> | null
+  security_users?: Prisma.XOR<Prisma.Security_usersNullableScalarRelationFilter, Prisma.security_usersWhereInput> | null
   run_ra?: Prisma.XOR<Prisma.Run_raScalarRelationFilter, Prisma.run_raWhereInput>
   run_ra_evidence?: Prisma.Run_ra_evidenceListRelationFilter
   run_ra_monitoring?: Prisma.Run_ra_monitoringListRelationFilter
@@ -397,7 +397,7 @@ export type run_ra_controlsOrderByWithRelationInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryOrderByWithRelationInput
   catalog_control_type?: Prisma.catalog_control_typeOrderByWithRelationInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyOrderByWithRelationInput
-  users?: Prisma.usersOrderByWithRelationInput
+  security_users?: Prisma.security_usersOrderByWithRelationInput
   run_ra?: Prisma.run_raOrderByWithRelationInput
   run_ra_evidence?: Prisma.run_ra_evidenceOrderByRelationAggregateInput
   run_ra_monitoring?: Prisma.run_ra_monitoringOrderByRelationAggregateInput
@@ -434,7 +434,7 @@ export type run_ra_controlsWhereUniqueInput = Prisma.AtLeast<{
   catalog_controls_category?: Prisma.XOR<Prisma.Catalog_controls_categoryNullableScalarRelationFilter, Prisma.catalog_controls_categoryWhereInput> | null
   catalog_control_type?: Prisma.XOR<Prisma.Catalog_control_typeNullableScalarRelationFilter, Prisma.catalog_control_typeWhereInput> | null
   catalog_controls_frequency?: Prisma.XOR<Prisma.Catalog_controls_frequencyNullableScalarRelationFilter, Prisma.catalog_controls_frequencyWhereInput> | null
-  users?: Prisma.XOR<Prisma.UsersNullableScalarRelationFilter, Prisma.usersWhereInput> | null
+  security_users?: Prisma.XOR<Prisma.Security_usersNullableScalarRelationFilter, Prisma.security_usersWhereInput> | null
   run_ra?: Prisma.XOR<Prisma.Run_raScalarRelationFilter, Prisma.run_raWhereInput>
   run_ra_evidence?: Prisma.Run_ra_evidenceListRelationFilter
   run_ra_monitoring?: Prisma.Run_ra_monitoringListRelationFilter
@@ -519,7 +519,7 @@ export type run_ra_controlsCreateInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
+  security_users?: Prisma.security_usersCreateNestedOneWithoutRun_ra_controlsInput
   run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
@@ -577,7 +577,7 @@ export type run_ra_controlsUpdateInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
+  security_users?: Prisma.security_usersUpdateOneWithoutRun_ra_controlsNestedInput
   run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
@@ -1029,45 +1029,45 @@ export type run_ra_controlsUpdateOneWithoutRun_ra_monitoringNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.run_ra_controlsUpdateToOneWithWhereWithoutRun_ra_monitoringInput, Prisma.run_ra_controlsUpdateWithoutRun_ra_monitoringInput>, Prisma.run_ra_controlsUncheckedUpdateWithoutRun_ra_monitoringInput>
 }
 
-export type run_ra_controlsCreateNestedManyWithoutUsersInput = {
-  create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutUsersInput, Prisma.run_ra_controlsUncheckedCreateWithoutUsersInput> | Prisma.run_ra_controlsCreateWithoutUsersInput[] | Prisma.run_ra_controlsUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutUsersInput | Prisma.run_ra_controlsCreateOrConnectWithoutUsersInput[]
-  createMany?: Prisma.run_ra_controlsCreateManyUsersInputEnvelope
+export type run_ra_controlsCreateNestedManyWithoutSecurity_usersInput = {
+  create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutSecurity_usersInput, Prisma.run_ra_controlsUncheckedCreateWithoutSecurity_usersInput> | Prisma.run_ra_controlsCreateWithoutSecurity_usersInput[] | Prisma.run_ra_controlsUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutSecurity_usersInput | Prisma.run_ra_controlsCreateOrConnectWithoutSecurity_usersInput[]
+  createMany?: Prisma.run_ra_controlsCreateManySecurity_usersInputEnvelope
   connect?: Prisma.run_ra_controlsWhereUniqueInput | Prisma.run_ra_controlsWhereUniqueInput[]
 }
 
-export type run_ra_controlsUncheckedCreateNestedManyWithoutUsersInput = {
-  create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutUsersInput, Prisma.run_ra_controlsUncheckedCreateWithoutUsersInput> | Prisma.run_ra_controlsCreateWithoutUsersInput[] | Prisma.run_ra_controlsUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutUsersInput | Prisma.run_ra_controlsCreateOrConnectWithoutUsersInput[]
-  createMany?: Prisma.run_ra_controlsCreateManyUsersInputEnvelope
+export type run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput = {
+  create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutSecurity_usersInput, Prisma.run_ra_controlsUncheckedCreateWithoutSecurity_usersInput> | Prisma.run_ra_controlsCreateWithoutSecurity_usersInput[] | Prisma.run_ra_controlsUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutSecurity_usersInput | Prisma.run_ra_controlsCreateOrConnectWithoutSecurity_usersInput[]
+  createMany?: Prisma.run_ra_controlsCreateManySecurity_usersInputEnvelope
   connect?: Prisma.run_ra_controlsWhereUniqueInput | Prisma.run_ra_controlsWhereUniqueInput[]
 }
 
-export type run_ra_controlsUpdateManyWithoutUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutUsersInput, Prisma.run_ra_controlsUncheckedCreateWithoutUsersInput> | Prisma.run_ra_controlsCreateWithoutUsersInput[] | Prisma.run_ra_controlsUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutUsersInput | Prisma.run_ra_controlsCreateOrConnectWithoutUsersInput[]
-  upsert?: Prisma.run_ra_controlsUpsertWithWhereUniqueWithoutUsersInput | Prisma.run_ra_controlsUpsertWithWhereUniqueWithoutUsersInput[]
-  createMany?: Prisma.run_ra_controlsCreateManyUsersInputEnvelope
+export type run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutSecurity_usersInput, Prisma.run_ra_controlsUncheckedCreateWithoutSecurity_usersInput> | Prisma.run_ra_controlsCreateWithoutSecurity_usersInput[] | Prisma.run_ra_controlsUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutSecurity_usersInput | Prisma.run_ra_controlsCreateOrConnectWithoutSecurity_usersInput[]
+  upsert?: Prisma.run_ra_controlsUpsertWithWhereUniqueWithoutSecurity_usersInput | Prisma.run_ra_controlsUpsertWithWhereUniqueWithoutSecurity_usersInput[]
+  createMany?: Prisma.run_ra_controlsCreateManySecurity_usersInputEnvelope
   set?: Prisma.run_ra_controlsWhereUniqueInput | Prisma.run_ra_controlsWhereUniqueInput[]
   disconnect?: Prisma.run_ra_controlsWhereUniqueInput | Prisma.run_ra_controlsWhereUniqueInput[]
   delete?: Prisma.run_ra_controlsWhereUniqueInput | Prisma.run_ra_controlsWhereUniqueInput[]
   connect?: Prisma.run_ra_controlsWhereUniqueInput | Prisma.run_ra_controlsWhereUniqueInput[]
-  update?: Prisma.run_ra_controlsUpdateWithWhereUniqueWithoutUsersInput | Prisma.run_ra_controlsUpdateWithWhereUniqueWithoutUsersInput[]
-  updateMany?: Prisma.run_ra_controlsUpdateManyWithWhereWithoutUsersInput | Prisma.run_ra_controlsUpdateManyWithWhereWithoutUsersInput[]
+  update?: Prisma.run_ra_controlsUpdateWithWhereUniqueWithoutSecurity_usersInput | Prisma.run_ra_controlsUpdateWithWhereUniqueWithoutSecurity_usersInput[]
+  updateMany?: Prisma.run_ra_controlsUpdateManyWithWhereWithoutSecurity_usersInput | Prisma.run_ra_controlsUpdateManyWithWhereWithoutSecurity_usersInput[]
   deleteMany?: Prisma.run_ra_controlsScalarWhereInput | Prisma.run_ra_controlsScalarWhereInput[]
 }
 
-export type run_ra_controlsUncheckedUpdateManyWithoutUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutUsersInput, Prisma.run_ra_controlsUncheckedCreateWithoutUsersInput> | Prisma.run_ra_controlsCreateWithoutUsersInput[] | Prisma.run_ra_controlsUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutUsersInput | Prisma.run_ra_controlsCreateOrConnectWithoutUsersInput[]
-  upsert?: Prisma.run_ra_controlsUpsertWithWhereUniqueWithoutUsersInput | Prisma.run_ra_controlsUpsertWithWhereUniqueWithoutUsersInput[]
-  createMany?: Prisma.run_ra_controlsCreateManyUsersInputEnvelope
+export type run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutSecurity_usersInput, Prisma.run_ra_controlsUncheckedCreateWithoutSecurity_usersInput> | Prisma.run_ra_controlsCreateWithoutSecurity_usersInput[] | Prisma.run_ra_controlsUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.run_ra_controlsCreateOrConnectWithoutSecurity_usersInput | Prisma.run_ra_controlsCreateOrConnectWithoutSecurity_usersInput[]
+  upsert?: Prisma.run_ra_controlsUpsertWithWhereUniqueWithoutSecurity_usersInput | Prisma.run_ra_controlsUpsertWithWhereUniqueWithoutSecurity_usersInput[]
+  createMany?: Prisma.run_ra_controlsCreateManySecurity_usersInputEnvelope
   set?: Prisma.run_ra_controlsWhereUniqueInput | Prisma.run_ra_controlsWhereUniqueInput[]
   disconnect?: Prisma.run_ra_controlsWhereUniqueInput | Prisma.run_ra_controlsWhereUniqueInput[]
   delete?: Prisma.run_ra_controlsWhereUniqueInput | Prisma.run_ra_controlsWhereUniqueInput[]
   connect?: Prisma.run_ra_controlsWhereUniqueInput | Prisma.run_ra_controlsWhereUniqueInput[]
-  update?: Prisma.run_ra_controlsUpdateWithWhereUniqueWithoutUsersInput | Prisma.run_ra_controlsUpdateWithWhereUniqueWithoutUsersInput[]
-  updateMany?: Prisma.run_ra_controlsUpdateManyWithWhereWithoutUsersInput | Prisma.run_ra_controlsUpdateManyWithWhereWithoutUsersInput[]
+  update?: Prisma.run_ra_controlsUpdateWithWhereUniqueWithoutSecurity_usersInput | Prisma.run_ra_controlsUpdateWithWhereUniqueWithoutSecurity_usersInput[]
+  updateMany?: Prisma.run_ra_controlsUpdateManyWithWhereWithoutSecurity_usersInput | Prisma.run_ra_controlsUpdateManyWithWhereWithoutSecurity_usersInput[]
   deleteMany?: Prisma.run_ra_controlsScalarWhereInput | Prisma.run_ra_controlsScalarWhereInput[]
 }
 
@@ -1093,7 +1093,7 @@ export type run_ra_controlsCreateWithoutCatalog_control_typeInput = {
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
+  security_users?: Prisma.security_usersCreateNestedOneWithoutRun_ra_controlsInput
   run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
@@ -1202,7 +1202,7 @@ export type run_ra_controlsCreateWithoutCatalog_controls_categoryInput = {
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
+  security_users?: Prisma.security_usersCreateNestedOneWithoutRun_ra_controlsInput
   run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
@@ -1284,7 +1284,7 @@ export type run_ra_controlsCreateWithoutCatalog_controls_frequencyInput = {
   run_ra_control_tests?: Prisma.run_ra_control_testsCreateNestedManyWithoutRun_ra_controlsInput
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
+  security_users?: Prisma.security_usersCreateNestedOneWithoutRun_ra_controlsInput
   run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
@@ -1366,7 +1366,7 @@ export type run_ra_controlsCreateWithoutGraph_activities_dependenciesInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
+  security_users?: Prisma.security_usersCreateNestedOneWithoutRun_ra_controlsInput
   run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
@@ -1438,7 +1438,7 @@ export type run_ra_controlsUpdateWithoutGraph_activities_dependenciesInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
+  security_users?: Prisma.security_usersUpdateOneWithoutRun_ra_controlsNestedInput
   run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
@@ -1494,7 +1494,7 @@ export type run_ra_controlsCreateWithoutMap_run_ra_risk_controlsInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
+  security_users?: Prisma.security_usersCreateNestedOneWithoutRun_ra_controlsInput
   run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
@@ -1566,7 +1566,7 @@ export type run_ra_controlsUpdateWithoutMap_run_ra_risk_controlsInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
+  security_users?: Prisma.security_usersUpdateOneWithoutRun_ra_controlsNestedInput
   run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
@@ -1623,7 +1623,7 @@ export type run_ra_controlsCreateWithoutRun_raInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
+  security_users?: Prisma.security_usersCreateNestedOneWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
 }
@@ -1704,7 +1704,7 @@ export type run_ra_controlsCreateWithoutRun_ra_control_testsInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
+  security_users?: Prisma.security_usersCreateNestedOneWithoutRun_ra_controlsInput
   run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
@@ -1776,7 +1776,7 @@ export type run_ra_controlsUpdateWithoutRun_ra_control_testsInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
+  security_users?: Prisma.security_usersUpdateOneWithoutRun_ra_controlsNestedInput
   run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
@@ -1833,7 +1833,7 @@ export type run_ra_controlsCreateWithoutRun_ra_evidenceInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
+  security_users?: Prisma.security_usersCreateNestedOneWithoutRun_ra_controlsInput
   run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_controlsInput
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
 }
@@ -1905,7 +1905,7 @@ export type run_ra_controlsUpdateWithoutRun_ra_evidenceInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
+  security_users?: Prisma.security_usersUpdateOneWithoutRun_ra_controlsNestedInput
   run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
 }
@@ -1961,7 +1961,7 @@ export type run_ra_controlsCreateWithoutRun_ra_monitoringInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryCreateNestedOneWithoutRun_ra_controlsInput
   catalog_control_type?: Prisma.catalog_control_typeCreateNestedOneWithoutRun_ra_controlsInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyCreateNestedOneWithoutRun_ra_controlsInput
-  users?: Prisma.usersCreateNestedOneWithoutRun_ra_controlsInput
+  security_users?: Prisma.security_usersCreateNestedOneWithoutRun_ra_controlsInput
   run_ra: Prisma.run_raCreateNestedOneWithoutRun_ra_controlsInput
   run_ra_evidence?: Prisma.run_ra_evidenceCreateNestedManyWithoutRun_ra_controlsInput
 }
@@ -2033,7 +2033,7 @@ export type run_ra_controlsUpdateWithoutRun_ra_monitoringInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
+  security_users?: Prisma.security_usersUpdateOneWithoutRun_ra_controlsNestedInput
   run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_controlsNestedInput
 }
@@ -2066,7 +2066,7 @@ export type run_ra_controlsUncheckedUpdateWithoutRun_ra_monitoringInput = {
   run_ra_evidence?: Prisma.run_ra_evidenceUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
 }
 
-export type run_ra_controlsCreateWithoutUsersInput = {
+export type run_ra_controlsCreateWithoutSecurity_usersInput = {
   id?: string
   code?: string | null
   name: string
@@ -2094,7 +2094,7 @@ export type run_ra_controlsCreateWithoutUsersInput = {
   run_ra_monitoring?: Prisma.run_ra_monitoringCreateNestedManyWithoutRun_ra_controlsInput
 }
 
-export type run_ra_controlsUncheckedCreateWithoutUsersInput = {
+export type run_ra_controlsUncheckedCreateWithoutSecurity_usersInput = {
   id?: string
   run_ra_id: string
   code?: string | null
@@ -2122,30 +2122,30 @@ export type run_ra_controlsUncheckedCreateWithoutUsersInput = {
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedCreateNestedManyWithoutRun_ra_controlsInput
 }
 
-export type run_ra_controlsCreateOrConnectWithoutUsersInput = {
+export type run_ra_controlsCreateOrConnectWithoutSecurity_usersInput = {
   where: Prisma.run_ra_controlsWhereUniqueInput
-  create: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutUsersInput, Prisma.run_ra_controlsUncheckedCreateWithoutUsersInput>
+  create: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutSecurity_usersInput, Prisma.run_ra_controlsUncheckedCreateWithoutSecurity_usersInput>
 }
 
-export type run_ra_controlsCreateManyUsersInputEnvelope = {
-  data: Prisma.run_ra_controlsCreateManyUsersInput | Prisma.run_ra_controlsCreateManyUsersInput[]
+export type run_ra_controlsCreateManySecurity_usersInputEnvelope = {
+  data: Prisma.run_ra_controlsCreateManySecurity_usersInput | Prisma.run_ra_controlsCreateManySecurity_usersInput[]
   skipDuplicates?: boolean
 }
 
-export type run_ra_controlsUpsertWithWhereUniqueWithoutUsersInput = {
+export type run_ra_controlsUpsertWithWhereUniqueWithoutSecurity_usersInput = {
   where: Prisma.run_ra_controlsWhereUniqueInput
-  update: Prisma.XOR<Prisma.run_ra_controlsUpdateWithoutUsersInput, Prisma.run_ra_controlsUncheckedUpdateWithoutUsersInput>
-  create: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutUsersInput, Prisma.run_ra_controlsUncheckedCreateWithoutUsersInput>
+  update: Prisma.XOR<Prisma.run_ra_controlsUpdateWithoutSecurity_usersInput, Prisma.run_ra_controlsUncheckedUpdateWithoutSecurity_usersInput>
+  create: Prisma.XOR<Prisma.run_ra_controlsCreateWithoutSecurity_usersInput, Prisma.run_ra_controlsUncheckedCreateWithoutSecurity_usersInput>
 }
 
-export type run_ra_controlsUpdateWithWhereUniqueWithoutUsersInput = {
+export type run_ra_controlsUpdateWithWhereUniqueWithoutSecurity_usersInput = {
   where: Prisma.run_ra_controlsWhereUniqueInput
-  data: Prisma.XOR<Prisma.run_ra_controlsUpdateWithoutUsersInput, Prisma.run_ra_controlsUncheckedUpdateWithoutUsersInput>
+  data: Prisma.XOR<Prisma.run_ra_controlsUpdateWithoutSecurity_usersInput, Prisma.run_ra_controlsUncheckedUpdateWithoutSecurity_usersInput>
 }
 
-export type run_ra_controlsUpdateManyWithWhereWithoutUsersInput = {
+export type run_ra_controlsUpdateManyWithWhereWithoutSecurity_usersInput = {
   where: Prisma.run_ra_controlsScalarWhereInput
-  data: Prisma.XOR<Prisma.run_ra_controlsUpdateManyMutationInput, Prisma.run_ra_controlsUncheckedUpdateManyWithoutUsersInput>
+  data: Prisma.XOR<Prisma.run_ra_controlsUpdateManyMutationInput, Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersInput>
 }
 
 export type run_ra_controlsCreateManyCatalog_control_typeInput = {
@@ -2193,7 +2193,7 @@ export type run_ra_controlsUpdateWithoutCatalog_control_typeInput = {
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
+  security_users?: Prisma.security_usersUpdateOneWithoutRun_ra_controlsNestedInput
   run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2295,7 +2295,7 @@ export type run_ra_controlsUpdateWithoutCatalog_controls_categoryInput = {
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
+  security_users?: Prisma.security_usersUpdateOneWithoutRun_ra_controlsNestedInput
   run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2397,7 +2397,7 @@ export type run_ra_controlsUpdateWithoutCatalog_controls_frequencyInput = {
   run_ra_control_tests?: Prisma.run_ra_control_testsUpdateManyWithoutRun_ra_controlsNestedInput
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
+  security_users?: Prisma.security_usersUpdateOneWithoutRun_ra_controlsNestedInput
   run_ra?: Prisma.run_raUpdateOneRequiredWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
@@ -2500,7 +2500,7 @@ export type run_ra_controlsUpdateWithoutRun_raInput = {
   catalog_controls_category?: Prisma.catalog_controls_categoryUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_control_type?: Prisma.catalog_control_typeUpdateOneWithoutRun_ra_controlsNestedInput
   catalog_controls_frequency?: Prisma.catalog_controls_frequencyUpdateOneWithoutRun_ra_controlsNestedInput
-  users?: Prisma.usersUpdateOneWithoutRun_ra_controlsNestedInput
+  security_users?: Prisma.security_usersUpdateOneWithoutRun_ra_controlsNestedInput
   run_ra_evidence?: Prisma.run_ra_evidenceUpdateManyWithoutRun_ra_controlsNestedInput
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
 }
@@ -2556,7 +2556,7 @@ export type run_ra_controlsUncheckedUpdateManyWithoutRun_raInput = {
   next_review_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type run_ra_controlsCreateManyUsersInput = {
+export type run_ra_controlsCreateManySecurity_usersInput = {
   id?: string
   run_ra_id: string
   code?: string | null
@@ -2579,7 +2579,7 @@ export type run_ra_controlsCreateManyUsersInput = {
   next_review_date?: Date | string | null
 }
 
-export type run_ra_controlsUpdateWithoutUsersInput = {
+export type run_ra_controlsUpdateWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2607,7 +2607,7 @@ export type run_ra_controlsUpdateWithoutUsersInput = {
   run_ra_monitoring?: Prisma.run_ra_monitoringUpdateManyWithoutRun_ra_controlsNestedInput
 }
 
-export type run_ra_controlsUncheckedUpdateWithoutUsersInput = {
+export type run_ra_controlsUncheckedUpdateWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   run_ra_id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2635,7 +2635,7 @@ export type run_ra_controlsUncheckedUpdateWithoutUsersInput = {
   run_ra_monitoring?: Prisma.run_ra_monitoringUncheckedUpdateManyWithoutRun_ra_controlsNestedInput
 }
 
-export type run_ra_controlsUncheckedUpdateManyWithoutUsersInput = {
+export type run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   run_ra_id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2753,7 +2753,7 @@ export type run_ra_controlsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   catalog_controls_category?: boolean | Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs>
   catalog_control_type?: boolean | Prisma.run_ra_controls$catalog_control_typeArgs<ExtArgs>
   catalog_controls_frequency?: boolean | Prisma.run_ra_controls$catalog_controls_frequencyArgs<ExtArgs>
-  users?: boolean | Prisma.run_ra_controls$usersArgs<ExtArgs>
+  security_users?: boolean | Prisma.run_ra_controls$security_usersArgs<ExtArgs>
   run_ra?: boolean | Prisma.run_raDefaultArgs<ExtArgs>
   run_ra_evidence?: boolean | Prisma.run_ra_controls$run_ra_evidenceArgs<ExtArgs>
   run_ra_monitoring?: boolean | Prisma.run_ra_controls$run_ra_monitoringArgs<ExtArgs>
@@ -2785,7 +2785,7 @@ export type run_ra_controlsSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   catalog_controls_category?: boolean | Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs>
   catalog_control_type?: boolean | Prisma.run_ra_controls$catalog_control_typeArgs<ExtArgs>
   catalog_controls_frequency?: boolean | Prisma.run_ra_controls$catalog_controls_frequencyArgs<ExtArgs>
-  users?: boolean | Prisma.run_ra_controls$usersArgs<ExtArgs>
+  security_users?: boolean | Prisma.run_ra_controls$security_usersArgs<ExtArgs>
   run_ra?: boolean | Prisma.run_raDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["run_ra_controls"]>
 
@@ -2814,7 +2814,7 @@ export type run_ra_controlsSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   catalog_controls_category?: boolean | Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs>
   catalog_control_type?: boolean | Prisma.run_ra_controls$catalog_control_typeArgs<ExtArgs>
   catalog_controls_frequency?: boolean | Prisma.run_ra_controls$catalog_controls_frequencyArgs<ExtArgs>
-  users?: boolean | Prisma.run_ra_controls$usersArgs<ExtArgs>
+  security_users?: boolean | Prisma.run_ra_controls$security_usersArgs<ExtArgs>
   run_ra?: boolean | Prisma.run_raDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["run_ra_controls"]>
 
@@ -2850,7 +2850,7 @@ export type run_ra_controlsInclude<ExtArgs extends runtime.Types.Extensions.Inte
   catalog_controls_category?: boolean | Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs>
   catalog_control_type?: boolean | Prisma.run_ra_controls$catalog_control_typeArgs<ExtArgs>
   catalog_controls_frequency?: boolean | Prisma.run_ra_controls$catalog_controls_frequencyArgs<ExtArgs>
-  users?: boolean | Prisma.run_ra_controls$usersArgs<ExtArgs>
+  security_users?: boolean | Prisma.run_ra_controls$security_usersArgs<ExtArgs>
   run_ra?: boolean | Prisma.run_raDefaultArgs<ExtArgs>
   run_ra_evidence?: boolean | Prisma.run_ra_controls$run_ra_evidenceArgs<ExtArgs>
   run_ra_monitoring?: boolean | Prisma.run_ra_controls$run_ra_monitoringArgs<ExtArgs>
@@ -2860,14 +2860,14 @@ export type run_ra_controlsIncludeCreateManyAndReturn<ExtArgs extends runtime.Ty
   catalog_controls_category?: boolean | Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs>
   catalog_control_type?: boolean | Prisma.run_ra_controls$catalog_control_typeArgs<ExtArgs>
   catalog_controls_frequency?: boolean | Prisma.run_ra_controls$catalog_controls_frequencyArgs<ExtArgs>
-  users?: boolean | Prisma.run_ra_controls$usersArgs<ExtArgs>
+  security_users?: boolean | Prisma.run_ra_controls$security_usersArgs<ExtArgs>
   run_ra?: boolean | Prisma.run_raDefaultArgs<ExtArgs>
 }
 export type run_ra_controlsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   catalog_controls_category?: boolean | Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs>
   catalog_control_type?: boolean | Prisma.run_ra_controls$catalog_control_typeArgs<ExtArgs>
   catalog_controls_frequency?: boolean | Prisma.run_ra_controls$catalog_controls_frequencyArgs<ExtArgs>
-  users?: boolean | Prisma.run_ra_controls$usersArgs<ExtArgs>
+  security_users?: boolean | Prisma.run_ra_controls$security_usersArgs<ExtArgs>
   run_ra?: boolean | Prisma.run_raDefaultArgs<ExtArgs>
 }
 
@@ -2880,7 +2880,7 @@ export type $run_ra_controlsPayload<ExtArgs extends runtime.Types.Extensions.Int
     catalog_controls_category: Prisma.$catalog_controls_categoryPayload<ExtArgs> | null
     catalog_control_type: Prisma.$catalog_control_typePayload<ExtArgs> | null
     catalog_controls_frequency: Prisma.$catalog_controls_frequencyPayload<ExtArgs> | null
-    users: Prisma.$usersPayload<ExtArgs> | null
+    security_users: Prisma.$security_usersPayload<ExtArgs> | null
     run_ra: Prisma.$run_raPayload<ExtArgs>
     run_ra_evidence: Prisma.$run_ra_evidencePayload<ExtArgs>[]
     run_ra_monitoring: Prisma.$run_ra_monitoringPayload<ExtArgs>[]
@@ -3307,7 +3307,7 @@ export interface Prisma__run_ra_controlsClient<T, Null = never, ExtArgs extends 
   catalog_controls_category<T extends Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$catalog_controls_categoryArgs<ExtArgs>>): Prisma.Prisma__catalog_controls_categoryClient<runtime.Types.Result.GetResult<Prisma.$catalog_controls_categoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   catalog_control_type<T extends Prisma.run_ra_controls$catalog_control_typeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$catalog_control_typeArgs<ExtArgs>>): Prisma.Prisma__catalog_control_typeClient<runtime.Types.Result.GetResult<Prisma.$catalog_control_typePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   catalog_controls_frequency<T extends Prisma.run_ra_controls$catalog_controls_frequencyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$catalog_controls_frequencyArgs<ExtArgs>>): Prisma.Prisma__catalog_controls_frequencyClient<runtime.Types.Result.GetResult<Prisma.$catalog_controls_frequencyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  users<T extends Prisma.run_ra_controls$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$usersArgs<ExtArgs>>): Prisma.Prisma__usersClient<runtime.Types.Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  security_users<T extends Prisma.run_ra_controls$security_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$security_usersArgs<ExtArgs>>): Prisma.Prisma__security_usersClient<runtime.Types.Result.GetResult<Prisma.$security_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   run_ra<T extends Prisma.run_raDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_raDefaultArgs<ExtArgs>>): Prisma.Prisma__run_raClient<runtime.Types.Result.GetResult<Prisma.$run_raPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   run_ra_evidence<T extends Prisma.run_ra_controls$run_ra_evidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$run_ra_evidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$run_ra_evidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   run_ra_monitoring<T extends Prisma.run_ra_controls$run_ra_monitoringArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.run_ra_controls$run_ra_monitoringArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$run_ra_monitoringPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3891,22 +3891,22 @@ export type run_ra_controls$catalog_controls_frequencyArgs<ExtArgs extends runti
 }
 
 /**
- * run_ra_controls.users
+ * run_ra_controls.security_users
  */
-export type run_ra_controls$usersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type run_ra_controls$security_usersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the users
+   * Select specific fields to fetch from the security_users
    */
-  select?: Prisma.usersSelect<ExtArgs> | null
+  select?: Prisma.security_usersSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the users
+   * Omit specific fields from the security_users
    */
-  omit?: Prisma.usersOmit<ExtArgs> | null
+  omit?: Prisma.security_usersOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.usersInclude<ExtArgs> | null
-  where?: Prisma.usersWhereInput
+  include?: Prisma.security_usersInclude<ExtArgs> | null
+  where?: Prisma.security_usersWhereInput
 }
 
 /**

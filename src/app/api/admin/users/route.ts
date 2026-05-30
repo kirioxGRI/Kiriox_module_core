@@ -39,9 +39,9 @@ export async function GET(request: Request) {
         SELECT u.id, u.email, u.name, u.last_name, u.is_active, u.activation_status,
                u.created_at, u.updated_at, r.code AS role_code, r.name AS role_name,
                c.name AS company_name, c.legal_name AS company_legal_name
-        FROM public.users u
+        FROM public.security_users u
         LEFT JOIN public.map_users_x_roles mur ON mur.user_id = u.id AND COALESCE(mur.is_active, true) = true
-        LEFT JOIN public.users_roles r ON r.id = mur.role_id AND COALESCE(r.is_active, true) = true
+        LEFT JOIN public.security_roles r ON r.id = mur.role_id AND COALESCE(r.is_active, true) = true
         LEFT JOIN public.company c ON c.id = u.company_id
         WHERE u.company_id = ${companyId}::uuid
         ORDER BY u.created_at DESC NULLS LAST
@@ -70,12 +70,12 @@ export async function GET(request: Request) {
       return NextResponse.json(Array.from(grouped.values()));
     }
 
-    const users = await prisma.users.findMany({
+    const users = await prisma.security_users.findMany({
       include: {
         company: { select: { name: true, legal_name: true } },
         map_users_x_roles: {
           where: { is_active: true },
-          include: { users_roles: { select: { code: true, name: true } } }
+          include: { security_roles: { select: { code: true, name: true } } }
         }
       },
       orderBy: { created_at: 'desc' }
@@ -86,7 +86,7 @@ export async function GET(request: Request) {
       isActive: Boolean(u.is_active), activationStatus: u.activation_status ?? 'active',
       createdAt: u.created_at, updatedAt: u.updated_at,
       companyName: u.company?.legal_name || u.company?.name || null,
-      roles: u.map_users_x_roles.map(r => ({ roleCode: r.users_roles.code, roleName: r.users_roles.name })),
+      roles: u.map_users_x_roles.map(r => ({ roleCode: r.security_roles.code, roleName: r.security_roles.name })),
     })));
   } catch (error: unknown) {
     console.error('Error fetching users:', error);
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
     const company = await prisma.company.findUnique({ where: { id: tenantId }, select: { id: true } });
     if (!company) return NextResponse.json({ error: 'Company not found' }, { status: 400 });
 
-    const existingUser = await prisma.users.findUnique({ where: { email }, select: { id: true } });
+    const existingUser = await prisma.security_users.findUnique({ where: { email }, select: { id: true } });
     if (existingUser) {
       return NextResponse.json({ error: 'User already exists', userId: existingUser.id }, { status: 409 });
     }
@@ -123,7 +123,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'At least one role is required' }, { status: 400 });
     }
 
-    const roleRows = await prisma.users_roles.findMany({
+    const roleRows = await prisma.security_roles.findMany({
       where: { code: { in: requestedRoleCodes }, is_active: true },
       select: { id: true, code: true }
     });
@@ -132,7 +132,7 @@ export async function POST(request: Request) {
     }
 
     const passwordHash = await hashPassword(password);
-    const newUser = await prisma.users.create({
+    const newUser = await prisma.security_users.create({
       data: {
         company_id: tenantId, email, password_hash: passwordHash, name,
         last_name: lastName || null, whatsapp: whatsapp || null,

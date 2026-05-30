@@ -20,11 +20,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const { password } = await request.json();
     if (!password) return NextResponse.json({ error: 'Password is required' }, { status: 400 });
 
-    const existingUser = await prisma.users.findUnique({ where: { id }, select: { id: true } });
+    const existingUser = await prisma.security_users.findUnique({ where: { id }, select: { id: true } });
     if (!existingUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
     const passwordHash = await hashPassword(password);
-    await prisma.users.update({
+    await prisma.security_users.update({
       where: { id },
       data: {
         password_hash:        passwordHash,

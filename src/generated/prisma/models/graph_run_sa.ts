@@ -286,7 +286,7 @@ export type graph_run_saWhereInput = {
   graph_risk_cascade?: Prisma.Graph_risk_cascadeListRelationFilter
   graph_run_lifecycle_history?: Prisma.Graph_run_lifecycle_historyListRelationFilter
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.companyWhereInput>
-  users?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
+  security_users?: Prisma.XOR<Prisma.Security_usersScalarRelationFilter, Prisma.security_usersWhereInput>
 }
 
 export type graph_run_saOrderByWithRelationInput = {
@@ -309,7 +309,7 @@ export type graph_run_saOrderByWithRelationInput = {
   graph_risk_cascade?: Prisma.graph_risk_cascadeOrderByRelationAggregateInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyOrderByRelationAggregateInput
   company?: Prisma.companyOrderByWithRelationInput
-  users?: Prisma.usersOrderByWithRelationInput
+  security_users?: Prisma.security_usersOrderByWithRelationInput
 }
 
 export type graph_run_saWhereUniqueInput = Prisma.AtLeast<{
@@ -336,7 +336,7 @@ export type graph_run_saWhereUniqueInput = Prisma.AtLeast<{
   graph_risk_cascade?: Prisma.Graph_risk_cascadeListRelationFilter
   graph_run_lifecycle_history?: Prisma.Graph_run_lifecycle_historyListRelationFilter
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.companyWhereInput>
-  users?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
+  security_users?: Prisma.XOR<Prisma.Security_usersScalarRelationFilter, Prisma.security_usersWhereInput>
 }, "id" | "company_id_code">
 
 export type graph_run_saOrderByWithAggregationInput = {
@@ -397,7 +397,7 @@ export type graph_run_saCreateInput = {
   graph_risk_cascade?: Prisma.graph_risk_cascadeCreateNestedManyWithoutGraph_run_saInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutGraph_run_saInput
   company: Prisma.companyCreateNestedOneWithoutGraph_run_saInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_saInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_saInput
 }
 
 export type graph_run_saUncheckedCreateInput = {
@@ -439,7 +439,7 @@ export type graph_run_saUpdateInput = {
   graph_risk_cascade?: Prisma.graph_risk_cascadeUpdateManyWithoutGraph_run_saNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutGraph_run_saNestedInput
   company?: Prisma.companyUpdateOneRequiredWithoutGraph_run_saNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_saNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_saNestedInput
 }
 
 export type graph_run_saUncheckedUpdateInput = {
@@ -697,45 +697,45 @@ export type graph_run_saUpdateOneRequiredWithoutGraph_run_lifecycle_historyNeste
   update?: Prisma.XOR<Prisma.XOR<Prisma.graph_run_saUpdateToOneWithWhereWithoutGraph_run_lifecycle_historyInput, Prisma.graph_run_saUpdateWithoutGraph_run_lifecycle_historyInput>, Prisma.graph_run_saUncheckedUpdateWithoutGraph_run_lifecycle_historyInput>
 }
 
-export type graph_run_saCreateNestedManyWithoutUsersInput = {
-  create?: Prisma.XOR<Prisma.graph_run_saCreateWithoutUsersInput, Prisma.graph_run_saUncheckedCreateWithoutUsersInput> | Prisma.graph_run_saCreateWithoutUsersInput[] | Prisma.graph_run_saUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_run_saCreateOrConnectWithoutUsersInput | Prisma.graph_run_saCreateOrConnectWithoutUsersInput[]
-  createMany?: Prisma.graph_run_saCreateManyUsersInputEnvelope
+export type graph_run_saCreateNestedManyWithoutSecurity_usersInput = {
+  create?: Prisma.XOR<Prisma.graph_run_saCreateWithoutSecurity_usersInput, Prisma.graph_run_saUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_run_saCreateWithoutSecurity_usersInput[] | Prisma.graph_run_saUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_run_saCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_run_saCreateOrConnectWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_run_saCreateManySecurity_usersInputEnvelope
   connect?: Prisma.graph_run_saWhereUniqueInput | Prisma.graph_run_saWhereUniqueInput[]
 }
 
-export type graph_run_saUncheckedCreateNestedManyWithoutUsersInput = {
-  create?: Prisma.XOR<Prisma.graph_run_saCreateWithoutUsersInput, Prisma.graph_run_saUncheckedCreateWithoutUsersInput> | Prisma.graph_run_saCreateWithoutUsersInput[] | Prisma.graph_run_saUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_run_saCreateOrConnectWithoutUsersInput | Prisma.graph_run_saCreateOrConnectWithoutUsersInput[]
-  createMany?: Prisma.graph_run_saCreateManyUsersInputEnvelope
+export type graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput = {
+  create?: Prisma.XOR<Prisma.graph_run_saCreateWithoutSecurity_usersInput, Prisma.graph_run_saUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_run_saCreateWithoutSecurity_usersInput[] | Prisma.graph_run_saUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_run_saCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_run_saCreateOrConnectWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_run_saCreateManySecurity_usersInputEnvelope
   connect?: Prisma.graph_run_saWhereUniqueInput | Prisma.graph_run_saWhereUniqueInput[]
 }
 
-export type graph_run_saUpdateManyWithoutUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.graph_run_saCreateWithoutUsersInput, Prisma.graph_run_saUncheckedCreateWithoutUsersInput> | Prisma.graph_run_saCreateWithoutUsersInput[] | Prisma.graph_run_saUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_run_saCreateOrConnectWithoutUsersInput | Prisma.graph_run_saCreateOrConnectWithoutUsersInput[]
-  upsert?: Prisma.graph_run_saUpsertWithWhereUniqueWithoutUsersInput | Prisma.graph_run_saUpsertWithWhereUniqueWithoutUsersInput[]
-  createMany?: Prisma.graph_run_saCreateManyUsersInputEnvelope
+export type graph_run_saUpdateManyWithoutSecurity_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.graph_run_saCreateWithoutSecurity_usersInput, Prisma.graph_run_saUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_run_saCreateWithoutSecurity_usersInput[] | Prisma.graph_run_saUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_run_saCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_run_saCreateOrConnectWithoutSecurity_usersInput[]
+  upsert?: Prisma.graph_run_saUpsertWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_run_saUpsertWithWhereUniqueWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_run_saCreateManySecurity_usersInputEnvelope
   set?: Prisma.graph_run_saWhereUniqueInput | Prisma.graph_run_saWhereUniqueInput[]
   disconnect?: Prisma.graph_run_saWhereUniqueInput | Prisma.graph_run_saWhereUniqueInput[]
   delete?: Prisma.graph_run_saWhereUniqueInput | Prisma.graph_run_saWhereUniqueInput[]
   connect?: Prisma.graph_run_saWhereUniqueInput | Prisma.graph_run_saWhereUniqueInput[]
-  update?: Prisma.graph_run_saUpdateWithWhereUniqueWithoutUsersInput | Prisma.graph_run_saUpdateWithWhereUniqueWithoutUsersInput[]
-  updateMany?: Prisma.graph_run_saUpdateManyWithWhereWithoutUsersInput | Prisma.graph_run_saUpdateManyWithWhereWithoutUsersInput[]
+  update?: Prisma.graph_run_saUpdateWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_run_saUpdateWithWhereUniqueWithoutSecurity_usersInput[]
+  updateMany?: Prisma.graph_run_saUpdateManyWithWhereWithoutSecurity_usersInput | Prisma.graph_run_saUpdateManyWithWhereWithoutSecurity_usersInput[]
   deleteMany?: Prisma.graph_run_saScalarWhereInput | Prisma.graph_run_saScalarWhereInput[]
 }
 
-export type graph_run_saUncheckedUpdateManyWithoutUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.graph_run_saCreateWithoutUsersInput, Prisma.graph_run_saUncheckedCreateWithoutUsersInput> | Prisma.graph_run_saCreateWithoutUsersInput[] | Prisma.graph_run_saUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_run_saCreateOrConnectWithoutUsersInput | Prisma.graph_run_saCreateOrConnectWithoutUsersInput[]
-  upsert?: Prisma.graph_run_saUpsertWithWhereUniqueWithoutUsersInput | Prisma.graph_run_saUpsertWithWhereUniqueWithoutUsersInput[]
-  createMany?: Prisma.graph_run_saCreateManyUsersInputEnvelope
+export type graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.graph_run_saCreateWithoutSecurity_usersInput, Prisma.graph_run_saUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_run_saCreateWithoutSecurity_usersInput[] | Prisma.graph_run_saUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_run_saCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_run_saCreateOrConnectWithoutSecurity_usersInput[]
+  upsert?: Prisma.graph_run_saUpsertWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_run_saUpsertWithWhereUniqueWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_run_saCreateManySecurity_usersInputEnvelope
   set?: Prisma.graph_run_saWhereUniqueInput | Prisma.graph_run_saWhereUniqueInput[]
   disconnect?: Prisma.graph_run_saWhereUniqueInput | Prisma.graph_run_saWhereUniqueInput[]
   delete?: Prisma.graph_run_saWhereUniqueInput | Prisma.graph_run_saWhereUniqueInput[]
   connect?: Prisma.graph_run_saWhereUniqueInput | Prisma.graph_run_saWhereUniqueInput[]
-  update?: Prisma.graph_run_saUpdateWithWhereUniqueWithoutUsersInput | Prisma.graph_run_saUpdateWithWhereUniqueWithoutUsersInput[]
-  updateMany?: Prisma.graph_run_saUpdateManyWithWhereWithoutUsersInput | Prisma.graph_run_saUpdateManyWithWhereWithoutUsersInput[]
+  update?: Prisma.graph_run_saUpdateWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_run_saUpdateWithWhereUniqueWithoutSecurity_usersInput[]
+  updateMany?: Prisma.graph_run_saUpdateManyWithWhereWithoutSecurity_usersInput | Prisma.graph_run_saUpdateManyWithWhereWithoutSecurity_usersInput[]
   deleteMany?: Prisma.graph_run_saScalarWhereInput | Prisma.graph_run_saScalarWhereInput[]
 }
 
@@ -756,7 +756,7 @@ export type graph_run_saCreateWithoutCompanyInput = {
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutGraph_run_saInput
   graph_risk_cascade?: Prisma.graph_risk_cascadeCreateNestedManyWithoutGraph_run_saInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutGraph_run_saInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_saInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_saInput
 }
 
 export type graph_run_saUncheckedCreateWithoutCompanyInput = {
@@ -841,7 +841,7 @@ export type graph_run_saCreateWithoutGraph_control_evidenceInput = {
   graph_risk_cascade?: Prisma.graph_risk_cascadeCreateNestedManyWithoutGraph_run_saInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutGraph_run_saInput
   company: Prisma.companyCreateNestedOneWithoutGraph_run_saInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_saInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_saInput
 }
 
 export type graph_run_saUncheckedCreateWithoutGraph_control_evidenceInput = {
@@ -897,7 +897,7 @@ export type graph_run_saUpdateWithoutGraph_control_evidenceInput = {
   graph_risk_cascade?: Prisma.graph_risk_cascadeUpdateManyWithoutGraph_run_saNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutGraph_run_saNestedInput
   company?: Prisma.companyUpdateOneRequiredWithoutGraph_run_saNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_saNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_saNestedInput
 }
 
 export type graph_run_saUncheckedUpdateWithoutGraph_control_evidenceInput = {
@@ -937,7 +937,7 @@ export type graph_run_saCreateWithoutGraph_control_hardgateInput = {
   graph_risk_cascade?: Prisma.graph_risk_cascadeCreateNestedManyWithoutGraph_run_saInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutGraph_run_saInput
   company: Prisma.companyCreateNestedOneWithoutGraph_run_saInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_saInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_saInput
 }
 
 export type graph_run_saUncheckedCreateWithoutGraph_control_hardgateInput = {
@@ -993,7 +993,7 @@ export type graph_run_saUpdateWithoutGraph_control_hardgateInput = {
   graph_risk_cascade?: Prisma.graph_risk_cascadeUpdateManyWithoutGraph_run_saNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutGraph_run_saNestedInput
   company?: Prisma.companyUpdateOneRequiredWithoutGraph_run_saNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_saNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_saNestedInput
 }
 
 export type graph_run_saUncheckedUpdateWithoutGraph_control_hardgateInput = {
@@ -1033,7 +1033,7 @@ export type graph_run_saCreateWithoutGraph_map_run_sa_activitiesInput = {
   graph_risk_cascade?: Prisma.graph_risk_cascadeCreateNestedManyWithoutGraph_run_saInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutGraph_run_saInput
   company: Prisma.companyCreateNestedOneWithoutGraph_run_saInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_saInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_saInput
 }
 
 export type graph_run_saUncheckedCreateWithoutGraph_map_run_sa_activitiesInput = {
@@ -1089,7 +1089,7 @@ export type graph_run_saUpdateWithoutGraph_map_run_sa_activitiesInput = {
   graph_risk_cascade?: Prisma.graph_risk_cascadeUpdateManyWithoutGraph_run_saNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutGraph_run_saNestedInput
   company?: Prisma.companyUpdateOneRequiredWithoutGraph_run_saNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_saNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_saNestedInput
 }
 
 export type graph_run_saUncheckedUpdateWithoutGraph_map_run_sa_activitiesInput = {
@@ -1129,7 +1129,7 @@ export type graph_run_saCreateWithoutGraph_risk_cascadeInput = {
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutGraph_run_saInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutGraph_run_saInput
   company: Prisma.companyCreateNestedOneWithoutGraph_run_saInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_saInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_saInput
 }
 
 export type graph_run_saUncheckedCreateWithoutGraph_risk_cascadeInput = {
@@ -1185,7 +1185,7 @@ export type graph_run_saUpdateWithoutGraph_risk_cascadeInput = {
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutGraph_run_saNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutGraph_run_saNestedInput
   company?: Prisma.companyUpdateOneRequiredWithoutGraph_run_saNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_saNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_saNestedInput
 }
 
 export type graph_run_saUncheckedUpdateWithoutGraph_risk_cascadeInput = {
@@ -1225,7 +1225,7 @@ export type graph_run_saCreateWithoutGraph_run_lifecycle_historyInput = {
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutGraph_run_saInput
   graph_risk_cascade?: Prisma.graph_risk_cascadeCreateNestedManyWithoutGraph_run_saInput
   company: Prisma.companyCreateNestedOneWithoutGraph_run_saInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_saInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_saInput
 }
 
 export type graph_run_saUncheckedCreateWithoutGraph_run_lifecycle_historyInput = {
@@ -1281,7 +1281,7 @@ export type graph_run_saUpdateWithoutGraph_run_lifecycle_historyInput = {
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutGraph_run_saNestedInput
   graph_risk_cascade?: Prisma.graph_risk_cascadeUpdateManyWithoutGraph_run_saNestedInput
   company?: Prisma.companyUpdateOneRequiredWithoutGraph_run_saNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_saNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_saNestedInput
 }
 
 export type graph_run_saUncheckedUpdateWithoutGraph_run_lifecycle_historyInput = {
@@ -1304,7 +1304,7 @@ export type graph_run_saUncheckedUpdateWithoutGraph_run_lifecycle_historyInput =
   graph_risk_cascade?: Prisma.graph_risk_cascadeUncheckedUpdateManyWithoutGraph_run_saNestedInput
 }
 
-export type graph_run_saCreateWithoutUsersInput = {
+export type graph_run_saCreateWithoutSecurity_usersInput = {
   id?: string
   code: string
   title: string
@@ -1324,7 +1324,7 @@ export type graph_run_saCreateWithoutUsersInput = {
   company: Prisma.companyCreateNestedOneWithoutGraph_run_saInput
 }
 
-export type graph_run_saUncheckedCreateWithoutUsersInput = {
+export type graph_run_saUncheckedCreateWithoutSecurity_usersInput = {
   id?: string
   company_id: string
   code: string
@@ -1344,30 +1344,30 @@ export type graph_run_saUncheckedCreateWithoutUsersInput = {
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutGraph_run_saInput
 }
 
-export type graph_run_saCreateOrConnectWithoutUsersInput = {
+export type graph_run_saCreateOrConnectWithoutSecurity_usersInput = {
   where: Prisma.graph_run_saWhereUniqueInput
-  create: Prisma.XOR<Prisma.graph_run_saCreateWithoutUsersInput, Prisma.graph_run_saUncheckedCreateWithoutUsersInput>
+  create: Prisma.XOR<Prisma.graph_run_saCreateWithoutSecurity_usersInput, Prisma.graph_run_saUncheckedCreateWithoutSecurity_usersInput>
 }
 
-export type graph_run_saCreateManyUsersInputEnvelope = {
-  data: Prisma.graph_run_saCreateManyUsersInput | Prisma.graph_run_saCreateManyUsersInput[]
+export type graph_run_saCreateManySecurity_usersInputEnvelope = {
+  data: Prisma.graph_run_saCreateManySecurity_usersInput | Prisma.graph_run_saCreateManySecurity_usersInput[]
   skipDuplicates?: boolean
 }
 
-export type graph_run_saUpsertWithWhereUniqueWithoutUsersInput = {
+export type graph_run_saUpsertWithWhereUniqueWithoutSecurity_usersInput = {
   where: Prisma.graph_run_saWhereUniqueInput
-  update: Prisma.XOR<Prisma.graph_run_saUpdateWithoutUsersInput, Prisma.graph_run_saUncheckedUpdateWithoutUsersInput>
-  create: Prisma.XOR<Prisma.graph_run_saCreateWithoutUsersInput, Prisma.graph_run_saUncheckedCreateWithoutUsersInput>
+  update: Prisma.XOR<Prisma.graph_run_saUpdateWithoutSecurity_usersInput, Prisma.graph_run_saUncheckedUpdateWithoutSecurity_usersInput>
+  create: Prisma.XOR<Prisma.graph_run_saCreateWithoutSecurity_usersInput, Prisma.graph_run_saUncheckedCreateWithoutSecurity_usersInput>
 }
 
-export type graph_run_saUpdateWithWhereUniqueWithoutUsersInput = {
+export type graph_run_saUpdateWithWhereUniqueWithoutSecurity_usersInput = {
   where: Prisma.graph_run_saWhereUniqueInput
-  data: Prisma.XOR<Prisma.graph_run_saUpdateWithoutUsersInput, Prisma.graph_run_saUncheckedUpdateWithoutUsersInput>
+  data: Prisma.XOR<Prisma.graph_run_saUpdateWithoutSecurity_usersInput, Prisma.graph_run_saUncheckedUpdateWithoutSecurity_usersInput>
 }
 
-export type graph_run_saUpdateManyWithWhereWithoutUsersInput = {
+export type graph_run_saUpdateManyWithWhereWithoutSecurity_usersInput = {
   where: Prisma.graph_run_saScalarWhereInput
-  data: Prisma.XOR<Prisma.graph_run_saUpdateManyMutationInput, Prisma.graph_run_saUncheckedUpdateManyWithoutUsersInput>
+  data: Prisma.XOR<Prisma.graph_run_saUpdateManyMutationInput, Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersInput>
 }
 
 export type graph_run_saCreateManyCompanyInput = {
@@ -1402,7 +1402,7 @@ export type graph_run_saUpdateWithoutCompanyInput = {
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutGraph_run_saNestedInput
   graph_risk_cascade?: Prisma.graph_risk_cascadeUpdateManyWithoutGraph_run_saNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutGraph_run_saNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_saNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_saNestedInput
 }
 
 export type graph_run_saUncheckedUpdateWithoutCompanyInput = {
@@ -1440,7 +1440,7 @@ export type graph_run_saUncheckedUpdateManyWithoutCompanyInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type graph_run_saCreateManyUsersInput = {
+export type graph_run_saCreateManySecurity_usersInput = {
   id?: string
   company_id: string
   code: string
@@ -1455,7 +1455,7 @@ export type graph_run_saCreateManyUsersInput = {
   updated_at?: Date | string
 }
 
-export type graph_run_saUpdateWithoutUsersInput = {
+export type graph_run_saUpdateWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1475,7 +1475,7 @@ export type graph_run_saUpdateWithoutUsersInput = {
   company?: Prisma.companyUpdateOneRequiredWithoutGraph_run_saNestedInput
 }
 
-export type graph_run_saUncheckedUpdateWithoutUsersInput = {
+export type graph_run_saUncheckedUpdateWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   company_id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1495,7 +1495,7 @@ export type graph_run_saUncheckedUpdateWithoutUsersInput = {
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutGraph_run_saNestedInput
 }
 
-export type graph_run_saUncheckedUpdateManyWithoutUsersInput = {
+export type graph_run_saUncheckedUpdateManyWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   company_id?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1597,7 +1597,7 @@ export type graph_run_saSelect<ExtArgs extends runtime.Types.Extensions.Internal
   graph_risk_cascade?: boolean | Prisma.graph_run_sa$graph_risk_cascadeArgs<ExtArgs>
   graph_run_lifecycle_history?: boolean | Prisma.graph_run_sa$graph_run_lifecycle_historyArgs<ExtArgs>
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.Graph_run_saCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["graph_run_sa"]>
 
@@ -1616,7 +1616,7 @@ export type graph_run_saSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   created_at?: boolean
   updated_at?: boolean
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["graph_run_sa"]>
 
 export type graph_run_saSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1634,7 +1634,7 @@ export type graph_run_saSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   created_at?: boolean
   updated_at?: boolean
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["graph_run_sa"]>
 
 export type graph_run_saSelectScalar = {
@@ -1661,16 +1661,16 @@ export type graph_run_saInclude<ExtArgs extends runtime.Types.Extensions.Interna
   graph_risk_cascade?: boolean | Prisma.graph_run_sa$graph_risk_cascadeArgs<ExtArgs>
   graph_run_lifecycle_history?: boolean | Prisma.graph_run_sa$graph_run_lifecycle_historyArgs<ExtArgs>
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.Graph_run_saCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type graph_run_saIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
 }
 export type graph_run_saIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
 }
 
 export type $graph_run_saPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1682,7 +1682,7 @@ export type $graph_run_saPayload<ExtArgs extends runtime.Types.Extensions.Intern
     graph_risk_cascade: Prisma.$graph_risk_cascadePayload<ExtArgs>[]
     graph_run_lifecycle_history: Prisma.$graph_run_lifecycle_historyPayload<ExtArgs>[]
     company: Prisma.$companyPayload<ExtArgs>
-    users: Prisma.$usersPayload<ExtArgs>
+    security_users: Prisma.$security_usersPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2098,7 +2098,7 @@ export interface Prisma__graph_run_saClient<T, Null = never, ExtArgs extends run
   graph_risk_cascade<T extends Prisma.graph_run_sa$graph_risk_cascadeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.graph_run_sa$graph_risk_cascadeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$graph_risk_cascadePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   graph_run_lifecycle_history<T extends Prisma.graph_run_sa$graph_run_lifecycle_historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.graph_run_sa$graph_run_lifecycle_historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$graph_run_lifecycle_historyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   company<T extends Prisma.companyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.companyDefaultArgs<ExtArgs>>): Prisma.Prisma__companyClient<runtime.Types.Result.GetResult<Prisma.$companyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  users<T extends Prisma.usersDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.usersDefaultArgs<ExtArgs>>): Prisma.Prisma__usersClient<runtime.Types.Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  security_users<T extends Prisma.security_usersDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.security_usersDefaultArgs<ExtArgs>>): Prisma.Prisma__security_usersClient<runtime.Types.Result.GetResult<Prisma.$security_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

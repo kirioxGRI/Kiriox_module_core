@@ -18,6 +18,7 @@ import {
   Clock,
   Shield,
   Activity,
+  KeyRound,
 } from "lucide-react";
 
 const catalogoModules = [
@@ -68,6 +69,14 @@ const catalogoModules = [
     href: "/admin/roles",
     color: "#a855f7",
     rgb: "168,85,247",
+  },
+  {
+    title: "Roles / Permisos",
+    description: "Asigne y revoque permisos por módulo a cada rol del sistema.",
+    icon: KeyRound,
+    href: "/modelo/gobernanza/catalogo/roles-permisos",
+    color: "#f59e0b",
+    rgb: "245,158,11",
   },
   {
     title: "Parámetros del Motor",

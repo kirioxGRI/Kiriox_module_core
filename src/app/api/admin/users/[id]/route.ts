@@ -22,18 +22,18 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
   if (!isAdmin(auth.roleCode)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   try {
-    const user = await prisma.users.findUnique({
+    const user = await prisma.security_users.findUnique({
       where: { id },
       include: {
         map_users_x_roles: {
           where: { is_active: true },
-          include: { users_roles: { select: { code: true, name: true } } }
+          include: { security_roles: { select: { code: true, name: true } } }
         }
       }
     });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
-    const roles = user.map_users_x_roles.map(r => ({ roleCode: r.users_roles.code, roleName: r.users_roles.name }));
+    const roles = user.map_users_x_roles.map(r => ({ roleCode: r.security_roles.code, roleName: r.security_roles.name }));
     return NextResponse.json({
       user: {
         id: user.id, tenantId: user.company_id, email: user.email, name: user.name,
@@ -62,11 +62,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const body = await request.json();
     const { email, name, lastName, whatsapp, roleCodes, isActive, tenantId } = body;
 
-    const existingUser = await prisma.users.findUnique({ where: { id }, select: { id: true, email: true } });
+    const existingUser = await prisma.security_users.findUnique({ where: { id }, select: { id: true, email: true } });
     if (!existingUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
     if (email && email !== existingUser.email) {
-      const emailExists = await prisma.users.findUnique({ where: { email }, select: { id: true } });
+      const emailExists = await prisma.security_users.findUnique({ where: { email }, select: { id: true } });
       if (emailExists) return NextResponse.json({ error: 'Email already exists' }, { status: 409 });
     }
 
@@ -81,13 +81,13 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         data.is_active         = isActive;
         data.activation_status = isActive ? 'active' : 'inactive';
       }
-      await tx.users.update({ where: { id }, data });
+      await tx.security_users.update({ where: { id }, data });
 
       if (Array.isArray(roleCodes)) {
         const canonicalRoleCodes = Array.from(new Set(
           roleCodes.map((code: string) => normalizeRoleCode(code)).filter((c: string) => Boolean(c))
         ));
-        const roleRows = await tx.users_roles.findMany({
+        const roleRows = await tx.security_roles.findMany({
           where: { code: { in: canonicalRoleCodes, mode: 'insensitive' }, is_active: true },
           select: { id: true }
         });

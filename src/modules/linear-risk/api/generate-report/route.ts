@@ -60,7 +60,7 @@ async function fetchReportData(runRaId: string, companyId: string) {
       LEFT JOIN public.run_ra_risk_analysis a ON a.run_ra_risk_id = rk.id
       LEFT JOIN public.catalog_ra_valoration v ON v.id = rk.id_valoration
       LEFT JOIN public.activities ka ON ka.id = rk.activity_id
-      LEFT JOIN public.users u ON u.id = rk.owner_id
+      LEFT JOIN public.security_users u ON u.id = rk.owner_id
       WHERE rk.run_ra_id = ${runRaId}::uuid
       ORDER BY rk.updated_at DESC
     `),

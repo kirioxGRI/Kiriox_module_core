@@ -139,7 +139,7 @@ export const GET = withAccess({ module: 'linear-risk', permission: 'read' }, asy
   const [owners, controlTypes, controlNatures, controlFrequencies, controlEffectiveness] = await Promise.all([
     prisma.$queryRaw<Array<{ id: string; name: string; last_name: string }>>(Prisma.sql`
       SELECT id::text, COALESCE(name,'') AS name, COALESCE(last_name,'') AS last_name
-      FROM public.users
+      FROM public.security_users
       WHERE company_id = ${effectiveCompanyId}::uuid
         AND is_active = true
       ORDER BY name ASC

@@ -20,7 +20,7 @@ export class PrismaAuthRepository {
         u.password_hash,
         COALESCE(u.is_active, true) AS is_active,
         u.company_id::text
-      FROM public.users u
+      FROM public.security_users u
       WHERE LOWER(COALESCE(u.email, '')) = ${identifier}
          OR LOWER(COALESCE(u.username, '')) = ${identifier}
       LIMIT 1
@@ -30,7 +30,7 @@ export class PrismaAuthRepository {
 
   async updateLastLoginAt(userId: string): Promise<void> {
     await prisma.$executeRaw(Prisma.sql`
-      UPDATE public.users SET last_login_at = NOW() WHERE id = ${userId}::uuid
+      UPDATE public.security_users SET last_login_at = NOW() WHERE id = ${userId}::uuid
     `);
   }
 }

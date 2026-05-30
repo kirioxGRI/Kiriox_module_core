@@ -233,7 +233,7 @@ export type graph_map_run_sa_activitiesWhereInput = {
   activities?: Prisma.XOR<Prisma.ActivitiesScalarRelationFilter, Prisma.activitiesWhereInput>
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.companyWhereInput>
   graph_run_sa?: Prisma.XOR<Prisma.Graph_run_saScalarRelationFilter, Prisma.graph_run_saWhereInput>
-  users?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
+  security_users?: Prisma.XOR<Prisma.Security_usersScalarRelationFilter, Prisma.security_usersWhereInput>
 }
 
 export type graph_map_run_sa_activitiesOrderByWithRelationInput = {
@@ -251,7 +251,7 @@ export type graph_map_run_sa_activitiesOrderByWithRelationInput = {
   activities?: Prisma.activitiesOrderByWithRelationInput
   company?: Prisma.companyOrderByWithRelationInput
   graph_run_sa?: Prisma.graph_run_saOrderByWithRelationInput
-  users?: Prisma.usersOrderByWithRelationInput
+  security_users?: Prisma.security_usersOrderByWithRelationInput
 }
 
 export type graph_map_run_sa_activitiesWhereUniqueInput = Prisma.AtLeast<{
@@ -273,7 +273,7 @@ export type graph_map_run_sa_activitiesWhereUniqueInput = Prisma.AtLeast<{
   activities?: Prisma.XOR<Prisma.ActivitiesScalarRelationFilter, Prisma.activitiesWhereInput>
   company?: Prisma.XOR<Prisma.CompanyScalarRelationFilter, Prisma.companyWhereInput>
   graph_run_sa?: Prisma.XOR<Prisma.Graph_run_saScalarRelationFilter, Prisma.graph_run_saWhereInput>
-  users?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
+  security_users?: Prisma.XOR<Prisma.Security_usersScalarRelationFilter, Prisma.security_usersWhereInput>
 }, "id" | "run_sa_id_activity_id">
 
 export type graph_map_run_sa_activitiesOrderByWithAggregationInput = {
@@ -321,7 +321,7 @@ export type graph_map_run_sa_activitiesCreateInput = {
   activities: Prisma.activitiesCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
   company: Prisma.companyCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
   graph_run_sa: Prisma.graph_run_saCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
 }
 
 export type graph_map_run_sa_activitiesUncheckedCreateInput = {
@@ -349,7 +349,7 @@ export type graph_map_run_sa_activitiesUpdateInput = {
   activities?: Prisma.activitiesUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
   company?: Prisma.companyUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
 }
 
 export type graph_map_run_sa_activitiesUncheckedUpdateInput = {
@@ -587,45 +587,45 @@ export type graph_map_run_sa_activitiesUncheckedUpdateManyWithoutGraph_run_saNes
   deleteMany?: Prisma.graph_map_run_sa_activitiesScalarWhereInput | Prisma.graph_map_run_sa_activitiesScalarWhereInput[]
 }
 
-export type graph_map_run_sa_activitiesCreateNestedManyWithoutUsersInput = {
-  create?: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutUsersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput> | Prisma.graph_map_run_sa_activitiesCreateWithoutUsersInput[] | Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutUsersInput | Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutUsersInput[]
-  createMany?: Prisma.graph_map_run_sa_activitiesCreateManyUsersInputEnvelope
+export type graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput = {
+  create?: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput[] | Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_map_run_sa_activitiesCreateManySecurity_usersInputEnvelope
   connect?: Prisma.graph_map_run_sa_activitiesWhereUniqueInput | Prisma.graph_map_run_sa_activitiesWhereUniqueInput[]
 }
 
-export type graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutUsersInput = {
-  create?: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutUsersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput> | Prisma.graph_map_run_sa_activitiesCreateWithoutUsersInput[] | Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutUsersInput | Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutUsersInput[]
-  createMany?: Prisma.graph_map_run_sa_activitiesCreateManyUsersInputEnvelope
+export type graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput = {
+  create?: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput[] | Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_map_run_sa_activitiesCreateManySecurity_usersInputEnvelope
   connect?: Prisma.graph_map_run_sa_activitiesWhereUniqueInput | Prisma.graph_map_run_sa_activitiesWhereUniqueInput[]
 }
 
-export type graph_map_run_sa_activitiesUpdateManyWithoutUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutUsersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput> | Prisma.graph_map_run_sa_activitiesCreateWithoutUsersInput[] | Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutUsersInput | Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutUsersInput[]
-  upsert?: Prisma.graph_map_run_sa_activitiesUpsertWithWhereUniqueWithoutUsersInput | Prisma.graph_map_run_sa_activitiesUpsertWithWhereUniqueWithoutUsersInput[]
-  createMany?: Prisma.graph_map_run_sa_activitiesCreateManyUsersInputEnvelope
+export type graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput[] | Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutSecurity_usersInput[]
+  upsert?: Prisma.graph_map_run_sa_activitiesUpsertWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_map_run_sa_activitiesUpsertWithWhereUniqueWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_map_run_sa_activitiesCreateManySecurity_usersInputEnvelope
   set?: Prisma.graph_map_run_sa_activitiesWhereUniqueInput | Prisma.graph_map_run_sa_activitiesWhereUniqueInput[]
   disconnect?: Prisma.graph_map_run_sa_activitiesWhereUniqueInput | Prisma.graph_map_run_sa_activitiesWhereUniqueInput[]
   delete?: Prisma.graph_map_run_sa_activitiesWhereUniqueInput | Prisma.graph_map_run_sa_activitiesWhereUniqueInput[]
   connect?: Prisma.graph_map_run_sa_activitiesWhereUniqueInput | Prisma.graph_map_run_sa_activitiesWhereUniqueInput[]
-  update?: Prisma.graph_map_run_sa_activitiesUpdateWithWhereUniqueWithoutUsersInput | Prisma.graph_map_run_sa_activitiesUpdateWithWhereUniqueWithoutUsersInput[]
-  updateMany?: Prisma.graph_map_run_sa_activitiesUpdateManyWithWhereWithoutUsersInput | Prisma.graph_map_run_sa_activitiesUpdateManyWithWhereWithoutUsersInput[]
+  update?: Prisma.graph_map_run_sa_activitiesUpdateWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_map_run_sa_activitiesUpdateWithWhereUniqueWithoutSecurity_usersInput[]
+  updateMany?: Prisma.graph_map_run_sa_activitiesUpdateManyWithWhereWithoutSecurity_usersInput | Prisma.graph_map_run_sa_activitiesUpdateManyWithWhereWithoutSecurity_usersInput[]
   deleteMany?: Prisma.graph_map_run_sa_activitiesScalarWhereInput | Prisma.graph_map_run_sa_activitiesScalarWhereInput[]
 }
 
-export type graph_map_run_sa_activitiesUncheckedUpdateManyWithoutUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutUsersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput> | Prisma.graph_map_run_sa_activitiesCreateWithoutUsersInput[] | Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutUsersInput | Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutUsersInput[]
-  upsert?: Prisma.graph_map_run_sa_activitiesUpsertWithWhereUniqueWithoutUsersInput | Prisma.graph_map_run_sa_activitiesUpsertWithWhereUniqueWithoutUsersInput[]
-  createMany?: Prisma.graph_map_run_sa_activitiesCreateManyUsersInputEnvelope
+export type graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput[] | Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_map_run_sa_activitiesCreateOrConnectWithoutSecurity_usersInput[]
+  upsert?: Prisma.graph_map_run_sa_activitiesUpsertWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_map_run_sa_activitiesUpsertWithWhereUniqueWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_map_run_sa_activitiesCreateManySecurity_usersInputEnvelope
   set?: Prisma.graph_map_run_sa_activitiesWhereUniqueInput | Prisma.graph_map_run_sa_activitiesWhereUniqueInput[]
   disconnect?: Prisma.graph_map_run_sa_activitiesWhereUniqueInput | Prisma.graph_map_run_sa_activitiesWhereUniqueInput[]
   delete?: Prisma.graph_map_run_sa_activitiesWhereUniqueInput | Prisma.graph_map_run_sa_activitiesWhereUniqueInput[]
   connect?: Prisma.graph_map_run_sa_activitiesWhereUniqueInput | Prisma.graph_map_run_sa_activitiesWhereUniqueInput[]
-  update?: Prisma.graph_map_run_sa_activitiesUpdateWithWhereUniqueWithoutUsersInput | Prisma.graph_map_run_sa_activitiesUpdateWithWhereUniqueWithoutUsersInput[]
-  updateMany?: Prisma.graph_map_run_sa_activitiesUpdateManyWithWhereWithoutUsersInput | Prisma.graph_map_run_sa_activitiesUpdateManyWithWhereWithoutUsersInput[]
+  update?: Prisma.graph_map_run_sa_activitiesUpdateWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_map_run_sa_activitiesUpdateWithWhereUniqueWithoutSecurity_usersInput[]
+  updateMany?: Prisma.graph_map_run_sa_activitiesUpdateManyWithWhereWithoutSecurity_usersInput | Prisma.graph_map_run_sa_activitiesUpdateManyWithWhereWithoutSecurity_usersInput[]
   deleteMany?: Prisma.graph_map_run_sa_activitiesScalarWhereInput | Prisma.graph_map_run_sa_activitiesScalarWhereInput[]
 }
 
@@ -639,7 +639,7 @@ export type graph_map_run_sa_activitiesCreateWithoutActivitiesInput = {
   criticality_code?: string | null
   company: Prisma.companyCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
   graph_run_sa: Prisma.graph_run_saCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
 }
 
 export type graph_map_run_sa_activitiesUncheckedCreateWithoutActivitiesInput = {
@@ -708,7 +708,7 @@ export type graph_map_run_sa_activitiesCreateWithoutCompanyInput = {
   criticality_code?: string | null
   activities: Prisma.activitiesCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
   graph_run_sa: Prisma.graph_run_saCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
 }
 
 export type graph_map_run_sa_activitiesUncheckedCreateWithoutCompanyInput = {
@@ -760,7 +760,7 @@ export type graph_map_run_sa_activitiesCreateWithoutGraph_run_saInput = {
   criticality_code?: string | null
   activities: Prisma.activitiesCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
   company: Prisma.companyCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
-  users: Prisma.usersCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
 }
 
 export type graph_map_run_sa_activitiesUncheckedCreateWithoutGraph_run_saInput = {
@@ -802,7 +802,7 @@ export type graph_map_run_sa_activitiesUpdateManyWithWhereWithoutGraph_run_saInp
   data: Prisma.XOR<Prisma.graph_map_run_sa_activitiesUpdateManyMutationInput, Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutGraph_run_saInput>
 }
 
-export type graph_map_run_sa_activitiesCreateWithoutUsersInput = {
+export type graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput = {
   id?: string
   selected_at?: Date | string
   is_active?: boolean
@@ -815,7 +815,7 @@ export type graph_map_run_sa_activitiesCreateWithoutUsersInput = {
   graph_run_sa: Prisma.graph_run_saCreateNestedOneWithoutGraph_map_run_sa_activitiesInput
 }
 
-export type graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput = {
+export type graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput = {
   id?: string
   company_id: string
   run_sa_id: string
@@ -828,30 +828,30 @@ export type graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput = {
   criticality_code?: string | null
 }
 
-export type graph_map_run_sa_activitiesCreateOrConnectWithoutUsersInput = {
+export type graph_map_run_sa_activitiesCreateOrConnectWithoutSecurity_usersInput = {
   where: Prisma.graph_map_run_sa_activitiesWhereUniqueInput
-  create: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutUsersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput>
+  create: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput>
 }
 
-export type graph_map_run_sa_activitiesCreateManyUsersInputEnvelope = {
-  data: Prisma.graph_map_run_sa_activitiesCreateManyUsersInput | Prisma.graph_map_run_sa_activitiesCreateManyUsersInput[]
+export type graph_map_run_sa_activitiesCreateManySecurity_usersInputEnvelope = {
+  data: Prisma.graph_map_run_sa_activitiesCreateManySecurity_usersInput | Prisma.graph_map_run_sa_activitiesCreateManySecurity_usersInput[]
   skipDuplicates?: boolean
 }
 
-export type graph_map_run_sa_activitiesUpsertWithWhereUniqueWithoutUsersInput = {
+export type graph_map_run_sa_activitiesUpsertWithWhereUniqueWithoutSecurity_usersInput = {
   where: Prisma.graph_map_run_sa_activitiesWhereUniqueInput
-  update: Prisma.XOR<Prisma.graph_map_run_sa_activitiesUpdateWithoutUsersInput, Prisma.graph_map_run_sa_activitiesUncheckedUpdateWithoutUsersInput>
-  create: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutUsersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutUsersInput>
+  update: Prisma.XOR<Prisma.graph_map_run_sa_activitiesUpdateWithoutSecurity_usersInput, Prisma.graph_map_run_sa_activitiesUncheckedUpdateWithoutSecurity_usersInput>
+  create: Prisma.XOR<Prisma.graph_map_run_sa_activitiesCreateWithoutSecurity_usersInput, Prisma.graph_map_run_sa_activitiesUncheckedCreateWithoutSecurity_usersInput>
 }
 
-export type graph_map_run_sa_activitiesUpdateWithWhereUniqueWithoutUsersInput = {
+export type graph_map_run_sa_activitiesUpdateWithWhereUniqueWithoutSecurity_usersInput = {
   where: Prisma.graph_map_run_sa_activitiesWhereUniqueInput
-  data: Prisma.XOR<Prisma.graph_map_run_sa_activitiesUpdateWithoutUsersInput, Prisma.graph_map_run_sa_activitiesUncheckedUpdateWithoutUsersInput>
+  data: Prisma.XOR<Prisma.graph_map_run_sa_activitiesUpdateWithoutSecurity_usersInput, Prisma.graph_map_run_sa_activitiesUncheckedUpdateWithoutSecurity_usersInput>
 }
 
-export type graph_map_run_sa_activitiesUpdateManyWithWhereWithoutUsersInput = {
+export type graph_map_run_sa_activitiesUpdateManyWithWhereWithoutSecurity_usersInput = {
   where: Prisma.graph_map_run_sa_activitiesScalarWhereInput
-  data: Prisma.XOR<Prisma.graph_map_run_sa_activitiesUpdateManyMutationInput, Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutUsersInput>
+  data: Prisma.XOR<Prisma.graph_map_run_sa_activitiesUpdateManyMutationInput, Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersInput>
 }
 
 export type graph_map_run_sa_activitiesCreateManyActivitiesInput = {
@@ -877,7 +877,7 @@ export type graph_map_run_sa_activitiesUpdateWithoutActivitiesInput = {
   criticality_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.companyUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
 }
 
 export type graph_map_run_sa_activitiesUncheckedUpdateWithoutActivitiesInput = {
@@ -929,7 +929,7 @@ export type graph_map_run_sa_activitiesUpdateWithoutCompanyInput = {
   criticality_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activities?: Prisma.activitiesUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
 }
 
 export type graph_map_run_sa_activitiesUncheckedUpdateWithoutCompanyInput = {
@@ -981,7 +981,7 @@ export type graph_map_run_sa_activitiesUpdateWithoutGraph_run_saInput = {
   criticality_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activities?: Prisma.activitiesUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
   company?: Prisma.companyUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
 }
 
 export type graph_map_run_sa_activitiesUncheckedUpdateWithoutGraph_run_saInput = {
@@ -1010,7 +1010,7 @@ export type graph_map_run_sa_activitiesUncheckedUpdateManyWithoutGraph_run_saInp
   criticality_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type graph_map_run_sa_activitiesCreateManyUsersInput = {
+export type graph_map_run_sa_activitiesCreateManySecurity_usersInput = {
   id?: string
   company_id: string
   run_sa_id: string
@@ -1023,7 +1023,7 @@ export type graph_map_run_sa_activitiesCreateManyUsersInput = {
   criticality_code?: string | null
 }
 
-export type graph_map_run_sa_activitiesUpdateWithoutUsersInput = {
+export type graph_map_run_sa_activitiesUpdateWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   selected_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1036,7 +1036,7 @@ export type graph_map_run_sa_activitiesUpdateWithoutUsersInput = {
   graph_run_sa?: Prisma.graph_run_saUpdateOneRequiredWithoutGraph_map_run_sa_activitiesNestedInput
 }
 
-export type graph_map_run_sa_activitiesUncheckedUpdateWithoutUsersInput = {
+export type graph_map_run_sa_activitiesUncheckedUpdateWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   company_id?: Prisma.StringFieldUpdateOperationsInput | string
   run_sa_id?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1049,7 +1049,7 @@ export type graph_map_run_sa_activitiesUncheckedUpdateWithoutUsersInput = {
   criticality_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type graph_map_run_sa_activitiesUncheckedUpdateManyWithoutUsersInput = {
+export type graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   company_id?: Prisma.StringFieldUpdateOperationsInput | string
   run_sa_id?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1079,7 +1079,7 @@ export type graph_map_run_sa_activitiesSelect<ExtArgs extends runtime.Types.Exte
   activities?: boolean | Prisma.activitiesDefaultArgs<ExtArgs>
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["graph_map_run_sa_activities"]>
 
 export type graph_map_run_sa_activitiesSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1097,7 +1097,7 @@ export type graph_map_run_sa_activitiesSelectCreateManyAndReturn<ExtArgs extends
   activities?: boolean | Prisma.activitiesDefaultArgs<ExtArgs>
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["graph_map_run_sa_activities"]>
 
 export type graph_map_run_sa_activitiesSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1115,7 +1115,7 @@ export type graph_map_run_sa_activitiesSelectUpdateManyAndReturn<ExtArgs extends
   activities?: boolean | Prisma.activitiesDefaultArgs<ExtArgs>
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["graph_map_run_sa_activities"]>
 
 export type graph_map_run_sa_activitiesSelectScalar = {
@@ -1137,19 +1137,19 @@ export type graph_map_run_sa_activitiesInclude<ExtArgs extends runtime.Types.Ext
   activities?: boolean | Prisma.activitiesDefaultArgs<ExtArgs>
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
 }
 export type graph_map_run_sa_activitiesIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | Prisma.activitiesDefaultArgs<ExtArgs>
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
 }
 export type graph_map_run_sa_activitiesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | Prisma.activitiesDefaultArgs<ExtArgs>
   company?: boolean | Prisma.companyDefaultArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
 }
 
 export type $graph_map_run_sa_activitiesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1158,7 +1158,7 @@ export type $graph_map_run_sa_activitiesPayload<ExtArgs extends runtime.Types.Ex
     activities: Prisma.$activitiesPayload<ExtArgs>
     company: Prisma.$companyPayload<ExtArgs>
     graph_run_sa: Prisma.$graph_run_saPayload<ExtArgs>
-    users: Prisma.$usersPayload<ExtArgs>
+    security_users: Prisma.$security_usersPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1569,7 +1569,7 @@ export interface Prisma__graph_map_run_sa_activitiesClient<T, Null = never, ExtA
   activities<T extends Prisma.activitiesDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.activitiesDefaultArgs<ExtArgs>>): Prisma.Prisma__activitiesClient<runtime.Types.Result.GetResult<Prisma.$activitiesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   company<T extends Prisma.companyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.companyDefaultArgs<ExtArgs>>): Prisma.Prisma__companyClient<runtime.Types.Result.GetResult<Prisma.$companyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   graph_run_sa<T extends Prisma.graph_run_saDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.graph_run_saDefaultArgs<ExtArgs>>): Prisma.Prisma__graph_run_saClient<runtime.Types.Result.GetResult<Prisma.$graph_run_saPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  users<T extends Prisma.usersDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.usersDefaultArgs<ExtArgs>>): Prisma.Prisma__usersClient<runtime.Types.Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  security_users<T extends Prisma.security_usersDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.security_usersDefaultArgs<ExtArgs>>): Prisma.Prisma__security_usersClient<runtime.Types.Result.GetResult<Prisma.$security_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

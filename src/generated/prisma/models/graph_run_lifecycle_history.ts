@@ -260,7 +260,7 @@ export type graph_run_lifecycle_historyWhereInput = {
   changed_at?: Prisma.DateTimeFilter<"graph_run_lifecycle_history"> | Date | string
   is_current?: Prisma.BoolFilter<"graph_run_lifecycle_history"> | boolean
   metadata?: Prisma.JsonNullableFilter<"graph_run_lifecycle_history">
-  users?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
+  security_users?: Prisma.XOR<Prisma.Security_usersScalarRelationFilter, Prisma.security_usersWhereInput>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.XOR<Prisma.Graph_catalog_run_lifecycleNullableScalarRelationFilter, Prisma.graph_catalog_run_lifecycleWhereInput> | null
   graph_run_sa?: Prisma.XOR<Prisma.Graph_run_saScalarRelationFilter, Prisma.graph_run_saWhereInput>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.XOR<Prisma.Graph_catalog_run_lifecycleScalarRelationFilter, Prisma.graph_catalog_run_lifecycleWhereInput>
@@ -278,7 +278,7 @@ export type graph_run_lifecycle_historyOrderByWithRelationInput = {
   changed_at?: Prisma.SortOrder
   is_current?: Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
-  users?: Prisma.usersOrderByWithRelationInput
+  security_users?: Prisma.security_usersOrderByWithRelationInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleOrderByWithRelationInput
   graph_run_sa?: Prisma.graph_run_saOrderByWithRelationInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleOrderByWithRelationInput
@@ -299,7 +299,7 @@ export type graph_run_lifecycle_historyWhereUniqueInput = Prisma.AtLeast<{
   changed_at?: Prisma.DateTimeFilter<"graph_run_lifecycle_history"> | Date | string
   is_current?: Prisma.BoolFilter<"graph_run_lifecycle_history"> | boolean
   metadata?: Prisma.JsonNullableFilter<"graph_run_lifecycle_history">
-  users?: Prisma.XOR<Prisma.UsersScalarRelationFilter, Prisma.usersWhereInput>
+  security_users?: Prisma.XOR<Prisma.Security_usersScalarRelationFilter, Prisma.security_usersWhereInput>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.XOR<Prisma.Graph_catalog_run_lifecycleNullableScalarRelationFilter, Prisma.graph_catalog_run_lifecycleWhereInput> | null
   graph_run_sa?: Prisma.XOR<Prisma.Graph_run_saScalarRelationFilter, Prisma.graph_run_saWhereInput>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.XOR<Prisma.Graph_catalog_run_lifecycleScalarRelationFilter, Prisma.graph_catalog_run_lifecycleWhereInput>
@@ -349,7 +349,7 @@ export type graph_run_lifecycle_historyCreateInput = {
   changed_at?: Date | string
   is_current?: boolean
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_lifecycle_historyInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_lifecycle_historyInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleCreateNestedOneWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleInput
   graph_run_sa: Prisma.graph_run_saCreateNestedOneWithoutGraph_run_lifecycle_historyInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle: Prisma.graph_catalog_run_lifecycleCreateNestedOneWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycleInput
@@ -377,7 +377,7 @@ export type graph_run_lifecycle_historyUpdateInput = {
   changed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   is_current?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleUpdateOneWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleUpdateOneRequiredWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycleNestedInput
@@ -619,45 +619,45 @@ export type graph_run_lifecycle_historyUncheckedUpdateManyWithoutGraph_run_saNes
   deleteMany?: Prisma.graph_run_lifecycle_historyScalarWhereInput | Prisma.graph_run_lifecycle_historyScalarWhereInput[]
 }
 
-export type graph_run_lifecycle_historyCreateNestedManyWithoutUsersInput = {
-  create?: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutUsersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput> | Prisma.graph_run_lifecycle_historyCreateWithoutUsersInput[] | Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutUsersInput | Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutUsersInput[]
-  createMany?: Prisma.graph_run_lifecycle_historyCreateManyUsersInputEnvelope
+export type graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput = {
+  create?: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutSecurity_usersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_run_lifecycle_historyCreateWithoutSecurity_usersInput[] | Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_run_lifecycle_historyCreateManySecurity_usersInputEnvelope
   connect?: Prisma.graph_run_lifecycle_historyWhereUniqueInput | Prisma.graph_run_lifecycle_historyWhereUniqueInput[]
 }
 
-export type graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutUsersInput = {
-  create?: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutUsersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput> | Prisma.graph_run_lifecycle_historyCreateWithoutUsersInput[] | Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutUsersInput | Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutUsersInput[]
-  createMany?: Prisma.graph_run_lifecycle_historyCreateManyUsersInputEnvelope
+export type graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput = {
+  create?: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutSecurity_usersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_run_lifecycle_historyCreateWithoutSecurity_usersInput[] | Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_run_lifecycle_historyCreateManySecurity_usersInputEnvelope
   connect?: Prisma.graph_run_lifecycle_historyWhereUniqueInput | Prisma.graph_run_lifecycle_historyWhereUniqueInput[]
 }
 
-export type graph_run_lifecycle_historyUpdateManyWithoutUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutUsersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput> | Prisma.graph_run_lifecycle_historyCreateWithoutUsersInput[] | Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutUsersInput | Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutUsersInput[]
-  upsert?: Prisma.graph_run_lifecycle_historyUpsertWithWhereUniqueWithoutUsersInput | Prisma.graph_run_lifecycle_historyUpsertWithWhereUniqueWithoutUsersInput[]
-  createMany?: Prisma.graph_run_lifecycle_historyCreateManyUsersInputEnvelope
+export type graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutSecurity_usersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_run_lifecycle_historyCreateWithoutSecurity_usersInput[] | Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutSecurity_usersInput[]
+  upsert?: Prisma.graph_run_lifecycle_historyUpsertWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_run_lifecycle_historyUpsertWithWhereUniqueWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_run_lifecycle_historyCreateManySecurity_usersInputEnvelope
   set?: Prisma.graph_run_lifecycle_historyWhereUniqueInput | Prisma.graph_run_lifecycle_historyWhereUniqueInput[]
   disconnect?: Prisma.graph_run_lifecycle_historyWhereUniqueInput | Prisma.graph_run_lifecycle_historyWhereUniqueInput[]
   delete?: Prisma.graph_run_lifecycle_historyWhereUniqueInput | Prisma.graph_run_lifecycle_historyWhereUniqueInput[]
   connect?: Prisma.graph_run_lifecycle_historyWhereUniqueInput | Prisma.graph_run_lifecycle_historyWhereUniqueInput[]
-  update?: Prisma.graph_run_lifecycle_historyUpdateWithWhereUniqueWithoutUsersInput | Prisma.graph_run_lifecycle_historyUpdateWithWhereUniqueWithoutUsersInput[]
-  updateMany?: Prisma.graph_run_lifecycle_historyUpdateManyWithWhereWithoutUsersInput | Prisma.graph_run_lifecycle_historyUpdateManyWithWhereWithoutUsersInput[]
+  update?: Prisma.graph_run_lifecycle_historyUpdateWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_run_lifecycle_historyUpdateWithWhereUniqueWithoutSecurity_usersInput[]
+  updateMany?: Prisma.graph_run_lifecycle_historyUpdateManyWithWhereWithoutSecurity_usersInput | Prisma.graph_run_lifecycle_historyUpdateManyWithWhereWithoutSecurity_usersInput[]
   deleteMany?: Prisma.graph_run_lifecycle_historyScalarWhereInput | Prisma.graph_run_lifecycle_historyScalarWhereInput[]
 }
 
-export type graph_run_lifecycle_historyUncheckedUpdateManyWithoutUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutUsersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput> | Prisma.graph_run_lifecycle_historyCreateWithoutUsersInput[] | Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput[]
-  connectOrCreate?: Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutUsersInput | Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutUsersInput[]
-  upsert?: Prisma.graph_run_lifecycle_historyUpsertWithWhereUniqueWithoutUsersInput | Prisma.graph_run_lifecycle_historyUpsertWithWhereUniqueWithoutUsersInput[]
-  createMany?: Prisma.graph_run_lifecycle_historyCreateManyUsersInputEnvelope
+export type graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutSecurity_usersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput> | Prisma.graph_run_lifecycle_historyCreateWithoutSecurity_usersInput[] | Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput[]
+  connectOrCreate?: Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutSecurity_usersInput | Prisma.graph_run_lifecycle_historyCreateOrConnectWithoutSecurity_usersInput[]
+  upsert?: Prisma.graph_run_lifecycle_historyUpsertWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_run_lifecycle_historyUpsertWithWhereUniqueWithoutSecurity_usersInput[]
+  createMany?: Prisma.graph_run_lifecycle_historyCreateManySecurity_usersInputEnvelope
   set?: Prisma.graph_run_lifecycle_historyWhereUniqueInput | Prisma.graph_run_lifecycle_historyWhereUniqueInput[]
   disconnect?: Prisma.graph_run_lifecycle_historyWhereUniqueInput | Prisma.graph_run_lifecycle_historyWhereUniqueInput[]
   delete?: Prisma.graph_run_lifecycle_historyWhereUniqueInput | Prisma.graph_run_lifecycle_historyWhereUniqueInput[]
   connect?: Prisma.graph_run_lifecycle_historyWhereUniqueInput | Prisma.graph_run_lifecycle_historyWhereUniqueInput[]
-  update?: Prisma.graph_run_lifecycle_historyUpdateWithWhereUniqueWithoutUsersInput | Prisma.graph_run_lifecycle_historyUpdateWithWhereUniqueWithoutUsersInput[]
-  updateMany?: Prisma.graph_run_lifecycle_historyUpdateManyWithWhereWithoutUsersInput | Prisma.graph_run_lifecycle_historyUpdateManyWithWhereWithoutUsersInput[]
+  update?: Prisma.graph_run_lifecycle_historyUpdateWithWhereUniqueWithoutSecurity_usersInput | Prisma.graph_run_lifecycle_historyUpdateWithWhereUniqueWithoutSecurity_usersInput[]
+  updateMany?: Prisma.graph_run_lifecycle_historyUpdateManyWithWhereWithoutSecurity_usersInput | Prisma.graph_run_lifecycle_historyUpdateManyWithWhereWithoutSecurity_usersInput[]
   deleteMany?: Prisma.graph_run_lifecycle_historyScalarWhereInput | Prisma.graph_run_lifecycle_historyScalarWhereInput[]
 }
 
@@ -669,7 +669,7 @@ export type graph_run_lifecycle_historyCreateWithoutGraph_catalog_run_lifecycle_
   changed_at?: Date | string
   is_current?: boolean
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_lifecycle_historyInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_lifecycle_historyInput
   graph_run_sa: Prisma.graph_run_saCreateNestedOneWithoutGraph_run_lifecycle_historyInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle: Prisma.graph_catalog_run_lifecycleCreateNestedOneWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycleInput
 }
@@ -705,7 +705,7 @@ export type graph_run_lifecycle_historyCreateWithoutGraph_catalog_run_lifecycle_
   changed_at?: Date | string
   is_current?: boolean
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_lifecycle_historyInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_lifecycle_historyInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleCreateNestedOneWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleInput
   graph_run_sa: Prisma.graph_run_saCreateNestedOneWithoutGraph_run_lifecycle_historyInput
 }
@@ -790,7 +790,7 @@ export type graph_run_lifecycle_historyCreateWithoutGraph_run_saInput = {
   changed_at?: Date | string
   is_current?: boolean
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  users: Prisma.usersCreateNestedOneWithoutGraph_run_lifecycle_historyInput
+  security_users: Prisma.security_usersCreateNestedOneWithoutGraph_run_lifecycle_historyInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleCreateNestedOneWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle: Prisma.graph_catalog_run_lifecycleCreateNestedOneWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycleInput
 }
@@ -834,7 +834,7 @@ export type graph_run_lifecycle_historyUpdateManyWithWhereWithoutGraph_run_saInp
   data: Prisma.XOR<Prisma.graph_run_lifecycle_historyUpdateManyMutationInput, Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutGraph_run_saInput>
 }
 
-export type graph_run_lifecycle_historyCreateWithoutUsersInput = {
+export type graph_run_lifecycle_historyCreateWithoutSecurity_usersInput = {
   id?: string
   progress_percent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   change_reason?: string | null
@@ -847,7 +847,7 @@ export type graph_run_lifecycle_historyCreateWithoutUsersInput = {
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle: Prisma.graph_catalog_run_lifecycleCreateNestedOneWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycleInput
 }
 
-export type graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput = {
+export type graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput = {
   id?: string
   run_sa_id: string
   from_lifecycle_id?: string | null
@@ -860,30 +860,30 @@ export type graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
-export type graph_run_lifecycle_historyCreateOrConnectWithoutUsersInput = {
+export type graph_run_lifecycle_historyCreateOrConnectWithoutSecurity_usersInput = {
   where: Prisma.graph_run_lifecycle_historyWhereUniqueInput
-  create: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutUsersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput>
+  create: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutSecurity_usersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput>
 }
 
-export type graph_run_lifecycle_historyCreateManyUsersInputEnvelope = {
-  data: Prisma.graph_run_lifecycle_historyCreateManyUsersInput | Prisma.graph_run_lifecycle_historyCreateManyUsersInput[]
+export type graph_run_lifecycle_historyCreateManySecurity_usersInputEnvelope = {
+  data: Prisma.graph_run_lifecycle_historyCreateManySecurity_usersInput | Prisma.graph_run_lifecycle_historyCreateManySecurity_usersInput[]
   skipDuplicates?: boolean
 }
 
-export type graph_run_lifecycle_historyUpsertWithWhereUniqueWithoutUsersInput = {
+export type graph_run_lifecycle_historyUpsertWithWhereUniqueWithoutSecurity_usersInput = {
   where: Prisma.graph_run_lifecycle_historyWhereUniqueInput
-  update: Prisma.XOR<Prisma.graph_run_lifecycle_historyUpdateWithoutUsersInput, Prisma.graph_run_lifecycle_historyUncheckedUpdateWithoutUsersInput>
-  create: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutUsersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutUsersInput>
+  update: Prisma.XOR<Prisma.graph_run_lifecycle_historyUpdateWithoutSecurity_usersInput, Prisma.graph_run_lifecycle_historyUncheckedUpdateWithoutSecurity_usersInput>
+  create: Prisma.XOR<Prisma.graph_run_lifecycle_historyCreateWithoutSecurity_usersInput, Prisma.graph_run_lifecycle_historyUncheckedCreateWithoutSecurity_usersInput>
 }
 
-export type graph_run_lifecycle_historyUpdateWithWhereUniqueWithoutUsersInput = {
+export type graph_run_lifecycle_historyUpdateWithWhereUniqueWithoutSecurity_usersInput = {
   where: Prisma.graph_run_lifecycle_historyWhereUniqueInput
-  data: Prisma.XOR<Prisma.graph_run_lifecycle_historyUpdateWithoutUsersInput, Prisma.graph_run_lifecycle_historyUncheckedUpdateWithoutUsersInput>
+  data: Prisma.XOR<Prisma.graph_run_lifecycle_historyUpdateWithoutSecurity_usersInput, Prisma.graph_run_lifecycle_historyUncheckedUpdateWithoutSecurity_usersInput>
 }
 
-export type graph_run_lifecycle_historyUpdateManyWithWhereWithoutUsersInput = {
+export type graph_run_lifecycle_historyUpdateManyWithWhereWithoutSecurity_usersInput = {
   where: Prisma.graph_run_lifecycle_historyScalarWhereInput
-  data: Prisma.XOR<Prisma.graph_run_lifecycle_historyUpdateManyMutationInput, Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutUsersInput>
+  data: Prisma.XOR<Prisma.graph_run_lifecycle_historyUpdateManyMutationInput, Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersInput>
 }
 
 export type graph_run_lifecycle_historyCreateManyGraph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleInput = {
@@ -920,7 +920,7 @@ export type graph_run_lifecycle_historyUpdateWithoutGraph_catalog_run_lifecycle_
   changed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   is_current?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleUpdateOneRequiredWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycleNestedInput
 }
@@ -959,7 +959,7 @@ export type graph_run_lifecycle_historyUpdateWithoutGraph_catalog_run_lifecycle_
   changed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   is_current?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleUpdateOneWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
 }
@@ -1011,7 +1011,7 @@ export type graph_run_lifecycle_historyUpdateWithoutGraph_run_saInput = {
   changed_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   is_current?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  users?: Prisma.usersUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
+  security_users?: Prisma.security_usersUpdateOneRequiredWithoutGraph_run_lifecycle_historyNestedInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleUpdateOneWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleNestedInput
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleUpdateOneRequiredWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycleNestedInput
 }
@@ -1042,7 +1042,7 @@ export type graph_run_lifecycle_historyUncheckedUpdateManyWithoutGraph_run_saInp
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
-export type graph_run_lifecycle_historyCreateManyUsersInput = {
+export type graph_run_lifecycle_historyCreateManySecurity_usersInput = {
   id?: string
   run_sa_id: string
   from_lifecycle_id?: string | null
@@ -1055,7 +1055,7 @@ export type graph_run_lifecycle_historyCreateManyUsersInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
-export type graph_run_lifecycle_historyUpdateWithoutUsersInput = {
+export type graph_run_lifecycle_historyUpdateWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   progress_percent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   change_reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1068,7 +1068,7 @@ export type graph_run_lifecycle_historyUpdateWithoutUsersInput = {
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: Prisma.graph_catalog_run_lifecycleUpdateOneRequiredWithoutGraph_run_lifecycle_history_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycleNestedInput
 }
 
-export type graph_run_lifecycle_historyUncheckedUpdateWithoutUsersInput = {
+export type graph_run_lifecycle_historyUncheckedUpdateWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   run_sa_id?: Prisma.StringFieldUpdateOperationsInput | string
   from_lifecycle_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1081,7 +1081,7 @@ export type graph_run_lifecycle_historyUncheckedUpdateWithoutUsersInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
-export type graph_run_lifecycle_historyUncheckedUpdateManyWithoutUsersInput = {
+export type graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   run_sa_id?: Prisma.StringFieldUpdateOperationsInput | string
   from_lifecycle_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1108,7 +1108,7 @@ export type graph_run_lifecycle_historySelect<ExtArgs extends runtime.Types.Exte
   changed_at?: boolean
   is_current?: boolean
   metadata?: boolean
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_run_lifecycle_history$graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_catalog_run_lifecycleDefaultArgs<ExtArgs>
@@ -1126,7 +1126,7 @@ export type graph_run_lifecycle_historySelectCreateManyAndReturn<ExtArgs extends
   changed_at?: boolean
   is_current?: boolean
   metadata?: boolean
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_run_lifecycle_history$graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_catalog_run_lifecycleDefaultArgs<ExtArgs>
@@ -1144,7 +1144,7 @@ export type graph_run_lifecycle_historySelectUpdateManyAndReturn<ExtArgs extends
   changed_at?: boolean
   is_current?: boolean
   metadata?: boolean
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_run_lifecycle_history$graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_catalog_run_lifecycleDefaultArgs<ExtArgs>
@@ -1166,19 +1166,19 @@ export type graph_run_lifecycle_historySelectScalar = {
 
 export type graph_run_lifecycle_historyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "run_sa_id" | "from_lifecycle_id" | "to_lifecycle_id" | "progress_percent" | "change_reason" | "completion_reason" | "changed_by" | "changed_at" | "is_current" | "metadata", ExtArgs["result"]["graph_run_lifecycle_history"]>
 export type graph_run_lifecycle_historyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_run_lifecycle_history$graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_catalog_run_lifecycleDefaultArgs<ExtArgs>
 }
 export type graph_run_lifecycle_historyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_run_lifecycle_history$graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_catalog_run_lifecycleDefaultArgs<ExtArgs>
 }
 export type graph_run_lifecycle_historyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  users?: boolean | Prisma.usersDefaultArgs<ExtArgs>
+  security_users?: boolean | Prisma.security_usersDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_run_lifecycle_history$graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.graph_run_saDefaultArgs<ExtArgs>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle?: boolean | Prisma.graph_catalog_run_lifecycleDefaultArgs<ExtArgs>
@@ -1187,7 +1187,7 @@ export type graph_run_lifecycle_historyIncludeUpdateManyAndReturn<ExtArgs extend
 export type $graph_run_lifecycle_historyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "graph_run_lifecycle_history"
   objects: {
-    users: Prisma.$usersPayload<ExtArgs>
+    security_users: Prisma.$security_usersPayload<ExtArgs>
     graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle: Prisma.$graph_catalog_run_lifecyclePayload<ExtArgs> | null
     graph_run_sa: Prisma.$graph_run_saPayload<ExtArgs>
     graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle: Prisma.$graph_catalog_run_lifecyclePayload<ExtArgs>
@@ -1598,7 +1598,7 @@ readonly fields: graph_run_lifecycle_historyFieldRefs;
  */
 export interface Prisma__graph_run_lifecycle_historyClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  users<T extends Prisma.usersDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.usersDefaultArgs<ExtArgs>>): Prisma.Prisma__usersClient<runtime.Types.Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  security_users<T extends Prisma.security_usersDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.security_usersDefaultArgs<ExtArgs>>): Prisma.Prisma__security_usersClient<runtime.Types.Result.GetResult<Prisma.$security_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycle<T extends Prisma.graph_run_lifecycle_history$graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.graph_run_lifecycle_history$graph_catalog_run_lifecycle_graph_run_lifecycle_history_from_lifecycle_idTograph_catalog_run_lifecycleArgs<ExtArgs>>): Prisma.Prisma__graph_catalog_run_lifecycleClient<runtime.Types.Result.GetResult<Prisma.$graph_catalog_run_lifecyclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   graph_run_sa<T extends Prisma.graph_run_saDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.graph_run_saDefaultArgs<ExtArgs>>): Prisma.Prisma__graph_run_saClient<runtime.Types.Result.GetResult<Prisma.$graph_run_saPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   graph_catalog_run_lifecycle_graph_run_lifecycle_history_to_lifecycle_idTograph_catalog_run_lifecycle<T extends Prisma.graph_catalog_run_lifecycleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.graph_catalog_run_lifecycleDefaultArgs<ExtArgs>>): Prisma.Prisma__graph_catalog_run_lifecycleClient<runtime.Types.Result.GetResult<Prisma.$graph_catalog_run_lifecyclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>

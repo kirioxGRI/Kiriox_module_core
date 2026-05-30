@@ -18,14 +18,14 @@ export async function GET(request: Request) {
 
   try {
     if (roleId) {
-      const role = await prisma.users_roles.findUnique({
+      const role = await prisma.security_roles.findUnique({
         where: { id: roleId },
         include: {
           map_users_x_roles: {
             include: {
-              users: { select: { id: true, name: true, last_name: true, email: true } }
+              security_users: { select: { id: true, name: true, last_name: true, email: true } }
             },
-            orderBy: { users: { name: 'asc' } }
+            orderBy: { security_users: { name: 'asc' } }
           }
         }
       });
@@ -35,9 +35,9 @@ export async function GET(request: Request) {
         assignment_id: r.id,
         user_id:       r.user_id,
         is_active:     r.is_active,
-        name:          r.users.name,
-        last_name:     r.users.last_name,
-        email:         r.users.email,
+        name:          r.security_users.name,
+        last_name:     r.security_users.last_name,
+        email:         r.security_users.email,
       }));
       return NextResponse.json({ ...role, users });
     }
@@ -45,7 +45,7 @@ export async function GET(request: Request) {
     const where: { is_active?: boolean } = {};
     if (!includeInactive) where.is_active = true;
 
-    const roles = await prisma.users_roles.findMany({
+    const roles = await prisma.security_roles.findMany({
       where,
       include: { _count: { select: { map_users_x_roles: true } } },
       orderBy: { name: 'asc' }
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     if (!code?.trim() || !name?.trim()) {
       return NextResponse.json({ error: 'code y name son obligatorios' }, { status: 400 });
     }
-    const newRole = await prisma.users_roles.create({
+    const newRole = await prisma.security_roles.create({
       data: {
         code:        code.trim().toLowerCase().replace(/\s+/g, '_'),
         name:        name.trim(),
@@ -101,7 +101,7 @@ export async function PUT(request: Request) {
     if (description !== undefined) data.description = description?.trim() || null;
     if (isActive    !== undefined) data.is_active   = isActive;
 
-    await prisma.users_roles.update({ where: { id }, data });
+    await prisma.security_roles.update({ where: { id }, data });
     return NextResponse.json({ ok: true });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
@@ -124,7 +124,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ ok: true });
     }
     if (roleId) {
-      await prisma.users_roles.update({ where: { id: roleId }, data: { is_active: false, updated_at: new Date() } });
+      await prisma.security_roles.update({ where: { id: roleId }, data: { is_active: false, updated_at: new Date() } });
       return NextResponse.json({ ok: true });
     }
     return NextResponse.json({ error: 'Falta id o assignment_id' }, { status: 400 });
