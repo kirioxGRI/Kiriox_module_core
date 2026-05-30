@@ -379,7 +379,13 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
         JOIN public.activities a ON a.id = m.activity_id
         JOIN public.graph_activity_resource r ON r.resource_id = m.resource_id
         LEFT JOIN public.security_users u ON u.id = r.owner_id
-        LEFT JOIN public.company_resource_catalog tr ON tr.id_resource::text = r.resource_type
+        LEFT JOIN public.company_resource_catalog tr ON tr.id_resource = (
+          CASE
+            WHEN r.resource_type ~ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+            THEN r.resource_type::uuid
+            ELSE NULL
+          END
+        )
         LEFT JOIN public.graph_activities_failure_effect fe ON fe.code = m.failure_effect
         LEFT JOIN public.graph_activities_dependency_strength ds ON ds.code = m.dependency_strength
         LEFT JOIN public.graph_activities_alternative_level al ON al.code = m.substitutability
@@ -438,6 +444,10 @@ export class PrismaStructuralWizardRepository implements IStructuralWizardReposi
         LEFT JOIN public.catalog_control_type ct ON ct.id = c.control_type
         LEFT JOIN public.security_users u ON u.id = c.owner_id
         WHERE r.company_id = ${companyId}::uuid
+          AND rr.activity_id IN (
+            SELECT activity_id FROM public.graph_map_run_sa_activities
+            WHERE run_sa_id = ${runSaId}::uuid AND is_active = true
+          )
       `),
     ]);
 

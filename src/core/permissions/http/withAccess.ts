@@ -108,25 +108,6 @@ export function withAccess(
       return handler(request, context, routeAccess);
     }
 
-    const belongsToCompany = await accessRepository.userBelongsToCompany(
-      auth.userId,
-      companyId,
-    );
-    if (!belongsToCompany) {
-      await logAccessAttempt(request, {
-        userId: auth.userId,
-        companyId,
-        moduleCode,
-        submoduleCode: requirement.submoduleCode,
-        resourceType: requirement.resourceType,
-        actionCode: requirement.permission,
-        accessResult: 'denied',
-        decisionReason: 'user_not_in_company',
-        roleIds: [],
-      });
-      throw ApiError.forbidden('User does not belong to company');
-    }
-
     let accessContext: AccessContext;
     try {
       accessContext = await accessRepository.getAccessContext({
@@ -145,9 +126,7 @@ export function withAccess(
         accessResult: 'error',
         decisionReason: 'access_context_resolution_failed',
         roleIds: [],
-        metadata: {
-          error: error instanceof Error ? error.message : 'unknown_error',
-        },
+        metadata: { error: error instanceof Error ? error.message : 'unknown_error' },
       });
       throw error;
     }
@@ -190,18 +169,6 @@ export function withAccess(
       });
       throw ApiError.forbidden('Insufficient permissions');
     }
-
-    await logAccessAttempt(request, {
-      userId: auth.userId,
-      companyId,
-      moduleCode,
-      submoduleCode: requirement.submoduleCode,
-      resourceType: requirement.resourceType,
-      actionCode: requirement.permission,
-      accessResult: 'allowed',
-      decisionReason: 'access_granted',
-      roleIds,
-    });
 
     return handler(request, context, routeAccess);
   };

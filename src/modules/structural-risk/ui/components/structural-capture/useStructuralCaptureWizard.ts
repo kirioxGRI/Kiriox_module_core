@@ -74,26 +74,45 @@ export function useStructuralCaptureWizard(initialRunSaId?: string) {
     setLoading(true);
     setError(null);
     try {
-      const runUrl = runSaId ? `/api/structural-risk/wizard-run?runSaId=${encodeURIComponent(runSaId)}` : '/api/structural-risk/wizard-run';
-      const runRes = await fetch(runUrl, { cache: 'no-store' });
-      const runData = (await runRes.json()) as WizardData & { error?: string };
-      if (!runRes.ok) throw new Error(runData.error || `HTTP ${runRes.status}`);
+      let currentRunId = runSaId || '';
+      let runData: any = null;
 
-      setWizard(runData);
-      const current = runData.currentRun;
-      const currentRunId = current?.id || '';
+      // Si no hay ID, obtenemos el run por defecto primero
+      if (!currentRunId) {
+        const runRes = await fetch('/api/structural-risk/wizard-run', { cache: 'no-store' });
+        runData = (await runRes.json()) as WizardData & { error?: string };
+        if (!runRes.ok) throw new Error(runData.error || `HTTP ${runRes.status}`);
+        currentRunId = runData.currentRun?.id || '';
+      }
+
+      const runUrl = currentRunId 
+        ? `/api/structural-risk/wizard-run?runSaId=${encodeURIComponent(currentRunId)}` 
+        : '/api/structural-risk/wizard-run';
+        
+      const query = new URLSearchParams();
+      if (currentRunId) query.set('runSaId', currentRunId);
+      const activityUrl = `/api/structural-risk/wizard-activities?${query.toString()}`;
+
+      // Peticiones en paralelo
+      const [finalRunRes, depRes] = await Promise.all([
+        runData ? Promise.resolve(null) : fetch(runUrl, { cache: 'no-store' }),
+        fetch(activityUrl, { cache: 'no-store' })
+      ]);
+
+      const finalRunData = runData || (await finalRunRes!.json());
+      const depData = await depRes.json() as WizardActivitiesResponse;
+
+      if (finalRunRes && !finalRunRes.ok) throw new Error(finalRunData.error || `HTTP ${finalRunRes.status}`);
+      if (!depRes.ok) throw new Error(depData.error || `HTTP ${depRes.status}`);
+
+      setWizard(finalRunData);
+      const current = finalRunData.currentRun;
       setRunId(currentRunId);
       setTitle(current?.title || '');
       setScopeType(current?.scope_type || '');
       setMethodology(current?.methodology || '');
-      setLifecycleId(current?.lifecycle_id || runData.catalogs.lifecycle[0]?.id || '');
+      setLifecycleId(current?.lifecycle_id || finalRunData.catalogs.lifecycle[0]?.id || '');
 
-      const query = new URLSearchParams();
-      if (currentRunId) query.set('runSaId', currentRunId);
-      const activityUrl = `/api/structural-risk/wizard-activities?${query.toString()}`;
-      const depRes = await fetch(activityUrl, { cache: 'no-store' });
-      const depData = await depRes.json() as WizardActivitiesResponse;
-      if (!depRes.ok) throw new Error(depData.error || `HTTP ${depRes.status}`);
       setActivities(depData.activities || []);
       setPeople(depData.people || []);
       setDependencies(depData.dependencies || []);

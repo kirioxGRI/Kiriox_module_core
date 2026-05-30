@@ -52,7 +52,9 @@ export const GET = withAccess(
             ON sm.id = sla.module_id
           LEFT JOIN public.security_submodule ss
             ON ss.id = sla.submodule_id
-          WHERE su.company_id = ${access.company.id}::uuid
+          WHERE sla.user_id IN (
+            SELECT id FROM public.security_users WHERE company_id = ${access.company.id}::uuid
+          )
           ORDER BY sla.created_at DESC
           LIMIT ${limit}
         `),

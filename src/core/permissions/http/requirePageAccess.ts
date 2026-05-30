@@ -1,11 +1,10 @@
 import { redirect } from 'next/navigation';
-import { getAuthContext, isDevAuthBypassEnabled } from '@/core/auth/auth-server';
-import { PrismaAccessContextRepository } from '@/core/permissions/infrastructure/PrismaAccessContextRepository';
+import { getAuthContext } from '@/core/auth/auth-server';
+import { getServerAccessContext } from '@/core/permissions/server/getServerAccessContext';
 import { PrismaSecurityAccessLogger } from '@/core/permissions/infrastructure/PrismaSecurityAccessLogger';
 import { hasModulePermission } from '@/core/permissions/domain';
 import type { AccessContext, AccessRequirement } from '@/shared/types';
 
-const accessRepository = new PrismaAccessContextRepository();
 const accessLogger = new PrismaSecurityAccessLogger();
 
 type RequirePageAccessInput = AccessRequirement & {
@@ -19,23 +18,19 @@ export async function requirePageAccess(input: RequirePageAccessInput): Promise<
     redirect('/login');
   }
 
-  const companyId = auth.tenantId;
-
-  const accessContext = await accessRepository.getAccessContext({
-    userId: auth.userId,
-    companyId,
-    fallbackEmail: auth.email,
-  });
-
-  if (isDevAuthBypassEnabled()) {
-    return accessContext;
+  // getServerAccessContext uses React.cache() — if the layout already called it,
+  // this returns the cached result with zero extra DB queries.
+  const accessContext = await getServerAccessContext();
+  if (!accessContext) {
+    redirect('/login');
   }
 
   const roleIds = accessContext.roles.map((role) => role.id);
+
   if (!accessContext.companyModules.includes(input.module)) {
     await accessLogger.record({
       userId: auth.userId,
-      companyId,
+      companyId: accessContext.company.id,
       moduleCode: input.module,
       submoduleCode: input.submoduleCode,
       resourceType: input.resourceType ?? 'page',
@@ -54,7 +49,7 @@ export async function requirePageAccess(input: RequirePageAccessInput): Promise<
   if (!allowed) {
     await accessLogger.record({
       userId: auth.userId,
-      companyId,
+      companyId: accessContext.company.id,
       moduleCode: input.module,
       submoduleCode: input.submoduleCode,
       resourceType: input.resourceType ?? 'page',

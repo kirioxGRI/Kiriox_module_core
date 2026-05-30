@@ -434,6 +434,12 @@ export type security_roles = Prisma.security_rolesModel
  */
 export type security_submodule = Prisma.security_submoduleModel
 /**
+ * Model security_system
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type security_system = Prisma.security_systemModel
+/**
  * Model security_users
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
  */

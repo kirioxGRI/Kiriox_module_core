@@ -463,6 +463,7 @@ export const ModelName = {
   security_permissions: 'security_permissions',
   security_roles: 'security_roles',
   security_submodule: 'security_submodule',
+  security_system: 'security_system',
   security_users: 'security_users'
 } as const
 
@@ -479,7 +480,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "activities" | "catalog_activity_criticality_level" | "catalog_activity_frequency" | "catalog_activity_review" | "catalog_appetite" | "catalog_control_cobertura" | "catalog_control_effectiveness" | "catalog_control_effectiveness_peso" | "catalog_control_type" | "catalog_controls_category" | "catalog_controls_frequency" | "catalog_frequency" | "catalog_ra_category" | "catalog_ra_impact" | "catalog_ra_lifecycle" | "catalog_ra_lifecycle_history" | "catalog_ra_probability" | "catalog_ra_valoration" | "catalog_risk_category" | "catalog_risk_level" | "company" | "company_objective" | "company_resource_catalog" | "company_resource_category" | "element_types" | "elements" | "graph_activities_alternative_level" | "graph_activities_dependencies" | "graph_activities_dependency_resource" | "graph_activities_dependency_strength" | "graph_activities_failure_effect" | "graph_activity_catalog_criticality" | "graph_activity_catalog_impact" | "graph_activity_resource" | "graph_catalog_run_lifecycle" | "graph_catalog_run_methodology" | "graph_catalog_run_scope_type" | "graph_control_evidence" | "graph_control_hardgate" | "graph_map_activity_resource_dependency" | "graph_map_run_sa_activities" | "graph_risk_cascade" | "graph_risk_catalog_cascade" | "graph_run_lifecycle_history" | "graph_run_sa" | "incident_register" | "map_role_x_module_x_permissions" | "map_run_ra_risk_controls" | "map_user_x_roles" | "monitoring_due_item" | "monitoring_event" | "monitoring_event_response" | "monitoring_external_source" | "monitoring_internal_source" | "monitoring_rule" | "monitoring_run" | "pesos" | "run_ra" | "run_ra_analysis_sensitivity" | "run_ra_appetite_rules" | "run_ra_change_history" | "run_ra_contexto_evaluacion" | "run_ra_contexto_interno" | "run_ra_contexto_interno_externo" | "run_ra_contexto_negocio" | "run_ra_contexto_reglas" | "run_ra_control_effectiveness" | "run_ra_control_tests" | "run_ra_controls" | "run_ra_evidence" | "run_ra_monitoring" | "run_ra_risk_analysis" | "run_ra_risk_treatment" | "run_ra_risks" | "security_logs_access" | "security_module" | "security_permissions" | "security_roles" | "security_submodule" | "security_users"
+    modelProps: "activities" | "catalog_activity_criticality_level" | "catalog_activity_frequency" | "catalog_activity_review" | "catalog_appetite" | "catalog_control_cobertura" | "catalog_control_effectiveness" | "catalog_control_effectiveness_peso" | "catalog_control_type" | "catalog_controls_category" | "catalog_controls_frequency" | "catalog_frequency" | "catalog_ra_category" | "catalog_ra_impact" | "catalog_ra_lifecycle" | "catalog_ra_lifecycle_history" | "catalog_ra_probability" | "catalog_ra_valoration" | "catalog_risk_category" | "catalog_risk_level" | "company" | "company_objective" | "company_resource_catalog" | "company_resource_category" | "element_types" | "elements" | "graph_activities_alternative_level" | "graph_activities_dependencies" | "graph_activities_dependency_resource" | "graph_activities_dependency_strength" | "graph_activities_failure_effect" | "graph_activity_catalog_criticality" | "graph_activity_catalog_impact" | "graph_activity_resource" | "graph_catalog_run_lifecycle" | "graph_catalog_run_methodology" | "graph_catalog_run_scope_type" | "graph_control_evidence" | "graph_control_hardgate" | "graph_map_activity_resource_dependency" | "graph_map_run_sa_activities" | "graph_risk_cascade" | "graph_risk_catalog_cascade" | "graph_run_lifecycle_history" | "graph_run_sa" | "incident_register" | "map_role_x_module_x_permissions" | "map_run_ra_risk_controls" | "map_user_x_roles" | "monitoring_due_item" | "monitoring_event" | "monitoring_event_response" | "monitoring_external_source" | "monitoring_internal_source" | "monitoring_rule" | "monitoring_run" | "pesos" | "run_ra" | "run_ra_analysis_sensitivity" | "run_ra_appetite_rules" | "run_ra_change_history" | "run_ra_contexto_evaluacion" | "run_ra_contexto_interno" | "run_ra_contexto_interno_externo" | "run_ra_contexto_negocio" | "run_ra_contexto_reglas" | "run_ra_control_effectiveness" | "run_ra_control_tests" | "run_ra_controls" | "run_ra_evidence" | "run_ra_monitoring" | "run_ra_risk_analysis" | "run_ra_risk_treatment" | "run_ra_risks" | "security_logs_access" | "security_module" | "security_permissions" | "security_roles" | "security_submodule" | "security_system" | "security_users"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6329,6 +6330,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    security_system: {
+      payload: Prisma.$security_systemPayload<ExtArgs>
+      fields: Prisma.security_systemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.security_systemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.security_systemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload>
+        }
+        findFirst: {
+          args: Prisma.security_systemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.security_systemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload>
+        }
+        findMany: {
+          args: Prisma.security_systemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload>[]
+        }
+        create: {
+          args: Prisma.security_systemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload>
+        }
+        createMany: {
+          args: Prisma.security_systemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.security_systemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload>[]
+        }
+        delete: {
+          args: Prisma.security_systemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload>
+        }
+        update: {
+          args: Prisma.security_systemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload>
+        }
+        deleteMany: {
+          args: Prisma.security_systemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.security_systemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.security_systemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload>[]
+        }
+        upsert: {
+          args: Prisma.security_systemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_systemPayload>
+        }
+        aggregate: {
+          args: Prisma.Security_systemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSecurity_system>
+        }
+        groupBy: {
+          args: Prisma.security_systemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Security_systemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.security_systemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Security_systemCountAggregateOutputType> | number
+        }
+      }
+    }
     security_users: {
       payload: Prisma.$security_usersPayload<ExtArgs>
       fields: Prisma.security_usersFieldRefs
@@ -7702,7 +7777,8 @@ export const Security_moduleScalarFieldEnum = {
   is_active: 'is_active',
   created_at: 'created_at',
   updated_at: 'updated_at',
-  company_id: 'company_id'
+  company_id: 'company_id',
+  system_id: 'system_id'
 } as const
 
 export type Security_moduleScalarFieldEnum = (typeof Security_moduleScalarFieldEnum)[keyof typeof Security_moduleScalarFieldEnum]
@@ -7747,6 +7823,20 @@ export const Security_submoduleScalarFieldEnum = {
 } as const
 
 export type Security_submoduleScalarFieldEnum = (typeof Security_submoduleScalarFieldEnum)[keyof typeof Security_submoduleScalarFieldEnum]
+
+
+export const Security_systemScalarFieldEnum = {
+  id: 'id',
+  company_id: 'company_id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Security_systemScalarFieldEnum = (typeof Security_systemScalarFieldEnum)[keyof typeof Security_systemScalarFieldEnum]
 
 
 export const Security_usersScalarFieldEnum = {
@@ -8118,6 +8208,7 @@ export type GlobalOmitConfig = {
   security_permissions?: Prisma.security_permissionsOmit
   security_roles?: Prisma.security_rolesOmit
   security_submodule?: Prisma.security_submoduleOmit
+  security_system?: Prisma.security_systemOmit
   security_users?: Prisma.security_usersOmit
 }
 

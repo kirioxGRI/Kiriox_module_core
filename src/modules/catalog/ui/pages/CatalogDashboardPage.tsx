@@ -56,19 +56,11 @@ const catalogoModules = [
   },
   {
     title: "Usuarios",
-    description: "Consulte el padrón de usuarios de seguridad de la empresa activa.",
+    description: "Consulte y administre el padrón de usuarios de seguridad. Asigne o revoque roles desde el perfil de cada usuario.",
     icon: Users,
     href: "/admin/usuarios",
     color: "#10b981",
     rgb: "16,185,129",
-  },
-  {
-    title: "Asignar roles a usuarios",
-    description: "Asigne o revoque roles internos a usuarios autenticables de Kiriox.",
-    icon: Users,
-    href: "/admin/usuarios",
-    color: "#22c55e",
-    rgb: "34,197,94",
   },
   {
     title: "Roles",

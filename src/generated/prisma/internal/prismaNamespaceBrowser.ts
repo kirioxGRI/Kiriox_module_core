@@ -130,6 +130,7 @@ export const ModelName = {
   security_permissions: 'security_permissions',
   security_roles: 'security_roles',
   security_submodule: 'security_submodule',
+  security_system: 'security_system',
   security_users: 'security_users'
 } as const
 
@@ -1409,7 +1410,8 @@ export const Security_moduleScalarFieldEnum = {
   is_active: 'is_active',
   created_at: 'created_at',
   updated_at: 'updated_at',
-  company_id: 'company_id'
+  company_id: 'company_id',
+  system_id: 'system_id'
 } as const
 
 export type Security_moduleScalarFieldEnum = (typeof Security_moduleScalarFieldEnum)[keyof typeof Security_moduleScalarFieldEnum]
@@ -1454,6 +1456,20 @@ export const Security_submoduleScalarFieldEnum = {
 } as const
 
 export type Security_submoduleScalarFieldEnum = (typeof Security_submoduleScalarFieldEnum)[keyof typeof Security_submoduleScalarFieldEnum]
+
+
+export const Security_systemScalarFieldEnum = {
+  id: 'id',
+  company_id: 'company_id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Security_systemScalarFieldEnum = (typeof Security_systemScalarFieldEnum)[keyof typeof Security_systemScalarFieldEnum]
 
 
 export const Security_usersScalarFieldEnum = {

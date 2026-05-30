@@ -319,3 +319,31 @@ Bitácora de accesos a recursos, módulos, submódulos y acciones realizadas o d
 **Regla aprendida:** Las páginas SSR sensibles no deben depender solo de ocultar navegación ni de validaciones cliente. Deben protegerse con `requirePageAccess`, usando un guard base en el layout para el permiso mínimo compartido del módulo y endureciendo cada página de escritura o edición con permisos más altos cuando corresponda.
 
 **Aplicación futura:** Toda nueva página server-side de administración o catálogo debe validar acceso antes de renderizar. Usar el layout para la lectura común del módulo y reforzar páginas específicas con `W` o el permiso exacto requerido, manteniendo trazabilidad con `resourceType: 'page'`.
+
+## 2026-05-30 — Aprendizaje
+
+**Contexto:** Errores de compilación en Next.js build por uso de `useSearchParams()` en componentes cliente.
+
+**Regla aprendida:** Cuando un componente cliente en la carpeta `src/modules/` utiliza `useSearchParams()` y es importado directamente por una página bajo `src/app/`, el compilador de Next.js arroja un error de prerenderizado estático (static prerender bailout) si la página no está envuelta en un límite de `<Suspense>`.
+
+**Aplicación futura:** En todas las páginas cliente de Next.js que utilicen `useSearchParams()`, asegurar que el componente de la página sea exportado o envuelto dentro de un `<Suspense>` boundary en el archivo `page.tsx` de `src/app/`.
+
+## 2026-05-30 — Aprendizaje
+
+**Contexto:** Prevención proactiva de problemas de latencia y costosos desarrollos de optimización en dashboards y wizards de riesgo.
+
+**Regla aprendida:** Para evitar reestructuraciones y refactorizaciones costosas de rendimiento una vez que el sistema está en producción, todo nuevo desarrollo de tablas, repositorios de persistencia o integraciones de red debe seguir estrictamente un checklist de diseño eficiente:
+1. **Indexación Temprana Obligatoria**: Toda columna que actúe como llave foránea (FK) o campo de filtrado clave (`company_id`, `run_sa_id`, `activity_id`, `run_ra_id`, `owner_id`) debe declararse explícitamente con un índice (`@@index`) en `schema.prisma` durante la fase de modelado inicial. Esto erradica los escaneos secuenciales completos (`Table Scans`) que ralentizan drásticamente las consultas en PostgreSQL.
+2. **Coherencia y Casteo Seguro de Joins**: Evitar realizar joins cruzando tipos de datos discrepantes (e.g., `text` y `uuid`). Si es inevitable debido a compatibilidad de datos legados o mixtos, implementar validaciones condicionales seguras en SQL (usando `CASE WHEN` y expresiones regulares) para asegurar que el motor de base de datos pueda aprovechar los índices primarios de las tablas destino.
+3. **Restricción y Filtrado en Base de Datos (Anti Over-fetching)**: Nunca descargar colecciones masivas de datos a la memoria de la aplicación (Next.js/JavaScript) para luego filtrarlas. Las consultas en el repositorio de infraestructura deben restringir los resultados en el origen mediante cláusulas `WHERE` específicas (por ejemplo, delimitando los controles del run estructural a las actividades activas del subquery).
+4. **Paralelización de Red en Cliente (Anti-Waterfall)**: En los hooks o componentes que inicializan pantallas complejas, las peticiones asíncronas independientes deben ser ejecutadas concurrentemente utilizando `Promise.all`. Evitar la concatenación lineal de promesas (`await`) que genera cascadas de red innecesarias y degrada la experiencia de usuario en conexiones con latencia.
+
+**Aplicación futura:** Revisar y cumplir este checklist de diseño eficiente durante las fases de diseño previo y desarrollo de cualquier nueva pantalla, endpoint o repositorio.
+
+## 2026-05-30 — Aprendizaje
+
+**Contexto:** Gestor de paquetes y ejecución de comandos en el sistema Kiriox GRI v3.
+
+**Regla aprendida:** El proyecto utiliza `pnpm` como gestor de paquetes de manera exclusiva. No se deben utilizar comandos de `npm` (como `npm run build` o `npm install`) para la compilación, instalación o ejecución de scripts, ya que esto altera los locks y dependencias del entorno.
+
+**Aplicación futura:** Utilizar siempre comandos basados en `pnpm` (ej. `pnpm build`, `pnpm dev`, `pnpm install`, `pnpm dlx prisma ...`) para cualquier tarea de empaquetado, dependencias o base de datos.
