@@ -1,4 +1,3 @@
-import { Prisma } from '@/generated/prisma/client';
 import prisma from '@/infrastructure/db/prisma/client';
 import { resolveEffectiveCompanyId } from '@/infrastructure/db/prisma/resolveEffectiveCompanyId';
 import { resolveAppModuleCodes } from '@/infrastructure/db/prisma/securityModuleMap';
@@ -18,24 +17,10 @@ import type {
   ModuleCode,
 } from '@/shared/types';
 
-function isMissingRelation(error: unknown, table: string): boolean {
-  return String((error as { message?: string })?.message ?? '').includes(`relation "${table}" does not exist`);
-}
-
-type RoleRow = { id: string; code: string; name: string };
-type ModuleRow = { id: string; code: string; name: string };
-type ModulePermissionRow = {
-  role_id: string;
-  role_code: string;
-  module_id: string;
-  module_code: string;
-  module_name: string;
-  permission_code: AccessPermissionCode;
-};
-
 export class PrismaAccessContextRepository implements AccessContextRepository, AccessControlRepository {
   async getAccessContext(input: { userId: string; companyId: string; fallbackEmail?: string }): Promise<AccessContext> {
     const companyId = await resolveEffectiveCompanyId(input.companyId);
+
     const [user, company, companyModules, roles] = await Promise.all([
       this.loadUser(input.userId, input.fallbackEmail),
       this.loadCompany(companyId),
@@ -48,66 +33,37 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
       : await this.loadModuleAccess(input.userId, companyId);
 
     const enabledModules = resolveEnabledModulesFromAccess(moduleAccess)
-      .filter((moduleCode) => companyModules.includes(moduleCode));
+      .filter((code) => companyModules.includes(code));
     const navigation = buildNavigation({ enabledModules });
 
-    return {
-      user,
-      company,
-      roles,
-      companyModules,
-      moduleAccess,
-      enabledModules,
-      navigation,
-    };
+    return { user, company, roles, companyModules, moduleAccess, enabledModules, navigation };
   }
 
   async getEnabledModules(companyId: string): Promise<ModuleCode[]> {
     const effectiveCompanyId = await resolveEffectiveCompanyId(companyId);
-    type Row = { code: string };
 
-    try {
-      const rows = await prisma.$queryRaw<Row[]>(Prisma.sql`
-        SELECT sm.code
-        FROM public.security_module sm
-        WHERE sm.company_id = ${effectiveCompanyId}::uuid
-          AND sm.is_active = true
-        ORDER BY sm.name ASC, sm.code ASC
-      `);
+    const modules = await prisma.security_module.findMany({
+      where: { company_id: effectiveCompanyId, is_active: true },
+      select: { code: true },
+      orderBy: [{ name: 'asc' }, { code: 'asc' }],
+    });
 
-      const enabled = new Set<ModuleCode>(["core"]);
-      for (const row of rows) {
-        for (const appCode of resolveAppModuleCodes(row.code.trim())) {
-          enabled.add(appCode);
-        }
+    const enabled = new Set<ModuleCode>(['core']);
+    for (const mod of modules) {
+      for (const appCode of resolveAppModuleCodes(mod.code.trim())) {
+        enabled.add(appCode);
       }
-      return Array.from(enabled);
-    } catch (err) {
-      if (isMissingRelation(err, 'public.security_module')) return [];
-      throw err;
     }
+    return Array.from(enabled);
   }
 
   async userBelongsToCompany(userId: string, companyId: string): Promise<boolean> {
     const effectiveCompanyId = await resolveEffectiveCompanyId(companyId);
-    type Row = { exists: boolean };
-
-    try {
-      const rows = await prisma.$queryRaw<Row[]>(Prisma.sql`
-        SELECT EXISTS (
-          SELECT 1
-          FROM public.security_users u
-          WHERE u.id = ${userId}::uuid
-            AND u.company_id = ${effectiveCompanyId}::uuid
-            AND COALESCE(u.is_active, true) = true
-        ) AS exists
-      `);
-
-      return Boolean(rows[0]?.exists);
-    } catch (err) {
-      if (isMissingRelation(err, 'public.security_users')) return false;
-      throw err;
-    }
+    const found = await prisma.security_users.findFirst({
+      where: { id: userId, company_id: effectiveCompanyId, is_active: { not: false } },
+      select: { id: true },
+    });
+    return found !== null;
   }
 
   async isModuleEnabled(companyId: string, moduleCode: ModuleCode): Promise<boolean> {
@@ -128,157 +84,117 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
   }
 
   private async loadUser(userId: string, fallbackEmail?: string) {
-    type Row = {
-      id: string;
-      username: string | null;
-      name: string | null;
-      last_name: string | null;
-      email: string | null;
-    };
+    const user = await prisma.security_users.findUnique({
+      where: { id: userId },
+      select: { id: true, username: true, name: true, last_name: true, email: true },
+    });
 
-    let rows: Row[] = [];
-    try {
-      rows = await prisma.$queryRaw<Row[]>(Prisma.sql`
-        SELECT u.id, u.username, u.name, u.last_name, u.email
-        FROM public.security_users u
-        WHERE u.id = ${userId}::uuid
-        LIMIT 1
-      `);
-    } catch (err) {
-      if (!isMissingRelation(err, 'public.security_users')) throw err;
-    }
-
-    const row = rows[0];
-    const displayName = [row?.name, row?.last_name]
-      .filter((value) => Boolean(value && value.trim()))
-      .join(' ')
-      || row?.username
-      || fallbackEmail
-      || 'Usuario';
+    const displayName =
+      [user?.name, user?.last_name].filter((v) => v?.trim()).join(' ').trim() ||
+      user?.username ||
+      fallbackEmail ||
+      'Usuario';
 
     return {
       id: userId,
       name: displayName,
-      email: row?.email ?? fallbackEmail ?? '',
+      email: user?.email ?? fallbackEmail ?? '',
     };
   }
 
   private async loadCompany(companyId: string) {
-    type Row = { id: string; code: string | null; name: string | null };
-    let rows: Row[] = [];
-
-    try {
-      rows = await prisma.$queryRaw<Row[]>(Prisma.sql`
-        SELECT c.id, c.code, c.name
-        FROM public.company c
-        WHERE c.id = ${companyId}::uuid
-        LIMIT 1
-      `);
-    } catch (err) {
-      if (!isMissingRelation(err, 'public.company')) throw err;
-    }
-
-    const row = rows[0];
-    return { id: companyId, code: row?.code ?? '', name: row?.name ?? 'Empresa' };
+    const company = await prisma.company.findUnique({
+      where: { id: companyId },
+      select: { id: true, code: true, name: true },
+    });
+    return { id: companyId, code: company?.code ?? '', name: company?.name ?? 'Empresa' };
   }
 
-  private async loadActiveRoles(userId: string, companyId: string): Promise<RoleRow[]> {
-    try {
-      const rows = await prisma.$queryRaw<RoleRow[]>(Prisma.sql`
-        SELECT DISTINCT r.id::text AS id, r.code, r.name
-        FROM public.security_users u
-        JOIN public.map_user_x_roles mur
-          ON mur.user_id = u.id
-         AND COALESCE(mur.is_active, true) = true
-        JOIN public.security_roles r
-          ON r.id = mur.role_id
-         AND COALESCE(r.is_active, true) = true
-        WHERE u.id = ${userId}::uuid
-          AND u.company_id = ${companyId}::uuid
-          AND COALESCE(u.is_active, true) = true
-        ORDER BY r.name ASC, r.code ASC
-      `);
+  private async loadActiveRoles(userId: string, companyId: string) {
+    const user = await prisma.security_users.findFirst({
+      where: { id: userId, company_id: companyId, is_active: { not: false } },
+      select: {
+        map_user_x_roles: {
+          where: {
+            is_active: true,
+            security_roles: { is_active: true },
+          },
+          select: {
+            security_roles: { select: { id: true, code: true, name: true } },
+          },
+        },
+      },
+    });
 
-      return rows;
-    } catch (err) {
-      if (isMissingRelation(err, 'public.map_user_x_roles')) return [];
-      if (isMissingRelation(err, 'public.security_roles')) return [];
-      throw err;
-    }
+    return (user?.map_user_x_roles ?? [])
+      .map((mur) => ({
+        id: mur.security_roles.id,
+        code: mur.security_roles.code,
+        name: mur.security_roles.name,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
   }
 
   private async loadModuleAccess(
     userId: string,
     companyId: string,
   ): Promise<Partial<Record<ModuleCode, ModuleAccessEntry>>> {
-    try {
-      const rows = await prisma.$queryRaw<ModulePermissionRow[]>(Prisma.sql`
-        SELECT DISTINCT
-          r.id::text AS role_id,
-          r.code AS role_code,
-          sm.id::text AS module_id,
-          sm.code AS module_code,
-          sm.name AS module_name,
-          sp.code::text AS permission_code
-        FROM public.security_users u
-        JOIN public.map_user_x_roles mur
-          ON mur.user_id = u.id
-         AND COALESCE(mur.is_active, true) = true
-        JOIN public.security_roles r
-          ON r.id = mur.role_id
-         AND COALESCE(r.is_active, true) = true
-        JOIN public.map_role_x_module_x_permissions mrmp
-          ON mrmp.role_id = r.id
-         AND COALESCE(mrmp.is_active, true) = true
-        JOIN public.security_module sm
-          ON sm.id = mrmp.module_id
-         AND sm.company_id = ${companyId}::uuid
-         AND COALESCE(sm.is_active, true) = true
-        JOIN public.security_permissions sp
-          ON sp.id = mrmp.permission_id
-         AND COALESCE(sp.is_active, true) = true
-        WHERE u.id = ${userId}::uuid
-          AND u.company_id = ${companyId}::uuid
-          AND COALESCE(u.is_active, true) = true
-        ORDER BY sm.name ASC, sm.code ASC
-      `);
+    const user = await prisma.security_users.findFirst({
+      where: { id: userId, company_id: companyId, is_active: { not: false } },
+      select: {
+        map_user_x_roles: {
+          where: {
+            is_active: true,
+            security_roles: { is_active: true },
+          },
+          select: {
+            security_roles: {
+              select: {
+                map_role_x_module_x_permissions: {
+                  where: {
+                    is_active: true,
+                    security_module: { company_id: companyId, is_active: true },
+                  },
+                  select: {
+                    security_module: { select: { id: true, code: true, name: true } },
+                    security_permissions: { select: { code: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
 
-      const moduleAccess: Partial<Record<ModuleCode, ModuleAccessEntry>> = {};
+    const moduleAccess: Partial<Record<ModuleCode, ModuleAccessEntry>> = {};
 
-      for (const row of rows) {
-        const securityCode = row.module_code.trim();
-        const appCodes = resolveAppModuleCodes(securityCode);
+    for (const mur of user?.map_user_x_roles ?? []) {
+      for (const mrmp of mur.security_roles.map_role_x_module_x_permissions) {
+        const mod = mrmp.security_module;
+        const permCode = mrmp.security_permissions.code as AccessPermissionCode;
+        const securityCode = mod.code.trim();
 
-        for (const appCode of appCodes) {
+        for (const appCode of resolveAppModuleCodes(securityCode)) {
           if (!moduleAccess[appCode]) {
             moduleAccess[appCode] = {
               moduleId: appCode,
-              securityModuleId: row.module_id,
+              securityModuleId: mod.id,
               securityModuleCode: securityCode,
-              name: row.module_name,
+              name: mod.name,
               permissions: createEmptyModuleAccessFlags(),
             };
           }
-          moduleAccess[appCode]!.permissions[row.permission_code as AccessPermissionCode] = true;
+          moduleAccess[appCode]!.permissions[permCode] = true;
         }
       }
-
-      return moduleAccess;
-    } catch (err) {
-      if (isMissingRelation(err, 'public.map_role_x_module_x_permissions')) return {};
-      if (isMissingRelation(err, 'public.security_permissions')) return {};
-      if (isMissingRelation(err, 'public.map_user_x_roles')) return {};
-      if (isMissingRelation(err, 'public.security_roles')) return {};
-      if (isMissingRelation(err, 'public.security_module')) return {};
-      throw err;
     }
+
+    return moduleAccess;
   }
 
-  private buildFullAccess(
-    moduleCodes: ModuleCode[],
-  ): Partial<Record<ModuleCode, ModuleAccessEntry>> {
+  private buildFullAccess(moduleCodes: ModuleCode[]): Partial<Record<ModuleCode, ModuleAccessEntry>> {
     const moduleAccess: Partial<Record<ModuleCode, ModuleAccessEntry>> = {};
-
     for (const moduleCode of moduleCodes) {
       moduleAccess[moduleCode] = {
         moduleId: moduleCode,
@@ -288,7 +204,6 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
         permissions: { A: true, R: true, W: true, X: true },
       };
     }
-
     return moduleAccess;
   }
 }

@@ -1,53 +1,38 @@
 import { cache } from "react";
-import { Prisma } from "@/generated/prisma/client";
 import prisma from "./client";
 
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-function isConnectionError(err: unknown): boolean {
-  const code = (err as { code?: string })?.code;
-  return code === "ETIMEDOUT" || code === "ECONNREFUSED" || code === "ENOTFOUND";
-}
-
 // cache() deduplicates calls with the same argument within a single RSC request render.
-// Reduces the 3+ sequential resolveEffectiveCompanyId calls per page to 1 DB query.
 export const resolveEffectiveCompanyId = cache(async (companyId?: string | null): Promise<string> => {
   const requestedId = String(companyId ?? "").trim();
 
+  const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
   try {
     if (UUID_PATTERN.test(requestedId)) {
-      const exactRows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
-        SELECT id::text
-        FROM public.company
-        WHERE id = ${requestedId}::uuid
-        LIMIT 1
-      `);
-
-      if (exactRows[0]?.id) {
-        return exactRows[0].id;
-      }
+      const company = await prisma.company.findUnique({
+        where: { id: requestedId },
+        select: { id: true },
+      });
+      if (company?.id) return company.id;
     }
 
-    const fallbackRows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
-      SELECT id::text
-      FROM public.company
-      ORDER BY name ASC NULLS LAST, id ASC
-      LIMIT 1
-    `);
+    const fallback = await prisma.company.findFirst({
+      orderBy: [{ name: "asc" }, { id: "asc" }],
+      select: { id: true },
+    });
 
-    if (fallbackRows[0]?.id) {
-      return fallbackRows[0].id;
-    }
+    if (fallback?.id) return fallback.id;
   } catch (err) {
-    if (isConnectionError(err)) {
+    const code = (err as { code?: string })?.code;
+    if (code === "ETIMEDOUT" || code === "ECONNREFUSED" || code === "ENOTFOUND") {
       throw new Error(
-        "No hay conexión con la base de datos. Verifique que el servidor de base de datos esté disponible."
+        "No hay conexión con la base de datos. Verifique que el servidor esté disponible."
       );
     }
     throw err;
   }
 
-  if (UUID_PATTERN.test(requestedId)) {
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestedId)) {
     return requestedId;
   }
 
