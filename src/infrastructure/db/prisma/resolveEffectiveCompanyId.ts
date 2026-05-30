@@ -3,31 +3,45 @@ import prisma from "./client";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+function isConnectionError(err: unknown): boolean {
+  const code = (err as { code?: string })?.code;
+  return code === "ETIMEDOUT" || code === "ECONNREFUSED" || code === "ENOTFOUND";
+}
+
 export async function resolveEffectiveCompanyId(companyId?: string | null): Promise<string> {
   const requestedId = String(companyId ?? "").trim();
 
-  if (UUID_PATTERN.test(requestedId)) {
-    const exactRows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+  try {
+    if (UUID_PATTERN.test(requestedId)) {
+      const exactRows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+        SELECT id::text
+        FROM public.company
+        WHERE id = ${requestedId}::uuid
+        LIMIT 1
+      `);
+
+      if (exactRows[0]?.id) {
+        return exactRows[0].id;
+      }
+    }
+
+    const fallbackRows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
       SELECT id::text
       FROM public.company
-      WHERE id = ${requestedId}::uuid
+      ORDER BY name ASC NULLS LAST, id ASC
       LIMIT 1
     `);
 
-    if (exactRows[0]?.id) {
-      return exactRows[0].id;
+    if (fallbackRows[0]?.id) {
+      return fallbackRows[0].id;
     }
-  }
-
-  const fallbackRows = await prisma.$queryRaw<Array<{ id: string }>>(Prisma.sql`
-    SELECT id::text
-    FROM public.company
-    ORDER BY name ASC NULLS LAST, id ASC
-    LIMIT 1
-  `);
-
-  if (fallbackRows[0]?.id) {
-    return fallbackRows[0].id;
+  } catch (err) {
+    if (isConnectionError(err)) {
+      throw new Error(
+        "No hay conexión con la base de datos. Verifique que el servidor de base de datos esté disponible."
+      );
+    }
+    throw err;
   }
 
   if (UUID_PATTERN.test(requestedId)) {

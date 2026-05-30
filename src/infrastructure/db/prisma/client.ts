@@ -7,12 +7,25 @@ const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaCompatClient;
 };
 
+function buildConnectionString(raw: string): string {
+  try {
+    const url = new URL(raw);
+    if (!url.searchParams.has("connect_timeout")) {
+      url.searchParams.set("connect_timeout", "5");
+    }
+    return url.toString();
+  } catch {
+    return raw;
+  }
+}
+
 function createPrismaClient(): PrismaCompatClient {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is required to initialize Prisma client");
   }
 
-  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+  const connectionString = buildConnectionString(process.env.DATABASE_URL);
+  const adapter = new PrismaPg({ connectionString });
 
   const base = new PrismaClient({
     adapter,
