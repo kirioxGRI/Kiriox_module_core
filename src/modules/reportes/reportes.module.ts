@@ -16,6 +16,7 @@ export const reportesModule: KirioxModuleContract = {
       href: "/gestion/dashboard_reportes",
       icon: "FileText",
       order: 80,
+      permission: "reportes.read",
     },
   },
 

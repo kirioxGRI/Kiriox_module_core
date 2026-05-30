@@ -16,6 +16,7 @@ export const pluginsModule: KirioxModuleContract = {
       href: "/gestion/dashboard_plugins",
       icon: "Puzzle",
       order: 90,
+      permission: "plugins.read",
     },
   },
 

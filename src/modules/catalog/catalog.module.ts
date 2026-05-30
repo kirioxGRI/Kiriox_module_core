@@ -16,6 +16,7 @@ export const catalogModule: KirioxModuleContract = {
       href: "/modelo/gobernanza/catalogo",
       icon: "BookOpen",
       order: 11,
+      permission: "catalog.read",
     },
   },
 

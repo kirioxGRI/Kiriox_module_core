@@ -16,6 +16,7 @@ export const linearRiskModule: KirioxModuleContract = {
       href: "/gestion/dashboard_riesgo_lineal",
       icon: "Activity",
       order: 20,
+      permission: "linear-risk.read",
     },
   },
 

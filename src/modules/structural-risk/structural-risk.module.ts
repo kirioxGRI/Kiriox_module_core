@@ -16,6 +16,7 @@ export const structuralRiskModule: KirioxModuleContract = {
       href: "/gestion/dashboard_riesgo_estructural",
       icon: "Network",
       order: 30,
+      permission: "structural-risk.read",
     },
   },
 

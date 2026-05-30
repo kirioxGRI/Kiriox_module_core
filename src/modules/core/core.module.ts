@@ -15,6 +15,7 @@ export const coreModule: KirioxModuleContract = {
       href: "/score/dashboard2",
       icon: "LayoutDashboard",
       order: 10,
+      permission: "core.read",
     },
   },
 

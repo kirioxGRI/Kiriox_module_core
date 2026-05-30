@@ -16,6 +16,7 @@ export const monitoringModule: KirioxModuleContract = {
       href: "/gestion/dashboard_monitoreo",
       icon: "Activity",
       order: 65,
+      permission: "monitoring.read",
     },
   },
 

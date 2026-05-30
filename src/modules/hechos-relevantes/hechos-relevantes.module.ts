@@ -16,6 +16,7 @@ export const hechosRelevantesModule: KirioxModuleContract = {
       href: "/validacion/eventos?tab=hechos-relevantes",
       icon: "Bot",
       order: 66,
+      permission: "hechos-relevantes.read",
     },
   },
   register() { return; },

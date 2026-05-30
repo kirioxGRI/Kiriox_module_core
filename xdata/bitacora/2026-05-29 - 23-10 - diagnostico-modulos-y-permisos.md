@@ -55,3 +55,23 @@ La tabla puente correcta no es usuario-permiso. El modelo aprobado es rol-permis
 - `public.map_role_x_permission` creada correctamente
 - `super_admin` quedó con 60 permisos activos
 - `npx tsc -p tsconfig.json --noEmit` ejecutado sin errores
+
+## 2026-05-29 23:58
+
+**Escenario de prueba RBAC**
+
+Se configuraron tres roles de prueba dedicados y se sustituyeron las asignaciones previas de los usuarios objetivo para evitar resultados ambiguos por herencia histórica de roles:
+
+- `deivisadames@gmail.com` -> `qa_rbac_acceso_total`
+- `shgcifrado@gmail.com` -> `qa_rbac_sin_simulaciones`
+- `haimejonh@gmail.com` -> `qa_rbac_sin_incidentes_monitoreo_reportes_plugins`
+
+**Permisos efectivos verificados**
+
+- `deivisadames@gmail.com`: 60 permisos
+- `shgcifrado@gmail.com`: 57 permisos
+- `haimejonh@gmail.com`: 50 permisos
+
+**Ajuste adicional para visibilidad**
+
+Se declararon `nav.permission` en los módulos visibles del launchpad para que la navegación responda a RBAC y no solo el backend.

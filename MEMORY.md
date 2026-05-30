@@ -243,3 +243,11 @@ ame) debe actualizar simultáneamente el campo legal_name al momento de enviar el
 **Regla aprendida:** El control de permisos no debe modelarse con una tabla puente usuario-permiso. La estructura correcta es `users -> map_users_x_roles -> users_roles -> map_role_x_permission -> users_permission`. En Kiriox, los roles representan puestos internos de la empresa y los permisos se asignan al rol, no directamente al usuario.
 
 **Aplicacion futura:** Toda expansion del RBAC debe preservar el patron rol-permiso como fuente de verdad para navegacion, autorizacion backend y administracion de acceso por modulo.
+
+## 2026-05-29 - Aprendizaje
+
+**Contexto:** Prueba visual de acceso por modulo basada en `AccessContext` y launchpad de Kiriox.
+
+**Regla aprendida:** Para que el RBAC se refleje en la navegacion y en las tarjetas del launchpad, cada modulo visible debe declarar `manifest.nav.permission`. Si el modulo no declara ese permiso, puede seguir visible aunque el backend ya restrinja sus endpoints.
+
+**Aplicacion futura:** Al agregar o ajustar permisos por modulo, sincronizar siempre la capa de autorizacion backend con `nav.permission` en los manifests de los modulos visibles.
