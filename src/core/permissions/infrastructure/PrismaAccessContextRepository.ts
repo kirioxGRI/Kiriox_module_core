@@ -1,11 +1,11 @@
 import { Prisma } from '@/generated/prisma/client';
 import prisma from '@/infrastructure/db/prisma/client';
 import { resolveEffectiveCompanyId } from '@/infrastructure/db/prisma/resolveEffectiveCompanyId';
+import { resolveAppModuleCodes } from '@/infrastructure/db/prisma/securityModuleMap';
 import { isDevAuthBypassEnabled } from '@/core/auth/auth-server';
 import { buildNavigation } from '@/core/navigation/buildNavigation';
 import {
   createEmptyModuleAccessFlags,
-  getOfficialModuleCodes,
   hasModulePermission,
   resolveEnabledModulesFromAccess,
 } from '../domain';
@@ -18,14 +18,8 @@ import type {
   ModuleCode,
 } from '@/shared/types';
 
-const OFFICIAL_MODULE_CODES = new Set(getOfficialModuleCodes());
-
 function isMissingRelation(error: unknown, table: string): boolean {
   return String((error as { message?: string })?.message ?? '').includes(`relation "${table}" does not exist`);
-}
-
-function isOfficialModuleCode(value: string): value is ModuleCode {
-  return OFFICIAL_MODULE_CODES.has(value as ModuleCode);
 }
 
 type RoleRow = { id: string; code: string; name: string };
@@ -81,9 +75,13 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
         ORDER BY sm.name ASC, sm.code ASC
       `);
 
-      return rows
-        .map((row) => row.code.trim())
-        .filter(isOfficialModuleCode);
+      const enabled = new Set<ModuleCode>(["core"]);
+      for (const row of rows) {
+        for (const appCode of resolveAppModuleCodes(row.code.trim())) {
+          enabled.add(appCode);
+        }
+      }
+      return Array.from(enabled);
     } catch (err) {
       if (isMissingRelation(err, 'public.security_module')) return [];
       throw err;
@@ -248,20 +246,21 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
       const moduleAccess: Partial<Record<ModuleCode, ModuleAccessEntry>> = {};
 
       for (const row of rows) {
-        const moduleCode = row.module_code.trim();
-        if (!isOfficialModuleCode(moduleCode)) continue;
+        const securityCode = row.module_code.trim();
+        const appCodes = resolveAppModuleCodes(securityCode);
 
-        if (!moduleAccess[moduleCode]) {
-          moduleAccess[moduleCode] = {
-            moduleId: moduleCode,
-            securityModuleId: row.module_id,
-            securityModuleCode: moduleCode,
-            name: row.module_name,
-            permissions: createEmptyModuleAccessFlags(),
-          };
+        for (const appCode of appCodes) {
+          if (!moduleAccess[appCode]) {
+            moduleAccess[appCode] = {
+              moduleId: appCode,
+              securityModuleId: row.module_id,
+              securityModuleCode: securityCode,
+              name: row.module_name,
+              permissions: createEmptyModuleAccessFlags(),
+            };
+          }
+          moduleAccess[appCode]!.permissions[row.permission_code as AccessPermissionCode] = true;
         }
-
-        moduleAccess[moduleCode]!.permissions[row.permission_code] = true;
       }
 
       return moduleAccess;

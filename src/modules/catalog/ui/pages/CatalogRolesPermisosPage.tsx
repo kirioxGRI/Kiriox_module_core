@@ -11,11 +11,10 @@ interface Role {
   description: string | null;
 }
 
-interface ModuleItem {
+interface SystemItem {
   id: string;
   code: string;
   name: string;
-  description: string | null;
 }
 
 interface PermissionItem {
@@ -27,7 +26,7 @@ interface PermissionItem {
 
 interface DataPayload {
   roles: Role[];
-  modules: ModuleItem[];
+  systems: SystemItem[];
   permissions: PermissionItem[];
   assignments: Record<string, string[]>;
 }
@@ -37,6 +36,13 @@ const PERMISSION_LABELS: Record<PermissionItem["code"], string> = {
   R: "Lectura",
   W: "Escritura",
   X: "Ejecución",
+};
+
+const PERMISSION_HEADER_LABELS: Record<PermissionItem["code"], string> = {
+  A: "Access (A)",
+  R: "Read (R)",
+  W: "Write (W)",
+  X: "Ejecutar (X)",
 };
 
 function assignmentKey(roleId: string, moduleId: string) {
@@ -80,32 +86,31 @@ export function CatalogRolesPermisosPage() {
     if (!data || !selectedRoleId) return {} as Record<string, Set<string>>;
 
     const map: Record<string, Set<string>> = {};
-    for (const module of data.modules) {
-      map[module.id] = new Set(data.assignments[assignmentKey(selectedRoleId, module.id)] ?? []);
+    for (const system of data.systems) {
+      map[system.id] = new Set(data.assignments[assignmentKey(selectedRoleId, system.id)] ?? []);
     }
     return map;
   }, [data, selectedRoleId]);
 
   const totalActivePermissions = useMemo(
-    () =>
-      Object.values(activeAssignments).reduce((sum, codes) => sum + codes.size, 0),
+    () => Object.values(activeAssignments).reduce((sum, codes) => sum + codes.size, 0),
     [activeAssignments],
   );
 
-  const togglePermission = async (moduleId: string, permissionCode: PermissionItem["code"]) => {
+  const togglePermission = async (systemId: string, permissionCode: PermissionItem["code"]) => {
     if (!selectedRoleId) return;
 
-    const key = `${selectedRoleId}:${moduleId}:${permissionCode}`;
+    const key = `${selectedRoleId}:${systemId}:${permissionCode}`;
     setToggling((prev) => new Set(prev).add(key));
 
-    const currentlyEnabled = activeAssignments[moduleId]?.has(permissionCode) ?? false;
+    const currentlyEnabled = activeAssignments[systemId]?.has(permissionCode) ?? false;
     try {
       const res = await fetch("/api/admin/rbac/permissions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           roleId: selectedRoleId,
-          moduleId,
+          systemId,
           permissionCode,
           enabled: !currentlyEnabled,
         }),
@@ -116,7 +121,7 @@ export function CatalogRolesPermisosPage() {
       setData((prev) => {
         if (!prev) return prev;
         const nextAssignments = { ...prev.assignments };
-        const aKey = assignmentKey(selectedRoleId, moduleId);
+        const aKey = assignmentKey(selectedRoleId, systemId);
         const nextCodes = new Set(nextAssignments[aKey] ?? []);
         if (currentlyEnabled) {
           nextCodes.delete(permissionCode);
@@ -206,9 +211,9 @@ export function CatalogRolesPermisosPage() {
         </div>
       </div>
 
-      <div style={{ padding: "0 2.5rem 3rem", display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
+      <div style={{ padding: "0 2.5rem 3rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
         {loading && (
-          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "5rem", color: "#64748b", gap: "0.75rem" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "5rem", color: "#64748b", gap: "0.75rem" }}>
             <Loader2 size={20} style={{ animation: "spin 1s linear infinite" }} />
             <span style={{ fontSize: "0.85rem" }}>Cargando matriz de permisos…</span>
           </div>
@@ -217,7 +222,6 @@ export function CatalogRolesPermisosPage() {
         {error && (
           <div
             style={{
-              flex: 1,
               display: "flex",
               alignItems: "center",
               gap: "0.75rem",
@@ -236,10 +240,9 @@ export function CatalogRolesPermisosPage() {
 
         {!loading && !error && data && (
           <>
+            {/* ── Roles activos ─────────────────────────────────────── */}
             <div
               style={{
-                width: 280,
-                flexShrink: 0,
                 background: "rgba(0,0,0,0.18)",
                 border: "1px solid rgba(255,255,255,0.07)",
                 borderRadius: 14,
@@ -248,24 +251,35 @@ export function CatalogRolesPermisosPage() {
             >
               <div
                 style={{
-                  padding: "1rem 1.25rem",
+                  padding: "0.85rem 1.25rem",
                   borderBottom: "1px solid rgba(255,255,255,0.06)",
                   background: "rgba(255,255,255,0.02)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <Shield size={15} color="#94a3b8" />
-                  <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05rem" }}>
-                    Roles activos
-                  </span>
-                </div>
+                <Shield size={15} color="#94a3b8" />
+                <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05rem" }}>
+                  Roles activos
+                </span>
+                <span style={{ marginLeft: "auto", fontSize: "0.72rem", color: "#334155" }}>
+                  {data.roles.length} roles
+                </span>
               </div>
 
-              <div style={{ padding: "0.5rem" }}>
+              <div
+                style={{
+                  padding: "0.75rem",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                  gap: "0.5rem",
+                }}
+              >
                 {data.roles.map((role) => {
                   const isSelected = role.id === selectedRoleId;
-                  const roleAssignmentCount = data.modules.reduce((sum, module) => {
-                    return sum + (data.assignments[assignmentKey(role.id, module.id)]?.length ?? 0);
+                  const roleAssignmentCount = data.systems.reduce((sum, system) => {
+                    return sum + (data.assignments[assignmentKey(role.id, system.id)]?.length ?? 0);
                   }, 0);
 
                   return (
@@ -273,22 +287,20 @@ export function CatalogRolesPermisosPage() {
                       key={role.id}
                       onClick={() => setSelectedRoleId(role.id)}
                       style={{
-                        width: "100%",
                         textAlign: "left",
-                        padding: "0.85rem 1rem",
+                        padding: "0.75rem 1rem",
                         borderRadius: 10,
-                        border: isSelected ? "1px solid rgba(245,158,11,0.4)" : "1px solid transparent",
-                        background: isSelected ? "rgba(245,158,11,0.1)" : "transparent",
+                        border: isSelected ? "1px solid rgba(245,158,11,0.4)" : "1px solid rgba(255,255,255,0.06)",
+                        background: isSelected ? "rgba(245,158,11,0.1)" : "rgba(255,255,255,0.02)",
                         cursor: "pointer",
                         transition: "all 0.15s",
-                        marginBottom: "0.25rem",
                       }}
                     >
-                      <div style={{ fontWeight: 700, fontSize: "0.88rem", color: isSelected ? "#fbbf24" : "#e2e8f0", marginBottom: "0.2rem" }}>
+                      <div style={{ fontWeight: 700, fontSize: "0.85rem", color: isSelected ? "#fbbf24" : "#e2e8f0", marginBottom: "0.2rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {role.name}
                       </div>
-                      <div style={{ fontSize: "0.72rem", color: "#475569" }}>
-                        {roleAssignmentCount} asignación{roleAssignmentCount !== 1 ? "es" : ""} activa{roleAssignmentCount !== 1 ? "s" : ""}
+                      <div style={{ fontSize: "0.7rem", color: isSelected ? "#92400e" : "#475569" }}>
+                        {roleAssignmentCount} perm{roleAssignmentCount !== 1 ? "s" : ""} activ{roleAssignmentCount !== 1 ? "os" : "o"}
                       </div>
                     </button>
                   );
@@ -296,7 +308,8 @@ export function CatalogRolesPermisosPage() {
               </div>
             </div>
 
-            <div style={{ flex: 1, minWidth: 0 }}>
+            {/* ── Matriz de permisos ────────────────────────────────── */}
+            <div>
               {selectedRole && (
                 <div
                   style={{
@@ -346,7 +359,7 @@ export function CatalogRolesPermisosPage() {
                   }}
                 >
                   <div style={{ fontSize: "0.72rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05rem" }}>
-                    Módulo
+                    Sistema
                   </div>
                   {data.permissions.map((permission) => (
                     <div
@@ -354,44 +367,44 @@ export function CatalogRolesPermisosPage() {
                       style={{ fontSize: "0.72rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05rem", textAlign: "center" }}
                       title={permission.description}
                     >
-                      {permission.code}
+                      {PERMISSION_HEADER_LABELS[permission.code]}
                     </div>
                   ))}
                 </div>
 
-                {data.modules.map((module, index) => {
-                  const enabledSet = activeAssignments[module.id] ?? new Set<string>();
+                {data.systems.map((system, index) => {
+                  const enabledSet = activeAssignments[system.id] ?? new Set<string>();
                   return (
                     <div
-                      key={module.id}
+                      key={system.id}
                       style={{
                         display: "grid",
                         gridTemplateColumns: "minmax(220px, 1.4fr) repeat(4, minmax(88px, 0.55fr))",
                         padding: "1rem 1.25rem",
                         gap: "0.75rem",
                         alignItems: "center",
-                        borderBottom: index === data.modules.length - 1 ? "none" : "1px solid rgba(255,255,255,0.05)",
+                        borderBottom: index === data.systems.length - 1 ? "none" : "1px solid rgba(255,255,255,0.05)",
                       }}
                     >
                       <div>
                         <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "#e2e8f0" }}>
-                          {module.name}
+                          {system.name}
                         </div>
                         <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "0.2rem" }}>
-                          {module.code}
+                          {system.code}
                         </div>
                       </div>
 
                       {data.permissions.map((permission) => {
                         const isEnabled = enabledSet.has(permission.code);
-                        const key = `${selectedRoleId}:${module.id}:${permission.code}`;
+                        const key = `${selectedRoleId}:${system.id}:${permission.code}`;
                         const isBusy = toggling.has(key);
 
                         return (
                           <button
                             key={permission.id}
                             type="button"
-                            onClick={() => togglePermission(module.id, permission.code)}
+                            onClick={() => togglePermission(system.id, permission.code)}
                             disabled={!selectedRoleId || isBusy}
                             title={`${PERMISSION_LABELS[permission.code]}${isEnabled ? " asignado" : " no asignado"}`}
                             style={{
