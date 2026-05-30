@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import { withAccess } from "@/core/permissions/http/withAccess";
 import { installPluginPackage } from "@/core/plugin-engine/plugin-installer";
 
-export const POST = withAccess({ module: "plugins", permission: "write" }, async (request) => {
+export const POST = withAccess(
+  { module: "plugins", permission: "X", submoduleCode: "install_package", resourceType: "plugin_package" },
+  async (request) => {
   const formData = await request.formData();
   const file = formData.get("file");
 

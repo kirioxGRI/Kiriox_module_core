@@ -7,7 +7,7 @@ const CSRF_COOKIE = 'csrf_token';
 export type AuthContext = {
   userId: string;
   tenantId: string;
-  roleCode: string;
+  roleCode?: string;
   email?: string;
 };
 
@@ -34,8 +34,8 @@ export async function signAuthToken(payload: AuthContext): Promise<string> {
   const secret = getJwtSecret();
   return new SignJWT({
     tenant_id: payload.tenantId,
-    role_code: payload.roleCode,
     email: payload.email,
+    ...(payload.roleCode ? { role_code: payload.roleCode } : {}),
   })
     .setProtectedHeader({ alg: 'HS256' })
     .setSubject(payload.userId)
@@ -57,12 +57,12 @@ export async function getAuthContext(): Promise<AuthContext | null> {
     const userId = payload.sub;
     const tenantId = payload.tenant_id;
     const roleCode = payload.role_code;
-    if (!userId || !tenantId || !roleCode) return null;
+    if (!userId || !tenantId) return null;
 
     return {
       userId: String(userId),
       tenantId: String(tenantId),
-      roleCode: String(roleCode),
+      roleCode: roleCode ? String(roleCode) : undefined,
       email: payload.email ? String(payload.email) : undefined,
     };
   } catch {

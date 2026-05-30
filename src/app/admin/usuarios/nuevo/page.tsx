@@ -2,10 +2,19 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { ArrowLeft, UserPlus } from 'lucide-react';
 import UserWizard from '../_components/UserWizard';
+import { requirePageAccess } from '@/core/permissions/http';
 
 export const dynamic = 'force-dynamic';
 
-export default function NewUserPage() {
+export default async function NewUserPage() {
+  await requirePageAccess({
+    module: 'catalog',
+    permission: 'W',
+    submoduleCode: 'security_users',
+    resourceType: 'page',
+    path: '/admin/usuarios/nuevo',
+  });
+
   return (
     <div className="animate-fade-in" style={{ padding: '2rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>

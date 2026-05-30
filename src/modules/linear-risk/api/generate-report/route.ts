@@ -264,6 +264,6 @@ async function generateReport(request: Request, access: RouteAccessContext) {
   });
 }
 
-export const GET = withAccess({ module: "linear-risk", permission: "read" }, async (request, _context, access) => {
+export const GET = withAccess({ module: "linear-risk", permission: "X", submoduleCode: "generate_report" }, async (request, _context, access) => {
   return generateReport(request, access);
 });

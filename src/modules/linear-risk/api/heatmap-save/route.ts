@@ -6,7 +6,7 @@ import { withAccess } from "@/core/permissions/http/withAccess";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const SAVE_DIR = "C:\\_CRE\\mapa";
 
-export const POST = withAccess({ module: "linear-risk", permission: "write" }, async (request) => {
+export const POST = withAccess({ module: "linear-risk", permission: "W", submoduleCode: "heatmap_save" }, async (request) => {
   const body = (await request.json()) as {
     runRaId?: unknown;
     imageBase64?: unknown;

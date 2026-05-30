@@ -11,6 +11,13 @@ export const companyModule: KirioxModuleContract = {
     status: "active",
     layers: ["domain", "application", "infrastructure", "api", "ui"],
     dependencies: ["core"],
+    nav: {
+      label: "Auditoría",
+      href: "/gestion/dashboard_auditoria",
+      icon: "Building2",
+      order: 18,
+      permission: "A",
+    },
   },
 
   register() {

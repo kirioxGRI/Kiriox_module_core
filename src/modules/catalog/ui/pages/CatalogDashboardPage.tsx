@@ -56,11 +56,19 @@ const catalogoModules = [
   },
   {
     title: "Usuarios",
-    description: "Control de acceso y gestión de personal autorizado.",
+    description: "Consulte el padrón de usuarios de seguridad de la empresa activa.",
     icon: Users,
     href: "/admin/usuarios",
     color: "#10b981",
     rgb: "16,185,129",
+  },
+  {
+    title: "Asignar roles a usuarios",
+    description: "Asigne o revoque roles internos a usuarios autenticables de Kiriox.",
+    icon: Users,
+    href: "/admin/usuarios",
+    color: "#22c55e",
+    rgb: "34,197,94",
   },
   {
     title: "Roles",
@@ -71,12 +79,20 @@ const catalogoModules = [
     rgb: "168,85,247",
   },
   {
-    title: "Roles / Permisos",
-    description: "Asigne y revoque permisos por módulo a cada rol del sistema.",
+    title: "Permisos rol / módulo",
+    description: "Asigne permisos A, R, W y X por módulo para cada rol de seguridad.",
     icon: KeyRound,
     href: "/modelo/gobernanza/catalogo/roles-permisos",
     color: "#f59e0b",
     rgb: "245,158,11",
+  },
+  {
+    title: "Logging de accesos",
+    description: "Active o pause la bitácora crítica de accesos y consulte eventos recientes.",
+    icon: Shield,
+    href: "/modelo/gobernanza/catalogo/logging-accesos",
+    color: "#38bdf8",
+    rgb: "56,189,248",
   },
   {
     title: "Parámetros del Motor",

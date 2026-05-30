@@ -251,6 +251,8 @@ export type companyWhereInput = {
   graph_activities_dependencies?: Prisma.Graph_activities_dependenciesListRelationFilter
   graph_map_run_sa_activities?: Prisma.Graph_map_run_sa_activitiesListRelationFilter
   graph_run_sa?: Prisma.Graph_run_saListRelationFilter
+  security_module?: Prisma.Security_moduleListRelationFilter
+  security_roles?: Prisma.Security_rolesListRelationFilter
   security_users?: Prisma.Security_usersListRelationFilter
 }
 
@@ -273,6 +275,8 @@ export type companyOrderByWithRelationInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesOrderByRelationAggregateInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesOrderByRelationAggregateInput
   graph_run_sa?: Prisma.graph_run_saOrderByRelationAggregateInput
+  security_module?: Prisma.security_moduleOrderByRelationAggregateInput
+  security_roles?: Prisma.security_rolesOrderByRelationAggregateInput
   security_users?: Prisma.security_usersOrderByRelationAggregateInput
 }
 
@@ -298,6 +302,8 @@ export type companyWhereUniqueInput = Prisma.AtLeast<{
   graph_activities_dependencies?: Prisma.Graph_activities_dependenciesListRelationFilter
   graph_map_run_sa_activities?: Prisma.Graph_map_run_sa_activitiesListRelationFilter
   graph_run_sa?: Prisma.Graph_run_saListRelationFilter
+  security_module?: Prisma.Security_moduleListRelationFilter
+  security_roles?: Prisma.Security_rolesListRelationFilter
   security_users?: Prisma.Security_usersListRelationFilter
 }, "id" | "tax_id">
 
@@ -358,6 +364,8 @@ export type companyCreateInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersCreateNestedManyWithoutCompanyInput
 }
 
@@ -380,6 +388,8 @@ export type companyUncheckedCreateInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleUncheckedCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesUncheckedCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersUncheckedCreateNestedManyWithoutCompanyInput
 }
 
@@ -402,6 +412,8 @@ export type companyUpdateInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUpdateManyWithoutCompanyNestedInput
 }
 
@@ -424,6 +436,8 @@ export type companyUncheckedUpdateInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUncheckedUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUncheckedUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
@@ -603,6 +617,34 @@ export type companyUpdateOneRequiredWithoutGraph_run_saNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.companyUpdateToOneWithWhereWithoutGraph_run_saInput, Prisma.companyUpdateWithoutGraph_run_saInput>, Prisma.companyUncheckedUpdateWithoutGraph_run_saInput>
 }
 
+export type companyCreateNestedOneWithoutSecurity_moduleInput = {
+  create?: Prisma.XOR<Prisma.companyCreateWithoutSecurity_moduleInput, Prisma.companyUncheckedCreateWithoutSecurity_moduleInput>
+  connectOrCreate?: Prisma.companyCreateOrConnectWithoutSecurity_moduleInput
+  connect?: Prisma.companyWhereUniqueInput
+}
+
+export type companyUpdateOneRequiredWithoutSecurity_moduleNestedInput = {
+  create?: Prisma.XOR<Prisma.companyCreateWithoutSecurity_moduleInput, Prisma.companyUncheckedCreateWithoutSecurity_moduleInput>
+  connectOrCreate?: Prisma.companyCreateOrConnectWithoutSecurity_moduleInput
+  upsert?: Prisma.companyUpsertWithoutSecurity_moduleInput
+  connect?: Prisma.companyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.companyUpdateToOneWithWhereWithoutSecurity_moduleInput, Prisma.companyUpdateWithoutSecurity_moduleInput>, Prisma.companyUncheckedUpdateWithoutSecurity_moduleInput>
+}
+
+export type companyCreateNestedOneWithoutSecurity_rolesInput = {
+  create?: Prisma.XOR<Prisma.companyCreateWithoutSecurity_rolesInput, Prisma.companyUncheckedCreateWithoutSecurity_rolesInput>
+  connectOrCreate?: Prisma.companyCreateOrConnectWithoutSecurity_rolesInput
+  connect?: Prisma.companyWhereUniqueInput
+}
+
+export type companyUpdateOneRequiredWithoutSecurity_rolesNestedInput = {
+  create?: Prisma.XOR<Prisma.companyCreateWithoutSecurity_rolesInput, Prisma.companyUncheckedCreateWithoutSecurity_rolesInput>
+  connectOrCreate?: Prisma.companyCreateOrConnectWithoutSecurity_rolesInput
+  upsert?: Prisma.companyUpsertWithoutSecurity_rolesInput
+  connect?: Prisma.companyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.companyUpdateToOneWithWhereWithoutSecurity_rolesInput, Prisma.companyUpdateWithoutSecurity_rolesInput>, Prisma.companyUncheckedUpdateWithoutSecurity_rolesInput>
+}
+
 export type companyCreateNestedOneWithoutSecurity_usersInput = {
   create?: Prisma.XOR<Prisma.companyCreateWithoutSecurity_usersInput, Prisma.companyUncheckedCreateWithoutSecurity_usersInput>
   connectOrCreate?: Prisma.companyCreateOrConnectWithoutSecurity_usersInput
@@ -637,6 +679,8 @@ export type companyCreateWithoutActivitiesInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersCreateNestedManyWithoutCompanyInput
 }
 
@@ -658,6 +702,8 @@ export type companyUncheckedCreateWithoutActivitiesInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleUncheckedCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesUncheckedCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersUncheckedCreateNestedManyWithoutCompanyInput
 }
 
@@ -695,6 +741,8 @@ export type companyUpdateWithoutActivitiesInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUpdateManyWithoutCompanyNestedInput
 }
 
@@ -716,6 +764,8 @@ export type companyUncheckedUpdateWithoutActivitiesInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUncheckedUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUncheckedUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
@@ -737,6 +787,8 @@ export type companyCreateWithoutElementsInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersCreateNestedManyWithoutCompanyInput
 }
 
@@ -758,6 +810,8 @@ export type companyUncheckedCreateWithoutElementsInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleUncheckedCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesUncheckedCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersUncheckedCreateNestedManyWithoutCompanyInput
 }
 
@@ -795,6 +849,8 @@ export type companyUpdateWithoutElementsInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUpdateManyWithoutCompanyNestedInput
 }
 
@@ -816,6 +872,8 @@ export type companyUncheckedUpdateWithoutElementsInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUncheckedUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUncheckedUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
@@ -837,6 +895,8 @@ export type companyCreateWithoutGraph_activities_dependenciesInput = {
   elements?: Prisma.elementsCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersCreateNestedManyWithoutCompanyInput
 }
 
@@ -858,6 +918,8 @@ export type companyUncheckedCreateWithoutGraph_activities_dependenciesInput = {
   elements?: Prisma.elementsUncheckedCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleUncheckedCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesUncheckedCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersUncheckedCreateNestedManyWithoutCompanyInput
 }
 
@@ -895,6 +957,8 @@ export type companyUpdateWithoutGraph_activities_dependenciesInput = {
   elements?: Prisma.elementsUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUpdateManyWithoutCompanyNestedInput
 }
 
@@ -916,6 +980,8 @@ export type companyUncheckedUpdateWithoutGraph_activities_dependenciesInput = {
   elements?: Prisma.elementsUncheckedUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUncheckedUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUncheckedUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
@@ -937,6 +1003,8 @@ export type companyCreateWithoutGraph_map_run_sa_activitiesInput = {
   elements?: Prisma.elementsCreateNestedManyWithoutCompanyInput
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersCreateNestedManyWithoutCompanyInput
 }
 
@@ -958,6 +1026,8 @@ export type companyUncheckedCreateWithoutGraph_map_run_sa_activitiesInput = {
   elements?: Prisma.elementsUncheckedCreateNestedManyWithoutCompanyInput
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleUncheckedCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesUncheckedCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersUncheckedCreateNestedManyWithoutCompanyInput
 }
 
@@ -995,6 +1065,8 @@ export type companyUpdateWithoutGraph_map_run_sa_activitiesInput = {
   elements?: Prisma.elementsUpdateManyWithoutCompanyNestedInput
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUpdateManyWithoutCompanyNestedInput
 }
 
@@ -1016,6 +1088,8 @@ export type companyUncheckedUpdateWithoutGraph_map_run_sa_activitiesInput = {
   elements?: Prisma.elementsUncheckedUpdateManyWithoutCompanyNestedInput
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUncheckedUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUncheckedUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
@@ -1037,6 +1111,8 @@ export type companyCreateWithoutGraph_run_saInput = {
   elements?: Prisma.elementsCreateNestedManyWithoutCompanyInput
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersCreateNestedManyWithoutCompanyInput
 }
 
@@ -1058,6 +1134,8 @@ export type companyUncheckedCreateWithoutGraph_run_saInput = {
   elements?: Prisma.elementsUncheckedCreateNestedManyWithoutCompanyInput
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleUncheckedCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesUncheckedCreateNestedManyWithoutCompanyInput
   security_users?: Prisma.security_usersUncheckedCreateNestedManyWithoutCompanyInput
 }
 
@@ -1095,6 +1173,8 @@ export type companyUpdateWithoutGraph_run_saInput = {
   elements?: Prisma.elementsUpdateManyWithoutCompanyNestedInput
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUpdateManyWithoutCompanyNestedInput
 }
 
@@ -1116,6 +1196,224 @@ export type companyUncheckedUpdateWithoutGraph_run_saInput = {
   elements?: Prisma.elementsUncheckedUpdateManyWithoutCompanyNestedInput
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUncheckedUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUncheckedUpdateManyWithoutCompanyNestedInput
+  security_users?: Prisma.security_usersUncheckedUpdateManyWithoutCompanyNestedInput
+}
+
+export type companyCreateWithoutSecurity_moduleInput = {
+  id?: string
+  name: string
+  legal_name?: string | null
+  tax_id?: string | null
+  sector?: string | null
+  industry?: string | null
+  country?: string | null
+  city?: string | null
+  status?: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  code?: string | null
+  description?: string | null
+  activities?: Prisma.activitiesCreateNestedManyWithoutCompanyInput
+  elements?: Prisma.elementsCreateNestedManyWithoutCompanyInput
+  graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutCompanyInput
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutCompanyInput
+  graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesCreateNestedManyWithoutCompanyInput
+  security_users?: Prisma.security_usersCreateNestedManyWithoutCompanyInput
+}
+
+export type companyUncheckedCreateWithoutSecurity_moduleInput = {
+  id?: string
+  name: string
+  legal_name?: string | null
+  tax_id?: string | null
+  sector?: string | null
+  industry?: string | null
+  country?: string | null
+  city?: string | null
+  status?: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  code?: string | null
+  description?: string | null
+  activities?: Prisma.activitiesUncheckedCreateNestedManyWithoutCompanyInput
+  elements?: Prisma.elementsUncheckedCreateNestedManyWithoutCompanyInput
+  graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutCompanyInput
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutCompanyInput
+  graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesUncheckedCreateNestedManyWithoutCompanyInput
+  security_users?: Prisma.security_usersUncheckedCreateNestedManyWithoutCompanyInput
+}
+
+export type companyCreateOrConnectWithoutSecurity_moduleInput = {
+  where: Prisma.companyWhereUniqueInput
+  create: Prisma.XOR<Prisma.companyCreateWithoutSecurity_moduleInput, Prisma.companyUncheckedCreateWithoutSecurity_moduleInput>
+}
+
+export type companyUpsertWithoutSecurity_moduleInput = {
+  update: Prisma.XOR<Prisma.companyUpdateWithoutSecurity_moduleInput, Prisma.companyUncheckedUpdateWithoutSecurity_moduleInput>
+  create: Prisma.XOR<Prisma.companyCreateWithoutSecurity_moduleInput, Prisma.companyUncheckedCreateWithoutSecurity_moduleInput>
+  where?: Prisma.companyWhereInput
+}
+
+export type companyUpdateToOneWithWhereWithoutSecurity_moduleInput = {
+  where?: Prisma.companyWhereInput
+  data: Prisma.XOR<Prisma.companyUpdateWithoutSecurity_moduleInput, Prisma.companyUncheckedUpdateWithoutSecurity_moduleInput>
+}
+
+export type companyUpdateWithoutSecurity_moduleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  legal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tax_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activities?: Prisma.activitiesUpdateManyWithoutCompanyNestedInput
+  elements?: Prisma.elementsUpdateManyWithoutCompanyNestedInput
+  graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutCompanyNestedInput
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutCompanyNestedInput
+  graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUpdateManyWithoutCompanyNestedInput
+  security_users?: Prisma.security_usersUpdateManyWithoutCompanyNestedInput
+}
+
+export type companyUncheckedUpdateWithoutSecurity_moduleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  legal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tax_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activities?: Prisma.activitiesUncheckedUpdateManyWithoutCompanyNestedInput
+  elements?: Prisma.elementsUncheckedUpdateManyWithoutCompanyNestedInput
+  graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutCompanyNestedInput
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutCompanyNestedInput
+  graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUncheckedUpdateManyWithoutCompanyNestedInput
+  security_users?: Prisma.security_usersUncheckedUpdateManyWithoutCompanyNestedInput
+}
+
+export type companyCreateWithoutSecurity_rolesInput = {
+  id?: string
+  name: string
+  legal_name?: string | null
+  tax_id?: string | null
+  sector?: string | null
+  industry?: string | null
+  country?: string | null
+  city?: string | null
+  status?: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  code?: string | null
+  description?: string | null
+  activities?: Prisma.activitiesCreateNestedManyWithoutCompanyInput
+  elements?: Prisma.elementsCreateNestedManyWithoutCompanyInput
+  graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutCompanyInput
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutCompanyInput
+  graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleCreateNestedManyWithoutCompanyInput
+  security_users?: Prisma.security_usersCreateNestedManyWithoutCompanyInput
+}
+
+export type companyUncheckedCreateWithoutSecurity_rolesInput = {
+  id?: string
+  name: string
+  legal_name?: string | null
+  tax_id?: string | null
+  sector?: string | null
+  industry?: string | null
+  country?: string | null
+  city?: string | null
+  status?: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  code?: string | null
+  description?: string | null
+  activities?: Prisma.activitiesUncheckedCreateNestedManyWithoutCompanyInput
+  elements?: Prisma.elementsUncheckedCreateNestedManyWithoutCompanyInput
+  graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutCompanyInput
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutCompanyInput
+  graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleUncheckedCreateNestedManyWithoutCompanyInput
+  security_users?: Prisma.security_usersUncheckedCreateNestedManyWithoutCompanyInput
+}
+
+export type companyCreateOrConnectWithoutSecurity_rolesInput = {
+  where: Prisma.companyWhereUniqueInput
+  create: Prisma.XOR<Prisma.companyCreateWithoutSecurity_rolesInput, Prisma.companyUncheckedCreateWithoutSecurity_rolesInput>
+}
+
+export type companyUpsertWithoutSecurity_rolesInput = {
+  update: Prisma.XOR<Prisma.companyUpdateWithoutSecurity_rolesInput, Prisma.companyUncheckedUpdateWithoutSecurity_rolesInput>
+  create: Prisma.XOR<Prisma.companyCreateWithoutSecurity_rolesInput, Prisma.companyUncheckedCreateWithoutSecurity_rolesInput>
+  where?: Prisma.companyWhereInput
+}
+
+export type companyUpdateToOneWithWhereWithoutSecurity_rolesInput = {
+  where?: Prisma.companyWhereInput
+  data: Prisma.XOR<Prisma.companyUpdateWithoutSecurity_rolesInput, Prisma.companyUncheckedUpdateWithoutSecurity_rolesInput>
+}
+
+export type companyUpdateWithoutSecurity_rolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  legal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tax_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activities?: Prisma.activitiesUpdateManyWithoutCompanyNestedInput
+  elements?: Prisma.elementsUpdateManyWithoutCompanyNestedInput
+  graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutCompanyNestedInput
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutCompanyNestedInput
+  graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUpdateManyWithoutCompanyNestedInput
+  security_users?: Prisma.security_usersUpdateManyWithoutCompanyNestedInput
+}
+
+export type companyUncheckedUpdateWithoutSecurity_rolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  legal_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tax_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sector?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activities?: Prisma.activitiesUncheckedUpdateManyWithoutCompanyNestedInput
+  elements?: Prisma.elementsUncheckedUpdateManyWithoutCompanyNestedInput
+  graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutCompanyNestedInput
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutCompanyNestedInput
+  graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUncheckedUpdateManyWithoutCompanyNestedInput
   security_users?: Prisma.security_usersUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
@@ -1138,6 +1436,8 @@ export type companyCreateWithoutSecurity_usersInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesCreateNestedManyWithoutCompanyInput
 }
 
 export type companyUncheckedCreateWithoutSecurity_usersInput = {
@@ -1159,6 +1459,8 @@ export type companyUncheckedCreateWithoutSecurity_usersInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedCreateNestedManyWithoutCompanyInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutCompanyInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutCompanyInput
+  security_module?: Prisma.security_moduleUncheckedCreateNestedManyWithoutCompanyInput
+  security_roles?: Prisma.security_rolesUncheckedCreateNestedManyWithoutCompanyInput
 }
 
 export type companyCreateOrConnectWithoutSecurity_usersInput = {
@@ -1196,6 +1498,8 @@ export type companyUpdateWithoutSecurity_usersInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUpdateManyWithoutCompanyNestedInput
 }
 
 export type companyUncheckedUpdateWithoutSecurity_usersInput = {
@@ -1217,6 +1521,8 @@ export type companyUncheckedUpdateWithoutSecurity_usersInput = {
   graph_activities_dependencies?: Prisma.graph_activities_dependenciesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutCompanyNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutCompanyNestedInput
+  security_module?: Prisma.security_moduleUncheckedUpdateManyWithoutCompanyNestedInput
+  security_roles?: Prisma.security_rolesUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
 
@@ -1230,6 +1536,8 @@ export type CompanyCountOutputType = {
   graph_activities_dependencies: number
   graph_map_run_sa_activities: number
   graph_run_sa: number
+  security_module: number
+  security_roles: number
   security_users: number
 }
 
@@ -1239,6 +1547,8 @@ export type CompanyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   graph_activities_dependencies?: boolean | CompanyCountOutputTypeCountGraph_activities_dependenciesArgs
   graph_map_run_sa_activities?: boolean | CompanyCountOutputTypeCountGraph_map_run_sa_activitiesArgs
   graph_run_sa?: boolean | CompanyCountOutputTypeCountGraph_run_saArgs
+  security_module?: boolean | CompanyCountOutputTypeCountSecurity_moduleArgs
+  security_roles?: boolean | CompanyCountOutputTypeCountSecurity_rolesArgs
   security_users?: boolean | CompanyCountOutputTypeCountSecurity_usersArgs
 }
 
@@ -1290,6 +1600,20 @@ export type CompanyCountOutputTypeCountGraph_run_saArgs<ExtArgs extends runtime.
 /**
  * CompanyCountOutputType without action
  */
+export type CompanyCountOutputTypeCountSecurity_moduleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.security_moduleWhereInput
+}
+
+/**
+ * CompanyCountOutputType without action
+ */
+export type CompanyCountOutputTypeCountSecurity_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.security_rolesWhereInput
+}
+
+/**
+ * CompanyCountOutputType without action
+ */
 export type CompanyCountOutputTypeCountSecurity_usersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.security_usersWhereInput
 }
@@ -1314,6 +1638,8 @@ export type companySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   graph_activities_dependencies?: boolean | Prisma.company$graph_activities_dependenciesArgs<ExtArgs>
   graph_map_run_sa_activities?: boolean | Prisma.company$graph_map_run_sa_activitiesArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.company$graph_run_saArgs<ExtArgs>
+  security_module?: boolean | Prisma.company$security_moduleArgs<ExtArgs>
+  security_roles?: boolean | Prisma.company$security_rolesArgs<ExtArgs>
   security_users?: boolean | Prisma.company$security_usersArgs<ExtArgs>
   _count?: boolean | Prisma.CompanyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["company"]>
@@ -1373,6 +1699,8 @@ export type companyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   graph_activities_dependencies?: boolean | Prisma.company$graph_activities_dependenciesArgs<ExtArgs>
   graph_map_run_sa_activities?: boolean | Prisma.company$graph_map_run_sa_activitiesArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.company$graph_run_saArgs<ExtArgs>
+  security_module?: boolean | Prisma.company$security_moduleArgs<ExtArgs>
+  security_roles?: boolean | Prisma.company$security_rolesArgs<ExtArgs>
   security_users?: boolean | Prisma.company$security_usersArgs<ExtArgs>
   _count?: boolean | Prisma.CompanyCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1387,6 +1715,8 @@ export type $companyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     graph_activities_dependencies: Prisma.$graph_activities_dependenciesPayload<ExtArgs>[]
     graph_map_run_sa_activities: Prisma.$graph_map_run_sa_activitiesPayload<ExtArgs>[]
     graph_run_sa: Prisma.$graph_run_saPayload<ExtArgs>[]
+    security_module: Prisma.$security_modulePayload<ExtArgs>[]
+    security_roles: Prisma.$security_rolesPayload<ExtArgs>[]
     security_users: Prisma.$security_usersPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1802,6 +2132,8 @@ export interface Prisma__companyClient<T, Null = never, ExtArgs extends runtime.
   graph_activities_dependencies<T extends Prisma.company$graph_activities_dependenciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.company$graph_activities_dependenciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$graph_activities_dependenciesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   graph_map_run_sa_activities<T extends Prisma.company$graph_map_run_sa_activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.company$graph_map_run_sa_activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$graph_map_run_sa_activitiesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   graph_run_sa<T extends Prisma.company$graph_run_saArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.company$graph_run_saArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$graph_run_saPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  security_module<T extends Prisma.company$security_moduleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.company$security_moduleArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$security_modulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  security_roles<T extends Prisma.company$security_rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.company$security_rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$security_rolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   security_users<T extends Prisma.company$security_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.company$security_usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$security_usersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2355,6 +2687,54 @@ export type company$graph_run_saArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.Graph_run_saScalarFieldEnum | Prisma.Graph_run_saScalarFieldEnum[]
+}
+
+/**
+ * company.security_module
+ */
+export type company$security_moduleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the security_module
+   */
+  select?: Prisma.security_moduleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the security_module
+   */
+  omit?: Prisma.security_moduleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.security_moduleInclude<ExtArgs> | null
+  where?: Prisma.security_moduleWhereInput
+  orderBy?: Prisma.security_moduleOrderByWithRelationInput | Prisma.security_moduleOrderByWithRelationInput[]
+  cursor?: Prisma.security_moduleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Security_moduleScalarFieldEnum | Prisma.Security_moduleScalarFieldEnum[]
+}
+
+/**
+ * company.security_roles
+ */
+export type company$security_rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the security_roles
+   */
+  select?: Prisma.security_rolesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the security_roles
+   */
+  omit?: Prisma.security_rolesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.security_rolesInclude<ExtArgs> | null
+  where?: Prisma.security_rolesWhereInput
+  orderBy?: Prisma.security_rolesOrderByWithRelationInput | Prisma.security_rolesOrderByWithRelationInput[]
+  cursor?: Prisma.security_rolesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Security_rolesScalarFieldEnum | Prisma.Security_rolesScalarFieldEnum[]
 }
 
 /**

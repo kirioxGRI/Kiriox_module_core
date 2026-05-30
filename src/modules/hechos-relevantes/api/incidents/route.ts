@@ -5,7 +5,7 @@ import { withAccess } from "@/core/permissions/http/withAccess";
 import { resolveEffectiveCompanyId } from "@/infrastructure/db/prisma/resolveEffectiveCompanyId";
 
 export const GET = withAccess(
-  { module: "hechos-relevantes", permission: "write" },
+  { module: "hechos-relevantes", permission: "R", submoduleCode: "incidents", resourceType: "incident_register" },
   async (_request, _context, access) => {
     const companyId = await resolveEffectiveCompanyId(access.company.id);
 
@@ -68,7 +68,7 @@ export const GET = withAccess(
 );
 
 export const DELETE = withAccess(
-  { module: "hechos-relevantes", permission: "write" },
+  { module: "hechos-relevantes", permission: "W", submoduleCode: "incidents", resourceType: "incident_register" },
   async (request, _context, access) => {
     const url = new URL(request.url);
     const id = String(url.searchParams.get("id") ?? "").trim();

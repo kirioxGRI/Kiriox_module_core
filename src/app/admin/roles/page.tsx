@@ -13,7 +13,7 @@ interface RoleRecord {
   is_active: boolean | null;
   created_at: string;
   updated_at: string | null;
-  _count?: { company_user_roles: number };
+  userCount?: number;
 }
 
 export default function RolesDashboard() {
@@ -195,7 +195,7 @@ function RoleTable({ title, roles, isActiveList, onEdit, onToggle, onDelete }: {
                 </td>
                 <td style={{ padding: '1rem 1.5rem', textAlign: 'center' }}>
                   <div style={{ display: 'inline-block', padding: '0.2rem 0.6rem', borderRadius: '20px', background: 'rgba(59,130,246,0.1)', color: 'var(--primary)', fontSize: '0.8rem', fontWeight: 800 }}>
-                    {role._count?.company_user_roles ?? 0}
+                    {role.userCount ?? 0}
                   </div>
                 </td>
                 <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>

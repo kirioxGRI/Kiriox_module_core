@@ -4,13 +4,13 @@ import { getEvidenceHandler, patchEvidenceHandler } from '@/modules/structural-r
 export const dynamic = 'force-dynamic';
 
 export const GET = nextHandler(
-  withAccess({ module: 'structural-risk', permission: 'risk.structural.read' }, async (req, _ctx, access) =>
+  withAccess({ module: 'structural-risk', permission: 'R', submoduleCode: 'wizard_evidence' }, async (req, _ctx, access) =>
     getEvidenceHandler(req, access)
   )
 );
 
 export const PATCH = nextHandler(
-  withAccess({ module: 'structural-risk', permission: 'risk.structural.write' }, async (req, _ctx, access) =>
+  withAccess({ module: 'structural-risk', permission: 'W', submoduleCode: 'wizard_evidence' }, async (req, _ctx, access) =>
     patchEvidenceHandler(req, access)
   )
 );

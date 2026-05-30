@@ -1,10 +1,8 @@
 import type { NavItem } from '@/shared/types';
 import { kirioxModuleRegistry } from '@/core/module-registry';
-import { hasAssignedPermission } from '@/core/permissions/domain';
 
 export type NavigationAccessContext = {
   enabledModules: string[];
-  permissions: string[];
 };
 
 export function buildNavigation(access: NavigationAccessContext): NavItem[] {
@@ -12,7 +10,6 @@ export function buildNavigation(access: NavigationAccessContext): NavItem[] {
     .list()
     .filter((mod) => mod.manifest.nav !== undefined)
     .filter((mod) => access.enabledModules.includes(mod.manifest.id))
-    .filter((mod) => hasAssignedPermission(access.permissions, mod.manifest.nav!.permission))
     .map((mod) => ({
       key: mod.manifest.id,
       label: mod.manifest.nav!.label,

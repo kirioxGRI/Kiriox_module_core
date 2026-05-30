@@ -161,8 +161,8 @@ export default function UserManagementPage() {
                 <td style={{ padding: '1rem 1.5rem', fontSize: '0.85rem' }}>{user.email}</td>
                 <td style={{ padding: '1rem 1.5rem', fontSize: '0.85rem', color: 'var(--secondary)' }}>{user.companyName || 'Sin Empresa'}</td>
                 <td style={{ padding: '1rem 1.5rem' }}>
-                  <span style={{ fontSize: '0.65rem', fontWeight: 900, padding: '0.2rem 0.5rem', borderRadius: 6, border: '1px solid var(--glass-border)', color: user.roles?.some(r => r.roleCode === 'ADMIN') ? 'var(--primary)' : 'var(--secondary)', background: 'rgba(255,255,255,0.02)' }}>
-                    {user.roles?.[0]?.roleCode || 'Sin Rol'}
+                  <span style={{ fontSize: '0.65rem', fontWeight: 900, padding: '0.2rem 0.5rem', borderRadius: 6, border: '1px solid var(--glass-border)', color: user.roles?.some(r => r.roleCode === 'super_admin') ? 'var(--primary)' : 'var(--secondary)', background: 'rgba(255,255,255,0.02)' }}>
+                    {user.roles?.map(r => r.roleCode).join(', ') || 'Sin Rol'}
                   </span>
                 </td>
                 <td style={{ padding: '1rem 1.5rem', fontSize: '0.75rem', color: 'var(--secondary)' }}>
@@ -230,7 +230,7 @@ export default function UserManagementPage() {
         </div>
         <div className="glass-card" style={{ padding: '1.25rem' }}>
           <p style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--secondary)', textTransform: 'uppercase', letterSpacing: '0.05rem', marginBottom: '0.5rem' }}>Administradores</p>
-          <p style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--primary)', margin: 0 }}>{users.filter(u => u.roles?.some(r => r.roleCode === 'ADMIN')).length}</p>
+          <p style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--primary)', margin: 0 }}>{users.filter(u => u.roles?.some(r => r.roleCode === 'super_admin')).length}</p>
         </div>
         <div className="glass-card" style={{ padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gridColumn: 'span 2' }}>
           <Search size={18} style={{ color: 'var(--secondary)', marginRight: '1rem' }} />

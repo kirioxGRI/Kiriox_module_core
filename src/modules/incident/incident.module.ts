@@ -11,6 +11,13 @@ export const incidentModule: KirioxModuleContract = {
     status: "active",
     layers: ["domain", "application", "infrastructure", "api", "ui"],
     dependencies: ["core"],
+    nav: {
+      label: "Análisis preventivo",
+      href: "/incident/dashboard",
+      icon: "TriangleAlert",
+      order: 24,
+      permission: "A",
+    },
   },
 
   register() {

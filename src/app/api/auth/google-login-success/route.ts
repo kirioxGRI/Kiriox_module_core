@@ -57,7 +57,6 @@ export async function GET(request: Request) {
     const tokenPayload = await signAuthToken({
       userId: dbUser.id,
       tenantId,
-      roleCode: "ADMIN",
       email: dbUser.email ?? undefined,
     });
 

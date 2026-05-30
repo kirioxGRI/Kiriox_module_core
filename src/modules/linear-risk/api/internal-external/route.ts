@@ -15,7 +15,7 @@ function normalizeType(type: string | null | undefined): 'INTERNAL' | 'EXTERNAL'
   return null;
 }
 
-export const GET = withAccess({ module: 'linear-risk', permission: 'read' }, async (req) => {
+export const GET = withAccess({ module: 'linear-risk', permission: 'R', submoduleCode: 'internal_external' }, async (req) => {
   const url = new URL(req.url);
   const runRaId = url.searchParams.get("runRaId");
   const type = normalizeType(url.searchParams.get("type"));
@@ -33,7 +33,7 @@ export const GET = withAccess({ module: 'linear-risk', permission: 'read' }, asy
   return ok({ context });
 });
 
-export const POST = withAccess({ module: 'linear-risk', permission: 'read' }, async (req) => {
+export const POST = withAccess({ module: 'linear-risk', permission: 'W', submoduleCode: 'internal_external' }, async (req) => {
   const body = await req.json();
   const runRaId = String(body?.runRaId ?? '').trim();
   const type = normalizeType(body?.type);

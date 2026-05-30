@@ -4,7 +4,7 @@ import { PrismaLinearRiskRepository } from "../../infrastructure/repositories/Pr
 
 const repository = new PrismaLinearRiskRepository();
 
-export const GET = withAccess({ module: 'linear-risk', permission: 'read' }, async (req, context, access) => {
+export const GET = withAccess({ module: 'linear-risk', permission: 'R', submoduleCode: 'general_context' }, async (req, context, access) => {
   const url = new URL(req.url);
   const runRaId = url.searchParams.get("runRaId");
   if (!runRaId) return new Response("runRaId is required", { status: 400 });
@@ -37,7 +37,7 @@ export const GET = withAccess({ module: 'linear-risk', permission: 'read' }, asy
   });
 });
 
-export const POST = withAccess({ module: 'linear-risk', permission: 'read' }, async (req) => {
+export const POST = withAccess({ module: 'linear-risk', permission: 'W', submoduleCode: 'general_context' }, async (req) => {
   const body = await req.json();
   
   await repository.upsertGeneralContext({

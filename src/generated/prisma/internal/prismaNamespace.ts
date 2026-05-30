@@ -430,9 +430,9 @@ export const ModelName = {
   graph_run_lifecycle_history: 'graph_run_lifecycle_history',
   graph_run_sa: 'graph_run_sa',
   incident_register: 'incident_register',
-  map_role_x_permission: 'map_role_x_permission',
+  map_role_x_module_x_permissions: 'map_role_x_module_x_permissions',
   map_run_ra_risk_controls: 'map_run_ra_risk_controls',
-  map_users_x_roles: 'map_users_x_roles',
+  map_user_x_roles: 'map_user_x_roles',
   monitoring_due_item: 'monitoring_due_item',
   monitoring_event: 'monitoring_event',
   monitoring_event_response: 'monitoring_event_response',
@@ -458,9 +458,12 @@ export const ModelName = {
   run_ra_risk_analysis: 'run_ra_risk_analysis',
   run_ra_risk_treatment: 'run_ra_risk_treatment',
   run_ra_risks: 'run_ra_risks',
+  security_logs_access: 'security_logs_access',
+  security_module: 'security_module',
+  security_permissions: 'security_permissions',
   security_roles: 'security_roles',
-  security_users: 'security_users',
-  users_permission: 'users_permission'
+  security_submodule: 'security_submodule',
+  security_users: 'security_users'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -476,7 +479,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "activities" | "catalog_activity_criticality_level" | "catalog_activity_frequency" | "catalog_activity_review" | "catalog_appetite" | "catalog_control_cobertura" | "catalog_control_effectiveness" | "catalog_control_effectiveness_peso" | "catalog_control_type" | "catalog_controls_category" | "catalog_controls_frequency" | "catalog_frequency" | "catalog_ra_category" | "catalog_ra_impact" | "catalog_ra_lifecycle" | "catalog_ra_lifecycle_history" | "catalog_ra_probability" | "catalog_ra_valoration" | "catalog_risk_category" | "catalog_risk_level" | "company" | "company_objective" | "company_resource_catalog" | "company_resource_category" | "element_types" | "elements" | "graph_activities_alternative_level" | "graph_activities_dependencies" | "graph_activities_dependency_resource" | "graph_activities_dependency_strength" | "graph_activities_failure_effect" | "graph_activity_catalog_criticality" | "graph_activity_catalog_impact" | "graph_activity_resource" | "graph_catalog_run_lifecycle" | "graph_catalog_run_methodology" | "graph_catalog_run_scope_type" | "graph_control_evidence" | "graph_control_hardgate" | "graph_map_activity_resource_dependency" | "graph_map_run_sa_activities" | "graph_risk_cascade" | "graph_risk_catalog_cascade" | "graph_run_lifecycle_history" | "graph_run_sa" | "incident_register" | "map_role_x_permission" | "map_run_ra_risk_controls" | "map_users_x_roles" | "monitoring_due_item" | "monitoring_event" | "monitoring_event_response" | "monitoring_external_source" | "monitoring_internal_source" | "monitoring_rule" | "monitoring_run" | "pesos" | "run_ra" | "run_ra_analysis_sensitivity" | "run_ra_appetite_rules" | "run_ra_change_history" | "run_ra_contexto_evaluacion" | "run_ra_contexto_interno" | "run_ra_contexto_interno_externo" | "run_ra_contexto_negocio" | "run_ra_contexto_reglas" | "run_ra_control_effectiveness" | "run_ra_control_tests" | "run_ra_controls" | "run_ra_evidence" | "run_ra_monitoring" | "run_ra_risk_analysis" | "run_ra_risk_treatment" | "run_ra_risks" | "security_roles" | "security_users" | "users_permission"
+    modelProps: "activities" | "catalog_activity_criticality_level" | "catalog_activity_frequency" | "catalog_activity_review" | "catalog_appetite" | "catalog_control_cobertura" | "catalog_control_effectiveness" | "catalog_control_effectiveness_peso" | "catalog_control_type" | "catalog_controls_category" | "catalog_controls_frequency" | "catalog_frequency" | "catalog_ra_category" | "catalog_ra_impact" | "catalog_ra_lifecycle" | "catalog_ra_lifecycle_history" | "catalog_ra_probability" | "catalog_ra_valoration" | "catalog_risk_category" | "catalog_risk_level" | "company" | "company_objective" | "company_resource_catalog" | "company_resource_category" | "element_types" | "elements" | "graph_activities_alternative_level" | "graph_activities_dependencies" | "graph_activities_dependency_resource" | "graph_activities_dependency_strength" | "graph_activities_failure_effect" | "graph_activity_catalog_criticality" | "graph_activity_catalog_impact" | "graph_activity_resource" | "graph_catalog_run_lifecycle" | "graph_catalog_run_methodology" | "graph_catalog_run_scope_type" | "graph_control_evidence" | "graph_control_hardgate" | "graph_map_activity_resource_dependency" | "graph_map_run_sa_activities" | "graph_risk_cascade" | "graph_risk_catalog_cascade" | "graph_run_lifecycle_history" | "graph_run_sa" | "incident_register" | "map_role_x_module_x_permissions" | "map_run_ra_risk_controls" | "map_user_x_roles" | "monitoring_due_item" | "monitoring_event" | "monitoring_event_response" | "monitoring_external_source" | "monitoring_internal_source" | "monitoring_rule" | "monitoring_run" | "pesos" | "run_ra" | "run_ra_analysis_sensitivity" | "run_ra_appetite_rules" | "run_ra_change_history" | "run_ra_contexto_evaluacion" | "run_ra_contexto_interno" | "run_ra_contexto_interno_externo" | "run_ra_contexto_negocio" | "run_ra_contexto_reglas" | "run_ra_control_effectiveness" | "run_ra_control_tests" | "run_ra_controls" | "run_ra_evidence" | "run_ra_monitoring" | "run_ra_risk_analysis" | "run_ra_risk_treatment" | "run_ra_risks" | "security_logs_access" | "security_module" | "security_permissions" | "security_roles" | "security_submodule" | "security_users"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3884,77 +3887,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    map_role_x_permission: {
-      payload: Prisma.$map_role_x_permissionPayload<ExtArgs>
-      fields: Prisma.map_role_x_permissionFieldRefs
+    map_role_x_module_x_permissions: {
+      payload: Prisma.$map_role_x_module_x_permissionsPayload<ExtArgs>
+      fields: Prisma.map_role_x_module_x_permissionsFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.map_role_x_permissionFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload> | null
+          args: Prisma.map_role_x_module_x_permissionsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.map_role_x_permissionFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+          args: Prisma.map_role_x_module_x_permissionsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload>
         }
         findFirst: {
-          args: Prisma.map_role_x_permissionFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload> | null
+          args: Prisma.map_role_x_module_x_permissionsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.map_role_x_permissionFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+          args: Prisma.map_role_x_module_x_permissionsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload>
         }
         findMany: {
-          args: Prisma.map_role_x_permissionFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>[]
+          args: Prisma.map_role_x_module_x_permissionsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload>[]
         }
         create: {
-          args: Prisma.map_role_x_permissionCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+          args: Prisma.map_role_x_module_x_permissionsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload>
         }
         createMany: {
-          args: Prisma.map_role_x_permissionCreateManyArgs<ExtArgs>
+          args: Prisma.map_role_x_module_x_permissionsCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.map_role_x_permissionCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>[]
+          args: Prisma.map_role_x_module_x_permissionsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload>[]
         }
         delete: {
-          args: Prisma.map_role_x_permissionDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+          args: Prisma.map_role_x_module_x_permissionsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload>
         }
         update: {
-          args: Prisma.map_role_x_permissionUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+          args: Prisma.map_role_x_module_x_permissionsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload>
         }
         deleteMany: {
-          args: Prisma.map_role_x_permissionDeleteManyArgs<ExtArgs>
+          args: Prisma.map_role_x_module_x_permissionsDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.map_role_x_permissionUpdateManyArgs<ExtArgs>
+          args: Prisma.map_role_x_module_x_permissionsUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.map_role_x_permissionUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>[]
+          args: Prisma.map_role_x_module_x_permissionsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload>[]
         }
         upsert: {
-          args: Prisma.map_role_x_permissionUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+          args: Prisma.map_role_x_module_x_permissionsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_module_x_permissionsPayload>
         }
         aggregate: {
-          args: Prisma.Map_role_x_permissionAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateMap_role_x_permission>
+          args: Prisma.Map_role_x_module_x_permissionsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMap_role_x_module_x_permissions>
         }
         groupBy: {
-          args: Prisma.map_role_x_permissionGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Map_role_x_permissionGroupByOutputType>[]
+          args: Prisma.map_role_x_module_x_permissionsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Map_role_x_module_x_permissionsGroupByOutputType>[]
         }
         count: {
-          args: Prisma.map_role_x_permissionCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Map_role_x_permissionCountAggregateOutputType> | number
+          args: Prisma.map_role_x_module_x_permissionsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Map_role_x_module_x_permissionsCountAggregateOutputType> | number
         }
       }
     }
@@ -4032,77 +4035,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    map_users_x_roles: {
-      payload: Prisma.$map_users_x_rolesPayload<ExtArgs>
-      fields: Prisma.map_users_x_rolesFieldRefs
+    map_user_x_roles: {
+      payload: Prisma.$map_user_x_rolesPayload<ExtArgs>
+      fields: Prisma.map_user_x_rolesFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.map_users_x_rolesFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload> | null
+          args: Prisma.map_user_x_rolesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.map_users_x_rolesFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload>
+          args: Prisma.map_user_x_rolesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload>
         }
         findFirst: {
-          args: Prisma.map_users_x_rolesFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload> | null
+          args: Prisma.map_user_x_rolesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.map_users_x_rolesFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload>
+          args: Prisma.map_user_x_rolesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload>
         }
         findMany: {
-          args: Prisma.map_users_x_rolesFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload>[]
+          args: Prisma.map_user_x_rolesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload>[]
         }
         create: {
-          args: Prisma.map_users_x_rolesCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload>
+          args: Prisma.map_user_x_rolesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload>
         }
         createMany: {
-          args: Prisma.map_users_x_rolesCreateManyArgs<ExtArgs>
+          args: Prisma.map_user_x_rolesCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.map_users_x_rolesCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload>[]
+          args: Prisma.map_user_x_rolesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload>[]
         }
         delete: {
-          args: Prisma.map_users_x_rolesDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload>
+          args: Prisma.map_user_x_rolesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload>
         }
         update: {
-          args: Prisma.map_users_x_rolesUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload>
+          args: Prisma.map_user_x_rolesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload>
         }
         deleteMany: {
-          args: Prisma.map_users_x_rolesDeleteManyArgs<ExtArgs>
+          args: Prisma.map_user_x_rolesDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.map_users_x_rolesUpdateManyArgs<ExtArgs>
+          args: Prisma.map_user_x_rolesUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.map_users_x_rolesUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload>[]
+          args: Prisma.map_user_x_rolesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload>[]
         }
         upsert: {
-          args: Prisma.map_users_x_rolesUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_users_x_rolesPayload>
+          args: Prisma.map_user_x_rolesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_user_x_rolesPayload>
         }
         aggregate: {
-          args: Prisma.Map_users_x_rolesAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateMap_users_x_roles>
+          args: Prisma.Map_user_x_rolesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMap_user_x_roles>
         }
         groupBy: {
-          args: Prisma.map_users_x_rolesGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Map_users_x_rolesGroupByOutputType>[]
+          args: Prisma.map_user_x_rolesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Map_user_x_rolesGroupByOutputType>[]
         }
         count: {
-          args: Prisma.map_users_x_rolesCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Map_users_x_rolesCountAggregateOutputType> | number
+          args: Prisma.map_user_x_rolesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Map_user_x_rolesCountAggregateOutputType> | number
         }
       }
     }
@@ -5956,6 +5959,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    security_logs_access: {
+      payload: Prisma.$security_logs_accessPayload<ExtArgs>
+      fields: Prisma.security_logs_accessFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.security_logs_accessFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.security_logs_accessFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload>
+        }
+        findFirst: {
+          args: Prisma.security_logs_accessFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.security_logs_accessFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload>
+        }
+        findMany: {
+          args: Prisma.security_logs_accessFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload>[]
+        }
+        create: {
+          args: Prisma.security_logs_accessCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload>
+        }
+        createMany: {
+          args: Prisma.security_logs_accessCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.security_logs_accessCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload>[]
+        }
+        delete: {
+          args: Prisma.security_logs_accessDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload>
+        }
+        update: {
+          args: Prisma.security_logs_accessUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload>
+        }
+        deleteMany: {
+          args: Prisma.security_logs_accessDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.security_logs_accessUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.security_logs_accessUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload>[]
+        }
+        upsert: {
+          args: Prisma.security_logs_accessUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_logs_accessPayload>
+        }
+        aggregate: {
+          args: Prisma.Security_logs_accessAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSecurity_logs_access>
+        }
+        groupBy: {
+          args: Prisma.security_logs_accessGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Security_logs_accessGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.security_logs_accessCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Security_logs_accessCountAggregateOutputType> | number
+        }
+      }
+    }
+    security_module: {
+      payload: Prisma.$security_modulePayload<ExtArgs>
+      fields: Prisma.security_moduleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.security_moduleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.security_moduleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload>
+        }
+        findFirst: {
+          args: Prisma.security_moduleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.security_moduleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload>
+        }
+        findMany: {
+          args: Prisma.security_moduleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload>[]
+        }
+        create: {
+          args: Prisma.security_moduleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload>
+        }
+        createMany: {
+          args: Prisma.security_moduleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.security_moduleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload>[]
+        }
+        delete: {
+          args: Prisma.security_moduleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload>
+        }
+        update: {
+          args: Prisma.security_moduleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload>
+        }
+        deleteMany: {
+          args: Prisma.security_moduleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.security_moduleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.security_moduleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload>[]
+        }
+        upsert: {
+          args: Prisma.security_moduleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_modulePayload>
+        }
+        aggregate: {
+          args: Prisma.Security_moduleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSecurity_module>
+        }
+        groupBy: {
+          args: Prisma.security_moduleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Security_moduleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.security_moduleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Security_moduleCountAggregateOutputType> | number
+        }
+      }
+    }
+    security_permissions: {
+      payload: Prisma.$security_permissionsPayload<ExtArgs>
+      fields: Prisma.security_permissionsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.security_permissionsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.security_permissionsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload>
+        }
+        findFirst: {
+          args: Prisma.security_permissionsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.security_permissionsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload>
+        }
+        findMany: {
+          args: Prisma.security_permissionsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload>[]
+        }
+        create: {
+          args: Prisma.security_permissionsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload>
+        }
+        createMany: {
+          args: Prisma.security_permissionsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.security_permissionsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload>[]
+        }
+        delete: {
+          args: Prisma.security_permissionsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload>
+        }
+        update: {
+          args: Prisma.security_permissionsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload>
+        }
+        deleteMany: {
+          args: Prisma.security_permissionsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.security_permissionsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.security_permissionsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload>[]
+        }
+        upsert: {
+          args: Prisma.security_permissionsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_permissionsPayload>
+        }
+        aggregate: {
+          args: Prisma.Security_permissionsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSecurity_permissions>
+        }
+        groupBy: {
+          args: Prisma.security_permissionsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Security_permissionsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.security_permissionsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Security_permissionsCountAggregateOutputType> | number
+        }
+      }
+    }
     security_roles: {
       payload: Prisma.$security_rolesPayload<ExtArgs>
       fields: Prisma.security_rolesFieldRefs
@@ -6030,6 +6255,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    security_submodule: {
+      payload: Prisma.$security_submodulePayload<ExtArgs>
+      fields: Prisma.security_submoduleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.security_submoduleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.security_submoduleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload>
+        }
+        findFirst: {
+          args: Prisma.security_submoduleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.security_submoduleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload>
+        }
+        findMany: {
+          args: Prisma.security_submoduleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload>[]
+        }
+        create: {
+          args: Prisma.security_submoduleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload>
+        }
+        createMany: {
+          args: Prisma.security_submoduleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.security_submoduleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload>[]
+        }
+        delete: {
+          args: Prisma.security_submoduleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload>
+        }
+        update: {
+          args: Prisma.security_submoduleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload>
+        }
+        deleteMany: {
+          args: Prisma.security_submoduleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.security_submoduleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.security_submoduleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload>[]
+        }
+        upsert: {
+          args: Prisma.security_submoduleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$security_submodulePayload>
+        }
+        aggregate: {
+          args: Prisma.Security_submoduleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSecurity_submodule>
+        }
+        groupBy: {
+          args: Prisma.security_submoduleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Security_submoduleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.security_submoduleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Security_submoduleCountAggregateOutputType> | number
+        }
+      }
+    }
     security_users: {
       payload: Prisma.$security_usersPayload<ExtArgs>
       fields: Prisma.security_usersFieldRefs
@@ -6101,80 +6400,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.security_usersCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.Security_usersCountAggregateOutputType> | number
-        }
-      }
-    }
-    users_permission: {
-      payload: Prisma.$users_permissionPayload<ExtArgs>
-      fields: Prisma.users_permissionFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.users_permissionFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.users_permissionFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload>
-        }
-        findFirst: {
-          args: Prisma.users_permissionFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.users_permissionFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload>
-        }
-        findMany: {
-          args: Prisma.users_permissionFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload>[]
-        }
-        create: {
-          args: Prisma.users_permissionCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload>
-        }
-        createMany: {
-          args: Prisma.users_permissionCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.users_permissionCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload>[]
-        }
-        delete: {
-          args: Prisma.users_permissionDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload>
-        }
-        update: {
-          args: Prisma.users_permissionUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload>
-        }
-        deleteMany: {
-          args: Prisma.users_permissionDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.users_permissionUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.users_permissionUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload>[]
-        }
-        upsert: {
-          args: Prisma.users_permissionUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$users_permissionPayload>
-        }
-        aggregate: {
-          args: Prisma.Users_permissionAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateUsers_permission>
-        }
-        groupBy: {
-          args: Prisma.users_permissionGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Users_permissionGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.users_permissionCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.Users_permissionCountAggregateOutputType> | number
         }
       }
     }
@@ -6912,16 +7137,17 @@ export const Incident_registerScalarFieldEnum = {
 export type Incident_registerScalarFieldEnum = (typeof Incident_registerScalarFieldEnum)[keyof typeof Incident_registerScalarFieldEnum]
 
 
-export const Map_role_x_permissionScalarFieldEnum = {
+export const Map_role_x_module_x_permissionsScalarFieldEnum = {
   id: 'id',
   role_id: 'role_id',
-  permission_code: 'permission_code',
+  module_id: 'module_id',
+  permission_id: 'permission_id',
   is_active: 'is_active',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
 
-export type Map_role_x_permissionScalarFieldEnum = (typeof Map_role_x_permissionScalarFieldEnum)[keyof typeof Map_role_x_permissionScalarFieldEnum]
+export type Map_role_x_module_x_permissionsScalarFieldEnum = (typeof Map_role_x_module_x_permissionsScalarFieldEnum)[keyof typeof Map_role_x_module_x_permissionsScalarFieldEnum]
 
 
 export const Map_run_ra_risk_controlsScalarFieldEnum = {
@@ -6941,7 +7167,7 @@ export const Map_run_ra_risk_controlsScalarFieldEnum = {
 export type Map_run_ra_risk_controlsScalarFieldEnum = (typeof Map_run_ra_risk_controlsScalarFieldEnum)[keyof typeof Map_run_ra_risk_controlsScalarFieldEnum]
 
 
-export const Map_users_x_rolesScalarFieldEnum = {
+export const Map_user_x_rolesScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
   role_id: 'role_id',
@@ -6950,7 +7176,7 @@ export const Map_users_x_rolesScalarFieldEnum = {
   updated_at: 'updated_at'
 } as const
 
-export type Map_users_x_rolesScalarFieldEnum = (typeof Map_users_x_rolesScalarFieldEnum)[keyof typeof Map_users_x_rolesScalarFieldEnum]
+export type Map_user_x_rolesScalarFieldEnum = (typeof Map_user_x_rolesScalarFieldEnum)[keyof typeof Map_user_x_rolesScalarFieldEnum]
 
 
 export const Monitoring_due_itemScalarFieldEnum = {
@@ -7450,7 +7676,39 @@ export const Run_ra_risksScalarFieldEnum = {
 export type Run_ra_risksScalarFieldEnum = (typeof Run_ra_risksScalarFieldEnum)[keyof typeof Run_ra_risksScalarFieldEnum]
 
 
-export const Security_rolesScalarFieldEnum = {
+export const Security_logs_accessScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  module_id: 'module_id',
+  submodule_id: 'submodule_id',
+  resource_type: 'resource_type',
+  resource_id: 'resource_id',
+  action_code: 'action_code',
+  access_result: 'access_result',
+  ip_address: 'ip_address',
+  user_agent: 'user_agent',
+  metadata: 'metadata',
+  created_at: 'created_at'
+} as const
+
+export type Security_logs_accessScalarFieldEnum = (typeof Security_logs_accessScalarFieldEnum)[keyof typeof Security_logs_accessScalarFieldEnum]
+
+
+export const Security_moduleScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  company_id: 'company_id'
+} as const
+
+export type Security_moduleScalarFieldEnum = (typeof Security_moduleScalarFieldEnum)[keyof typeof Security_moduleScalarFieldEnum]
+
+
+export const Security_permissionsScalarFieldEnum = {
   id: 'id',
   code: 'code',
   name: 'name',
@@ -7460,7 +7718,35 @@ export const Security_rolesScalarFieldEnum = {
   updated_at: 'updated_at'
 } as const
 
+export type Security_permissionsScalarFieldEnum = (typeof Security_permissionsScalarFieldEnum)[keyof typeof Security_permissionsScalarFieldEnum]
+
+
+export const Security_rolesScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  company_id: 'company_id'
+} as const
+
 export type Security_rolesScalarFieldEnum = (typeof Security_rolesScalarFieldEnum)[keyof typeof Security_rolesScalarFieldEnum]
+
+
+export const Security_submoduleScalarFieldEnum = {
+  id: 'id',
+  module_id: 'module_id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Security_submoduleScalarFieldEnum = (typeof Security_submoduleScalarFieldEnum)[keyof typeof Security_submoduleScalarFieldEnum]
 
 
 export const Security_usersScalarFieldEnum = {
@@ -7483,19 +7769,6 @@ export const Security_usersScalarFieldEnum = {
 } as const
 
 export type Security_usersScalarFieldEnum = (typeof Security_usersScalarFieldEnum)[keyof typeof Security_usersScalarFieldEnum]
-
-
-export const Users_permissionScalarFieldEnum = {
-  code: 'code',
-  module_code: 'module_code',
-  name: 'name',
-  description: 'description',
-  is_active: 'is_active',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type Users_permissionScalarFieldEnum = (typeof Users_permissionScalarFieldEnum)[keyof typeof Users_permissionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -7812,9 +8085,9 @@ export type GlobalOmitConfig = {
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyOmit
   graph_run_sa?: Prisma.graph_run_saOmit
   incident_register?: Prisma.incident_registerOmit
-  map_role_x_permission?: Prisma.map_role_x_permissionOmit
+  map_role_x_module_x_permissions?: Prisma.map_role_x_module_x_permissionsOmit
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsOmit
-  map_users_x_roles?: Prisma.map_users_x_rolesOmit
+  map_user_x_roles?: Prisma.map_user_x_rolesOmit
   monitoring_due_item?: Prisma.monitoring_due_itemOmit
   monitoring_event?: Prisma.monitoring_eventOmit
   monitoring_event_response?: Prisma.monitoring_event_responseOmit
@@ -7840,9 +8113,12 @@ export type GlobalOmitConfig = {
   run_ra_risk_analysis?: Prisma.run_ra_risk_analysisOmit
   run_ra_risk_treatment?: Prisma.run_ra_risk_treatmentOmit
   run_ra_risks?: Prisma.run_ra_risksOmit
+  security_logs_access?: Prisma.security_logs_accessOmit
+  security_module?: Prisma.security_moduleOmit
+  security_permissions?: Prisma.security_permissionsOmit
   security_roles?: Prisma.security_rolesOmit
+  security_submodule?: Prisma.security_submoduleOmit
   security_users?: Prisma.security_usersOmit
-  users_permission?: Prisma.users_permissionOmit
 }
 
 /* Types for Logging */

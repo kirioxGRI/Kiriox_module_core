@@ -5,7 +5,7 @@ import { GetLinearRiskEvaluationsUseCase } from "../../application/use-cases/Get
 const repository = new PrismaLinearRiskRepository();
 const getEvaluationsUseCase = new GetLinearRiskEvaluationsUseCase(repository);
 
-export const GET = withAccess({ module: 'linear-risk', permission: 'read' }, async (request, context, access) => {
+export const GET = withAccess({ module: 'linear-risk', permission: 'R', submoduleCode: 'evaluations' }, async (request, context, access) => {
   const { searchParams } = new URL(request.url);
   const elementId = searchParams.get("elementId") || undefined;
   const activityId = searchParams.get("activityId") || undefined;

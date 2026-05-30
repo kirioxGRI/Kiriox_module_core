@@ -50,7 +50,7 @@ function resolveRiskLevelByScore(score: number | null, levels: RiskLevelRow[]) {
   return levels.find((level) => score >= Number(level.min_score) && score <= Number(level.max_score)) ?? null;
 }
 
-export const GET = withAccess({ module: 'linear-risk', permission: 'read' }, async (request, context, access) => {
+export const GET = withAccess({ module: 'linear-risk', permission: 'R', submoduleCode: 'control_analysis' }, async (request, context, access) => {
   const url = new URL(request.url);
   const runRaId = asUuid(url.searchParams.get('runRaId'));
   if (!runRaId) return NextResponse.json({ error: 'runRaId inválido' }, { status: 400 });
@@ -195,7 +195,7 @@ export const GET = withAccess({ module: 'linear-risk', permission: 'read' }, asy
   });
 });
 
-export const POST = withAccess({ module: 'linear-risk', permission: 'read' }, async (request, context, access) => {
+export const POST = withAccess({ module: 'linear-risk', permission: 'W', submoduleCode: 'control_analysis' }, async (request, context, access) => {
   const body = (await request.json()) as Record<string, unknown>;
   const runRaId = asUuid(body.runRaId);
   const riskId = asUuid(body.riskId);
@@ -347,7 +347,7 @@ export const POST = withAccess({ module: 'linear-risk', permission: 'read' }, as
   return NextResponse.json({ ok: true });
 });
 
-export const DELETE = withAccess({ module: 'linear-risk', permission: 'read' }, async (request, context, access) => {
+export const DELETE = withAccess({ module: 'linear-risk', permission: 'W', submoduleCode: 'control_analysis' }, async (request, context, access) => {
   const url = new URL(request.url);
   const runRaId = asUuid(url.searchParams.get('runRaId'));
   const riskId = asUuid(url.searchParams.get('riskId'));

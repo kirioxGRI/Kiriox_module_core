@@ -3,10 +3,19 @@ import { Suspense } from 'react';
 import { ArrowLeft, UserCog } from 'lucide-react';
 import UserWizard from '../_components/UserWizard';
 import { redirect } from 'next/navigation';
+import { requirePageAccess } from '@/core/permissions/http';
 
 export default async function EditUserPage(props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;
   if (!id || id === 'nuevo') redirect('/admin/usuarios');
+
+  await requirePageAccess({
+    module: 'catalog',
+    permission: 'W',
+    submoduleCode: 'security_users',
+    resourceType: 'page',
+    path: `/admin/usuarios/${id}`,
+  });
 
   return (
     <div className="animate-fade-in" style={{ padding: '2rem' }}>

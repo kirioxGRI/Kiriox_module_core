@@ -1,6 +1,6 @@
 import { withAccess } from './withAccess';
-import { normalizePermissionCode } from '../domain';
-import type { ModuleCode } from '@/shared/types';
+import { normalizeAccessPermissionCode } from '../domain';
+import type { AccessPermissionCode, ModuleCode } from '@/shared/types';
 
 type LegacyModuleKey = ModuleCode | 'risk';
 type RouteContext = { params?: unknown } | undefined;
@@ -11,8 +11,8 @@ function normalizeModule(moduleKey: LegacyModuleKey): ModuleCode {
   return moduleKey;
 }
 
-function normalizePermission(moduleKey: LegacyModuleKey, permission: string): string {
-  return normalizePermissionCode(normalizeModule(moduleKey), permission);
+function normalizePermission(permission: string): AccessPermissionCode {
+  return normalizeAccessPermissionCode(permission);
 }
 
 export function withModuleAccess(
@@ -23,7 +23,7 @@ export function withModuleAccess(
   return withAccess(
     {
       module: normalizeModule(moduleKey),
-      permission: normalizePermission(moduleKey, permission),
+      permission: normalizePermission(permission),
     },
     (request, context) => handler(request, context)
   );

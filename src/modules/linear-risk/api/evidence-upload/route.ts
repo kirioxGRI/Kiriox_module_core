@@ -10,7 +10,7 @@ const BASE_DIR = "C:\\_CRE\\evidencias";
 const ALLOWED_EXT = new Set(["doc", "docx", "pdf", "jpg", "jpeg", "png", "xls", "xlsx"]);
 const MAX_BYTES = 2 * 1024 * 1024;
 
-export const GET = withAccess({ module: "linear-risk", permission: "read" }, async (request) => {
+export const GET = withAccess({ module: "linear-risk", permission: "R", submoduleCode: "evidence_upload" }, async (request) => {
   const url = new URL(request.url);
   const runRaId = url.searchParams.get("runRaId") ?? "";
   const riskId = url.searchParams.get("riskId") ?? "";
@@ -35,7 +35,7 @@ export const GET = withAccess({ module: "linear-risk", permission: "read" }, asy
   return NextResponse.json({ evidences: rows });
 });
 
-export const POST = withAccess({ module: "linear-risk", permission: "write" }, async (request, _context, access) => {
+export const POST = withAccess({ module: "linear-risk", permission: "W", submoduleCode: "evidence_upload" }, async (request, _context, access) => {
   const formData = await request.formData();
   const file = formData.get("file") as File | null;
   const runRaId = String(formData.get("runRaId") ?? "").trim();

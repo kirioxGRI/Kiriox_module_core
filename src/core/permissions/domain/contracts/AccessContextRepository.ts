@@ -7,5 +7,4 @@ export interface AccessContextRepository {
     fallbackEmail?: string;
   }): Promise<AccessContext>;
   getEnabledModules(companyId: string): Promise<ModuleCode[]>;
-  getPermissions(userId: string, companyId: string): Promise<string[]>;
 }

@@ -4,14 +4,14 @@ import { PrismaLinearRiskRepository } from "../../infrastructure/repositories/Pr
 
 const repo = new PrismaLinearRiskRepository();
 
-export const POST = withAccess({ module: 'linear-risk', permission: 'write' }, async (request, context, access) => {
+export const POST = withAccess({ module: 'linear-risk', permission: 'W', submoduleCode: 'run_ra' }, async (request, context, access) => {
   const url = new URL(request.url);
   const forceNew = url.searchParams.get('forceNew') === 'true';
   const result = await repo.createEvaluation(access.company.id, forceNew);
   return ok(result);
 });
 
-export const DELETE = withAccess({ module: 'linear-risk', permission: 'write' }, async (request) => {
+export const DELETE = withAccess({ module: 'linear-risk', permission: 'W', submoduleCode: 'run_ra' }, async (request) => {
   const body = await request.json();
   const id = String(body?.id ?? '').trim();
   if (!id) return new Response('id is required', { status: 400 });
@@ -19,7 +19,7 @@ export const DELETE = withAccess({ module: 'linear-risk', permission: 'write' },
   return ok({ ok: true });
 });
 
-export const PATCH = withAccess({ module: 'linear-risk', permission: 'write' }, async (request, context, access) => {
+export const PATCH = withAccess({ module: 'linear-risk', permission: 'W', submoduleCode: 'run_ra' }, async (request, context, access) => {
   const body = await request.json();
   const runRaId = String(body?.runRaId ?? body?.id ?? '').trim();
   const { toCode, to_state, changeReason, completionReason } = body;

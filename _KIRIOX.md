@@ -16,6 +16,28 @@
 | `plugins` | Kiriox Enterprise Marketplace | Ecosistema de módulos, plantillas, corpus, plugins, modelos, apps y extensiones empresariales para ampliar Kiriox. |
 
 
+## capa de seguridad:
+public.company
+Define la empresa propietaria de usuarios, roles y módulos.
+public.security_users
+Usuarios del sistema Kiriox. Es la tabla oficial de usuarios para seguridad.
+public.security_module
+Catálogo de módulos principales disponibles por empresa.
+public.security_submodule
+Catálogo de submódulos asociados a cada módulo principal.
+public.security_roles
+Roles de seguridad pertenecientes a una empresa.
+public.security_permissions
+Catálogo maestro de permisos independientes: A, R, W, X.
+public.map_user_x_roles
+Tabla puente que asigna roles a usuarios.
+public.map_role_x_module_x_permissions
+Tabla puente que define qué permisos tiene cada rol sobre cada módulo.
+public.security_logs_access
+Bitácora de accesos a recursos, módulos, submódulos y acciones realizadas o denegadas.
+
+
+
 ## Arquitectura de desarrollo de Kiriox
 Explicación para un Experto (Orquestación, Desacoplamiento y Arquitectura Evolutiva)
 

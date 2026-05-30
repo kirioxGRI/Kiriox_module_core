@@ -4,8 +4,7 @@ import { getStructuralAnalysisResultHandler } from '@/modules/structural-risk/ap
 export const dynamic = 'force-dynamic';
 
 export const GET = nextHandler(
-  withAccess({ module: 'structural-risk', permission: 'risk.structural.read' }, async (req, _ctx, access) =>
+  withAccess({ module: 'structural-risk', permission: 'R', submoduleCode: 'analysis_structural' }, async (req, _ctx, access) =>
     getStructuralAnalysisResultHandler(req, access)
   )
 );
-

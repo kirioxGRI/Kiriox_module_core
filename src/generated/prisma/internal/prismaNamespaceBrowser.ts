@@ -97,9 +97,9 @@ export const ModelName = {
   graph_run_lifecycle_history: 'graph_run_lifecycle_history',
   graph_run_sa: 'graph_run_sa',
   incident_register: 'incident_register',
-  map_role_x_permission: 'map_role_x_permission',
+  map_role_x_module_x_permissions: 'map_role_x_module_x_permissions',
   map_run_ra_risk_controls: 'map_run_ra_risk_controls',
-  map_users_x_roles: 'map_users_x_roles',
+  map_user_x_roles: 'map_user_x_roles',
   monitoring_due_item: 'monitoring_due_item',
   monitoring_event: 'monitoring_event',
   monitoring_event_response: 'monitoring_event_response',
@@ -125,9 +125,12 @@ export const ModelName = {
   run_ra_risk_analysis: 'run_ra_risk_analysis',
   run_ra_risk_treatment: 'run_ra_risk_treatment',
   run_ra_risks: 'run_ra_risks',
+  security_logs_access: 'security_logs_access',
+  security_module: 'security_module',
+  security_permissions: 'security_permissions',
   security_roles: 'security_roles',
-  security_users: 'security_users',
-  users_permission: 'users_permission'
+  security_submodule: 'security_submodule',
+  security_users: 'security_users'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -841,16 +844,17 @@ export const Incident_registerScalarFieldEnum = {
 export type Incident_registerScalarFieldEnum = (typeof Incident_registerScalarFieldEnum)[keyof typeof Incident_registerScalarFieldEnum]
 
 
-export const Map_role_x_permissionScalarFieldEnum = {
+export const Map_role_x_module_x_permissionsScalarFieldEnum = {
   id: 'id',
   role_id: 'role_id',
-  permission_code: 'permission_code',
+  module_id: 'module_id',
+  permission_id: 'permission_id',
   is_active: 'is_active',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
 
-export type Map_role_x_permissionScalarFieldEnum = (typeof Map_role_x_permissionScalarFieldEnum)[keyof typeof Map_role_x_permissionScalarFieldEnum]
+export type Map_role_x_module_x_permissionsScalarFieldEnum = (typeof Map_role_x_module_x_permissionsScalarFieldEnum)[keyof typeof Map_role_x_module_x_permissionsScalarFieldEnum]
 
 
 export const Map_run_ra_risk_controlsScalarFieldEnum = {
@@ -870,7 +874,7 @@ export const Map_run_ra_risk_controlsScalarFieldEnum = {
 export type Map_run_ra_risk_controlsScalarFieldEnum = (typeof Map_run_ra_risk_controlsScalarFieldEnum)[keyof typeof Map_run_ra_risk_controlsScalarFieldEnum]
 
 
-export const Map_users_x_rolesScalarFieldEnum = {
+export const Map_user_x_rolesScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
   role_id: 'role_id',
@@ -879,7 +883,7 @@ export const Map_users_x_rolesScalarFieldEnum = {
   updated_at: 'updated_at'
 } as const
 
-export type Map_users_x_rolesScalarFieldEnum = (typeof Map_users_x_rolesScalarFieldEnum)[keyof typeof Map_users_x_rolesScalarFieldEnum]
+export type Map_user_x_rolesScalarFieldEnum = (typeof Map_user_x_rolesScalarFieldEnum)[keyof typeof Map_user_x_rolesScalarFieldEnum]
 
 
 export const Monitoring_due_itemScalarFieldEnum = {
@@ -1379,7 +1383,39 @@ export const Run_ra_risksScalarFieldEnum = {
 export type Run_ra_risksScalarFieldEnum = (typeof Run_ra_risksScalarFieldEnum)[keyof typeof Run_ra_risksScalarFieldEnum]
 
 
-export const Security_rolesScalarFieldEnum = {
+export const Security_logs_accessScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  module_id: 'module_id',
+  submodule_id: 'submodule_id',
+  resource_type: 'resource_type',
+  resource_id: 'resource_id',
+  action_code: 'action_code',
+  access_result: 'access_result',
+  ip_address: 'ip_address',
+  user_agent: 'user_agent',
+  metadata: 'metadata',
+  created_at: 'created_at'
+} as const
+
+export type Security_logs_accessScalarFieldEnum = (typeof Security_logs_accessScalarFieldEnum)[keyof typeof Security_logs_accessScalarFieldEnum]
+
+
+export const Security_moduleScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  company_id: 'company_id'
+} as const
+
+export type Security_moduleScalarFieldEnum = (typeof Security_moduleScalarFieldEnum)[keyof typeof Security_moduleScalarFieldEnum]
+
+
+export const Security_permissionsScalarFieldEnum = {
   id: 'id',
   code: 'code',
   name: 'name',
@@ -1389,7 +1425,35 @@ export const Security_rolesScalarFieldEnum = {
   updated_at: 'updated_at'
 } as const
 
+export type Security_permissionsScalarFieldEnum = (typeof Security_permissionsScalarFieldEnum)[keyof typeof Security_permissionsScalarFieldEnum]
+
+
+export const Security_rolesScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  company_id: 'company_id'
+} as const
+
 export type Security_rolesScalarFieldEnum = (typeof Security_rolesScalarFieldEnum)[keyof typeof Security_rolesScalarFieldEnum]
+
+
+export const Security_submoduleScalarFieldEnum = {
+  id: 'id',
+  module_id: 'module_id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Security_submoduleScalarFieldEnum = (typeof Security_submoduleScalarFieldEnum)[keyof typeof Security_submoduleScalarFieldEnum]
 
 
 export const Security_usersScalarFieldEnum = {
@@ -1412,19 +1476,6 @@ export const Security_usersScalarFieldEnum = {
 } as const
 
 export type Security_usersScalarFieldEnum = (typeof Security_usersScalarFieldEnum)[keyof typeof Security_usersScalarFieldEnum]
-
-
-export const Users_permissionScalarFieldEnum = {
-  code: 'code',
-  module_code: 'module_code',
-  name: 'name',
-  description: 'description',
-  is_active: 'is_active',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type Users_permissionScalarFieldEnum = (typeof Users_permissionScalarFieldEnum)[keyof typeof Users_permissionScalarFieldEnum]
 
 
 export const SortOrder = {

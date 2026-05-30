@@ -1,29 +1,28 @@
 export type ModuleCode =
   | 'core'
-  | 'governance'
-  | 'security'
-  | 'benchmark'
-  | 'linear-risk'
-  | 'structural-risk'
-  | 'audit'
-  | 'alerts'
-  | 'simulation'
   | 'catalog'
   | 'company'
   | 'incident'
+  | 'linear-risk'
+  | 'structural-risk'
+  | 'simulation'
   | 'monitoring'
   | 'hechos-relevantes'
   | 'reportes'
   | 'plugins';
 
+export type AccessPermissionCode = 'A' | 'R' | 'W' | 'X';
+
 export type AccessRequirement = {
   module: ModuleCode;
-  permission: string;
+  permission: AccessPermissionCode;
+  submoduleCode?: string;
+  resourceType?: string;
 };
 
 export type AccessDecisionInput = {
   userId: string;
   companyId: string;
   module: ModuleCode;
-  permission: string;
+  permission: AccessPermissionCode;
 };

@@ -1,22 +1,19 @@
 import { getAuthContext, isDevAuthBypassEnabled } from '@/core/auth/auth-server';
-import {
-  CheckCompanyMembershipUseCase,
-  CheckModuleAccessUseCase,
-  CheckPermissionUseCase,
-} from '@/core/permissions/application/use-cases';
-import { normalizePermissionCode } from '@/core/permissions/domain';
 import { PrismaAccessContextRepository } from '@/core/permissions/infrastructure/PrismaAccessContextRepository';
-import type { AccessRequirement, ModuleCode } from '@/shared/types';
+import { PrismaSecurityAccessLogger } from '@/core/permissions/infrastructure/PrismaSecurityAccessLogger';
+import { hasModulePermission } from '@/core/permissions/domain';
+import type { AccessContext, AccessRequirement, ModuleCode } from '@/shared/types';
 import { ApiError } from '@/shared/types';
 
 type RouteContext = { params?: unknown } | undefined;
 type RouteHandler = (request: Request, context?: RouteContext) => Promise<Response> | Response;
 
 export type RouteAccessContext = {
-  auth: { userId: string; tenantId: string; roleCode: string; email?: string };
-  user: { id: string; roleCode: string; email?: string };
+  auth: { userId: string; tenantId: string; email?: string; roleCode?: string };
+  user: { id: string; email?: string };
   company: { id: string };
   access: AccessRequirement;
+  accessContext?: AccessContext;
 };
 
 type AccessRouteHandler = (
@@ -26,9 +23,7 @@ type AccessRouteHandler = (
 ) => Promise<Response> | Response;
 
 const accessRepository = new PrismaAccessContextRepository();
-const checkCompanyMembership = new CheckCompanyMembershipUseCase(accessRepository);
-const checkModuleAccess = new CheckModuleAccessUseCase(accessRepository);
-const checkPermission = new CheckPermissionUseCase(accessRepository);
+const accessLogger = new PrismaSecurityAccessLogger();
 
 function resolveCompanyId(
   request: Request,
@@ -49,6 +44,48 @@ function normalizeModule(module: string): ModuleCode {
   return module as ModuleCode;
 }
 
+function getClientIp(request: Request): string | null {
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  if (forwardedFor) {
+    return forwardedFor.split(',')[0]?.trim() || null;
+  }
+
+  return request.headers.get('x-real-ip');
+}
+
+async function logAccessAttempt(
+  request: Request,
+  input: {
+    userId: string;
+    companyId: string;
+    moduleCode: ModuleCode;
+    submoduleCode?: string;
+    resourceType?: string;
+    actionCode: AccessRequirement['permission'];
+    accessResult: 'allowed' | 'denied' | 'error';
+    decisionReason: string;
+    roleIds: string[];
+    metadata?: Record<string, unknown>;
+  },
+) {
+  await accessLogger.record({
+    userId: input.userId,
+    companyId: input.companyId,
+    moduleCode: input.moduleCode,
+    submoduleCode: input.submoduleCode,
+    resourceType: input.resourceType ?? 'api',
+    actionCode: input.actionCode,
+    accessResult: input.accessResult,
+    decisionReason: input.decisionReason,
+    roleIds: input.roleIds,
+    path: new URL(request.url).pathname,
+    method: request.method,
+    ipAddress: getClientIp(request),
+    userAgent: request.headers.get('user-agent'),
+    metadata: input.metadata,
+  });
+}
+
 export function withAccess(
   requirement: AccessRequirement,
   handler: AccessRouteHandler
@@ -59,40 +96,112 @@ export function withAccess(
 
     const companyId = resolveCompanyId(request, auth);
     const moduleCode = normalizeModule(requirement.module);
-    const permissionCode = normalizePermissionCode(moduleCode, requirement.permission);
 
     const routeAccess: RouteAccessContext = {
       auth,
-      user: { id: auth.userId, roleCode: auth.roleCode, email: auth.email },
+      user: { id: auth.userId, email: auth.email },
       company: { id: companyId },
-      access: { module: moduleCode, permission: permissionCode },
+      access: { ...requirement, module: moduleCode },
     };
 
     if (isDevAuthBypassEnabled()) {
       return handler(request, context, routeAccess);
     }
 
-    const belongsToCompany = await checkCompanyMembership.execute(
+    const belongsToCompany = await accessRepository.userBelongsToCompany(
       auth.userId,
       companyId,
     );
     if (!belongsToCompany) {
+      await logAccessAttempt(request, {
+        userId: auth.userId,
+        companyId,
+        moduleCode,
+        submoduleCode: requirement.submoduleCode,
+        resourceType: requirement.resourceType,
+        actionCode: requirement.permission,
+        accessResult: 'denied',
+        decisionReason: 'user_not_in_company',
+        roleIds: [],
+      });
       throw ApiError.forbidden('User does not belong to company');
     }
 
-    const moduleEnabled = await checkModuleAccess.execute(companyId, moduleCode);
-    if (!moduleEnabled) {
+    let accessContext: AccessContext;
+    try {
+      accessContext = await accessRepository.getAccessContext({
+        userId: auth.userId,
+        companyId,
+        fallbackEmail: auth.email,
+      });
+    } catch (error) {
+      await logAccessAttempt(request, {
+        userId: auth.userId,
+        companyId,
+        moduleCode,
+        submoduleCode: requirement.submoduleCode,
+        resourceType: requirement.resourceType,
+        actionCode: requirement.permission,
+        accessResult: 'error',
+        decisionReason: 'access_context_resolution_failed',
+        roleIds: [],
+        metadata: {
+          error: error instanceof Error ? error.message : 'unknown_error',
+        },
+      });
+      throw error;
+    }
+
+    routeAccess.accessContext = accessContext;
+    const roleIds = accessContext.roles.map((role) => role.id);
+
+    if (!accessContext.companyModules.includes(moduleCode)) {
+      await logAccessAttempt(request, {
+        userId: auth.userId,
+        companyId,
+        moduleCode,
+        submoduleCode: requirement.submoduleCode,
+        resourceType: requirement.resourceType,
+        actionCode: requirement.permission,
+        accessResult: 'denied',
+        decisionReason: 'module_not_enabled',
+        roleIds,
+      });
       throw ApiError.forbidden('Module is not enabled');
     }
 
-    const allowed = await checkPermission.execute(
-      auth.userId,
-      companyId,
-      permissionCode,
+    const allowed = hasModulePermission(
+      accessContext.moduleAccess,
+      moduleCode,
+      requirement.permission,
     );
+
     if (!allowed) {
+      await logAccessAttempt(request, {
+        userId: auth.userId,
+        companyId,
+        moduleCode,
+        submoduleCode: requirement.submoduleCode,
+        resourceType: requirement.resourceType,
+        actionCode: requirement.permission,
+        accessResult: 'denied',
+        decisionReason: 'insufficient_permission',
+        roleIds,
+      });
       throw ApiError.forbidden('Insufficient permissions');
     }
+
+    await logAccessAttempt(request, {
+      userId: auth.userId,
+      companyId,
+      moduleCode,
+      submoduleCode: requirement.submoduleCode,
+      resourceType: requirement.resourceType,
+      actionCode: requirement.permission,
+      accessResult: 'allowed',
+      decisionReason: 'access_granted',
+      roleIds,
+    });
 
     return handler(request, context, routeAccess);
   };

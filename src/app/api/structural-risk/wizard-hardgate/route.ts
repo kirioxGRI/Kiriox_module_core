@@ -4,13 +4,13 @@ import { getHardgateHandler, patchHardgateHandler } from '@/modules/structural-r
 export const dynamic = 'force-dynamic';
 
 export const GET = nextHandler(
-  withAccess({ module: 'structural-risk', permission: 'risk.structural.read' }, async (req, _ctx, access) =>
+  withAccess({ module: 'structural-risk', permission: 'R', submoduleCode: 'wizard_hardgate' }, async (req, _ctx, access) =>
     getHardgateHandler(req, access)
   )
 );
 
 export const PATCH = nextHandler(
-  withAccess({ module: 'structural-risk', permission: 'risk.structural.write' }, async (req, _ctx, access) =>
+  withAccess({ module: 'structural-risk', permission: 'W', submoduleCode: 'wizard_hardgate' }, async (req, _ctx, access) =>
     patchHardgateHandler(req, access)
   )
 );

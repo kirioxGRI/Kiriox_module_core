@@ -46,7 +46,6 @@ export async function POST(request: Request) {
     const token = await signAuthToken({
       userId: user.id,
       tenantId,
-      roleCode: 'ADMIN',
       email: user.email ?? undefined,
     });
     const csrfToken = createCsrfToken();

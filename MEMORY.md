@@ -201,23 +201,22 @@ Studio               : 0.27.3
 
 **Aplicación futura:** Al modelar incidentes, hallazgos, evidencias o eventos persistentes, no acoplarlos físicamente a artefactos efímeros de una evaluación (`run_*`). Usar entidades maestras estables o referencias desacopladas para preservar trazabilidad histórica y evitar bloqueos de cascada.
 
-## 2026-05-24 � Aprendizaje
+## 2026-05-24 — Aprendizaje
 
-**Contexto:** Sincronizaci�n de Nombre Comercial con Raz�n Social (legal_name).
+**Contexto:** Sincronización de Nombre Comercial con Razón Social (`legal_name`).
 
-**Regla aprendida:** En el formulario de Empresa (CompanyEditorPage.tsx), el campo "Nombre Comercial" (
-ame) debe actualizar simult�neamente el campo legal_name al momento de enviar el payload a la API, garantizando consistencia en public.company.
+**Regla aprendida:** En el formulario de Empresa (`CompanyEditorPage.tsx`), el campo "Nombre Comercial" (`name`) debe actualizar simultáneamente el campo `legal_name` al momento de enviar el payload a la API, garantizando consistencia en `public.company`.
 
-**Aplicaci�n futura:** Para interfaces que soliciten un nombre principal pero la base de datos requiera otros campos obligatorios derivados (como legal_name), mapearlos autom�ticamente en el cliente o API usando el valor provisto, salvo que existan campos separados expl�citos.
+**Aplicación futura:** Para interfaces que soliciten un nombre principal pero la base de datos requiera otros campos obligatorios derivados, mapearlos automáticamente en el cliente o API usando el valor provisto, salvo que existan campos separados explícitos.
 
 
-## 2026-05-24 � Aprendizaje
+## 2026-05-24 — Aprendizaje
 
-**Contexto:** Error al cargar la p�gina de apetito de riesgo (/modelo/gobernanza/catalogo/apetito) con tabla catalog_appetite.
+**Contexto:** Error al cargar la página de apetito de riesgo (`/modelo/gobernanza/catalogo/apetito`) sobre `catalog_appetite`.
 
-**Regla aprendida:** El campo is_active en PostgreSQL a menudo se crea como boolean, pero en ocasiones schema.prisma puede estar desactualizado tip�ndolo como String. Esto causa errores internos de serializaci�n de Prisma al hacer findMany. Al corregir el esquema a Boolean, el repositorio de persistencia debe mapear ese Boolean al tipo string (e.g. ACTIVE / INACTIVE) que espera la capa de dominio/UI.
+**Regla aprendida:** El campo `is_active` en PostgreSQL puede existir como boolean mientras `schema.prisma` queda desactualizado tipándolo como `String`. Ese desajuste provoca errores internos de serialización de Prisma en `findMany`. Al corregir el esquema a `Boolean`, el repositorio de persistencia debe mapear ese boolean al tipo string (`ACTIVE`/`INACTIVE`) que espera la capa de dominio/UI.
 
-**Aplicaci�n futura:** Si una tabla no carga datos a pesar de existir, verificar si hay un desajuste de tipos (string vs boolean) entre la base de datos real (psql) y el schema.prisma. Tras corregirlo, siempre ejecutar npx prisma generate y adaptar el mapeo en el repository correspondiente.
+**Aplicación futura:** Si una tabla existe pero no carga datos, verificar primero desajustes de tipos entre la base real y `schema.prisma`. Tras corregirlos, ejecutar `npx prisma generate` y ajustar el mapeo del repository correspondiente.
 
 
 ## 2026-05-25 - Aprendizaje
@@ -267,3 +266,56 @@ ame) debe actualizar simult�neamente el campo legal_name al momento de enviar el
 **Regla aprendida:** En Kiriox, el catalogo canonico de roles internos ahora vive en `security_roles`. Cuando se regenera Prisma tras este cambio, deben migrarse simultaneamente el SQL crudo `public.users_roles`, los delegados `prisma.users_roles`/`tx.users_roles` y las relaciones derivadas como `map_users_x_roles.users_roles`, que pasan a `security_roles`.
 
 **Aplicacion futura:** En cambios de naming del modelo RBAC, validar siempre en conjunto usuario, rol y tablas puente para mantener consistente el eje `security_users -> map_users_x_roles -> security_roles -> map_role_x_permission`.
+
+
+## Capa de seguridad
+public.company
+Define la empresa propietaria de usuarios, roles y módulos.
+public.security_users
+Usuarios del sistema Kiriox. Es la tabla oficial de usuarios para seguridad.
+public.security_module
+Catálogo de módulos principales disponibles por empresa.
+public.security_submodule
+Catálogo de submódulos asociados a cada módulo principal.
+public.security_roles
+Roles de seguridad pertenecientes a una empresa.
+public.security_permissions
+Catálogo maestro de permisos independientes: A, R, W, X.
+public.map_user_x_roles
+Tabla puente que asigna roles a usuarios.
+public.map_role_x_module_x_permissions
+Tabla puente que define qué permisos tiene cada rol sobre cada módulo.
+public.security_logs_access
+Bitácora de accesos a recursos, módulos, submódulos y acciones realizadas o denegadas.
+
+## 2026-05-30 — Aprendizaje
+
+**Contexto:** Rediseño integral de la capa de seguridad para abandonar el RBAC legacy y operar únicamente con tablas `security_*`.
+
+**Regla aprendida:** La seguridad canónica de Kiriox se resuelve exclusivamente con `security_users -> map_user_x_roles -> security_roles -> map_role_x_module_x_permissions -> security_permissions`, usando permisos independientes `A`, `R`, `W` y `X`. Google solo autentica identidad; el correo debe existir previamente en `security_users` y el backend debe validar acceso por empresa, módulo activo y permiso exacto antes de servir datos o ejecutar acciones.
+
+**Aplicación futura:** Toda nueva ruta, página, navegación o administración de acceso debe consumir `security_module`, `security_submodule`, `security_roles`, `security_permissions` y `security_logs_access` como única fuente de verdad. No reintroducir `public.users`, `users_roles`, `users_permission`, `map_users_x_roles` ni `map_role_x_permission`.
+
+## 2026-05-30 — Aprendizaje
+
+**Contexto:** Alineación de licenciamiento y visibilidad de módulos con el runtime oficial de Kiriox.
+
+**Regla aprendida:** `security_module.code` debe coincidir exactamente con los `moduleId` oficiales del runtime (`core`, `catalog`, `company`, `incident`, `linear-risk`, `structural-risk`, `simulation`, `monitoring`, `hechos-relevantes`, `reportes`, `plugins`) sin capa de alias. El launchpad y la navegación deben reflejar la intersección entre módulos activos por empresa, módulos registrados en el registry y módulos donde el usuario tiene permiso `A`.
+
+**Aplicación futura:** Ante cualquier alta o renombre de módulo, sincronizar inmediatamente contrato de módulo, `security_module.code`, `AccessContext` y navegación. El registro `benchmark` queda retirado y no debe reutilizarse.
+
+## 2026-05-30 — Aprendizaje
+
+**Contexto:** Instrumentación de auditoría crítica de accesos del nuevo RBAC.
+
+**Regla aprendida:** El switch global del logging de accesos vive como submódulo `core/access_logs` en `security_submodule` usando `is_active`. Cuando está activo, solo se registran intentos `denied`, errores de resolución/autorización y acciones `X` permitidas en `security_logs_access`; lecturas y escrituras exitosas comunes no se registran en modo normal.
+
+**Aplicación futura:** Cualquier extensión del logging de seguridad debe respetar este switch y preservar metadatos mínimos de trazabilidad: `path`, `method`, `module_code`, `submodule_code`, `required_permission`, `decision_reason`, `company_id` y `role_ids`.
+
+## 2026-05-30 — Aprendizaje
+
+**Contexto:** Protección server-side de páginas administrativas y de catálogo bajo el nuevo RBAC de Kiriox.
+
+**Regla aprendida:** Las páginas SSR sensibles no deben depender solo de ocultar navegación ni de validaciones cliente. Deben protegerse con `requirePageAccess`, usando un guard base en el layout para el permiso mínimo compartido del módulo y endureciendo cada página de escritura o edición con permisos más altos cuando corresponda.
+
+**Aplicación futura:** Toda nueva página server-side de administración o catálogo debe validar acceso antes de renderizar. Usar el layout para la lectura común del módulo y reforzar páginas específicas con `W` o el permiso exacto requerido, manteniendo trazabilidad con `resourceType: 'page'`.
