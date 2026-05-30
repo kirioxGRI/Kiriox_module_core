@@ -39,6 +39,9 @@ export default function EnterpriseLaunchpadPage({ access, cards }: EnterpriseLau
               <a href="https://manifiestogri.siviedeif.com/" target="_blank" rel="noopener noreferrer" className={styles.link}>
                 Manifiesto
               </a>
+              <a href="https://ninja.kiriox.com/dashboard/reading" target="_blank" rel="noopener noreferrer" className={styles.link}>
+                Inglés
+              </a>
               <a href="https://www.linkedin.com/in/kiriox/" target="_blank" rel="noopener noreferrer" className={styles.link}>
                 Linkedin
               </a>
