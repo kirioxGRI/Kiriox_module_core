@@ -2,7 +2,6 @@ import type { AccessContext } from "@/shared/types";
 import type { EnterpriseLaunchpadCard } from "@/modules/core/application/builders/buildEnterpriseLaunchpadCards";
 import LaunchpadGrid from "@/modules/core/ui/components/launchpad/LaunchpadGrid";
 import LaunchpadHero from "@/modules/core/ui/components/launchpad/LaunchpadHero";
-import Link from "next/link";
 import styles from "./EnterpriseLaunchpadPage.module.css";
 
 type EnterpriseLaunchpadPageProps = {
@@ -31,16 +30,16 @@ export default function EnterpriseLaunchpadPage({ access, cards }: EnterpriseLau
               Plataforma empresarial integrada para gestionar riesgos, cumplimiento y resiliencia organizacional.
             </p>
             <div className={styles.links}>
-              <a href="https://kiriox.com" target="_blank" rel="noopener noreferrer" className={styles.link}>
+              <a href="https://kiriox.siviedeif.com/" target="_blank" rel="noopener noreferrer" className={styles.link}>
                 Kiriox
               </a>
-              <Link href="/blog" className={styles.link}>
+              <a href="https://kiriox.com/blog/blog/" target="_blank" rel="noopener noreferrer" className={styles.link}>
                 Blog
-              </Link>
-              <Link href="/manifiesto" className={styles.link}>
+              </a>
+              <a href="https://manifiestogri.siviedeif.com/" target="_blank" rel="noopener noreferrer" className={styles.link}>
                 Manifiesto
-              </Link>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className={styles.link}>
+              </a>
+              <a href="https://www.linkedin.com/in/kiriox/" target="_blank" rel="noopener noreferrer" className={styles.link}>
                 Linkedin
               </a>
             </div>
