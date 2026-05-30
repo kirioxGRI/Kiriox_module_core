@@ -21,38 +21,15 @@ export async function requirePageAccess(input: RequirePageAccessInput): Promise<
 
   const companyId = auth.tenantId;
 
-  if (isDevAuthBypassEnabled()) {
-    return accessRepository.getAccessContext({
-      userId: auth.userId,
-      companyId,
-      fallbackEmail: auth.email,
-    });
-  }
-
-  const belongsToCompany = await accessRepository.userBelongsToCompany(auth.userId, companyId);
-  if (!belongsToCompany) {
-    await accessLogger.record({
-      userId: auth.userId,
-      companyId,
-      moduleCode: input.module,
-      submoduleCode: input.submoduleCode,
-      resourceType: input.resourceType ?? 'page',
-      actionCode: input.permission,
-      accessResult: 'denied',
-      decisionReason: 'user_not_in_company',
-      roleIds: [],
-      path: input.path,
-      method: 'PAGE',
-      metadata: { source: 'server_page_guard' },
-    });
-    redirect(input.redirectTo ?? '/main_dashboard');
-  }
-
   const accessContext = await accessRepository.getAccessContext({
     userId: auth.userId,
     companyId,
     fallbackEmail: auth.email,
   });
+
+  if (isDevAuthBypassEnabled()) {
+    return accessContext;
+  }
 
   const roleIds = accessContext.roles.map((role) => role.id);
   if (!accessContext.companyModules.includes(input.module)) {

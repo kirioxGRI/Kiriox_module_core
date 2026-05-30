@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { Prisma } from "@/generated/prisma/client";
 import prisma from "./client";
 
@@ -8,7 +9,9 @@ function isConnectionError(err: unknown): boolean {
   return code === "ETIMEDOUT" || code === "ECONNREFUSED" || code === "ENOTFOUND";
 }
 
-export async function resolveEffectiveCompanyId(companyId?: string | null): Promise<string> {
+// cache() deduplicates calls with the same argument within a single RSC request render.
+// Reduces the 3+ sequential resolveEffectiveCompanyId calls per page to 1 DB query.
+export const resolveEffectiveCompanyId = cache(async (companyId?: string | null): Promise<string> => {
   const requestedId = String(companyId ?? "").trim();
 
   try {
@@ -49,4 +52,4 @@ export async function resolveEffectiveCompanyId(companyId?: string | null): Prom
   }
 
   throw new Error("No se pudo resolver la empresa efectiva del sistema.");
-}
+});
