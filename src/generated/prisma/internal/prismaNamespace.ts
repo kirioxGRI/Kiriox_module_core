@@ -432,6 +432,7 @@ export const ModelName = {
   incident_register: 'incident_register',
   map_run_ra_risk_controls: 'map_run_ra_risk_controls',
   map_users_x_roles: 'map_users_x_roles',
+  map_role_x_permission: 'map_role_x_permission',
   monitoring_due_item: 'monitoring_due_item',
   monitoring_event: 'monitoring_event',
   monitoring_event_response: 'monitoring_event_response',
@@ -475,7 +476,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "activities" | "catalog_activity_criticality_level" | "catalog_activity_frequency" | "catalog_activity_review" | "catalog_appetite" | "catalog_control_cobertura" | "catalog_control_effectiveness" | "catalog_control_effectiveness_peso" | "catalog_control_type" | "catalog_controls_category" | "catalog_controls_frequency" | "catalog_frequency" | "catalog_ra_category" | "catalog_ra_impact" | "catalog_ra_lifecycle" | "catalog_ra_lifecycle_history" | "catalog_ra_probability" | "catalog_ra_valoration" | "catalog_risk_category" | "catalog_risk_level" | "company" | "company_objective" | "company_resource_catalog" | "company_resource_category" | "element_types" | "elements" | "graph_activities_alternative_level" | "graph_activities_dependencies" | "graph_activities_dependency_resource" | "graph_activities_dependency_strength" | "graph_activities_failure_effect" | "graph_activity_catalog_criticality" | "graph_activity_catalog_impact" | "graph_activity_resource" | "graph_catalog_run_lifecycle" | "graph_catalog_run_methodology" | "graph_catalog_run_scope_type" | "graph_control_evidence" | "graph_control_hardgate" | "graph_map_activity_resource_dependency" | "graph_map_run_sa_activities" | "graph_risk_cascade" | "graph_risk_catalog_cascade" | "graph_run_lifecycle_history" | "graph_run_sa" | "incident_register" | "map_run_ra_risk_controls" | "map_users_x_roles" | "monitoring_due_item" | "monitoring_event" | "monitoring_event_response" | "monitoring_external_source" | "monitoring_internal_source" | "monitoring_rule" | "monitoring_run" | "pesos" | "run_ra" | "run_ra_analysis_sensitivity" | "run_ra_appetite_rules" | "run_ra_change_history" | "run_ra_contexto_evaluacion" | "run_ra_contexto_interno" | "run_ra_contexto_interno_externo" | "run_ra_contexto_negocio" | "run_ra_contexto_reglas" | "run_ra_control_effectiveness" | "run_ra_control_tests" | "run_ra_controls" | "run_ra_evidence" | "run_ra_monitoring" | "run_ra_risk_analysis" | "run_ra_risk_treatment" | "run_ra_risks" | "users" | "users_permission" | "users_roles"
+    modelProps: "activities" | "catalog_activity_criticality_level" | "catalog_activity_frequency" | "catalog_activity_review" | "catalog_appetite" | "catalog_control_cobertura" | "catalog_control_effectiveness" | "catalog_control_effectiveness_peso" | "catalog_control_type" | "catalog_controls_category" | "catalog_controls_frequency" | "catalog_frequency" | "catalog_ra_category" | "catalog_ra_impact" | "catalog_ra_lifecycle" | "catalog_ra_lifecycle_history" | "catalog_ra_probability" | "catalog_ra_valoration" | "catalog_risk_category" | "catalog_risk_level" | "company" | "company_objective" | "company_resource_catalog" | "company_resource_category" | "element_types" | "elements" | "graph_activities_alternative_level" | "graph_activities_dependencies" | "graph_activities_dependency_resource" | "graph_activities_dependency_strength" | "graph_activities_failure_effect" | "graph_activity_catalog_criticality" | "graph_activity_catalog_impact" | "graph_activity_resource" | "graph_catalog_run_lifecycle" | "graph_catalog_run_methodology" | "graph_catalog_run_scope_type" | "graph_control_evidence" | "graph_control_hardgate" | "graph_map_activity_resource_dependency" | "graph_map_run_sa_activities" | "graph_risk_cascade" | "graph_risk_catalog_cascade" | "graph_run_lifecycle_history" | "graph_run_sa" | "incident_register" | "map_run_ra_risk_controls" | "map_users_x_roles" | "map_role_x_permission" | "monitoring_due_item" | "monitoring_event" | "monitoring_event_response" | "monitoring_external_source" | "monitoring_internal_source" | "monitoring_rule" | "monitoring_run" | "pesos" | "run_ra" | "run_ra_analysis_sensitivity" | "run_ra_appetite_rules" | "run_ra_change_history" | "run_ra_contexto_evaluacion" | "run_ra_contexto_interno" | "run_ra_contexto_interno_externo" | "run_ra_contexto_negocio" | "run_ra_contexto_reglas" | "run_ra_control_effectiveness" | "run_ra_control_tests" | "run_ra_controls" | "run_ra_evidence" | "run_ra_monitoring" | "run_ra_risk_analysis" | "run_ra_risk_treatment" | "run_ra_risks" | "users" | "users_permission" | "users_roles"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4031,6 +4032,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    map_role_x_permission: {
+      payload: Prisma.$map_role_x_permissionPayload<ExtArgs>
+      fields: Prisma.map_role_x_permissionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.map_role_x_permissionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.map_role_x_permissionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+        }
+        findFirst: {
+          args: Prisma.map_role_x_permissionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.map_role_x_permissionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+        }
+        findMany: {
+          args: Prisma.map_role_x_permissionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>[]
+        }
+        create: {
+          args: Prisma.map_role_x_permissionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+        }
+        createMany: {
+          args: Prisma.map_role_x_permissionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.map_role_x_permissionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>[]
+        }
+        delete: {
+          args: Prisma.map_role_x_permissionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+        }
+        update: {
+          args: Prisma.map_role_x_permissionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+        }
+        deleteMany: {
+          args: Prisma.map_role_x_permissionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.map_role_x_permissionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.map_role_x_permissionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>[]
+        }
+        upsert: {
+          args: Prisma.map_role_x_permissionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$map_role_x_permissionPayload>
+        }
+        aggregate: {
+          args: Prisma.Map_role_x_permissionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMap_role_x_permission>
+        }
+        groupBy: {
+          args: Prisma.map_role_x_permissionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Map_role_x_permissionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.map_role_x_permissionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Map_role_x_permissionCountAggregateOutputType> | number
+        }
+      }
+    }
     monitoring_due_item: {
       payload: Prisma.$monitoring_due_itemPayload<ExtArgs>
       fields: Prisma.monitoring_due_itemFieldRefs
@@ -6866,6 +6941,18 @@ export const Map_users_x_rolesScalarFieldEnum = {
 export type Map_users_x_rolesScalarFieldEnum = (typeof Map_users_x_rolesScalarFieldEnum)[keyof typeof Map_users_x_rolesScalarFieldEnum]
 
 
+export const Map_role_x_permissionScalarFieldEnum = {
+  id: 'id',
+  role_id: 'role_id',
+  permission_code: 'permission_code',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Map_role_x_permissionScalarFieldEnum = (typeof Map_role_x_permissionScalarFieldEnum)[keyof typeof Map_role_x_permissionScalarFieldEnum]
+
+
 export const Monitoring_due_itemScalarFieldEnum = {
   id: 'id',
   entity_type: 'entity_type',
@@ -7727,6 +7814,7 @@ export type GlobalOmitConfig = {
   incident_register?: Prisma.incident_registerOmit
   map_run_ra_risk_controls?: Prisma.map_run_ra_risk_controlsOmit
   map_users_x_roles?: Prisma.map_users_x_rolesOmit
+  map_role_x_permission?: Prisma.map_role_x_permissionOmit
   monitoring_due_item?: Prisma.monitoring_due_itemOmit
   monitoring_event?: Prisma.monitoring_eventOmit
   monitoring_event_response?: Prisma.monitoring_event_responseOmit

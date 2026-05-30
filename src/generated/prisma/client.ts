@@ -287,6 +287,11 @@ export type map_run_ra_risk_controls = Prisma.map_run_ra_risk_controlsModel
  */
 export type map_users_x_roles = Prisma.map_users_x_rolesModel
 /**
+ * Model map_role_x_permission
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type map_role_x_permission = Prisma.map_role_x_permissionModel
+/**
  * Model monitoring_due_item
  * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

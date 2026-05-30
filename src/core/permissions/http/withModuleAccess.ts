@@ -1,4 +1,5 @@
 import { withAccess } from './withAccess';
+import { normalizePermissionCode } from '../domain';
 import type { ModuleCode } from '@/shared/types';
 
 type LegacyModuleKey = ModuleCode | 'risk';
@@ -11,8 +12,7 @@ function normalizeModule(moduleKey: LegacyModuleKey): ModuleCode {
 }
 
 function normalizePermission(moduleKey: LegacyModuleKey, permission: string): string {
-  if (permission.includes('.')) return permission;
-  return `${normalizeModule(moduleKey)}.${permission}`;
+  return normalizePermissionCode(normalizeModule(moduleKey), permission);
 }
 
 export function withModuleAccess(

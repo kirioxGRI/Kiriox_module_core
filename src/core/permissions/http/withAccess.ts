@@ -1,4 +1,11 @@
 import { getAuthContext, isDevAuthBypassEnabled } from '@/core/auth/auth-server';
+import {
+  CheckCompanyMembershipUseCase,
+  CheckModuleAccessUseCase,
+  CheckPermissionUseCase,
+} from '@/core/permissions/application/use-cases';
+import { normalizePermissionCode } from '@/core/permissions/domain';
+import { PrismaAccessContextRepository } from '@/core/permissions/infrastructure/PrismaAccessContextRepository';
 import type { AccessRequirement, ModuleCode } from '@/shared/types';
 import { ApiError } from '@/shared/types';
 
@@ -17,6 +24,11 @@ type AccessRouteHandler = (
   context: RouteContext | undefined,
   access: RouteAccessContext
 ) => Promise<Response> | Response;
+
+const accessRepository = new PrismaAccessContextRepository();
+const checkCompanyMembership = new CheckCompanyMembershipUseCase(accessRepository);
+const checkModuleAccess = new CheckModuleAccessUseCase(accessRepository);
+const checkPermission = new CheckPermissionUseCase(accessRepository);
 
 function resolveCompanyId(
   request: Request,
@@ -47,16 +59,39 @@ export function withAccess(
 
     const companyId = resolveCompanyId(request, auth);
     const moduleCode = normalizeModule(requirement.module);
+    const permissionCode = normalizePermissionCode(moduleCode, requirement.permission);
 
     const routeAccess: RouteAccessContext = {
       auth,
       user: { id: auth.userId, roleCode: auth.roleCode, email: auth.email },
       company: { id: companyId },
-      access: { module: moduleCode, permission: requirement.permission },
+      access: { module: moduleCode, permission: permissionCode },
     };
 
     if (isDevAuthBypassEnabled()) {
       return handler(request, context, routeAccess);
+    }
+
+    const belongsToCompany = await checkCompanyMembership.execute(
+      auth.userId,
+      companyId,
+    );
+    if (!belongsToCompany) {
+      throw ApiError.forbidden('User does not belong to company');
+    }
+
+    const moduleEnabled = await checkModuleAccess.execute(companyId, moduleCode);
+    if (!moduleEnabled) {
+      throw ApiError.forbidden('Module is not enabled');
+    }
+
+    const allowed = await checkPermission.execute(
+      auth.userId,
+      companyId,
+      permissionCode,
+    );
+    if (!allowed) {
+      throw ApiError.forbidden('Insufficient permissions');
     }
 
     return handler(request, context, routeAccess);

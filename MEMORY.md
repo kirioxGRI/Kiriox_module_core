@@ -235,3 +235,11 @@ ame) debe actualizar simultáneamente el campo legal_name al momento de enviar el
 **Regla aprendida:** El score de riesgo residual lineal debe ser homogeneo. La formula canonica es la aditiva (residual = max(0, inherent - totalReduction)). Las rutas de guardado (API) deben usar esta formula al persistir residual_risk_score, en lugar del producto de impactos/probabilidades redondeados. Asimismo, el heatmap del paso 4 requiere mapear explicitamente en el repositorio de valoracion los campos de posicion residual_impact_pos, residual_probability_pos e identifiers del owner desde la DB y el rationale JSON.
 
 **Aplicacion futura:** Al modificar calculos de riesgos lineales, contrastar siempre el controlador de API, la UI del paso de control/valoracion y el fallback del repositorio. Todos deben resolver de forma determinista la formula aditiva.
+
+## 2026-05-29 - Aprendizaje
+
+**Contexto:** Definicion del modelo de autorizacion para acceso a modulos por usuario en Kiriox.
+
+**Regla aprendida:** El control de permisos no debe modelarse con una tabla puente usuario-permiso. La estructura correcta es `users -> map_users_x_roles -> users_roles -> map_role_x_permission -> users_permission`. En Kiriox, los roles representan puestos internos de la empresa y los permisos se asignan al rol, no directamente al usuario.
+
+**Aplicacion futura:** Toda expansion del RBAC debe preservar el patron rol-permiso como fuente de verdad para navegacion, autorizacion backend y administracion de acceso por modulo.

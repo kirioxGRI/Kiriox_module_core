@@ -198,6 +198,7 @@ export type users_rolesWhereInput = {
   is_active?: Prisma.BoolFilter<"users_roles"> | boolean
   created_at?: Prisma.DateTimeFilter<"users_roles"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"users_roles"> | Date | string
+  map_role_x_permission?: Prisma.Map_role_x_permissionListRelationFilter
   map_users_x_roles?: Prisma.Map_users_x_rolesListRelationFilter
 }
 
@@ -209,6 +210,7 @@ export type users_rolesOrderByWithRelationInput = {
   is_active?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  map_role_x_permission?: Prisma.map_role_x_permissionOrderByRelationAggregateInput
   map_users_x_roles?: Prisma.map_users_x_rolesOrderByRelationAggregateInput
 }
 
@@ -223,6 +225,7 @@ export type users_rolesWhereUniqueInput = Prisma.AtLeast<{
   is_active?: Prisma.BoolFilter<"users_roles"> | boolean
   created_at?: Prisma.DateTimeFilter<"users_roles"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"users_roles"> | Date | string
+  map_role_x_permission?: Prisma.Map_role_x_permissionListRelationFilter
   map_users_x_roles?: Prisma.Map_users_x_rolesListRelationFilter
 }, "id" | "code">
 
@@ -260,6 +263,7 @@ export type users_rolesCreateInput = {
   is_active?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  map_role_x_permission?: Prisma.map_role_x_permissionCreateNestedManyWithoutUsers_rolesInput
   map_users_x_roles?: Prisma.map_users_x_rolesCreateNestedManyWithoutUsers_rolesInput
 }
 
@@ -271,6 +275,7 @@ export type users_rolesUncheckedCreateInput = {
   is_active?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  map_role_x_permission?: Prisma.map_role_x_permissionUncheckedCreateNestedManyWithoutUsers_rolesInput
   map_users_x_roles?: Prisma.map_users_x_rolesUncheckedCreateNestedManyWithoutUsers_rolesInput
 }
 
@@ -282,6 +287,7 @@ export type users_rolesUpdateInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  map_role_x_permission?: Prisma.map_role_x_permissionUpdateManyWithoutUsers_rolesNestedInput
   map_users_x_roles?: Prisma.map_users_x_rolesUpdateManyWithoutUsers_rolesNestedInput
 }
 
@@ -293,6 +299,7 @@ export type users_rolesUncheckedUpdateInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  map_role_x_permission?: Prisma.map_role_x_permissionUncheckedUpdateManyWithoutUsers_rolesNestedInput
   map_users_x_roles?: Prisma.map_users_x_rolesUncheckedUpdateManyWithoutUsers_rolesNestedInput
 }
 
@@ -375,6 +382,20 @@ export type users_rolesUpdateOneRequiredWithoutMap_users_x_rolesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.users_rolesUpdateToOneWithWhereWithoutMap_users_x_rolesInput, Prisma.users_rolesUpdateWithoutMap_users_x_rolesInput>, Prisma.users_rolesUncheckedUpdateWithoutMap_users_x_rolesInput>
 }
 
+export type users_rolesCreateNestedOneWithoutMap_role_x_permissionInput = {
+  create?: Prisma.XOR<Prisma.users_rolesCreateWithoutMap_role_x_permissionInput, Prisma.users_rolesUncheckedCreateWithoutMap_role_x_permissionInput>
+  connectOrCreate?: Prisma.users_rolesCreateOrConnectWithoutMap_role_x_permissionInput
+  connect?: Prisma.users_rolesWhereUniqueInput
+}
+
+export type users_rolesUpdateOneRequiredWithoutMap_role_x_permissionNestedInput = {
+  create?: Prisma.XOR<Prisma.users_rolesCreateWithoutMap_role_x_permissionInput, Prisma.users_rolesUncheckedCreateWithoutMap_role_x_permissionInput>
+  connectOrCreate?: Prisma.users_rolesCreateOrConnectWithoutMap_role_x_permissionInput
+  upsert?: Prisma.users_rolesUpsertWithoutMap_role_x_permissionInput
+  connect?: Prisma.users_rolesWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.users_rolesUpdateToOneWithWhereWithoutMap_role_x_permissionInput, Prisma.users_rolesUpdateWithoutMap_role_x_permissionInput>, Prisma.users_rolesUncheckedUpdateWithoutMap_role_x_permissionInput>
+}
+
 export type users_rolesCreateWithoutMap_users_x_rolesInput = {
   id?: string
   code: string
@@ -383,6 +404,7 @@ export type users_rolesCreateWithoutMap_users_x_rolesInput = {
   is_active?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  map_role_x_permission?: Prisma.map_role_x_permissionCreateNestedManyWithoutUsers_rolesInput
 }
 
 export type users_rolesUncheckedCreateWithoutMap_users_x_rolesInput = {
@@ -393,6 +415,7 @@ export type users_rolesUncheckedCreateWithoutMap_users_x_rolesInput = {
   is_active?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  map_role_x_permission?: Prisma.map_role_x_permissionUncheckedCreateNestedManyWithoutUsers_rolesInput
 }
 
 export type users_rolesCreateOrConnectWithoutMap_users_x_rolesInput = {
@@ -419,6 +442,7 @@ export type users_rolesUpdateWithoutMap_users_x_rolesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  map_role_x_permission?: Prisma.map_role_x_permissionUpdateManyWithoutUsers_rolesNestedInput
 }
 
 export type users_rolesUncheckedUpdateWithoutMap_users_x_rolesInput = {
@@ -429,6 +453,67 @@ export type users_rolesUncheckedUpdateWithoutMap_users_x_rolesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  map_role_x_permission?: Prisma.map_role_x_permissionUncheckedUpdateManyWithoutUsers_rolesNestedInput
+}
+
+export type users_rolesCreateWithoutMap_role_x_permissionInput = {
+  id?: string
+  code: string
+  name: string
+  description?: string | null
+  is_active?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  map_users_x_roles?: Prisma.map_users_x_rolesCreateNestedManyWithoutUsers_rolesInput
+}
+
+export type users_rolesUncheckedCreateWithoutMap_role_x_permissionInput = {
+  id?: string
+  code: string
+  name: string
+  description?: string | null
+  is_active?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  map_users_x_roles?: Prisma.map_users_x_rolesUncheckedCreateNestedManyWithoutUsers_rolesInput
+}
+
+export type users_rolesCreateOrConnectWithoutMap_role_x_permissionInput = {
+  where: Prisma.users_rolesWhereUniqueInput
+  create: Prisma.XOR<Prisma.users_rolesCreateWithoutMap_role_x_permissionInput, Prisma.users_rolesUncheckedCreateWithoutMap_role_x_permissionInput>
+}
+
+export type users_rolesUpsertWithoutMap_role_x_permissionInput = {
+  update: Prisma.XOR<Prisma.users_rolesUpdateWithoutMap_role_x_permissionInput, Prisma.users_rolesUncheckedUpdateWithoutMap_role_x_permissionInput>
+  create: Prisma.XOR<Prisma.users_rolesCreateWithoutMap_role_x_permissionInput, Prisma.users_rolesUncheckedCreateWithoutMap_role_x_permissionInput>
+  where?: Prisma.users_rolesWhereInput
+}
+
+export type users_rolesUpdateToOneWithWhereWithoutMap_role_x_permissionInput = {
+  where?: Prisma.users_rolesWhereInput
+  data: Prisma.XOR<Prisma.users_rolesUpdateWithoutMap_role_x_permissionInput, Prisma.users_rolesUncheckedUpdateWithoutMap_role_x_permissionInput>
+}
+
+export type users_rolesUpdateWithoutMap_role_x_permissionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  map_users_x_roles?: Prisma.map_users_x_rolesUpdateManyWithoutUsers_rolesNestedInput
+}
+
+export type users_rolesUncheckedUpdateWithoutMap_role_x_permissionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  map_users_x_roles?: Prisma.map_users_x_rolesUncheckedUpdateManyWithoutUsers_rolesNestedInput
 }
 
 
@@ -437,10 +522,12 @@ export type users_rolesUncheckedUpdateWithoutMap_users_x_rolesInput = {
  */
 
 export type Users_rolesCountOutputType = {
+  map_role_x_permission: number
   map_users_x_roles: number
 }
 
 export type Users_rolesCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  map_role_x_permission?: boolean | Users_rolesCountOutputTypeCountMap_role_x_permissionArgs
   map_users_x_roles?: boolean | Users_rolesCountOutputTypeCountMap_users_x_rolesArgs
 }
 
@@ -452,6 +539,13 @@ export type Users_rolesCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.
    * Select specific fields to fetch from the Users_rolesCountOutputType
    */
   select?: Prisma.Users_rolesCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * Users_rolesCountOutputType without action
+ */
+export type Users_rolesCountOutputTypeCountMap_role_x_permissionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.map_role_x_permissionWhereInput
 }
 
 /**
@@ -470,6 +564,7 @@ export type users_rolesSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   is_active?: boolean
   created_at?: boolean
   updated_at?: boolean
+  map_role_x_permission?: boolean | Prisma.users_roles$map_role_x_permissionArgs<ExtArgs>
   map_users_x_roles?: boolean | Prisma.users_roles$map_users_x_rolesArgs<ExtArgs>
   _count?: boolean | Prisma.Users_rolesCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["users_roles"]>
@@ -506,6 +601,7 @@ export type users_rolesSelectScalar = {
 
 export type users_rolesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "description" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["users_roles"]>
 export type users_rolesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  map_role_x_permission?: boolean | Prisma.users_roles$map_role_x_permissionArgs<ExtArgs>
   map_users_x_roles?: boolean | Prisma.users_roles$map_users_x_rolesArgs<ExtArgs>
   _count?: boolean | Prisma.Users_rolesCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -515,6 +611,7 @@ export type users_rolesIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type $users_rolesPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "users_roles"
   objects: {
+    map_role_x_permission: Prisma.$map_role_x_permissionPayload<ExtArgs>[]
     map_users_x_roles: Prisma.$map_users_x_rolesPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -919,6 +1016,7 @@ readonly fields: users_rolesFieldRefs;
  */
 export interface Prisma__users_rolesClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  map_role_x_permission<T extends Prisma.users_roles$map_role_x_permissionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.users_roles$map_role_x_permissionArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$map_role_x_permissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   map_users_x_roles<T extends Prisma.users_roles$map_users_x_rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.users_roles$map_users_x_rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$map_users_x_rolesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1346,6 +1444,30 @@ export type users_rolesDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many users_roles to delete.
    */
   limit?: number
+}
+
+/**
+ * users_roles.map_role_x_permission
+ */
+export type users_roles$map_role_x_permissionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the map_role_x_permission
+   */
+  select?: Prisma.map_role_x_permissionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the map_role_x_permission
+   */
+  omit?: Prisma.map_role_x_permissionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.map_role_x_permissionInclude<ExtArgs> | null
+  where?: Prisma.map_role_x_permissionWhereInput
+  orderBy?: Prisma.map_role_x_permissionOrderByWithRelationInput | Prisma.map_role_x_permissionOrderByWithRelationInput[]
+  cursor?: Prisma.map_role_x_permissionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Map_role_x_permissionScalarFieldEnum | Prisma.Map_role_x_permissionScalarFieldEnum[]
 }
 
 /**
