@@ -15,5 +15,12 @@ export async function POST() {
   response.cookies.set(getAuthCookieName(), '', expired);
   response.cookies.set(getCsrfCookieName(), '', { ...expired, httpOnly: false });
 
+  // Clean up NextAuth OAuth cookies
+  response.cookies.set('next-auth.session-token', '', expired);
+  response.cookies.set('__Secure-next-auth.session-token', '', expired);
+  response.cookies.set('next-auth.callback-url', '', { ...expired, httpOnly: false });
+  response.cookies.set('next-auth.csrf-token', '', expired);
+  response.cookies.set('__Host-next-auth.csrf-token', '', expired);
+
   return response;
 }

@@ -25,8 +25,8 @@ function getDevBypassFallback(): AuthContext {
 }
 
 function getJwtSecret(): Uint8Array {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) throw new Error('JWT_SECRET is not configured');
+  const secret = process.env.AUTH_SECRET;
+  if (!secret) throw new Error('AUTH_SECRET is not configured');
   return new TextEncoder().encode(secret);
 }
 
