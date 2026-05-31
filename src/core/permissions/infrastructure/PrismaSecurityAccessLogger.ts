@@ -1,13 +1,13 @@
 import { Prisma } from '@/generated/prisma/client';
 import prisma from '@/infrastructure/db/prisma/client';
-import type { AccessPermissionCode, ModuleCode } from '@/shared/types';
+import type { AccessPermissionCode } from '@/shared/types';
 
 type LogResult = 'allowed' | 'denied' | 'error';
 
 type SecurityAccessLogInput = {
   userId: string;
   companyId: string;
-  moduleCode: ModuleCode;
+  moduleCode: string;
   submoduleCode?: string;
   resourceType: string;
   resourceId?: string | null;
@@ -123,7 +123,7 @@ export class PrismaSecurityAccessLogger {
 
   private async resolveModuleAndSubmodule(
     companyId: string,
-    moduleCode: ModuleCode,
+    moduleCode: string,
     submoduleCode?: string,
   ): Promise<ResolvedModuleRow> {
     try {

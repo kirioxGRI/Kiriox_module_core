@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/infrastructure/db/prisma/client';
-import { hasModulePermission } from '@/core/permissions/domain';
-import { withAccess } from '@/core/permissions/http/withAccess';
+import { hasSystemPermission } from '@/core/permissions/domain';
+import { withSystemAccess } from '@/core/permissions/http';
 
 type AssignmentKey = `${string}:${string}`;
 
-export const GET = withAccess(
-  { module: 'catalog', permission: 'R', submoduleCode: 'role_module_permissions', resourceType: 'role_module_permission' },
+export const GET = withSystemAccess(
+  { system: 'security', permission: 'A', submoduleCode: 'role_system_permissions', resourceType: 'role_system_permission' },
   async (_request, _context, access) => {
     try {
       const companyId = access.company.id;
@@ -17,7 +17,7 @@ export const GET = withAccess(
           orderBy: { name: 'asc' },
           select: { id: true, code: true, name: true, description: true },
         }),
-        prisma.security_module.findMany({
+        prisma.security_system.findMany({
           where: { company_id: companyId, is_active: true },
           orderBy: [{ name: 'asc' }, { code: 'asc' }],
           select: { id: true, code: true, name: true, description: true },
@@ -27,16 +27,16 @@ export const GET = withAccess(
           orderBy: { code: 'asc' },
           select: { id: true, code: true, name: true, description: true },
         }),
-        prisma.map_role_x_module_x_permissions.findMany({
+        prisma.map_role_x_system_x_permissions.findMany({
           where: {
             is_active: true,
             security_roles: { company_id: companyId, is_active: true },
-            security_module: { company_id: companyId, is_active: true },
+            security_system: { company_id: companyId, is_active: true },
             security_permissions: { is_active: true },
           },
           select: {
             role_id: true,
-            module_id: true,
+            system_id: true,
             security_permissions: { select: { code: true } },
           },
         }),
@@ -44,14 +44,14 @@ export const GET = withAccess(
 
       const assignments: Record<AssignmentKey, string[]> = {};
       for (const row of rawAssignments) {
-        const key = `${row.role_id}:${row.module_id}` as AssignmentKey;
+        const key = `${row.role_id}:${row.system_id}` as AssignmentKey;
         const current = assignments[key] ?? [];
         current.push(row.security_permissions.code);
         assignments[key] = current.sort();
       }
 
       const canWrite = access.accessContext
-        ? hasModulePermission(access.accessContext.moduleAccess, 'catalog', 'W')
+        ? hasSystemPermission(access.accessContext.systemAccess, 'security', 'W')
         : true;
 
       return NextResponse.json({ roles, items, permissions, assignments, canWrite });
@@ -62,23 +62,23 @@ export const GET = withAccess(
   },
 );
 
-export const POST = withAccess(
-  { module: 'catalog', permission: 'W', submoduleCode: 'role_module_permissions', resourceType: 'role_module_permission' },
+export const POST = withSystemAccess(
+  { system: 'security', permission: 'W', submoduleCode: 'role_system_permissions', resourceType: 'role_system_permission' },
   async (request, _context, access) => {
     try {
       const companyId = access.company.id;
-      const { roleId, moduleId, permissionCode, enabled } = await request.json() as {
+      const { roleId, systemId, permissionCode, enabled } = await request.json() as {
         roleId?: string;
-        moduleId?: string;
+        systemId?: string;
         permissionCode?: string;
         enabled?: boolean;
       };
 
-      if (!roleId || !moduleId || !permissionCode) {
-        return NextResponse.json({ error: 'roleId, moduleId y permissionCode son obligatorios' }, { status: 400 });
+      if (!roleId || !systemId || !permissionCode) {
+        return NextResponse.json({ error: 'roleId, systemId y permissionCode son obligatorios' }, { status: 400 });
       }
 
-      const [role, permission, moduleEntry] = await Promise.all([
+      const [role, permission, system] = await Promise.all([
         prisma.security_roles.findFirst({
           where: { id: roleId, company_id: companyId, is_active: true },
           select: { id: true },
@@ -87,27 +87,27 @@ export const POST = withAccess(
           where: { code: permissionCode, is_active: true },
           select: { id: true },
         }),
-        prisma.security_module.findFirst({
-          where: { id: moduleId, company_id: companyId, is_active: true },
+        prisma.security_system.findFirst({
+          where: { id: systemId, company_id: companyId, is_active: true },
           select: { id: true },
         }),
       ]);
 
       if (!role) return NextResponse.json({ error: 'Rol no encontrado.' }, { status: 404 });
       if (!permission) return NextResponse.json({ error: 'Permiso no encontrado.' }, { status: 404 });
-      if (!moduleEntry) return NextResponse.json({ error: 'Módulo no encontrado.' }, { status: 404 });
+      if (!system) return NextResponse.json({ error: 'Sistema no encontrado.' }, { status: 404 });
 
-      await prisma.map_role_x_module_x_permissions.upsert({
+      await prisma.map_role_x_system_x_permissions.upsert({
         where: {
-          role_id_module_id_permission_id: {
+          role_id_system_id_permission_id: {
             role_id: roleId,
-            module_id: moduleId,
+            system_id: systemId,
             permission_id: permission.id,
           },
         },
         create: {
           role_id: roleId,
-          module_id: moduleId,
+          system_id: systemId,
           permission_id: permission.id,
           is_active: enabled !== false,
         },

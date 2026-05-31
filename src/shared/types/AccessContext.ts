@@ -11,6 +11,13 @@ export type ModuleAccessEntry = {
   permissions: ModuleAccessFlags;
 };
 
+export type SystemAccessEntry = {
+  systemId: string;
+  systemCode: string;
+  name: string;
+  permissions: ModuleAccessFlags;
+};
+
 export type AccessContext = {
   user: {
     id: string;
@@ -27,8 +34,16 @@ export type AccessContext = {
     code: string;
     name: string;
   }>;
+  companySystems: Array<{
+    id: string;
+    code: string;
+    name: string;
+    description: string | null;
+  }>;
   companyModules: ModuleCode[];
   moduleAccess: Partial<Record<ModuleCode, ModuleAccessEntry>>;
+  systemAccess: Partial<Record<string, SystemAccessEntry>>;
+  enabledSystems: string[];
   enabledModules: ModuleCode[];
   navigation: NavItem[];
 };

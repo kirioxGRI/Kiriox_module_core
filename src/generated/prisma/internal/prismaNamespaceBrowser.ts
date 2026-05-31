@@ -98,6 +98,7 @@ export const ModelName = {
   graph_run_sa: 'graph_run_sa',
   incident_register: 'incident_register',
   map_role_x_module_x_permissions: 'map_role_x_module_x_permissions',
+  map_role_x_system_x_permissions: 'map_role_x_system_x_permissions',
   map_run_ra_risk_controls: 'map_run_ra_risk_controls',
   map_user_x_roles: 'map_user_x_roles',
   monitoring_due_item: 'monitoring_due_item',
@@ -856,6 +857,19 @@ export const Map_role_x_module_x_permissionsScalarFieldEnum = {
 } as const
 
 export type Map_role_x_module_x_permissionsScalarFieldEnum = (typeof Map_role_x_module_x_permissionsScalarFieldEnum)[keyof typeof Map_role_x_module_x_permissionsScalarFieldEnum]
+
+
+export const Map_role_x_system_x_permissionsScalarFieldEnum = {
+  id: 'id',
+  role_id: 'role_id',
+  system_id: 'system_id',
+  permission_id: 'permission_id',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Map_role_x_system_x_permissionsScalarFieldEnum = (typeof Map_role_x_system_x_permissionsScalarFieldEnum)[keyof typeof Map_role_x_system_x_permissionsScalarFieldEnum]
 
 
 export const Map_run_ra_risk_controlsScalarFieldEnum = {

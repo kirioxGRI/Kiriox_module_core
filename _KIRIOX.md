@@ -19,6 +19,8 @@
 ## capa de seguridad:
 public.company
 Define la empresa propietaria de usuarios, roles y módulos.
+public.security_system
+Catálogo maestro de sistemas corporativos de primer nivel disponibles por empresa.
 public.security_users
 Usuarios del sistema Kiriox. Es la tabla oficial de usuarios para seguridad.
 public.security_module
@@ -31,6 +33,8 @@ public.security_permissions
 Catálogo maestro de permisos independientes: A, R, W, X.
 public.map_user_x_roles
 Tabla puente que asigna roles a usuarios.
+public.map_role_x_system_x_permissions
+Tabla puente que define qué permisos tiene cada rol sobre cada sistema corporativo.
 public.map_role_x_module_x_permissions
 Tabla puente que define qué permisos tiene cada rol sobre cada módulo.
 public.security_logs_access
@@ -311,4 +315,3 @@ Cada entrada debe agregarse al final de `MEMORY.md` con este formato:
 - Cada vez que yo te corrija, cada vez que aprendas algo nuevo vas a registrar aprendizaje en MEMORY.md
 
 - Siempre consultar MEMORY.md
-

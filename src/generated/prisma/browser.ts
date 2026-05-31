@@ -258,6 +258,11 @@ export type incident_register = Prisma.incident_registerModel
  */
 export type map_role_x_module_x_permissions = Prisma.map_role_x_module_x_permissionsModel
 /**
+ * Model map_role_x_system_x_permissions
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type map_role_x_system_x_permissions = Prisma.map_role_x_system_x_permissionsModel
+/**
  * Model map_run_ra_risk_controls
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
  */
@@ -442,5 +447,6 @@ export type security_system = Prisma.security_systemModel
 /**
  * Model security_users
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ * This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
  */
 export type security_users = Prisma.security_usersModel

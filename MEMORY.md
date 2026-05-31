@@ -347,3 +347,27 @@ Bitácora de accesos a recursos, módulos, submódulos y acciones realizadas o d
 **Regla aprendida:** El proyecto utiliza `pnpm` como gestor de paquetes de manera exclusiva. No se deben utilizar comandos de `npm` (como `npm run build` o `npm install`) para la compilación, instalación o ejecución de scripts, ya que esto altera los locks y dependencias del entorno.
 
 **Aplicación futura:** Utilizar siempre comandos basados en `pnpm` (ej. `pnpm build`, `pnpm dev`, `pnpm install`, `pnpm dlx prisma ...`) para cualquier tarea de empaquetado, dependencias o base de datos.
+
+## 2026-05-30 — Aprendizaje
+
+**Contexto:** Verificación y chequeos de código en Kiriox GRI v3.
+
+**Regla aprendida:** Para validar el tipado y corregir errores, es suficiente y preferible ejecutar el chequeo estático `npx tsc --noEmit`. No se debe ejecutar `pnpm build` ni construir la aplicación de producción durante el desarrollo interactivo a menos que se solicite de forma explícita, para evitar esperas y consumo innecesario de recursos.
+
+**Aplicación futura:** Limitarse a usar `npx tsc --noEmit` para verificar la corrección del código y omitir compilaciones completas (`pnpm build`) de forma regular.
+
+## 2026-05-30 — Aprendizaje
+
+**Contexto:** Despliegue incompleto de sistemas en la matriz de roles y permisos debido a relaciones restrictivas en el endpoint de la API.
+
+**Regla aprendida:** En Kiriox, las dimensiones de nivel superior como los sistemas en `public.security_system` deben consultarse directamente sin requerir un join con `security_module` si deseamos mostrarlos en su totalidad. Para que la asignación/desasignación de permisos en la matriz de seguridad funcione, cada sistema debe tener al menos un módulo correspondiente en `security_module` mapeado a nivel de aplicación en `securityModuleMap.ts`.
+
+**Aplicación futura:** Al agregar nuevos sistemas corporativos a `security_system`, asegurar que se cree al menos un módulo asociado en `security_module` y se registre su mapeo en `securityModuleMap.ts`. En la API de permisos, usar consultas abiertas a la tabla de sistemas para evitar filtrados implícitos indeseados.
+
+## 2026-05-30 — Aprendizaje
+
+**Contexto:** Separación definitiva entre la administración de permisos por módulo y por sistema en Kiriox.
+
+**Regla aprendida:** `/modelo/gobernanza/catalogo/roles-permisos` pertenece al nivel `security_module` y debe persistir exclusivamente en `map_role_x_module_x_permissions`. En cambio, `/main_dashboard` y `/gestion/dashboard_security` pertenecen al nivel `security_system` y deben usar `security_system`, `security_roles` y `map_role_x_system_x_permissions` como fuente de verdad. No se debe simular acceso por sistema agregando permisos de módulos.
+
+**Aplicación futura:** Al modificar launchpad, paneles de seguridad o matrices RBAC, tratar sistema y módulo como capas distintas: sistema para visibilidad/acceso macro del producto, módulo para permisos operativos internos y exposición fina de funcionalidades.

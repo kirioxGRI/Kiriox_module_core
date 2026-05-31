@@ -7,6 +7,7 @@ import {
   createEmptyModuleAccessFlags,
   hasModulePermission,
   resolveEnabledModulesFromAccess,
+  resolveEnabledSystemsFromAccess,
 } from '../domain';
 import type { AccessControlRepository } from '../domain/contracts/AccessControlRepository';
 import type { AccessContextRepository } from '../domain/contracts/AccessContextRepository';
@@ -15,15 +16,17 @@ import type {
   AccessPermissionCode,
   ModuleAccessEntry,
   ModuleCode,
+  SystemAccessEntry,
 } from '@/shared/types';
 
 export class PrismaAccessContextRepository implements AccessContextRepository, AccessControlRepository {
   async getAccessContext(input: { userId: string; companyId: string; fallbackEmail?: string }): Promise<AccessContext> {
     const companyId = await resolveEffectiveCompanyId(input.companyId);
 
-    const [user, company, companyModules, roles] = await Promise.all([
+    const [user, company, companySystems, companyModules, roles] = await Promise.all([
       this.loadUser(input.userId, input.fallbackEmail),
       this.loadCompany(companyId),
+      this.loadCompanySystems(companyId),
       this.getEnabledModules(companyId),
       this.loadActiveRoles(input.userId, companyId),
     ]);
@@ -31,12 +34,28 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
     const moduleAccess = isDevAuthBypassEnabled()
       ? this.buildFullAccess(companyModules)
       : await this.loadModuleAccess(input.userId, companyId);
+    const systemAccess = isDevAuthBypassEnabled()
+      ? this.buildFullSystemAccess(companySystems)
+      : await this.loadSystemAccess(input.userId, companyId);
 
     const enabledModules = resolveEnabledModulesFromAccess(moduleAccess)
       .filter((code) => companyModules.includes(code));
+    const enabledSystems = resolveEnabledSystemsFromAccess(systemAccess)
+      .filter((code) => companySystems.some((system) => system.code === code));
     const navigation = buildNavigation({ enabledModules });
 
-    return { user, company, roles, companyModules, moduleAccess, enabledModules, navigation };
+    return {
+      user,
+      company,
+      roles,
+      companySystems,
+      companyModules,
+      moduleAccess,
+      systemAccess,
+      enabledSystems,
+      enabledModules,
+      navigation,
+    };
   }
 
   async getEnabledModules(companyId: string): Promise<ModuleCode[]> {
@@ -108,6 +127,14 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
       select: { id: true, code: true, name: true },
     });
     return { id: companyId, code: company?.code ?? '', name: company?.name ?? 'Empresa' };
+  }
+
+  private async loadCompanySystems(companyId: string) {
+    return prisma.security_system.findMany({
+      where: { company_id: companyId, is_active: true },
+      select: { id: true, code: true, name: true, description: true },
+      orderBy: [{ name: 'asc' }, { code: 'asc' }],
+    });
   }
 
   private async loadActiveRoles(userId: string, companyId: string) {
@@ -193,6 +220,62 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
     return moduleAccess;
   }
 
+  private async loadSystemAccess(
+    userId: string,
+    companyId: string,
+  ): Promise<Partial<Record<string, SystemAccessEntry>>> {
+    const user = await prisma.security_users.findFirst({
+      where: { id: userId, company_id: companyId, is_active: { not: false } },
+      select: {
+        map_user_x_roles: {
+          where: {
+            is_active: true,
+            security_roles: { is_active: true },
+          },
+          select: {
+            security_roles: {
+              select: {
+                map_role_x_system_x_permissions: {
+                  where: {
+                    is_active: true,
+                    security_system: { company_id: companyId, is_active: true },
+                  },
+                  select: {
+                    security_system: { select: { id: true, code: true, name: true } },
+                    security_permissions: { select: { code: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const systemAccess: Partial<Record<string, SystemAccessEntry>> = {};
+
+    for (const mur of user?.map_user_x_roles ?? []) {
+      for (const mrsp of mur.security_roles.map_role_x_system_x_permissions) {
+        const system = mrsp.security_system;
+        const permCode = mrsp.security_permissions.code as AccessPermissionCode;
+        const systemCode = system.code.trim();
+
+        if (!systemAccess[systemCode]) {
+          systemAccess[systemCode] = {
+            systemId: system.id,
+            systemCode,
+            name: system.name,
+            permissions: createEmptyModuleAccessFlags(),
+          };
+        }
+
+        systemAccess[systemCode]!.permissions[permCode] = true;
+      }
+    }
+
+    return systemAccess;
+  }
+
   private buildFullAccess(moduleCodes: ModuleCode[]): Partial<Record<ModuleCode, ModuleAccessEntry>> {
     const moduleAccess: Partial<Record<ModuleCode, ModuleAccessEntry>> = {};
     for (const moduleCode of moduleCodes) {
@@ -205,5 +288,20 @@ export class PrismaAccessContextRepository implements AccessContextRepository, A
       };
     }
     return moduleAccess;
+  }
+
+  private buildFullSystemAccess(
+    systems: Array<{ id: string; code: string; name: string }>,
+  ): Partial<Record<string, SystemAccessEntry>> {
+    const systemAccess: Partial<Record<string, SystemAccessEntry>> = {};
+    for (const system of systems) {
+      systemAccess[system.code] = {
+        systemId: system.id,
+        systemCode: system.code,
+        name: system.name,
+        permissions: { A: true, R: true, W: true, X: true },
+      };
+    }
+    return systemAccess;
   }
 }

@@ -1,4 +1,4 @@
-import type { AccessPermissionCode, ModuleAccessEntry, ModuleCode } from "@/shared/types";
+import type { AccessPermissionCode, ModuleAccessEntry, ModuleCode, SystemAccessEntry } from "@/shared/types";
 
 const OFFICIAL_MODULE_CODES: ModuleCode[] = [
   "core",
@@ -65,10 +65,27 @@ export function hasModulePermission(
   return Boolean(moduleAccess[moduleCode]?.permissions[permission]);
 }
 
+export function hasSystemPermission(
+  systemAccess: Partial<Record<string, SystemAccessEntry>>,
+  systemCode: string,
+  permission: AccessPermissionCode,
+): boolean {
+  return Boolean(systemAccess[systemCode]?.permissions[permission]);
+}
+
 export function resolveEnabledModulesFromAccess(
   moduleAccess: Partial<Record<ModuleCode, ModuleAccessEntry>>,
 ): ModuleCode[] {
   return OFFICIAL_MODULE_CODES.filter((moduleCode) =>
     Boolean(moduleAccess[moduleCode]?.permissions.A),
   );
+}
+
+export function resolveEnabledSystemsFromAccess(
+  systemAccess: Partial<Record<string, SystemAccessEntry>>,
+): string[] {
+  return Object.entries(systemAccess)
+    .filter(([, entry]) => Boolean(entry?.permissions.A))
+    .map(([systemCode]) => systemCode)
+    .sort((left, right) => left.localeCompare(right));
 }

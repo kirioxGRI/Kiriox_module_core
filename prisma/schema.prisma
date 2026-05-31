@@ -448,9 +448,9 @@ model graph_activities_dependencies {
   @@index([activity_id], map: "idx_graph_activities_dependencies_activity_id")
   @@index([company_id], map: "idx_graph_activities_dependencies_company_id")
   @@index([control_id], map: "idx_graph_activities_dependencies_control_id")
-  @@index([dependency_resource_id], map: "idx_graph_activities_dependencies_dependency_resource_id")
   @@index([dependency_activity_id], map: "idx_graph_activities_dependencies_dep_activity_id")
   @@index([dependency_person_id], map: "idx_graph_activities_dependencies_dep_person_id")
+  @@index([dependency_resource_id], map: "idx_graph_activities_dependencies_dependency_resource_id")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -778,6 +778,26 @@ model map_role_x_module_x_permissions {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model map_role_x_system_x_permissions {
+  id                   String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role_id              String               @db.Uuid
+  system_id            String               @db.Uuid
+  permission_id        String               @db.Uuid
+  is_active            Boolean              @default(true)
+  created_at           DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime             @default(now()) @db.Timestamptz(6)
+  security_permissions security_permissions @relation(fields: [permission_id], references: [id], map: "fk_map_role_x_system_x_permissions_permission")
+  security_roles       security_roles       @relation(fields: [role_id], references: [id], onDelete: Cascade, map: "fk_map_role_x_system_x_permissions_role")
+  security_system      security_system      @relation(fields: [system_id], references: [id], onDelete: Cascade, map: "fk_map_role_x_system_x_permissions_system")
+
+  @@unique([role_id, system_id, permission_id], map: "uq_map_role_x_system_x_permissions")
+  @@index([is_active], map: "ix_map_role_x_system_x_permissions_is_active")
+  @@index([permission_id], map: "ix_map_role_x_system_x_permissions_permission_id")
+  @@index([role_id], map: "ix_map_role_x_system_x_permissions_role_id")
+  @@index([system_id], map: "ix_map_role_x_system_x_permissions_system_id")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model map_run_ra_risk_controls {
   id                           String                         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   run_ra_risk_id               String                         @db.Uuid
@@ -1032,7 +1052,6 @@ model run_ra {
   @@index([company_id], map: "idx_run_ra_company_id")
 }
 
-
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model run_ra_analysis_sensitivity {
   id                      String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -1257,8 +1276,8 @@ model run_ra_controls {
   run_ra_evidence               run_ra_evidence[]
   run_ra_monitoring             run_ra_monitoring[]
 
-  @@index([run_ra_id], map: "idx_run_ra_controls_run_ra_id")
   @@index([id_risk], map: "idx_run_ra_controls_id_risk")
+  @@index([run_ra_id], map: "idx_run_ra_controls_run_ra_id")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -1464,6 +1483,7 @@ model security_permissions {
   created_at                      DateTime                          @default(now()) @db.Timestamptz(6)
   updated_at                      DateTime                          @default(now()) @db.Timestamptz(6)
   map_role_x_module_x_permissions map_role_x_module_x_permissions[]
+  map_role_x_system_x_permissions map_role_x_system_x_permissions[]
 
   @@index([is_active], map: "ix_security_permissions_is_active")
 }
@@ -1480,6 +1500,7 @@ model security_roles {
   updated_at                      DateTime                          @default(now()) @db.Timestamptz(6)
   company_id                      String                            @db.Uuid
   map_role_x_module_x_permissions map_role_x_module_x_permissions[]
+  map_role_x_system_x_permissions map_role_x_system_x_permissions[]
   map_user_x_roles                map_user_x_roles[]
   company                         company                           @relation(fields: [company_id], references: [id], map: "fk_security_roles_company")
 
@@ -1510,16 +1531,17 @@ model security_submodule {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model security_system {
-  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  company_id      String            @db.Uuid
-  code            String            @db.VarChar(100)
-  name            String            @db.VarChar(150)
-  description     String?
-  is_active       Boolean           @default(true)
-  created_at      DateTime          @default(now()) @db.Timestamptz(6)
-  updated_at      DateTime          @default(now()) @db.Timestamptz(6)
-  security_module security_module[]
-  company         company           @relation(fields: [company_id], references: [id], map: "fk_security_system_company")
+  id                              String                            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id                      String                            @db.Uuid
+  code                            String                            @db.VarChar(100)
+  name                            String                            @db.VarChar(150)
+  description                     String?
+  is_active                       Boolean                           @default(true)
+  created_at                      DateTime                          @default(now()) @db.Timestamptz(6)
+  updated_at                      DateTime                          @default(now()) @db.Timestamptz(6)
+  map_role_x_system_x_permissions map_role_x_system_x_permissions[]
+  security_module                 security_module[]
+  company                         company                           @relation(fields: [company_id], references: [id], map: "fk_security_system_company")
 
   @@unique([company_id, code], map: "uq_security_system_company_code")
   @@index([company_id], map: "ix_security_system_company_id")
@@ -1527,6 +1549,7 @@ model security_system {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model security_users {
   id                          String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email                       String                        @unique @db.VarChar(255)
