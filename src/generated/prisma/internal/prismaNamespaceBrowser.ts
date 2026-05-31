@@ -1502,7 +1502,8 @@ export const Security_usersScalarFieldEnum = {
   last_login_at: 'last_login_at',
   password_updated_at: 'password_updated_at',
   company_id: 'company_id',
-  username: 'username'
+  username: 'username',
+  expire_at: 'expire_at'
 } as const
 
 export type Security_usersScalarFieldEnum = (typeof Security_usersScalarFieldEnum)[keyof typeof Security_usersScalarFieldEnum]

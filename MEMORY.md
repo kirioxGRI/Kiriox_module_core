@@ -371,3 +371,7 @@ Bitácora de accesos a recursos, módulos, submódulos y acciones realizadas o d
 **Regla aprendida:** `/modelo/gobernanza/catalogo/roles-permisos` pertenece al nivel `security_module` y debe persistir exclusivamente en `map_role_x_module_x_permissions`. En cambio, `/main_dashboard` y `/gestion/dashboard_security` pertenecen al nivel `security_system` y deben usar `security_system`, `security_roles` y `map_role_x_system_x_permissions` como fuente de verdad. No se debe simular acceso por sistema agregando permisos de módulos.
 
 **Aplicación futura:** Al modificar launchpad, paneles de seguridad o matrices RBAC, tratar sistema y módulo como capas distintas: sistema para visibilidad/acceso macro del producto, módulo para permisos operativos internos y exposición fina de funcionalidades.
+
+
+# Para administrar
+/admin

@@ -42,6 +42,7 @@ export type Security_usersMinAggregateOutputType = {
   password_updated_at: Date | null
   company_id: string | null
   username: string | null
+  expire_at: Date | null
 }
 
 export type Security_usersMaxAggregateOutputType = {
@@ -61,6 +62,7 @@ export type Security_usersMaxAggregateOutputType = {
   password_updated_at: Date | null
   company_id: string | null
   username: string | null
+  expire_at: Date | null
 }
 
 export type Security_usersCountAggregateOutputType = {
@@ -80,6 +82,7 @@ export type Security_usersCountAggregateOutputType = {
   password_updated_at: number
   company_id: number
   username: number
+  expire_at: number
   _all: number
 }
 
@@ -101,6 +104,7 @@ export type Security_usersMinAggregateInputType = {
   password_updated_at?: true
   company_id?: true
   username?: true
+  expire_at?: true
 }
 
 export type Security_usersMaxAggregateInputType = {
@@ -120,6 +124,7 @@ export type Security_usersMaxAggregateInputType = {
   password_updated_at?: true
   company_id?: true
   username?: true
+  expire_at?: true
 }
 
 export type Security_usersCountAggregateInputType = {
@@ -139,6 +144,7 @@ export type Security_usersCountAggregateInputType = {
   password_updated_at?: true
   company_id?: true
   username?: true
+  expire_at?: true
   _all?: true
 }
 
@@ -231,6 +237,7 @@ export type Security_usersGroupByOutputType = {
   password_updated_at: Date | null
   company_id: string | null
   username: string | null
+  expire_at: Date | null
   _count: Security_usersCountAggregateOutputType | null
   _min: Security_usersMinAggregateOutputType | null
   _max: Security_usersMaxAggregateOutputType | null
@@ -271,6 +278,7 @@ export type security_usersWhereInput = {
   password_updated_at?: Prisma.DateTimeNullableFilter<"security_users"> | Date | string | null
   company_id?: Prisma.UuidNullableFilter<"security_users"> | string | null
   username?: Prisma.StringNullableFilter<"security_users"> | string | null
+  expire_at?: Prisma.DateTimeNullableFilter<"security_users"> | Date | string | null
   graph_map_run_sa_activities?: Prisma.Graph_map_run_sa_activitiesListRelationFilter
   graph_run_lifecycle_history?: Prisma.Graph_run_lifecycle_historyListRelationFilter
   graph_run_sa?: Prisma.Graph_run_saListRelationFilter
@@ -297,6 +305,7 @@ export type security_usersOrderByWithRelationInput = {
   password_updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   company_id?: Prisma.SortOrderInput | Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
+  expire_at?: Prisma.SortOrderInput | Prisma.SortOrder
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesOrderByRelationAggregateInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyOrderByRelationAggregateInput
   graph_run_sa?: Prisma.graph_run_saOrderByRelationAggregateInput
@@ -326,6 +335,7 @@ export type security_usersWhereUniqueInput = Prisma.AtLeast<{
   password_updated_at?: Prisma.DateTimeNullableFilter<"security_users"> | Date | string | null
   company_id?: Prisma.UuidNullableFilter<"security_users"> | string | null
   username?: Prisma.StringNullableFilter<"security_users"> | string | null
+  expire_at?: Prisma.DateTimeNullableFilter<"security_users"> | Date | string | null
   graph_map_run_sa_activities?: Prisma.Graph_map_run_sa_activitiesListRelationFilter
   graph_run_lifecycle_history?: Prisma.Graph_run_lifecycle_historyListRelationFilter
   graph_run_sa?: Prisma.Graph_run_saListRelationFilter
@@ -352,6 +362,7 @@ export type security_usersOrderByWithAggregationInput = {
   password_updated_at?: Prisma.SortOrderInput | Prisma.SortOrder
   company_id?: Prisma.SortOrderInput | Prisma.SortOrder
   username?: Prisma.SortOrderInput | Prisma.SortOrder
+  expire_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.security_usersCountOrderByAggregateInput
   _max?: Prisma.security_usersMaxOrderByAggregateInput
   _min?: Prisma.security_usersMinOrderByAggregateInput
@@ -377,6 +388,7 @@ export type security_usersScalarWhereWithAggregatesInput = {
   password_updated_at?: Prisma.DateTimeNullableWithAggregatesFilter<"security_users"> | Date | string | null
   company_id?: Prisma.UuidNullableWithAggregatesFilter<"security_users"> | string | null
   username?: Prisma.StringNullableWithAggregatesFilter<"security_users"> | string | null
+  expire_at?: Prisma.DateTimeNullableWithAggregatesFilter<"security_users"> | Date | string | null
 }
 
 export type security_usersCreateInput = {
@@ -395,6 +407,7 @@ export type security_usersCreateInput = {
   last_login_at?: Date | string | null
   password_updated_at?: Date | string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutSecurity_usersInput
@@ -421,6 +434,7 @@ export type security_usersUncheckedCreateInput = {
   password_updated_at?: Date | string | null
   company_id?: string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
@@ -445,6 +459,7 @@ export type security_usersUpdateInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutSecurity_usersNestedInput
@@ -471,6 +486,7 @@ export type security_usersUncheckedUpdateInput = {
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
@@ -496,6 +512,7 @@ export type security_usersCreateManyInput = {
   password_updated_at?: Date | string | null
   company_id?: string | null
   username?: string | null
+  expire_at?: Date | string | null
 }
 
 export type security_usersUpdateManyMutationInput = {
@@ -514,6 +531,7 @@ export type security_usersUpdateManyMutationInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type security_usersUncheckedUpdateManyInput = {
@@ -533,6 +551,7 @@ export type security_usersUncheckedUpdateManyInput = {
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type Security_usersListRelationFilter = {
@@ -572,6 +591,7 @@ export type security_usersCountOrderByAggregateInput = {
   password_updated_at?: Prisma.SortOrder
   company_id?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  expire_at?: Prisma.SortOrder
 }
 
 export type security_usersMaxOrderByAggregateInput = {
@@ -591,6 +611,7 @@ export type security_usersMaxOrderByAggregateInput = {
   password_updated_at?: Prisma.SortOrder
   company_id?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  expire_at?: Prisma.SortOrder
 }
 
 export type security_usersMinOrderByAggregateInput = {
@@ -610,6 +631,7 @@ export type security_usersMinOrderByAggregateInput = {
   password_updated_at?: Prisma.SortOrder
   company_id?: Prisma.SortOrder
   username?: Prisma.SortOrder
+  expire_at?: Prisma.SortOrder
 }
 
 export type security_usersCreateNestedManyWithoutCompanyInput = {
@@ -756,6 +778,7 @@ export type security_usersCreateWithoutCompanyInput = {
   last_login_at?: Date | string | null
   password_updated_at?: Date | string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutSecurity_usersInput
@@ -780,6 +803,7 @@ export type security_usersUncheckedCreateWithoutCompanyInput = {
   last_login_at?: Date | string | null
   password_updated_at?: Date | string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
@@ -834,6 +858,7 @@ export type security_usersScalarWhereInput = {
   password_updated_at?: Prisma.DateTimeNullableFilter<"security_users"> | Date | string | null
   company_id?: Prisma.UuidNullableFilter<"security_users"> | string | null
   username?: Prisma.StringNullableFilter<"security_users"> | string | null
+  expire_at?: Prisma.DateTimeNullableFilter<"security_users"> | Date | string | null
 }
 
 export type security_usersCreateWithoutGraph_map_run_sa_activitiesInput = {
@@ -852,6 +877,7 @@ export type security_usersCreateWithoutGraph_map_run_sa_activitiesInput = {
   last_login_at?: Date | string | null
   password_updated_at?: Date | string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutSecurity_usersInput
   map_user_x_roles?: Prisma.map_user_x_rolesCreateNestedManyWithoutSecurity_usersInput
@@ -877,6 +903,7 @@ export type security_usersUncheckedCreateWithoutGraph_map_run_sa_activitiesInput
   password_updated_at?: Date | string | null
   company_id?: string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
@@ -916,6 +943,7 @@ export type security_usersUpdateWithoutGraph_map_run_sa_activitiesInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutSecurity_usersNestedInput
   map_user_x_roles?: Prisma.map_user_x_rolesUpdateManyWithoutSecurity_usersNestedInput
@@ -941,6 +969,7 @@ export type security_usersUncheckedUpdateWithoutGraph_map_run_sa_activitiesInput
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
@@ -964,6 +993,7 @@ export type security_usersCreateWithoutGraph_run_lifecycle_historyInput = {
   last_login_at?: Date | string | null
   password_updated_at?: Date | string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutSecurity_usersInput
   map_user_x_roles?: Prisma.map_user_x_rolesCreateNestedManyWithoutSecurity_usersInput
@@ -989,6 +1019,7 @@ export type security_usersUncheckedCreateWithoutGraph_run_lifecycle_historyInput
   password_updated_at?: Date | string | null
   company_id?: string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
@@ -1028,6 +1059,7 @@ export type security_usersUpdateWithoutGraph_run_lifecycle_historyInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutSecurity_usersNestedInput
   map_user_x_roles?: Prisma.map_user_x_rolesUpdateManyWithoutSecurity_usersNestedInput
@@ -1053,6 +1085,7 @@ export type security_usersUncheckedUpdateWithoutGraph_run_lifecycle_historyInput
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
@@ -1076,6 +1109,7 @@ export type security_usersCreateWithoutGraph_run_saInput = {
   last_login_at?: Date | string | null
   password_updated_at?: Date | string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput
   map_user_x_roles?: Prisma.map_user_x_rolesCreateNestedManyWithoutSecurity_usersInput
@@ -1101,6 +1135,7 @@ export type security_usersUncheckedCreateWithoutGraph_run_saInput = {
   password_updated_at?: Date | string | null
   company_id?: string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
@@ -1140,6 +1175,7 @@ export type security_usersUpdateWithoutGraph_run_saInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput
   map_user_x_roles?: Prisma.map_user_x_rolesUpdateManyWithoutSecurity_usersNestedInput
@@ -1165,6 +1201,7 @@ export type security_usersUncheckedUpdateWithoutGraph_run_saInput = {
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
@@ -1188,6 +1225,7 @@ export type security_usersCreateWithoutMap_user_x_rolesInput = {
   last_login_at?: Date | string | null
   password_updated_at?: Date | string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutSecurity_usersInput
@@ -1213,6 +1251,7 @@ export type security_usersUncheckedCreateWithoutMap_user_x_rolesInput = {
   password_updated_at?: Date | string | null
   company_id?: string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
@@ -1252,6 +1291,7 @@ export type security_usersUpdateWithoutMap_user_x_rolesInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutSecurity_usersNestedInput
@@ -1277,6 +1317,7 @@ export type security_usersUncheckedUpdateWithoutMap_user_x_rolesInput = {
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
@@ -1300,6 +1341,7 @@ export type security_usersCreateWithoutRun_ra_controlsInput = {
   last_login_at?: Date | string | null
   password_updated_at?: Date | string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutSecurity_usersInput
@@ -1325,6 +1367,7 @@ export type security_usersUncheckedCreateWithoutRun_ra_controlsInput = {
   password_updated_at?: Date | string | null
   company_id?: string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
@@ -1364,6 +1407,7 @@ export type security_usersUpdateWithoutRun_ra_controlsInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutSecurity_usersNestedInput
@@ -1389,6 +1433,7 @@ export type security_usersUncheckedUpdateWithoutRun_ra_controlsInput = {
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
@@ -1412,6 +1457,7 @@ export type security_usersCreateWithoutSecurity_logs_accessInput = {
   last_login_at?: Date | string | null
   password_updated_at?: Date | string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutSecurity_usersInput
@@ -1437,6 +1483,7 @@ export type security_usersUncheckedCreateWithoutSecurity_logs_accessInput = {
   password_updated_at?: Date | string | null
   company_id?: string | null
   username?: string | null
+  expire_at?: Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
@@ -1476,6 +1523,7 @@ export type security_usersUpdateWithoutSecurity_logs_accessInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutSecurity_usersNestedInput
@@ -1501,6 +1549,7 @@ export type security_usersUncheckedUpdateWithoutSecurity_logs_accessInput = {
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
@@ -1524,6 +1573,7 @@ export type security_usersCreateManyCompanyInput = {
   last_login_at?: Date | string | null
   password_updated_at?: Date | string | null
   username?: string | null
+  expire_at?: Date | string | null
 }
 
 export type security_usersUpdateWithoutCompanyInput = {
@@ -1542,6 +1592,7 @@ export type security_usersUpdateWithoutCompanyInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutSecurity_usersNestedInput
@@ -1566,6 +1617,7 @@ export type security_usersUncheckedUpdateWithoutCompanyInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
@@ -1590,6 +1642,7 @@ export type security_usersUncheckedUpdateManyWithoutCompanyInput = {
   last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -1685,6 +1738,7 @@ export type security_usersSelect<ExtArgs extends runtime.Types.Extensions.Intern
   password_updated_at?: boolean
   company_id?: boolean
   username?: boolean
+  expire_at?: boolean
   graph_map_run_sa_activities?: boolean | Prisma.security_users$graph_map_run_sa_activitiesArgs<ExtArgs>
   graph_run_lifecycle_history?: boolean | Prisma.security_users$graph_run_lifecycle_historyArgs<ExtArgs>
   graph_run_sa?: boolean | Prisma.security_users$graph_run_saArgs<ExtArgs>
@@ -1712,6 +1766,7 @@ export type security_usersSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   password_updated_at?: boolean
   company_id?: boolean
   username?: boolean
+  expire_at?: boolean
   company?: boolean | Prisma.security_users$companyArgs<ExtArgs>
 }, ExtArgs["result"]["security_users"]>
 
@@ -1732,6 +1787,7 @@ export type security_usersSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   password_updated_at?: boolean
   company_id?: boolean
   username?: boolean
+  expire_at?: boolean
   company?: boolean | Prisma.security_users$companyArgs<ExtArgs>
 }, ExtArgs["result"]["security_users"]>
 
@@ -1752,9 +1808,10 @@ export type security_usersSelectScalar = {
   password_updated_at?: boolean
   company_id?: boolean
   username?: boolean
+  expire_at?: boolean
 }
 
-export type security_usersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password_hash" | "name" | "last_name" | "whatsapp" | "is_active" | "must_change_password" | "activation_status" | "role_id" | "created_at" | "updated_at" | "last_login_at" | "password_updated_at" | "company_id" | "username", ExtArgs["result"]["security_users"]>
+export type security_usersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password_hash" | "name" | "last_name" | "whatsapp" | "is_active" | "must_change_password" | "activation_status" | "role_id" | "created_at" | "updated_at" | "last_login_at" | "password_updated_at" | "company_id" | "username" | "expire_at", ExtArgs["result"]["security_users"]>
 export type security_usersInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   graph_map_run_sa_activities?: boolean | Prisma.security_users$graph_map_run_sa_activitiesArgs<ExtArgs>
   graph_run_lifecycle_history?: boolean | Prisma.security_users$graph_run_lifecycle_historyArgs<ExtArgs>
@@ -1800,6 +1857,7 @@ export type $security_usersPayload<ExtArgs extends runtime.Types.Extensions.Inte
     password_updated_at: Date | null
     company_id: string | null
     username: string | null
+    expire_at: Date | null
   }, ExtArgs["result"]["security_users"]>
   composites: {}
 }
@@ -2246,6 +2304,7 @@ export interface security_usersFieldRefs {
   readonly password_updated_at: Prisma.FieldRef<"security_users", 'DateTime'>
   readonly company_id: Prisma.FieldRef<"security_users", 'String'>
   readonly username: Prisma.FieldRef<"security_users", 'String'>
+  readonly expire_at: Prisma.FieldRef<"security_users", 'DateTime'>
 }
     
 

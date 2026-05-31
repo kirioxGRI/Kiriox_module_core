@@ -1567,6 +1567,7 @@ model security_users {
   password_updated_at         DateTime?                     @db.Timestamptz(6)
   company_id                  String?                       @db.Uuid
   username                    String?
+  expire_at                   DateTime?                     @db.Timestamptz(6)
   graph_map_run_sa_activities graph_map_run_sa_activities[]
   graph_run_lifecycle_history graph_run_lifecycle_history[]
   graph_run_sa                graph_run_sa[]
