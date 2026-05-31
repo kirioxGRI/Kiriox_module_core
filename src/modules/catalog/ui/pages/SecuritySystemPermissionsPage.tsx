@@ -8,7 +8,7 @@ export function SecuritySystemPermissionsPage() {
       itemLabel="Sistema"
       loadUrl="/api/admin/rbac/system-permissions"
       requestIdField="systemId"
-      closeHref="/main_dashboard"
+      closeHref="/admin"
     />
   );
 }

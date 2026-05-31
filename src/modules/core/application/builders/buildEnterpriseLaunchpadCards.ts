@@ -22,6 +22,8 @@ type CardPresentation = {
   accent: "blue" | "violet" | "cyan";
   order: number;
   description?: string;
+  /** Excluir del main_dashboard — solo aparece en /admin */
+  adminOnly?: boolean;
 };
 
 const SYSTEM_PRESENTATION: Partial<Record<string, CardPresentation>> = {
@@ -86,21 +88,27 @@ const SYSTEM_PRESENTATION: Partial<Record<string, CardPresentation>> = {
     order: 90,
   },
   security: {
-    href: "/gestion/dashboard_security",
+    href: "/admin",
     iconKey: "shield",
     accent: "violet",
     order: 95,
+    adminOnly: true,
   },
 };
 
 export function buildEnterpriseLaunchpadCards(
   systems: SecuritySystemSummary[],
   enabledSystems: string[],
+  options?: { includeAdminOnly?: boolean },
 ): EnterpriseLaunchpadCard[] {
   const enabledSet = new Set(enabledSystems);
 
   return systems
     .filter((system) => enabledSet.has(system.code))
+    .filter((system) => {
+      const adminOnly = SYSTEM_PRESENTATION[system.code]?.adminOnly ?? false;
+      return options?.includeAdminOnly ? true : !adminOnly;
+    })
     .map((system) => {
       const presentation = SYSTEM_PRESENTATION[system.code];
       return {
