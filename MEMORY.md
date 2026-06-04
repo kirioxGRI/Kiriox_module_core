@@ -493,3 +493,11 @@ useEffect(() => {
 **Regla aprendida:** Cuando el usuario invoque `Crear entidad` desde el menu contextual del canvas, la captura no debe redirigir al panel lateral. Debe abrirse un modal flotante y movible, cerca del punto de clic, para completar los campos de la nueva entidad sin perder el contexto visual del grafo.
 
 **Aplicación futura:** En builders visuales de Kiriox, las acciones contextuales del canvas deben resolverse preferiblemente con overlays locales y movibles. Si la entidad creada aun no tiene relaciones persistidas, puede mostrarse de inmediato como nodo local en el canvas hasta que el usuario la vincule formalmente.
+
+## 2026-06-04 — Aprendizaje
+
+**Contexto:** Evolucion del flujo de creacion de relaciones directamente sobre nodos del structural map.
+
+**Regla aprendida:** Al seleccionar una entidad en el canvas, el sistema puede exponer un anillo de acciones `+` alrededor del nodo para iniciar la creacion visual de relaciones. El usuario debe elegir primero el nodo origen, luego el nodo destino en el canvas, y solo despues completar los atributos estructurados de la relacion en un modal compacto.
+
+**Aplicación futura:** Para relaciones graficas en Kiriox, preferir un flujo espacial `nodo origen -> acciones orbitantes -> nodo destino -> modal de atributos` antes que depender unicamente de formularios laterales desconectados del grafo.

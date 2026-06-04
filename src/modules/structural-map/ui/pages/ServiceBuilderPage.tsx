@@ -11,6 +11,7 @@ import { NodeContextPanel } from '@/modules/structural-map/ui/components/NodeCon
 import { AnalysisPanel } from '@/modules/structural-map/ui/components/AnalysisPanel';
 import { ElenaEngineResultPanel } from '@/modules/structural-map/ui/components/ElenaEngineResultPanel';
 import { CreateEntityModal } from '@/modules/structural-map/ui/components/CreateEntityModal';
+import { CreateRelationModal } from '@/modules/structural-map/ui/components/CreateRelationModal';
 import type { GraphEntity, GraphRelation } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { CreateEntityInput } from '@/modules/structural-map/domain/types/PortfolioTypes';
 import type { ElenaRunResult } from '@/modules/structural-map/domain/types/ElenaTypes';
@@ -32,6 +33,7 @@ type ContextMenu = {
   renderedY: number;
 } | null;
 type ModalPosition = { x: number; y: number } | null;
+type NodeAnchor = { x: number; y: number } | null;
 
 const DEPTH_OPTIONS = [1, 2, 3, 4];
 const FILTER_OPTIONS = [
@@ -59,6 +61,12 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
   const [contextMenu, setContextMenu]   = useState<ContextMenu>(null);
   const [createEntityModalOpen, setCreateEntityModalOpen] = useState(false);
   const [createEntityModalPosition, setCreateEntityModalPosition] = useState<ModalPosition>(null);
+  const [createRelationModalOpen, setCreateRelationModalOpen] = useState(false);
+  const [createRelationModalPosition, setCreateRelationModalPosition] = useState<ModalPosition>(null);
+  const [nodeAnchor, setNodeAnchor] = useState<NodeAnchor>(null);
+  const [quickRelationSource, setQuickRelationSource] = useState<GraphEntity | null>(null);
+  const [quickRelationTarget, setQuickRelationTarget] = useState<GraphEntity | null>(null);
+  const [isPickingQuickRelationTarget, setIsPickingQuickRelationTarget] = useState(false);
   const [relationDraft, setRelationDraft] = useState<RelationDraft>({
     sourceId: null,
     targetId: null,
@@ -104,7 +112,22 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
     : simHighlight.size > 0 && activeFilter === 'cascade' ? simHighlight
     : undefined;
 
-  const handleNodeClick = useCallback((entity: GraphEntity) => { setSelected(entity); }, []);
+  const handleNodeClick = useCallback((entity: GraphEntity) => {
+    if (isPickingQuickRelationTarget && quickRelationSource && quickRelationSource.id !== entity.id) {
+      const rect = centerPaneRef.current?.getBoundingClientRect();
+      setQuickRelationTarget(entity);
+      setCreateRelationModalPosition(
+        nodeAnchor && rect
+          ? { x: rect.left + nodeAnchor.x + 24, y: rect.top + nodeAnchor.y + 24 }
+          : { x: 220, y: 180 }
+      );
+      setCreateRelationModalOpen(true);
+      setIsPickingQuickRelationTarget(false);
+      setSelected(entity);
+      return;
+    }
+    setSelected(entity);
+  }, [isPickingQuickRelationTarget, nodeAnchor, quickRelationSource]);
   const handleEdgeClick = useCallback((relation: GraphRelation) => { setSelected(relation); }, []);
   const handleNodeSecondaryAction = useCallback((entity: GraphEntity) => {
     setSelected(entity);
@@ -131,6 +154,19 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
   }, []);
   const clearRelationDraft = useCallback(() => {
     setRelationDraft({ sourceId: null, targetId: null, stage: 'idle' });
+  }, []);
+  const handleQuickRelationStart = useCallback(() => {
+    if (!selected || 'source_entity_id' in selected) return;
+    setQuickRelationSource(selected);
+    setQuickRelationTarget(null);
+    setCreateRelationModalOpen(false);
+    setIsPickingQuickRelationTarget(true);
+  }, [selected]);
+  const resetQuickRelation = useCallback(() => {
+    setQuickRelationSource(null);
+    setQuickRelationTarget(null);
+    setIsPickingQuickRelationTarget(false);
+    setCreateRelationModalOpen(false);
   }, []);
 
   /* ─── Canvas context menu → create entity ─── */
@@ -250,6 +286,17 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
     setContextMenu(null);
     return payload;
   }, [entityTypes]);
+  const handleCreateRelationFromModal = useCallback(async (input: {
+    source_entity_id: string;
+    target_entity_id: string;
+    relation_type_id: string;
+    weight?: number;
+    strength?: string;
+    description?: string;
+  }) => {
+    await addRelation(input);
+    resetQuickRelation();
+  }, [addRelation, resetQuickRelation]);
 
   const entityCount   = displayGraph?.entities.length  ?? 0;
   const relationCount = displayGraph?.relations.length ?? 0;
@@ -378,14 +425,47 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
                 onNodeSecondaryAction={handleNodeSecondaryAction}
                 onCanvasContextMenu={handleCanvasContextMenu}
                 onDragLink={handleDragLink}
+                onSelectedNodeAnchorChange={setNodeAnchor}
               />
             </Suspense>
+          )}
+
+          {selected && !('source_entity_id' in selected) && nodeAnchor && !isPickingQuickRelationTarget && !createRelationModalOpen && (
+            <div className={styles.nodeActionOrbit}>
+              {[
+                { key: 'top', dx: 0, dy: -54 },
+                { key: 'right', dx: 54, dy: 0 },
+                { key: 'bottom', dx: 0, dy: 54 },
+                { key: 'left', dx: -54, dy: 0 },
+                { key: 'top-right', dx: 38, dy: -38 },
+                { key: 'bottom-left', dx: -38, dy: 38 },
+              ].map((orbit) => (
+                <button
+                  key={orbit.key}
+                  type="button"
+                  className={styles.nodePlusButton}
+                  style={{ left: nodeAnchor.x + orbit.dx, top: nodeAnchor.y + orbit.dy }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleQuickRelationStart();
+                  }}
+                  title="Crear relación desde este nodo"
+                >
+                  +
+                </button>
+              ))}
+            </div>
           )}
 
           {/* Link mode indicator */}
           {linkMode && (
             <div className={styles.linkModeIndicator}>
               <Link2 size={13} /> Modo vincular activo — Clic en nodo origen, luego clic en nodo destino
+            </div>
+          )}
+          {isPickingQuickRelationTarget && quickRelationSource && (
+            <div className={styles.quickRelationGuide}>
+              Relación visual desde <strong>{quickRelationSource.name ?? quickRelationSource.code}</strong>: selecciona el nodo destino en el canvas.
             </div>
           )}
 
@@ -465,6 +545,15 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
         onSubmit={async (input) => {
           await handleCreateEntity(input);
         }}
+      />
+      <CreateRelationModal
+        open={createRelationModalOpen}
+        source={quickRelationSource}
+        target={quickRelationTarget}
+        relationTypes={relationTypes}
+        initialPosition={createRelationModalPosition}
+        onClose={resetQuickRelation}
+        onSubmit={handleCreateRelationFromModal}
       />
 
       {/* Elena result drawer — rendered as overlay above everything */}

@@ -14,6 +14,7 @@ type Props = {
   onNodeSecondaryAction?: (entity: GraphEntity) => void;
   onCanvasContextMenu?: (position: { x: number; y: number; renderedX: number; renderedY: number }) => void;
   onDragLink?: (sourceId: string, targetId: string) => void;
+  onSelectedNodeAnchorChange?: (anchor: { x: number; y: number } | null) => void;
 };
 
 const TYPE_COLORS: Record<string, string> = {
@@ -61,6 +62,7 @@ export default function CytoscapeGraph({
   onNodeSecondaryAction,
   onCanvasContextMenu,
   onDragLink,
+  onSelectedNodeAnchorChange,
 }: Props) {
   const containerRef   = useRef<HTMLDivElement>(null);
   const cyRef          = useRef<cytoscape.Core | null>(null);
@@ -312,6 +314,33 @@ export default function CytoscapeGraph({
       }
     });
   }, [selectedNodeId, highlightedIds]);
+
+  /* ─── Emit selected node rendered anchor to parent for overlay actions ─── */
+  useEffect(() => {
+    const cy = cyRef.current;
+    if (!cy || !onSelectedNodeAnchorChange) return;
+
+    const emitAnchor = () => {
+      if (!selectedNodeId) {
+        onSelectedNodeAnchorChange(null);
+        return;
+      }
+      const node = cy.getElementById(selectedNodeId);
+      if (!node || node.empty()) {
+        onSelectedNodeAnchorChange(null);
+        return;
+      }
+      const pos = node.renderedPosition();
+      onSelectedNodeAnchorChange({ x: pos.x, y: pos.y });
+    };
+
+    emitAnchor();
+    cy.on('pan zoom resize render layoutstop', emitAnchor);
+
+    return () => {
+      cy.off('pan zoom resize render layoutstop', emitAnchor);
+    };
+  }, [onSelectedNodeAnchorChange, selectedNodeId, data.entities.length, data.relations.length]);
 
   /* ─── Global context menu blocker ─── */
   useEffect(() => {
