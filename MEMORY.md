@@ -451,3 +451,29 @@ npx plugins add vercel/vercel-plugin
 **Regla aprendida:** `/incident/dashboard` no es una ruta App Router vigente en este repositorio. Mientras la experiencia operativa de incidentes siga expuesta en `/validacion/eventos?tab=hechos-relevantes`, ningun acceso visible del producto debe apuntar a `/incident/dashboard`.
 
 **Aplicación futura:** Al configurar cards del launchpad, shortcuts o accesos visibles relacionados con incidentes/analisis preventivo, usar la ruta viva del producto y no revivir endpoints legados inexistentes.
+
+## 2026-06-03 — Aprendizaje
+
+**Contexto:** Ajuste de UX en `/gestion/structural-map/[serviceId]` para la creacion manual de relaciones del grafo.
+
+**Regla aprendida:** La creacion de relaciones en el structural map no debe limitarse a un formulario minimo de tres campos. La UI debe permitir definir tambien `weight`, `strength` y `description`, y el flujo preferido debe poder arrancar visualmente desde el grafo usando seleccion de nodos para prellenar origen y destino.
+
+**Aplicación futura:** En evoluciones del builder grafico, preservar un patron mixto: seleccion visual sobre el canvas para contexto espacial y formulario estructurado para completar los atributos de la relacion antes de persistirla.
+
+## 2026-06-03 — Aprendizaje CRÍTICO (Alta Prioridad)
+
+**Contexto:** Bloqueo del menú contextual nativo (clic derecho) del navegador sobre librerías complejas de `<canvas>` (específicamente Cytoscape.js) para desplegar un menú propio del sistema.
+
+**Regla aprendida:** ¡ATENCIÓN! Los eventos sintéticos de React (`onContextMenu`), los listeners locales en el contenedor (`container.addEventListener`), e incluso las llamadas a `preventDefault()` dentro de la propia librería (`cy.on('cxttap')`) **suelen fallar silenciosamente** o perder la carrera contra el navegador al interceptar el menú nativo debido a la forma errática en que los nodos del canvas son manipulados.
+La ÚNICA FORMA INFALIBLE ("Escudo Definitivo") de bloquear el menú nativo en estas interfaces ricas es inyectar un listener a nivel de `document` ejecutándose en la **fase de captura** (`capture: true`):
+
+```javascript
+// Dentro de un useEffect en el componente contenedor
+useEffect(() => {
+  const preventNativeMenu = (e) => { e.preventDefault(); e.stopPropagation(); return false; };
+  document.addEventListener('contextmenu', preventNativeMenu, { capture: true });
+  return () => document.removeEventListener('contextmenu', preventNativeMenu, { capture: true });
+}, []);
+```
+
+**Aplicación futura (CONSULTA OBLIGATORIA):** Siempre que se deba anular el menú del clic derecho del navegador para dibujar un menú del sistema en interfaces complejas (grafos, mapas, editores visuales), NO perder el tiempo con handlers locales. Se debe aplicar INMEDIATAMENTE el bloqueo a nivel global de `document` en fase de captura durante el tiempo de vida del componente (`useEffect`).

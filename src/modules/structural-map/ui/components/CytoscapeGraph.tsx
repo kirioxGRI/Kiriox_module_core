@@ -8,9 +8,12 @@ type Props = {
   rootEntityId: string;
   selectedNodeId: string | null;
   highlightedIds?: Set<string>;
+  linkMode?: boolean;
   onNodeClick: (entity: GraphEntity) => void;
   onEdgeClick: (relation: GraphRelation) => void;
-  onEdgeCreate?: (sourceId: string, targetId: string) => void;
+  onNodeSecondaryAction?: (entity: GraphEntity) => void;
+  onCanvasContextMenu?: (position: { x: number; y: number; renderedX: number; renderedY: number }) => void;
+  onDragLink?: (sourceId: string, targetId: string) => void;
 };
 
 const TYPE_COLORS: Record<string, string> = {
@@ -47,13 +50,25 @@ function edgeColor(code: string): string {
   return map[code] ?? '#475569';
 }
 
-export default function CytoscapeGraph({ data, rootEntityId, selectedNodeId, highlightedIds, onNodeClick, onEdgeClick }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const cyRef        = useRef<cytoscape.Core | null>(null);
-  const entityMapRef = useRef<Map<string, GraphEntity>>(new Map());
+export default function CytoscapeGraph({
+  data,
+  rootEntityId,
+  selectedNodeId,
+  highlightedIds,
+  linkMode,
+  onNodeClick,
+  onEdgeClick,
+  onNodeSecondaryAction,
+  onCanvasContextMenu,
+  onDragLink,
+}: Props) {
+  const containerRef   = useRef<HTMLDivElement>(null);
+  const cyRef          = useRef<cytoscape.Core | null>(null);
+  const entityMapRef   = useRef<Map<string, GraphEntity>>(new Map());
   const relationMapRef = useRef<Map<string, GraphRelation>>(new Map());
+  const linkSourceRef  = useRef<string | null>(null);
 
-  entityMapRef.current = new Map(data.entities.map((e) => [e.id, e]));
+  entityMapRef.current   = new Map(data.entities.map((e) => [e.id, e]));
   relationMapRef.current = new Map(data.relations.map((r) => [r.id, r]));
 
   const buildElements = useCallback(() => {
@@ -62,7 +77,7 @@ export default function CytoscapeGraph({ data, rootEntityId, selectedNodeId, hig
         id:    e.id,
         label: e.name ?? e.code,
         color: nodeColor(e),
-        size:  e.id === rootEntityId ? 55 : e.is_critical_node ? 45 : e.is_spof ? 42 : 35,
+        size:  e.id === rootEntityId ? 40 : e.is_critical_node ? 34 : e.is_spof ? 32 : 26,
         border: e.id === rootEntityId ? '#ffffff' : e.is_critical_node ? '#f87171' : e.is_spof ? '#fb923c' : 'transparent',
       },
     }));
@@ -109,16 +124,18 @@ export default function CytoscapeGraph({ data, rootEntityId, selectedNodeId, hig
               'height':              'data(size)',
               'label':               'data(label)',
               'color':               '#f1f5f9',
-              'font-size':           '10px',
+              'font-size':           '9px',
               'font-weight':         '600',
               'text-valign':         'bottom',
               'text-halign':         'center',
-              'text-margin-y':       6,
-              'text-max-width':      '90px',
+              'text-margin-y':       5,
+              'text-max-width':      '80px',
               'text-wrap':           'wrap',
               'border-width':        2,
               'border-color':        'data(border)',
               'overlay-opacity':     0,
+              'transition-property': 'border-color, border-width, opacity',
+              'transition-duration': '0.15s',
             } as unknown as cytoscape.Css.Node,
           },
           {
@@ -130,7 +147,7 @@ export default function CytoscapeGraph({ data, rootEntityId, selectedNodeId, hig
               'curve-style':         'bezier',
               'width':               1.5,
               'opacity':             0.7,
-              'font-size':           '8px',
+              'font-size':           '7px',
               'color':               '#94a3b8',
               'text-rotation':       'autorotate',
               'overlay-opacity':     0,
@@ -144,6 +161,26 @@ export default function CytoscapeGraph({ data, rootEntityId, selectedNodeId, hig
             selector: 'edge:selected',
             style: { 'width': 3, 'opacity': 1, 'line-color': '#e2e8f0', 'target-arrow-color': '#e2e8f0' } as unknown as cytoscape.Css.Edge,
           },
+          {
+            selector: '.link-source',
+            style: {
+              'border-width': 3,
+              'border-color': '#34d399',
+              'background-opacity': 0.95,
+            } as unknown as cytoscape.Css.Node,
+          },
+          {
+            selector: '.link-ghost',
+            style: {
+              'line-color': '#34d399',
+              'line-style': 'dashed',
+              'width': 2,
+              'opacity': 0.6,
+              'target-arrow-shape': 'triangle',
+              'target-arrow-color': '#34d399',
+              'curve-style': 'bezier',
+            } as unknown as cytoscape.Css.Edge,
+          },
         ],
         layout: {
           name:            'fcose' as never,
@@ -151,8 +188,8 @@ export default function CytoscapeGraph({ data, rootEntityId, selectedNodeId, hig
           randomize:       true,
           animate:         true,
           animationDuration: 800,
-          nodeSeparation:  80,
-          idealEdgeLength: 120,
+          nodeSeparation:  60,
+          idealEdgeLength: 100,
         } as never,
         userZoomingEnabled:   true,
         userPanningEnabled:   true,
@@ -160,17 +197,49 @@ export default function CytoscapeGraph({ data, rootEntityId, selectedNodeId, hig
         wheelSensitivity:     0.3,
       });
 
+      /* ─── Standard node click ─── */
       cy.on('tap', 'node', (evt) => {
         const id     = evt.target.id() as string;
         const entity = entityMapRef.current.get(id);
         if (entity) onNodeClick(entity);
       });
 
+      /* ─── Right-click on node (secondary action / link mode pick) ─── */
+      cy.on('cxttap', 'node', (evt) => {
+        evt.originalEvent?.preventDefault();
+        const id = evt.target.id() as string;
+        const entity = entityMapRef.current.get(id);
+        if (entity && onNodeSecondaryAction) onNodeSecondaryAction(entity);
+      });
+
+      /* ─── Right-click on empty canvas ─── */
+      cy.on('cxttap', (evt) => {
+        evt.originalEvent?.preventDefault();
+        if (evt.target === cy && onCanvasContextMenu) {
+          const pos = evt.position;
+          const rpos = evt.renderedPosition;
+          onCanvasContextMenu({
+            x: pos.x,
+            y: pos.y,
+            renderedX: rpos.x,
+            renderedY: rpos.y,
+          });
+        }
+      });
+
+      /* ─── Edge click ─── */
       cy.on('tap', 'edge', (evt) => {
         const id       = evt.target.id() as string;
         const relation = relationMapRef.current.get(id);
         if (relation) onEdgeClick(relation);
       });
+
+      /* ─── Block native browser context menu on Cytoscape container ─── */
+      if (cy.container()) {
+        cy.container()!.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+        });
+      }
 
       cyRef.current = cy;
     })();
@@ -179,6 +248,50 @@ export default function CytoscapeGraph({ data, rootEntityId, selectedNodeId, hig
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.entities.length, data.relations.length, rootEntityId]);
 
+  /* ─── Link-mode interaction ─── */
+  useEffect(() => {
+    const cy = cyRef.current;
+    if (!cy) return;
+
+    if (!linkMode) {
+      linkSourceRef.current = null;
+      cy.nodes().removeClass('link-source');
+      cy.edges('.link-ghost').remove();
+      cy.userPanningEnabled(true);
+      cy.nodes().ungrabify();
+      cy.nodes().grabify();
+      return;
+    }
+
+    cy.nodes().ungrabify();
+
+    const handler = (evt: cytoscape.EventObject) => {
+      const id = evt.target.id() as string;
+
+      if (!linkSourceRef.current) {
+        linkSourceRef.current = id;
+        cy.nodes().removeClass('link-source');
+        evt.target.addClass('link-source');
+      } else if (linkSourceRef.current !== id) {
+        const srcId = linkSourceRef.current;
+        cy.nodes().removeClass('link-source');
+        cy.edges('.link-ghost').remove();
+        linkSourceRef.current = null;
+        if (onDragLink) onDragLink(srcId, id);
+      }
+    };
+
+    cy.on('tap', 'node', handler);
+    return () => {
+      cy.off('tap', 'node', handler);
+      cy.nodes().removeClass('link-source');
+      cy.edges('.link-ghost').remove();
+      cy.nodes().grabify();
+      linkSourceRef.current = null;
+    };
+  }, [linkMode, onDragLink]);
+
+  /* ─── Selection & highlight styling ─── */
   useEffect(() => {
     if (!cyRef.current) return;
     cyRef.current.nodes().forEach((n) => {
@@ -200,10 +313,26 @@ export default function CytoscapeGraph({ data, rootEntityId, selectedNodeId, hig
     });
   }, [selectedNodeId, highlightedIds]);
 
+  /* ─── Global context menu blocker ─── */
+  useEffect(() => {
+    // Escudo definitivo: interceptar en la fase de captura a nivel de todo el documento
+    const preventNativeMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    };
+    
+    document.addEventListener('contextmenu', preventNativeMenu, { capture: true });
+    
+    return () => {
+      document.removeEventListener('contextmenu', preventNativeMenu, { capture: true });
+    };
+  }, []);
+
   return (
     <div
       ref={containerRef}
-      style={{ width: '100%', height: '100%', background: 'transparent' }}
+      style={{ width: '100%', height: '100%', background: 'transparent', cursor: linkMode ? 'crosshair' : 'default' }}
     />
   );
 }
