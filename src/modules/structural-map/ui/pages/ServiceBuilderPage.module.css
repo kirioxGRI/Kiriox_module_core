@@ -1,9 +1,11 @@
 .layout {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
   background: linear-gradient(180deg, #0a0f1e 0%, #060b18 100%);
+  overflow: hidden;
 }
 
 .topBar {
@@ -184,7 +186,7 @@
 .threePane {
   flex: 1;
   display: grid;
-  grid-template-columns: 260px 1fr 280px;
+  grid-template-columns: 340px 1fr 300px;
   overflow: hidden;
 }
 
@@ -314,6 +316,7 @@
   transform: translateX(-50%);
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.7rem;
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(8px);
@@ -325,6 +328,35 @@
   font-weight: 600;
   z-index: 5;
   white-space: nowrap;
+}
+
+.relationGuide,
+.relationGuideReady {
+  position: absolute;
+  top: 0.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(620px, calc(100% - 2rem));
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.45;
+  z-index: 9;
+  text-align: center;
+}
+
+.relationGuide {
+  color: #bfdbfe;
+  background: rgba(30, 64, 175, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+.relationGuideReady {
+  color: #c7f9cc;
+  background: rgba(20, 83, 45, 0.22);
+  border: 1px solid rgba(74, 222, 128, 0.28);
 }
 
 .legendDot {
@@ -342,3 +374,133 @@
   border-left: 1px solid rgba(255,255,255,0.05);
   overflow: hidden;
 }
+
+@media (max-width: 1440px) {
+  .threePane {
+    grid-template-columns: 320px 1fr 280px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .threePane {
+    grid-template-columns: 300px 1fr 260px;
+  }
+}
+
+/* ── Link mode toggle button ── */
+.linkBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: #64748b;
+  font-size: 0.67rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.linkBtn:hover {
+  background: rgba(52,211,153,0.08);
+  color: #6ee7b7;
+  border-color: rgba(52,211,153,0.3);
+}
+
+.linkBtnActive {
+  composes: linkBtn;
+  background: rgba(52,211,153,0.15);
+  border-color: rgba(52,211,153,0.5);
+  color: #6ee7b7;
+  box-shadow: 0 0 12px rgba(52,211,153,0.15);
+}
+
+/* ── Link mode indicator ── */
+.linkModeIndicator {
+  position: absolute;
+  top: 0.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(620px, calc(100% - 2rem));
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.45;
+  z-index: 9;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  color: #a7f3d0;
+  background: rgba(16, 85, 58, 0.22);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  animation: linkPulse 2s ease-in-out infinite;
+}
+
+@keyframes linkPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(52,211,153,0.12); }
+  50%      { box-shadow: 0 0 16px rgba(52,211,153,0.25); }
+}
+
+/* ── Context menu (right-click on canvas) ── */
+.contextMenuOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+}
+
+.contextMenu {
+  position: absolute;
+  min-width: 180px;
+  background: rgba(10, 15, 30, 0.88);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 0.35rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  animation: ctxMenuIn 0.12s ease-out;
+}
+
+@keyframes ctxMenuIn {
+  from { opacity: 0; transform: scale(0.92) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.contextMenuItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.contextMenuItem:hover {
+  background: rgba(99,102,241,0.18);
+}
+
+.contextMenuIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: rgba(99,102,241,0.15);
+  color: #a5b4fc;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
