@@ -52,6 +52,11 @@ function isRelation(x: GraphEntity | GraphRelation): x is GraphRelation {
   return 'source_entity_id' in x;
 }
 
+function asPercentWeight(weight: number | null): number | null {
+  if (weight == null) return null;
+  return weight <= 1 ? weight * 100 : weight;
+}
+
 const S: Record<string, React.CSSProperties> = {
   panel:  { height: '100%', overflowY: 'auto', padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' },
   card:   { background: 'rgba(0,0,0,0.22)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 10, padding: '0.75rem' },
@@ -143,7 +148,7 @@ function RelationDetail({
   const [editSrc, setEditSrc] = useState(relation.source_entity_id);
   const [editTgt, setEditTgt] = useState(relation.target_entity_id);
   const [editType, setEditType] = useState(relation.relation_type_id);
-  const [editWeight, setEditWeight] = useState(relation.weight != null ? String(relation.weight) : '');
+  const [editWeight, setEditWeight] = useState(relation.weight != null ? String(asPercentWeight(relation.weight)) : '');
   const [editStrength, setEditStrength] = useState(relation.strength ?? 'medium');
   const [editDesc, setEditDesc] = useState(relation.description ?? '');
   const [saving, setSaving] = useState(false);
@@ -154,7 +159,7 @@ function RelationDetail({
     setEditSrc(relation.source_entity_id);
     setEditTgt(relation.target_entity_id);
     setEditType(relation.relation_type_id);
-    setEditWeight(relation.weight != null ? String(relation.weight) : '');
+    setEditWeight(relation.weight != null ? String(asPercentWeight(relation.weight)) : '');
     setEditStrength(relation.strength ?? 'medium');
     setEditDesc(relation.description ?? '');
     setMsg('');
@@ -270,7 +275,7 @@ function RelationDetail({
           <Row label="Origen" value={src?.name ?? src?.code ?? relation.source_entity_id} />
           <Row label="Destino" value={tgt?.name ?? tgt?.code ?? relation.target_entity_id} />
           <Row label="Dirección" value={relation.is_directional ? 'Direccional →' : 'Bidireccional ↔'} />
-          {relation.weight != null && <Row label="Peso" value={relation.weight.toFixed(2)} />}
+          {relation.weight != null && <Row label="Peso" value={`${asPercentWeight(relation.weight)?.toFixed(1)}%`} />}
           {relation.strength && <Row label="Fuerza" value={relation.strength} />}
           {relation.description && <Row label="Descripción" value={relation.description} />}
         </div>

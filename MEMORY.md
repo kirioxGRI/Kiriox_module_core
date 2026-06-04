@@ -501,3 +501,43 @@ useEffect(() => {
 **Regla aprendida:** Al seleccionar una entidad en el canvas, el sistema puede exponer un anillo de acciones `+` alrededor del nodo para iniciar la creacion visual de relaciones. El usuario debe elegir primero el nodo origen, luego el nodo destino en el canvas, y solo despues completar los atributos estructurados de la relacion en un modal compacto.
 
 **Aplicación futura:** Para relaciones graficas en Kiriox, preferir un flujo espacial `nodo origen -> acciones orbitantes -> nodo destino -> modal de atributos` antes que depender unicamente de formularios laterales desconectados del grafo.
+
+## 2026-06-04 — Aprendizaje
+
+**Contexto:** Correccion del flujo de relaciones porque el patron click-click no resultaba suficientemente claro ni visual para el usuario.
+
+**Regla aprendida:** En el structural map, la interaccion canonica para crear relaciones visuales debe ser por arrastre con linea temporal visible: `origen -> drag -> destino -> modal`. El menu contextual del espacio vacio tambien debe ofrecer `Definir relación` para arrancar el mismo flujo usando entidades existentes.
+
+**Aplicación futura:** Si se ajusta el grafo interactivo, preservar que el builder soporte dos entradas hacia el mismo motor de relacion: `+` orbitante del nodo y opcion contextual `Definir relación`, ambas desembocando en un drag visual sobre el canvas y luego en un modal de atributos.
+
+## 2026-06-04 — Aprendizaje
+
+**Contexto:** Correccion de overflow SQL y afinacion del builder visual en `/gestion/structural-map/modelo`.
+
+**Regla aprendida:** El `weight` de `systemic_entity_relations` se almacena en formato decimal normalizado (`0..1`) aunque la UI lo capture como porcentaje humano (`75` = `0.75`). En el grafo, el clic derecho sobre un nodo debe abrir el menu contextual canonico con `Remover entidad`, `Definir relación` y `Escoger entidad`; `Definir relación` debe reutilizar el mismo motor visual de arrastre con linea fina y modal final de atributos.
+
+**Aplicación futura:** Cualquier formulario o modal que cree/edite relaciones en el structural map debe convertir pesos porcentuales a decimales normalizados antes de persistir. Toda nueva accion contextual sobre nodos debe colgarse del menu de nodo y no reintroducir flujos paralelos de seleccion destino por clic derecho antiguo.
+
+## 2026-06-04 — Aprendizaje
+
+**Contexto:** Nueva correccion del usuario para cortar de raiz los flujos duplicados del canvas en `/gestion/structural-map/modelo`.
+
+**Regla aprendida:** El clic derecho sobre espacio vacio del canvas debe ser minimo: solo `Crear entidad` y `Cancel`. `Cancel` debe detener procesos activos de vinculacion o drag. La ejecucion de motores Elena no debe vivir en ese menu; debe exponerse como combo `Análisis` en el header, junto a `Vincular`, y desde ahi disparar las cinco funciones estructurales canonicas.
+
+**Aplicación futura:** No volver a mezclar acciones operativas del canvas con acciones analiticas en el mismo menu contextual. Mantener separado: canvas para modelado, header para ejecucion de motores.
+
+## 2026-06-04 — Aprendizaje
+
+**Contexto:** El usuario detectó “líneas gigantes” en el structural map que en realidad estaban amplificadas por el zoom y la escala de las flechas del canvas.
+
+**Regla aprendida:** En `/gestion/structural-map/modelo`, el header debe mostrar el zoom real del canvas junto a `Profundidad`. Para mantener legibilidad, las aristas base del grafo deben trabajar con grosor fino (`0.5`) y `arrow-scale` reducido; no basta con ajustar solo la línea temporal de arrastre.
+
+**Aplicación futura:** Cuando haya que afinar visualmente relaciones del grafo, revisar siempre en conjunto `zoom`, `edge width` y `arrow-scale` antes de tocar solo el flujo de drag o asumir que el problema proviene de la lógica de vinculación.
+
+## 2026-06-04 — Aprendizaje
+
+**Contexto:** Ajuste final del indicador de zoom del canvas en el structural map.
+
+**Regla aprendida:** El zoom de Cytoscape en Kiriox no debe mostrarse como factor decimal tipo `1.00x`. Debe exponerse al usuario como porcentaje entero (`100%`, `125%`, `80%`) y actualizarse en tiempo real con el evento de zoom del canvas.
+
+**Aplicación futura:** Cualquier HUD o badge de viewport para builders gráficos debe usar porcentaje entero legible para usuario final y no valores técnicos de escala interna.

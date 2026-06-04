@@ -1,31 +1,25 @@
 'use client';
 
 import { useState, useCallback, useEffect, lazy, Suspense, useRef, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Network, ChevronLeft, Layers, Eye, Shield, AlertTriangle, GitBranch, CheckSquare, Link2, Activity, Plus } from 'lucide-react';
+import { Network, ChevronLeft, Layers, Shield, AlertTriangle, GitBranch, CheckSquare, Link2, Plus, Trash2, MousePointer2 } from 'lucide-react';
 import { usePortfolio } from '@/modules/structural-map/ui/hooks/usePortfolio';
 import { useServiceGraph } from '@/modules/structural-map/ui/hooks/useServiceGraph';
 import { EntityCatalogPanel } from '@/modules/structural-map/ui/components/EntityCatalogPanel';
 import { NodeContextPanel } from '@/modules/structural-map/ui/components/NodeContextPanel';
-import { AnalysisPanel } from '@/modules/structural-map/ui/components/AnalysisPanel';
 import { ElenaEngineResultPanel } from '@/modules/structural-map/ui/components/ElenaEngineResultPanel';
 import { CreateEntityModal } from '@/modules/structural-map/ui/components/CreateEntityModal';
 import { CreateRelationModal } from '@/modules/structural-map/ui/components/CreateRelationModal';
 import type { GraphEntity, GraphRelation } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { CreateEntityInput } from '@/modules/structural-map/domain/types/PortfolioTypes';
-import type { ElenaRunResult } from '@/modules/structural-map/domain/types/ElenaTypes';
+import type { ElenaEngine, ElenaRunResult } from '@/modules/structural-map/domain/types/ElenaTypes';
 import styles from './ServiceBuilderPage.module.css';
 
 const CytoscapeGraph = lazy(() => import('@/modules/structural-map/ui/components/CytoscapeGraph'));
 
-type ActivePanel = 'catalog' | 'analysis';
+type ActivePanel = 'catalog';
 type Props = { serviceId: string };
-type RelationDraft = {
-  sourceId: string | null;
-  targetId: string | null;
-  stage: 'idle' | 'picking-target' | 'ready';
-};
 type ContextMenu = {
   x: number;
   y: number;
@@ -34,6 +28,13 @@ type ContextMenu = {
 } | null;
 type ModalPosition = { x: number; y: number } | null;
 type NodeAnchor = { x: number; y: number } | null;
+type NodeContextMenu = {
+  entity: GraphEntity;
+  x: number;
+  y: number;
+  renderedX: number;
+  renderedY: number;
+} | null;
 
 const DEPTH_OPTIONS = [1, 2, 3, 4];
 const FILTER_OPTIONS = [
@@ -42,17 +43,22 @@ const FILTER_OPTIONS = [
   { key: 'spof',     label: 'SPOF',          icon: Shield },
   { key: 'cascade',  label: 'Cascada',       icon: GitBranch },
 ];
+const ANALYSIS_OPTIONS: { value: ElenaEngine; label: string; fn: string }[] = [
+  { value: 'structural', label: 'Análisis estructural', fn: 'fn_elena_systemic_structural_analysis' },
+  { value: 'cascade', label: 'Simulación de cascada', fn: 'fn_elena_systemic_cascade_simulation' },
+  { value: 'criticality', label: 'Análisis de criticidad', fn: 'fn_elena_systemic_criticality_analysis' },
+  { value: 'resilience', label: 'Análisis de resiliencia', fn: 'fn_elena_systemic_resilience_analysis' },
+  { value: 'exposure', label: 'Análisis de exposición', fn: 'fn_elena_systemic_exposure_analysis' },
+];
 
 export default function ServiceBuilderPage({ serviceId }: Props) {
-  const router       = useRouter();
-  const searchParams = useSearchParams();
-  const initTab      = searchParams.get('tab') === 'analysis' ? 'analysis' : 'catalog';
+  const router = useRouter();
 
   const { data: portfolio } = usePortfolio();
-  const { graph, graphError, isPending, depth, changeDepth, validateModel, addRelation, updateRelation, reload } =
+  const { graph, graphError, isPending, depth, changeDepth, addRelation, updateRelation, reload } =
     useServiceGraph(serviceId);
 
-  const [activePanel, setActivePanel]   = useState<ActivePanel>(initTab as ActivePanel);
+  const [activePanel, setActivePanel]   = useState<ActivePanel>('catalog');
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [selected, setSelected]         = useState<GraphEntity | GraphRelation | null>(null);
   const [simHighlight, setSimHighlight] = useState<Set<string>>(new Set());
@@ -64,15 +70,16 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
   const [createRelationModalOpen, setCreateRelationModalOpen] = useState(false);
   const [createRelationModalPosition, setCreateRelationModalPosition] = useState<ModalPosition>(null);
   const [nodeAnchor, setNodeAnchor] = useState<NodeAnchor>(null);
+  const [nodeContextMenu, setNodeContextMenu] = useState<NodeContextMenu>(null);
   const [quickRelationSource, setQuickRelationSource] = useState<GraphEntity | null>(null);
   const [quickRelationTarget, setQuickRelationTarget] = useState<GraphEntity | null>(null);
   const [isPickingQuickRelationTarget, setIsPickingQuickRelationTarget] = useState(false);
-  const [relationDraft, setRelationDraft] = useState<RelationDraft>({
-    sourceId: null,
-    targetId: null,
-    stage: 'idle',
-  });
+  const [dragLinkSourceId, setDragLinkSourceId] = useState<string | null>(null);
+  const [pickRelationSourceMode, setPickRelationSourceMode] = useState(false);
   const [draftEntities, setDraftEntities] = useState<GraphEntity[]>([]);
+  const [analysisSelection, setAnalysisSelection] = useState('');
+  const [analysisRunning, setAnalysisRunning] = useState(false);
+  const [canvasZoom, setCanvasZoom] = useState(100);
 
   const centerPaneRef = useRef<HTMLDivElement>(null);
 
@@ -97,10 +104,6 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
   );
 
   useEffect(() => {
-    if (searchParams.get('tab') === 'analysis') setActivePanel('analysis');
-  }, [searchParams]);
-
-  useEffect(() => {
     if (!graph?.entities) return;
     const serverIds = new Set(graph.entities.map((entity) => entity.id));
     setDraftEntities((current) => current.filter((entity) => !serverIds.has(entity.id)));
@@ -113,47 +116,20 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
     : undefined;
 
   const handleNodeClick = useCallback((entity: GraphEntity) => {
-    if (isPickingQuickRelationTarget && quickRelationSource && quickRelationSource.id !== entity.id) {
-      const rect = centerPaneRef.current?.getBoundingClientRect();
-      setQuickRelationTarget(entity);
-      setCreateRelationModalPosition(
-        nodeAnchor && rect
-          ? { x: rect.left + nodeAnchor.x + 24, y: rect.top + nodeAnchor.y + 24 }
-          : { x: 220, y: 180 }
-      );
-      setCreateRelationModalOpen(true);
-      setIsPickingQuickRelationTarget(false);
-      setSelected(entity);
-      return;
-    }
+    setNodeContextMenu(null);
     setSelected(entity);
-  }, [isPickingQuickRelationTarget, nodeAnchor, quickRelationSource]);
-  const handleEdgeClick = useCallback((relation: GraphRelation) => { setSelected(relation); }, []);
-  const handleNodeSecondaryAction = useCallback((entity: GraphEntity) => {
-    setSelected(entity);
-    setActivePanel('catalog');
-    setRelationDraft((current) => {
-      if (!current.sourceId || current.stage === 'ready' || current.sourceId === entity.id) {
-        return {
-          sourceId: entity.id,
-          targetId: null,
-          stage: 'picking-target',
-        };
-      }
-
-      if (current.sourceId && current.sourceId !== entity.id) {
-        return {
-          sourceId: current.sourceId,
-          targetId: entity.id,
-          stage: 'ready',
-        };
-      }
-
-      return current;
-    });
   }, []);
-  const clearRelationDraft = useCallback(() => {
-    setRelationDraft({ sourceId: null, targetId: null, stage: 'idle' });
+  const handleEdgeClick = useCallback((relation: GraphRelation) => {
+    setNodeContextMenu(null);
+    setSelected(relation);
+  }, []);
+  const handleNodeSecondaryAction = useCallback((
+    entity: GraphEntity,
+    position: { x: number; y: number; renderedX: number; renderedY: number }
+  ) => {
+    setSelected(entity);
+    setNodeContextMenu({ entity, ...position });
+    setContextMenu(null);
   }, []);
   const handleQuickRelationStart = useCallback(() => {
     if (!selected || 'source_entity_id' in selected) return;
@@ -161,12 +137,16 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
     setQuickRelationTarget(null);
     setCreateRelationModalOpen(false);
     setIsPickingQuickRelationTarget(true);
+    setPickRelationSourceMode(false);
+    setDragLinkSourceId(selected.id);
   }, [selected]);
   const resetQuickRelation = useCallback(() => {
     setQuickRelationSource(null);
     setQuickRelationTarget(null);
     setIsPickingQuickRelationTarget(false);
     setCreateRelationModalOpen(false);
+    setDragLinkSourceId(null);
+    setPickRelationSourceMode(false);
   }, []);
 
   /* ─── Canvas context menu → create entity ─── */
@@ -188,20 +168,99 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
     setContextMenu(null);
   }, [contextMenu]);
 
-  const handleContextMenuAnalysis = useCallback(() => {
+  const cancelInteraction = useCallback(() => {
     setContextMenu(null);
-    setActivePanel('analysis');
+    setNodeContextMenu(null);
+    setDragLinkSourceId(null);
+    setPickRelationSourceMode(false);
+    setQuickRelationSource(null);
+    setQuickRelationTarget(null);
+    setCreateRelationModalOpen(false);
+    setIsPickingQuickRelationTarget(false);
+    setLinkMode(false);
   }, []);
+
+  const handleContextMenuCancel = useCallback(() => {
+    setContextMenu(null);
+    cancelInteraction();
+  }, [cancelInteraction]);
 
   const handleCloseContextMenu = useCallback(() => {
     setContextMenu(null);
+    setNodeContextMenu(null);
   }, []);
+
+  const handleNodeMenuSelect = useCallback(() => {
+    if (!nodeContextMenu) return;
+    setSelected(nodeContextMenu.entity);
+    setNodeContextMenu(null);
+  }, [nodeContextMenu]);
+
+  const handleNodeMenuDefineRelation = useCallback(() => {
+    if (!nodeContextMenu) return;
+    setSelected(nodeContextMenu.entity);
+    setQuickRelationSource(nodeContextMenu.entity);
+    setQuickRelationTarget(null);
+    setPickRelationSourceMode(false);
+    setCreateRelationModalOpen(false);
+    setNodeContextMenu(null);
+    setContextMenu(null);
+    setIsPickingQuickRelationTarget(true);
+    window.setTimeout(() => {
+      setDragLinkSourceId(nodeContextMenu.entity.id);
+    }, 0);
+  }, [nodeContextMenu]);
+
+  const handleDeleteEntity = useCallback(async () => {
+    if (!nodeContextMenu) return;
+    const response = await fetch(`/api/structural-map/entities/${nodeContextMenu.entity.id}`, {
+      method: 'DELETE',
+    });
+    const text = await response.text();
+    if (!response.ok) {
+      const payload = text ? (JSON.parse(text) as { error?: string }) : {};
+      throw new Error(payload.error ?? 'Error al remover entidad');
+    }
+    setNodeContextMenu(null);
+    setSelected(null);
+    setQuickRelationSource(null);
+    setQuickRelationTarget(null);
+    setDragLinkSourceId(null);
+    await reload();
+  }, [nodeContextMenu, reload]);
 
   /* ─── Drag-to-link from graph ─── */
   const handleDragLink = useCallback((sourceId: string, targetId: string) => {
-    setRelationDraft({ sourceId, targetId, stage: 'ready' });
-    setActivePanel('catalog');
-    setLinkMode(false);
+    const sourceEntity = displayGraph?.entities.find((entity) => entity.id === sourceId) ?? null;
+    const targetEntity = displayGraph?.entities.find((entity) => entity.id === targetId) ?? null;
+
+    setDragLinkSourceId(null);
+    setPickRelationSourceMode(false);
+    setIsPickingQuickRelationTarget(false);
+
+    if (!sourceEntity || !targetEntity || sourceEntity.id === targetEntity.id) {
+      setQuickRelationSource(null);
+      setQuickRelationTarget(null);
+      return;
+    }
+
+    const rect = centerPaneRef.current?.getBoundingClientRect();
+    setQuickRelationSource(sourceEntity);
+    setQuickRelationTarget(targetEntity);
+    setCreateRelationModalPosition(
+      nodeAnchor && rect
+        ? { x: rect.left + nodeAnchor.x + 24, y: rect.top + nodeAnchor.y + 24 }
+        : { x: 220, y: 180 }
+    );
+    setCreateRelationModalOpen(true);
+  }, [displayGraph?.entities, nodeAnchor]);
+
+  const handleRelationSourcePick = useCallback((entity: GraphEntity) => {
+    setQuickRelationSource(entity);
+    setQuickRelationTarget(null);
+    setSelected(entity);
+    setIsPickingQuickRelationTarget(true);
+    setCreateRelationModalOpen(false);
   }, []);
 
   const handleDeleteRelation = useCallback(async (id: string) => {
@@ -243,13 +302,35 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
     }
   }, []);
 
-  const handleElenaResult = useCallback((result: ElenaRunResult) => {
-    setElenaResult(result);
-    if (result.ok && result.engine === 'cascade') {
-      setSimHighlight(new Set(result.rows.map((r) => r.entity_id)));
-      setActiveFilter('cascade');
+  const handleRunHeaderAnalysis = useCallback(async (engine: ElenaEngine) => {
+    if (!serviceId) return;
+    setAnalysisRunning(true);
+    try {
+      const res = await fetch('/api/structural-map/elena/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rootEntityId: serviceId,
+          engine,
+          scenario: engine === 'cascade' ? 'FAILURE' : undefined,
+        }),
+      });
+      const text = await res.text();
+      if (!text) return;
+      const result = JSON.parse(text) as ElenaRunResult;
+      setElenaResult(result);
+      if (result.ok && result.engine === 'cascade') {
+        setSimHighlight(new Set(result.rows.map((row) => row.entity_id)));
+        setActiveFilter('cascade');
+      }
+      if (result.ok) {
+        await reload();
+      }
+    } finally {
+      setAnalysisRunning(false);
+      setAnalysisSelection('');
     }
-  }, []);
+  }, [reload, serviceId]);
 
   const handleCreateEntity = useCallback(async (input: CreateEntityInput) => {
     const res = await fetch('/api/structural-map/entities', {
@@ -284,6 +365,7 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
     setDraftEntities((current) => [draftEntity, ...current.filter((entity) => entity.id !== draftEntity.id)]);
     setSelected(draftEntity);
     setContextMenu(null);
+    setNodeContextMenu(null);
     return payload;
   }, [entityTypes]);
   const handleCreateRelationFromModal = useCallback(async (input: {
@@ -318,6 +400,7 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
 
         <div className={styles.topBarCenter}>
           <div className={styles.depthControls}>
+            <span className={styles.zoomBadge}>Zoom {canvasZoom}%</span>
             <span className={styles.depthLabel}>Profundidad:</span>
             {DEPTH_OPTIONS.map((d) => (
               <button key={d} onClick={() => changeDepth(d)} className={depth === d ? styles.depthBtnActive : styles.depthBtn}>{d}</button>
@@ -337,6 +420,29 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
           >
             <Link2 size={12} /> Vincular
           </button>
+          <label className={styles.analysisComboWrap}>
+            <span className={styles.analysisComboLabel}>Análisis</span>
+            <select
+              value={analysisSelection}
+              onChange={(event) => {
+                const engine = event.target.value as ElenaEngine;
+                setAnalysisSelection(engine);
+                if (engine) {
+                  void handleRunHeaderAnalysis(engine);
+                }
+              }}
+              disabled={analysisRunning}
+              className={styles.analysisCombo}
+              title="Ejecutar motor Elena sobre el nodo raíz actual"
+            >
+              <option value="">{analysisRunning ? 'Ejecutando…' : 'Seleccionar análisis'}</option>
+              {ANALYSIS_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label} · {option.fn}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
 
         <div className={styles.topBarRight}>
@@ -349,21 +455,22 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
 
       {/* Three-pane layout */}
       <div className={styles.threePane}>
-        {/* Left: catalog + analysis tabs */}
+        {/* Left: catalog */}
         <aside className={styles.leftPane}>
           <div className={styles.panelTabs}>
             <button onClick={() => setActivePanel('catalog')}  className={activePanel === 'catalog'  ? styles.tabActive : styles.tab}>
               <Network size={12} /> Catálogo
             </button>
-            <button onClick={() => setActivePanel('analysis')} className={activePanel === 'analysis' ? styles.tabActive : styles.tab}>
-              <Eye size={12} /> Análisis
-            </button>
             <button
-              onClick={() => { setActivePanel('analysis'); }}
+              onClick={() => {
+                if (serviceId) {
+                  void handleRunHeaderAnalysis('structural');
+                }
+              }}
               className={styles.tab}
-              title="Validar modelo"
+              title="Ejecutar análisis estructural"
             >
-              <CheckSquare size={12} /> Validar
+              <CheckSquare size={12} /> Ejecutar
             </button>
           </div>
           <div className={styles.paneBody}>
@@ -375,19 +482,10 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
                 allEntities={allEntities}
                 rootEntityId={serviceId}
                 selectedEntityId={selected && !('source_entity_id' in selected) ? selected.id : null}
-                relationSeed={relationDraft}
-                onClearRelationSeed={clearRelationDraft}
+                relationSeed={{ sourceId: null, targetId: null, stage: 'idle' }}
+                onClearRelationSeed={() => undefined}
                 onCreateEntity={handleCreateEntity}
                 onCreateRelation={addRelation}
-              />
-            )}
-            {activePanel === 'analysis' && (
-              <AnalysisPanel
-                rootEntityId={serviceId}
-                rootEntityName={service?.name}
-                onValidate={validateModel}
-                onResult={handleElenaResult}
-                onGraphRefresh={reload}
               />
             )}
           </div>
@@ -420,12 +518,16 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
                 selectedNodeId={selected && !('source_entity_id' in selected) ? selected.id : null}
                 highlightedIds={highlightedIds}
                 linkMode={linkMode}
+                dragLinkSourceId={dragLinkSourceId}
+                pickRelationSourceMode={pickRelationSourceMode}
                 onNodeClick={handleNodeClick}
                 onEdgeClick={handleEdgeClick}
                 onNodeSecondaryAction={handleNodeSecondaryAction}
                 onCanvasContextMenu={handleCanvasContextMenu}
                 onDragLink={handleDragLink}
+                onRelationSourcePick={handleRelationSourcePick}
                 onSelectedNodeAnchorChange={setNodeAnchor}
+                onZoomChange={setCanvasZoom}
               />
             </Suspense>
           )}
@@ -445,7 +547,7 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
                   type="button"
                   className={styles.nodePlusButton}
                   style={{ left: nodeAnchor.x + orbit.dx, top: nodeAnchor.y + orbit.dy }}
-                  onClick={(event) => {
+                  onMouseDown={(event) => {
                     event.stopPropagation();
                     handleQuickRelationStart();
                   }}
@@ -463,20 +565,14 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
               <Link2 size={13} /> Modo vincular activo — Clic en nodo origen, luego clic en nodo destino
             </div>
           )}
+          {pickRelationSourceMode && (
+            <div className={styles.quickRelationGuide}>
+              Definir relación: mantén clic en el nodo origen y arrastra hasta el nodo destino.
+            </div>
+          )}
           {isPickingQuickRelationTarget && quickRelationSource && (
             <div className={styles.quickRelationGuide}>
-              Relación visual desde <strong>{quickRelationSource.name ?? quickRelationSource.code}</strong>: selecciona el nodo destino en el canvas.
-            </div>
-          )}
-
-          {displayGraph && relationDraft.stage === 'picking-target' && !linkMode && (
-            <div className={styles.relationGuide}>
-              Relación visual activa: ya marcaste el origen. Haz clic derecho sobre el nodo destino para completar la selección.
-            </div>
-          )}
-          {displayGraph && relationDraft.stage === 'ready' && (
-            <div className={styles.relationGuideReady}>
-              Origen y destino listos. Completa tipo, fuerza y peso en el panel izquierdo y pulsa `Crear relación`.
+              Relación visual desde <strong>{quickRelationSource.name ?? quickRelationSource.code}</strong>: arrastra hasta el nodo destino y suelta para abrir el modal.
             </div>
           )}
           {displayGraph && (
@@ -513,10 +609,39 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
                 </button>
                 <button
                   className={styles.contextMenuItem}
-                  onClick={handleContextMenuAnalysis}
+                  onClick={handleContextMenuCancel}
                 >
-                  <span className={styles.contextMenuIcon}><Activity size={14} /></span>
-                  Análisis
+                  <span className={styles.contextMenuIcon}>×</span>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {nodeContextMenu && (
+            <div
+              className={styles.contextMenuOverlay}
+              onClick={(event) => {
+                event.stopPropagation();
+                setNodeContextMenu(null);
+              }}
+            >
+              <div
+                className={styles.contextMenu}
+                style={{ left: nodeContextMenu.renderedX, top: nodeContextMenu.renderedY }}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <button className={styles.contextMenuItem} onClick={() => { void handleDeleteEntity().catch(console.error); }}>
+                  <span className={styles.contextMenuIcon}><Trash2 size={14} /></span>
+                  Remover entidad
+                </button>
+                <button className={styles.contextMenuItem} onClick={handleNodeMenuDefineRelation}>
+                  <span className={styles.contextMenuIcon}><Link2 size={14} /></span>
+                  Definir relación
+                </button>
+                <button className={styles.contextMenuItem} onClick={handleNodeMenuSelect}>
+                  <span className={styles.contextMenuIcon}><MousePointer2 size={14} /></span>
+                  Escoger entidad
                 </button>
               </div>
             </div>
