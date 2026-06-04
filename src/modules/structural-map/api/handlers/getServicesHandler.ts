@@ -4,10 +4,11 @@ import { PrismaPortfolioRepository } from '@/modules/structural-map/infrastructu
 const repo = new PrismaPortfolioRepository();
 
 export async function getServicesHandler(): Promise<NextResponse> {
-  const [services, entityTypes, relationTypes] = await Promise.all([
+  const [services, entityTypes, relationTypes, allEntities] = await Promise.all([
     repo.getServices(),
     repo.getEntityTypes(),
     repo.getRelationTypes(),
+    repo.getAllEntities(),
   ]);
-  return NextResponse.json({ services, entityTypes, relationTypes });
+  return NextResponse.json({ services, entityTypes, relationTypes, allEntities });
 }

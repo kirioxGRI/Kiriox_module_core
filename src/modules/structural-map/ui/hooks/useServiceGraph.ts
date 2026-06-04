@@ -75,7 +75,14 @@ export function useServiceGraph(rootEntityId: string | null, initialDepth = 2) {
     }
   }, [rootEntityId]);
 
-  const addRelation = useCallback(async (input: { source_entity_id: string; target_entity_id: string; relation_type_id: string; }): Promise<void> => {
+  const addRelation = useCallback(async (input: {
+    source_entity_id: string;
+    target_entity_id: string;
+    relation_type_id: string;
+    weight?: number;
+    strength?: string;
+    description?: string;
+  }): Promise<void> => {
     const res = await fetch('/api/structural-map/relations', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
@@ -85,5 +92,22 @@ export function useServiceGraph(rootEntityId: string | null, initialDepth = 2) {
     loadGraph(depth);
   }, [depth, loadGraph]);
 
-  return { graph, graphError, isPending, depth, changeDepth, runAnalysis, runSimulation, validateModel, addRelation, reload: () => loadGraph(depth) };
+  const updateRelation = useCallback(async (id: string, input: {
+    source_entity_id?: string;
+    target_entity_id?: string;
+    relation_type_id?: string;
+    weight?: number | null;
+    strength?: string | null;
+    description?: string | null;
+  }): Promise<void> => {
+    const res = await fetch(`/api/structural-map/relations/${id}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(input),
+    });
+    const payload = await res.json() as { ok?: boolean; error?: string };
+    if (!res.ok) throw new Error(payload.error ?? 'Error al actualizar relación');
+    loadGraph(depth);
+  }, [depth, loadGraph]);
+
+  return { graph, graphError, isPending, depth, changeDepth, runAnalysis, runSimulation, validateModel, addRelation, updateRelation, reload: () => loadGraph(depth) };
 }

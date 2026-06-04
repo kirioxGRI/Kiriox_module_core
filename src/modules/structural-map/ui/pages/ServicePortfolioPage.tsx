@@ -88,14 +88,14 @@ function ServiceCard({ svc }: { svc: ServiceSummary }) {
       )}
 
       <div className={styles.cardActions}>
-        <Link href={`/gestion/structural-map/${svc.id}`} className={styles.primaryAction}>
+        <Link href={`/gestion/structural-map/modelo?serviceId=${svc.id}`} className={styles.primaryAction}>
           <Play size={12} fill="currentColor" /> Abrir modelo
           <ChevronRight size={12} />
         </Link>
-        <Link href={`/gestion/structural-map/${svc.id}?tab=analysis`} className={styles.secondaryAction}>
+        <Link href={`/gestion/structural-map/modelo?serviceId=${svc.id}&tab=analysis`} className={styles.secondaryAction}>
           <Activity size={12} /> Analizar
         </Link>
-        <Link href={`/gestion/structural-map/${svc.id}?tab=simulation`} className={styles.secondaryAction}>
+        <Link href={`/gestion/structural-map/modelo?serviceId=${svc.id}&tab=simulation`} className={styles.secondaryAction}>
           <GitBranch size={12} /> Simular
         </Link>
       </div>

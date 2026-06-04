@@ -6,11 +6,44 @@ import type {
   RelationType,
   CreateEntityInput,
   CreateRelationInput,
+  UpdateRelationInput,
   ValidationResult,
   ValidationIssue,
 } from '@/modules/structural-map/domain/types/PortfolioTypes';
 
 export class PrismaPortfolioRepository {
+  async getAllEntities(): Promise<any[]> {
+    const rows = await prisma.$queryRaw<any[]>(Prisma.sql`
+      SELECT
+        se.id::text,
+        se.code,
+        se.name,
+        se.description,
+        se.status,
+        se.criticality_level,
+        se.entity_type_id::text,
+        et.code AS entity_type_code,
+        et.name AS entity_type_name,
+        se.is_active
+      FROM systemic_entities se
+      JOIN systemic_entity_types et ON et.id = se.entity_type_id
+      WHERE se.is_active = true
+      ORDER BY se.name ASC
+    `);
+    return rows.map((r) => ({
+      ...r,
+      id: String(r.id),
+      entity_type_id: String(r.entity_type_id),
+      is_active: Boolean(r.is_active),
+      is_spof: false,
+      is_critical_node: false,
+      total_degree: 0,
+      criticality_score: null,
+      resilience_score: null,
+      exposure_score: null,
+    }));
+  }
+
   async getServices(): Promise<ServiceSummary[]> {
     const rows = await prisma.$queryRaw<ServiceSummary[]>(Prisma.sql`
       SELECT
@@ -148,6 +181,46 @@ export class PrismaPortfolioRepository {
     await prisma.$executeRaw(Prisma.sql`
       UPDATE systemic_entity_relations SET is_active = false WHERE id = ${id}::uuid
     `);
+  }
+
+  async updateRelation(id: string, input: UpdateRelationInput): Promise<void> {
+    const setClauses: string[] = [];
+    const values: unknown[] = [];
+
+    if (input.source_entity_id !== undefined) {
+      setClauses.push(`source_entity_id = $${values.length + 2}::uuid`);
+      values.push(input.source_entity_id);
+    }
+    if (input.target_entity_id !== undefined) {
+      setClauses.push(`target_entity_id = $${values.length + 2}::uuid`);
+      values.push(input.target_entity_id);
+    }
+    if (input.relation_type_id !== undefined) {
+      setClauses.push(`relation_type_id = $${values.length + 2}::uuid`);
+      values.push(input.relation_type_id);
+    }
+    if (input.weight !== undefined) {
+      setClauses.push(`weight = $${values.length + 2}`);
+      values.push(input.weight);
+    }
+    if (input.strength !== undefined) {
+      setClauses.push(`strength = $${values.length + 2}`);
+      values.push(input.strength);
+    }
+    if (input.description !== undefined) {
+      setClauses.push(`description = $${values.length + 2}`);
+      values.push(input.description);
+    }
+
+    if (setClauses.length === 0) return;
+
+    setClauses.push('updated_at = NOW()');
+
+    await prisma.$executeRawUnsafe(
+      `UPDATE systemic_entity_relations SET ${setClauses.join(', ')} WHERE id = $1::uuid AND is_active = true`,
+      id,
+      ...values,
+    );
   }
 
   async validateModel(rootEntityId: string): Promise<ValidationResult> {

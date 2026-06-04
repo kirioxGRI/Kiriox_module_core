@@ -51,6 +51,15 @@ export type CreateRelationInput = {
   description?: string;
 };
 
+export type UpdateRelationInput = {
+  source_entity_id?: string;
+  target_entity_id?: string;
+  relation_type_id?: string;
+  weight?: number | null;
+  strength?: string | null;
+  description?: string | null;
+};
+
 export type ValidationIssue = {
   severity: 'critical' | 'high' | 'medium' | 'low';
   entity_id: string | null;

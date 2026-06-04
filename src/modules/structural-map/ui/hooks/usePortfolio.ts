@@ -3,7 +3,7 @@
 import { useEffect, useTransition, useState } from 'react';
 import type { ServiceSummary, EntityType, RelationType } from '@/modules/structural-map/domain/types/PortfolioTypes';
 
-type PortfolioData = { services: ServiceSummary[]; entityTypes: EntityType[]; relationTypes: RelationType[] };
+type PortfolioData = { services: ServiceSummary[]; entityTypes: EntityType[]; relationTypes: RelationType[]; allEntities: any[] };
 
 export function usePortfolio() {
   const [data, setData]   = useState<PortfolioData | null>(null);

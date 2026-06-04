@@ -1,8 +1,8 @@
-import ServiceBuilderPage from '@/modules/structural-map/ui/pages/ServiceBuilderPage';
+import { redirect } from 'next/navigation';
 
 type Props = { params: Promise<{ serviceId: string }> };
 
 export default async function StructuralMapBuilderPage({ params }: Props) {
   const { serviceId } = await params;
-  return <ServiceBuilderPage serviceId={serviceId} />;
+  redirect(`/gestion/structural-map/modelo?serviceId=${serviceId}`);
 }

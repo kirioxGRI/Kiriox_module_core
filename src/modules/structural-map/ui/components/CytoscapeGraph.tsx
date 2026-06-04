@@ -77,7 +77,7 @@ export default function CytoscapeGraph({
         id:    e.id,
         label: e.name ?? e.code,
         color: nodeColor(e),
-        size:  e.id === rootEntityId ? 18 : e.is_critical_node ? 14 : e.is_spof ? 12 : 10,
+        size:  e.id === rootEntityId ? 3 : e.is_critical_node ? 2.5 : e.is_spof ? 2 : 1.5,
         border: e.id === rootEntityId ? '#ffffff' : e.is_critical_node ? '#f87171' : e.is_spof ? '#fb923c' : 'transparent',
       },
     }));
@@ -124,14 +124,14 @@ export default function CytoscapeGraph({
               'height':              'data(size)',
               'label':               'data(label)',
               'color':               '#f1f5f9',
-              'font-size':           '8px',
+              'font-size':           '1px',
               'font-weight':         '600',
               'text-valign':         'bottom',
               'text-halign':         'center',
-              'text-margin-y':       3,
-              'text-max-width':      '80px',
+              'text-margin-y':       1,
+              'text-max-width':      '40px',
               'text-wrap':           'wrap',
-              'border-width':        2,
+              'border-width':        0.15,
               'border-color':        'data(border)',
               'overlay-opacity':     0,
               'transition-property': 'border-color, border-width, opacity',
@@ -155,7 +155,7 @@ export default function CytoscapeGraph({
           },
           {
             selector: 'node:selected',
-            style: { 'border-width': 3, 'border-color': '#a5f3fc', 'background-opacity': 0.9 } as unknown as cytoscape.Css.Node,
+            style: { 'border-width': 0.3, 'border-color': '#a5f3fc', 'background-opacity': 0.9 } as unknown as cytoscape.Css.Node,
           },
           {
             selector: 'edge:selected',
@@ -164,7 +164,7 @@ export default function CytoscapeGraph({
           {
             selector: '.link-source',
             style: {
-              'border-width': 3,
+              'border-width': 0.3,
               'border-color': '#34d399',
               'background-opacity': 0.95,
             } as unknown as cytoscape.Css.Node,
@@ -297,18 +297,18 @@ export default function CytoscapeGraph({
     cyRef.current.nodes().forEach((n) => {
       const id = n.id();
       if (selectedNodeId && id === selectedNodeId) {
-        n.style('border-width', 3);
+        n.style('border-width', 0.3);
         n.style('border-color', '#a5f3fc');
       } else if (highlightedIds?.has(id)) {
         n.style('opacity', 1);
         n.style('border-color', '#fbbf24');
-        n.style('border-width', 2);
+        n.style('border-width', 0.2);
       } else if (highlightedIds && highlightedIds.size > 0) {
         n.style('opacity', 0.3);
       } else {
         n.style('opacity', 1);
         n.style('border-color', n.data('border') as string);
-        n.style('border-width', 2);
+        n.style('border-width', 0.15);
       }
     });
   }, [selectedNodeId, highlightedIds]);

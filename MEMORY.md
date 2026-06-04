@@ -477,3 +477,19 @@ useEffect(() => {
 ```
 
 **Aplicación futura (CONSULTA OBLIGATORIA):** Siempre que se deba anular el menú del clic derecho del navegador para dibujar un menú del sistema en interfaces complejas (grafos, mapas, editores visuales), NO perder el tiempo con handlers locales. Se debe aplicar INMEDIATAMENTE el bloqueo a nivel global de `document` en fase de captura durante el tiempo de vida del componente (`useEffect`).
+
+## 2026-06-04 — Aprendizaje
+
+**Contexto:** Cambio de endpoint para la pantalla del builder que se abre desde `Abrir modelo` en `/gestion/structural-map`.
+
+**Regla aprendida:** La pantalla operativa del modelo estructural no debe exponerse como ruta dinámica principal `/gestion/structural-map/[serviceId]`. El endpoint canónico visible para abrir, analizar o simular un servicio es `/gestion/structural-map/modelo` usando `serviceId` en querystring.
+
+**Aplicación futura:** Los accesos visibles del portafolio (`Abrir modelo`, `Analizar`, `Simular`) deben apuntar a `/gestion/structural-map/modelo?serviceId=...`, mientras que la ruta dinámica antigua puede mantenerse solo como redirección de compatibilidad.
+
+## 2026-06-04 — Aprendizaje
+
+**Contexto:** Evolucion de la creacion contextual de entidades dentro del canvas en `/gestion/structural-map/modelo`.
+
+**Regla aprendida:** Cuando el usuario invoque `Crear entidad` desde el menu contextual del canvas, la captura no debe redirigir al panel lateral. Debe abrirse un modal flotante y movible, cerca del punto de clic, para completar los campos de la nueva entidad sin perder el contexto visual del grafo.
+
+**Aplicación futura:** En builders visuales de Kiriox, las acciones contextuales del canvas deben resolverse preferiblemente con overlays locales y movibles. Si la entidad creada aun no tiene relaciones persistidas, puede mostrarse de inmediato como nodo local en el canvas hasta que el usuario la vincule formalmente.

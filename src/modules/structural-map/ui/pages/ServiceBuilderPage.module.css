@@ -197,6 +197,14 @@
   overflow: hidden;
 }
 
+.rightPane {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgba(255,255,255,0.05);
+  overflow: hidden;
+}
+
+
 .panelTabs {
   display: flex;
   padding: 0.4rem 0.4rem 0;
@@ -368,12 +376,7 @@
   margin-right: 0.25rem;
 }
 
-.rightPane {
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid rgba(255,255,255,0.05);
-  overflow: hidden;
-}
+
 
 @media (max-width: 1440px) {
   .threePane {
