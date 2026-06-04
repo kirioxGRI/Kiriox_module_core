@@ -286,6 +286,9 @@ export type security_usersWhereInput = {
   run_ra_controls?: Prisma.Run_ra_controlsListRelationFilter
   security_logs_access?: Prisma.Security_logs_accessListRelationFilter
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.companyWhereInput> | null
+  systemic_entities?: Prisma.Systemic_entitiesListRelationFilter
+  systemic_simulation_runs?: Prisma.Systemic_simulation_runsListRelationFilter
+  systemic_structural_analysis_runs?: Prisma.Systemic_structural_analysis_runsListRelationFilter
 }
 
 export type security_usersOrderByWithRelationInput = {
@@ -313,6 +316,9 @@ export type security_usersOrderByWithRelationInput = {
   run_ra_controls?: Prisma.run_ra_controlsOrderByRelationAggregateInput
   security_logs_access?: Prisma.security_logs_accessOrderByRelationAggregateInput
   company?: Prisma.companyOrderByWithRelationInput
+  systemic_entities?: Prisma.systemic_entitiesOrderByRelationAggregateInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsOrderByRelationAggregateInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsOrderByRelationAggregateInput
 }
 
 export type security_usersWhereUniqueInput = Prisma.AtLeast<{
@@ -343,6 +349,9 @@ export type security_usersWhereUniqueInput = Prisma.AtLeast<{
   run_ra_controls?: Prisma.Run_ra_controlsListRelationFilter
   security_logs_access?: Prisma.Security_logs_accessListRelationFilter
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.companyWhereInput> | null
+  systemic_entities?: Prisma.Systemic_entitiesListRelationFilter
+  systemic_simulation_runs?: Prisma.Systemic_simulation_runsListRelationFilter
+  systemic_structural_analysis_runs?: Prisma.Systemic_structural_analysis_runsListRelationFilter
 }, "id" | "email">
 
 export type security_usersOrderByWithAggregationInput = {
@@ -415,6 +424,9 @@ export type security_usersCreateInput = {
   run_ra_controls?: Prisma.run_ra_controlsCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessCreateNestedManyWithoutSecurity_usersInput
   company?: Prisma.companyCreateNestedOneWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersUncheckedCreateInput = {
@@ -441,6 +453,9 @@ export type security_usersUncheckedCreateInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersUpdateInput = {
@@ -467,6 +482,9 @@ export type security_usersUpdateInput = {
   run_ra_controls?: Prisma.run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUpdateManyWithoutSecurity_usersNestedInput
   company?: Prisma.companyUpdateOneWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersUncheckedUpdateInput = {
@@ -493,6 +511,9 @@ export type security_usersUncheckedUpdateInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersCreateManyInput = {
@@ -762,6 +783,54 @@ export type security_usersUpdateOneRequiredWithoutSecurity_logs_accessNestedInpu
   update?: Prisma.XOR<Prisma.XOR<Prisma.security_usersUpdateToOneWithWhereWithoutSecurity_logs_accessInput, Prisma.security_usersUpdateWithoutSecurity_logs_accessInput>, Prisma.security_usersUncheckedUpdateWithoutSecurity_logs_accessInput>
 }
 
+export type security_usersCreateNestedOneWithoutSystemic_entitiesInput = {
+  create?: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_entitiesInput, Prisma.security_usersUncheckedCreateWithoutSystemic_entitiesInput>
+  connectOrCreate?: Prisma.security_usersCreateOrConnectWithoutSystemic_entitiesInput
+  connect?: Prisma.security_usersWhereUniqueInput
+}
+
+export type security_usersUpdateOneWithoutSystemic_entitiesNestedInput = {
+  create?: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_entitiesInput, Prisma.security_usersUncheckedCreateWithoutSystemic_entitiesInput>
+  connectOrCreate?: Prisma.security_usersCreateOrConnectWithoutSystemic_entitiesInput
+  upsert?: Prisma.security_usersUpsertWithoutSystemic_entitiesInput
+  disconnect?: Prisma.security_usersWhereInput | boolean
+  delete?: Prisma.security_usersWhereInput | boolean
+  connect?: Prisma.security_usersWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.security_usersUpdateToOneWithWhereWithoutSystemic_entitiesInput, Prisma.security_usersUpdateWithoutSystemic_entitiesInput>, Prisma.security_usersUncheckedUpdateWithoutSystemic_entitiesInput>
+}
+
+export type security_usersCreateNestedOneWithoutSystemic_simulation_runsInput = {
+  create?: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_simulation_runsInput, Prisma.security_usersUncheckedCreateWithoutSystemic_simulation_runsInput>
+  connectOrCreate?: Prisma.security_usersCreateOrConnectWithoutSystemic_simulation_runsInput
+  connect?: Prisma.security_usersWhereUniqueInput
+}
+
+export type security_usersUpdateOneWithoutSystemic_simulation_runsNestedInput = {
+  create?: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_simulation_runsInput, Prisma.security_usersUncheckedCreateWithoutSystemic_simulation_runsInput>
+  connectOrCreate?: Prisma.security_usersCreateOrConnectWithoutSystemic_simulation_runsInput
+  upsert?: Prisma.security_usersUpsertWithoutSystemic_simulation_runsInput
+  disconnect?: Prisma.security_usersWhereInput | boolean
+  delete?: Prisma.security_usersWhereInput | boolean
+  connect?: Prisma.security_usersWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.security_usersUpdateToOneWithWhereWithoutSystemic_simulation_runsInput, Prisma.security_usersUpdateWithoutSystemic_simulation_runsInput>, Prisma.security_usersUncheckedUpdateWithoutSystemic_simulation_runsInput>
+}
+
+export type security_usersCreateNestedOneWithoutSystemic_structural_analysis_runsInput = {
+  create?: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_structural_analysis_runsInput, Prisma.security_usersUncheckedCreateWithoutSystemic_structural_analysis_runsInput>
+  connectOrCreate?: Prisma.security_usersCreateOrConnectWithoutSystemic_structural_analysis_runsInput
+  connect?: Prisma.security_usersWhereUniqueInput
+}
+
+export type security_usersUpdateOneWithoutSystemic_structural_analysis_runsNestedInput = {
+  create?: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_structural_analysis_runsInput, Prisma.security_usersUncheckedCreateWithoutSystemic_structural_analysis_runsInput>
+  connectOrCreate?: Prisma.security_usersCreateOrConnectWithoutSystemic_structural_analysis_runsInput
+  upsert?: Prisma.security_usersUpsertWithoutSystemic_structural_analysis_runsInput
+  disconnect?: Prisma.security_usersWhereInput | boolean
+  delete?: Prisma.security_usersWhereInput | boolean
+  connect?: Prisma.security_usersWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.security_usersUpdateToOneWithWhereWithoutSystemic_structural_analysis_runsInput, Prisma.security_usersUpdateWithoutSystemic_structural_analysis_runsInput>, Prisma.security_usersUncheckedUpdateWithoutSystemic_structural_analysis_runsInput>
+}
+
 export type security_usersCreateWithoutCompanyInput = {
   id?: string
   email: string
@@ -785,6 +854,9 @@ export type security_usersCreateWithoutCompanyInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesCreateNestedManyWithoutSecurity_usersInput
   run_ra_controls?: Prisma.run_ra_controlsCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersUncheckedCreateWithoutCompanyInput = {
@@ -810,6 +882,9 @@ export type security_usersUncheckedCreateWithoutCompanyInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersCreateOrConnectWithoutCompanyInput = {
@@ -884,6 +959,9 @@ export type security_usersCreateWithoutGraph_map_run_sa_activitiesInput = {
   run_ra_controls?: Prisma.run_ra_controlsCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessCreateNestedManyWithoutSecurity_usersInput
   company?: Prisma.companyCreateNestedOneWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersUncheckedCreateWithoutGraph_map_run_sa_activitiesInput = {
@@ -909,6 +987,9 @@ export type security_usersUncheckedCreateWithoutGraph_map_run_sa_activitiesInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersCreateOrConnectWithoutGraph_map_run_sa_activitiesInput = {
@@ -950,6 +1031,9 @@ export type security_usersUpdateWithoutGraph_map_run_sa_activitiesInput = {
   run_ra_controls?: Prisma.run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUpdateManyWithoutSecurity_usersNestedInput
   company?: Prisma.companyUpdateOneWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersUncheckedUpdateWithoutGraph_map_run_sa_activitiesInput = {
@@ -975,6 +1059,9 @@ export type security_usersUncheckedUpdateWithoutGraph_map_run_sa_activitiesInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersCreateWithoutGraph_run_lifecycle_historyInput = {
@@ -1000,6 +1087,9 @@ export type security_usersCreateWithoutGraph_run_lifecycle_historyInput = {
   run_ra_controls?: Prisma.run_ra_controlsCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessCreateNestedManyWithoutSecurity_usersInput
   company?: Prisma.companyCreateNestedOneWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersUncheckedCreateWithoutGraph_run_lifecycle_historyInput = {
@@ -1025,6 +1115,9 @@ export type security_usersUncheckedCreateWithoutGraph_run_lifecycle_historyInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersCreateOrConnectWithoutGraph_run_lifecycle_historyInput = {
@@ -1066,6 +1159,9 @@ export type security_usersUpdateWithoutGraph_run_lifecycle_historyInput = {
   run_ra_controls?: Prisma.run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUpdateManyWithoutSecurity_usersNestedInput
   company?: Prisma.companyUpdateOneWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersUncheckedUpdateWithoutGraph_run_lifecycle_historyInput = {
@@ -1091,6 +1187,9 @@ export type security_usersUncheckedUpdateWithoutGraph_run_lifecycle_historyInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersCreateWithoutGraph_run_saInput = {
@@ -1116,6 +1215,9 @@ export type security_usersCreateWithoutGraph_run_saInput = {
   run_ra_controls?: Prisma.run_ra_controlsCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessCreateNestedManyWithoutSecurity_usersInput
   company?: Prisma.companyCreateNestedOneWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersUncheckedCreateWithoutGraph_run_saInput = {
@@ -1141,6 +1243,9 @@ export type security_usersUncheckedCreateWithoutGraph_run_saInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersCreateOrConnectWithoutGraph_run_saInput = {
@@ -1182,6 +1287,9 @@ export type security_usersUpdateWithoutGraph_run_saInput = {
   run_ra_controls?: Prisma.run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUpdateManyWithoutSecurity_usersNestedInput
   company?: Prisma.companyUpdateOneWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersUncheckedUpdateWithoutGraph_run_saInput = {
@@ -1207,6 +1315,9 @@ export type security_usersUncheckedUpdateWithoutGraph_run_saInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersCreateWithoutMap_user_x_rolesInput = {
@@ -1232,6 +1343,9 @@ export type security_usersCreateWithoutMap_user_x_rolesInput = {
   run_ra_controls?: Prisma.run_ra_controlsCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessCreateNestedManyWithoutSecurity_usersInput
   company?: Prisma.companyCreateNestedOneWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersUncheckedCreateWithoutMap_user_x_rolesInput = {
@@ -1257,6 +1371,9 @@ export type security_usersUncheckedCreateWithoutMap_user_x_rolesInput = {
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersCreateOrConnectWithoutMap_user_x_rolesInput = {
@@ -1298,6 +1415,9 @@ export type security_usersUpdateWithoutMap_user_x_rolesInput = {
   run_ra_controls?: Prisma.run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUpdateManyWithoutSecurity_usersNestedInput
   company?: Prisma.companyUpdateOneWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersUncheckedUpdateWithoutMap_user_x_rolesInput = {
@@ -1323,6 +1443,9 @@ export type security_usersUncheckedUpdateWithoutMap_user_x_rolesInput = {
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersCreateWithoutRun_ra_controlsInput = {
@@ -1348,6 +1471,9 @@ export type security_usersCreateWithoutRun_ra_controlsInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessCreateNestedManyWithoutSecurity_usersInput
   company?: Prisma.companyCreateNestedOneWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersUncheckedCreateWithoutRun_ra_controlsInput = {
@@ -1373,6 +1499,9 @@ export type security_usersUncheckedCreateWithoutRun_ra_controlsInput = {
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
   security_logs_access?: Prisma.security_logs_accessUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersCreateOrConnectWithoutRun_ra_controlsInput = {
@@ -1414,6 +1543,9 @@ export type security_usersUpdateWithoutRun_ra_controlsInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUpdateManyWithoutSecurity_usersNestedInput
   company?: Prisma.companyUpdateOneWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersUncheckedUpdateWithoutRun_ra_controlsInput = {
@@ -1439,6 +1571,9 @@ export type security_usersUncheckedUpdateWithoutRun_ra_controlsInput = {
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersCreateWithoutSecurity_logs_accessInput = {
@@ -1464,6 +1599,9 @@ export type security_usersCreateWithoutSecurity_logs_accessInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesCreateNestedManyWithoutSecurity_usersInput
   run_ra_controls?: Prisma.run_ra_controlsCreateNestedManyWithoutSecurity_usersInput
   company?: Prisma.companyCreateNestedOneWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersUncheckedCreateWithoutSecurity_logs_accessInput = {
@@ -1489,6 +1627,9 @@ export type security_usersUncheckedCreateWithoutSecurity_logs_accessInput = {
   graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
 }
 
 export type security_usersCreateOrConnectWithoutSecurity_logs_accessInput = {
@@ -1530,6 +1671,9 @@ export type security_usersUpdateWithoutSecurity_logs_accessInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesUpdateManyWithoutSecurity_usersNestedInput
   run_ra_controls?: Prisma.run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput
   company?: Prisma.companyUpdateOneWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersUncheckedUpdateWithoutSecurity_logs_accessInput = {
@@ -1555,6 +1699,393 @@ export type security_usersUncheckedUpdateWithoutSecurity_logs_accessInput = {
   graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+}
+
+export type security_usersCreateWithoutSystemic_entitiesInput = {
+  id?: string
+  email: string
+  password_hash: string
+  name?: string | null
+  last_name?: string | null
+  whatsapp?: string | null
+  is_active?: boolean | null
+  must_change_password?: boolean
+  activation_status?: string
+  role_id?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  last_login_at?: Date | string | null
+  password_updated_at?: Date | string | null
+  username?: string | null
+  expire_at?: Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput
+  graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutSecurity_usersInput
+  map_user_x_roles?: Prisma.map_user_x_rolesCreateNestedManyWithoutSecurity_usersInput
+  run_ra_controls?: Prisma.run_ra_controlsCreateNestedManyWithoutSecurity_usersInput
+  security_logs_access?: Prisma.security_logs_accessCreateNestedManyWithoutSecurity_usersInput
+  company?: Prisma.companyCreateNestedOneWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsCreateNestedManyWithoutSecurity_usersInput
+}
+
+export type security_usersUncheckedCreateWithoutSystemic_entitiesInput = {
+  id?: string
+  email: string
+  password_hash: string
+  name?: string | null
+  last_name?: string | null
+  whatsapp?: string | null
+  is_active?: boolean | null
+  must_change_password?: boolean
+  activation_status?: string
+  role_id?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  last_login_at?: Date | string | null
+  password_updated_at?: Date | string | null
+  company_id?: string | null
+  username?: string | null
+  expire_at?: Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput
+  graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
+  map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  run_ra_controls?: Prisma.run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  security_logs_access?: Prisma.security_logs_accessUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+}
+
+export type security_usersCreateOrConnectWithoutSystemic_entitiesInput = {
+  where: Prisma.security_usersWhereUniqueInput
+  create: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_entitiesInput, Prisma.security_usersUncheckedCreateWithoutSystemic_entitiesInput>
+}
+
+export type security_usersUpsertWithoutSystemic_entitiesInput = {
+  update: Prisma.XOR<Prisma.security_usersUpdateWithoutSystemic_entitiesInput, Prisma.security_usersUncheckedUpdateWithoutSystemic_entitiesInput>
+  create: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_entitiesInput, Prisma.security_usersUncheckedCreateWithoutSystemic_entitiesInput>
+  where?: Prisma.security_usersWhereInput
+}
+
+export type security_usersUpdateToOneWithWhereWithoutSystemic_entitiesInput = {
+  where?: Prisma.security_usersWhereInput
+  data: Prisma.XOR<Prisma.security_usersUpdateWithoutSystemic_entitiesInput, Prisma.security_usersUncheckedUpdateWithoutSystemic_entitiesInput>
+}
+
+export type security_usersUpdateWithoutSystemic_entitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  must_change_password?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  activation_status?: Prisma.StringFieldUpdateOperationsInput | string
+  role_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutSecurity_usersNestedInput
+  map_user_x_roles?: Prisma.map_user_x_rolesUpdateManyWithoutSecurity_usersNestedInput
+  run_ra_controls?: Prisma.run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput
+  security_logs_access?: Prisma.security_logs_accessUpdateManyWithoutSecurity_usersNestedInput
+  company?: Prisma.companyUpdateOneWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUpdateManyWithoutSecurity_usersNestedInput
+}
+
+export type security_usersUncheckedUpdateWithoutSystemic_entitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  must_change_password?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  activation_status?: Prisma.StringFieldUpdateOperationsInput | string
+  role_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  run_ra_controls?: Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  security_logs_access?: Prisma.security_logs_accessUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+}
+
+export type security_usersCreateWithoutSystemic_simulation_runsInput = {
+  id?: string
+  email: string
+  password_hash: string
+  name?: string | null
+  last_name?: string | null
+  whatsapp?: string | null
+  is_active?: boolean | null
+  must_change_password?: boolean
+  activation_status?: string
+  role_id?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  last_login_at?: Date | string | null
+  password_updated_at?: Date | string | null
+  username?: string | null
+  expire_at?: Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput
+  graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutSecurity_usersInput
+  map_user_x_roles?: Prisma.map_user_x_rolesCreateNestedManyWithoutSecurity_usersInput
+  run_ra_controls?: Prisma.run_ra_controlsCreateNestedManyWithoutSecurity_usersInput
+  security_logs_access?: Prisma.security_logs_accessCreateNestedManyWithoutSecurity_usersInput
+  company?: Prisma.companyCreateNestedOneWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsCreateNestedManyWithoutSecurity_usersInput
+}
+
+export type security_usersUncheckedCreateWithoutSystemic_simulation_runsInput = {
+  id?: string
+  email: string
+  password_hash: string
+  name?: string | null
+  last_name?: string | null
+  whatsapp?: string | null
+  is_active?: boolean | null
+  must_change_password?: boolean
+  activation_status?: string
+  role_id?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  last_login_at?: Date | string | null
+  password_updated_at?: Date | string | null
+  company_id?: string | null
+  username?: string | null
+  expire_at?: Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput
+  graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
+  map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  run_ra_controls?: Prisma.run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  security_logs_access?: Prisma.security_logs_accessUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+}
+
+export type security_usersCreateOrConnectWithoutSystemic_simulation_runsInput = {
+  where: Prisma.security_usersWhereUniqueInput
+  create: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_simulation_runsInput, Prisma.security_usersUncheckedCreateWithoutSystemic_simulation_runsInput>
+}
+
+export type security_usersUpsertWithoutSystemic_simulation_runsInput = {
+  update: Prisma.XOR<Prisma.security_usersUpdateWithoutSystemic_simulation_runsInput, Prisma.security_usersUncheckedUpdateWithoutSystemic_simulation_runsInput>
+  create: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_simulation_runsInput, Prisma.security_usersUncheckedCreateWithoutSystemic_simulation_runsInput>
+  where?: Prisma.security_usersWhereInput
+}
+
+export type security_usersUpdateToOneWithWhereWithoutSystemic_simulation_runsInput = {
+  where?: Prisma.security_usersWhereInput
+  data: Prisma.XOR<Prisma.security_usersUpdateWithoutSystemic_simulation_runsInput, Prisma.security_usersUncheckedUpdateWithoutSystemic_simulation_runsInput>
+}
+
+export type security_usersUpdateWithoutSystemic_simulation_runsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  must_change_password?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  activation_status?: Prisma.StringFieldUpdateOperationsInput | string
+  role_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutSecurity_usersNestedInput
+  map_user_x_roles?: Prisma.map_user_x_rolesUpdateManyWithoutSecurity_usersNestedInput
+  run_ra_controls?: Prisma.run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput
+  security_logs_access?: Prisma.security_logs_accessUpdateManyWithoutSecurity_usersNestedInput
+  company?: Prisma.companyUpdateOneWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUpdateManyWithoutSecurity_usersNestedInput
+}
+
+export type security_usersUncheckedUpdateWithoutSystemic_simulation_runsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  must_change_password?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  activation_status?: Prisma.StringFieldUpdateOperationsInput | string
+  role_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  run_ra_controls?: Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  security_logs_access?: Prisma.security_logs_accessUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+}
+
+export type security_usersCreateWithoutSystemic_structural_analysis_runsInput = {
+  id?: string
+  email: string
+  password_hash: string
+  name?: string | null
+  last_name?: string | null
+  whatsapp?: string | null
+  is_active?: boolean | null
+  must_change_password?: boolean
+  activation_status?: string
+  role_id?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  last_login_at?: Date | string | null
+  password_updated_at?: Date | string | null
+  username?: string | null
+  expire_at?: Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesCreateNestedManyWithoutSecurity_usersInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyCreateNestedManyWithoutSecurity_usersInput
+  graph_run_sa?: Prisma.graph_run_saCreateNestedManyWithoutSecurity_usersInput
+  map_user_x_roles?: Prisma.map_user_x_rolesCreateNestedManyWithoutSecurity_usersInput
+  run_ra_controls?: Prisma.run_ra_controlsCreateNestedManyWithoutSecurity_usersInput
+  security_logs_access?: Prisma.security_logs_accessCreateNestedManyWithoutSecurity_usersInput
+  company?: Prisma.companyCreateNestedOneWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsCreateNestedManyWithoutSecurity_usersInput
+}
+
+export type security_usersUncheckedCreateWithoutSystemic_structural_analysis_runsInput = {
+  id?: string
+  email: string
+  password_hash: string
+  name?: string | null
+  last_name?: string | null
+  whatsapp?: string | null
+  is_active?: boolean | null
+  must_change_password?: boolean
+  activation_status?: string
+  role_id?: string | null
+  created_at?: Date | string | null
+  updated_at?: Date | string | null
+  last_login_at?: Date | string | null
+  password_updated_at?: Date | string | null
+  company_id?: string | null
+  username?: string | null
+  expire_at?: Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedCreateNestedManyWithoutSecurity_usersInput
+  graph_run_sa?: Prisma.graph_run_saUncheckedCreateNestedManyWithoutSecurity_usersInput
+  map_user_x_roles?: Prisma.map_user_x_rolesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  run_ra_controls?: Prisma.run_ra_controlsUncheckedCreateNestedManyWithoutSecurity_usersInput
+  security_logs_access?: Prisma.security_logs_accessUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedCreateNestedManyWithoutSecurity_usersInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedCreateNestedManyWithoutSecurity_usersInput
+}
+
+export type security_usersCreateOrConnectWithoutSystemic_structural_analysis_runsInput = {
+  where: Prisma.security_usersWhereUniqueInput
+  create: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_structural_analysis_runsInput, Prisma.security_usersUncheckedCreateWithoutSystemic_structural_analysis_runsInput>
+}
+
+export type security_usersUpsertWithoutSystemic_structural_analysis_runsInput = {
+  update: Prisma.XOR<Prisma.security_usersUpdateWithoutSystemic_structural_analysis_runsInput, Prisma.security_usersUncheckedUpdateWithoutSystemic_structural_analysis_runsInput>
+  create: Prisma.XOR<Prisma.security_usersCreateWithoutSystemic_structural_analysis_runsInput, Prisma.security_usersUncheckedCreateWithoutSystemic_structural_analysis_runsInput>
+  where?: Prisma.security_usersWhereInput
+}
+
+export type security_usersUpdateToOneWithWhereWithoutSystemic_structural_analysis_runsInput = {
+  where?: Prisma.security_usersWhereInput
+  data: Prisma.XOR<Prisma.security_usersUpdateWithoutSystemic_structural_analysis_runsInput, Prisma.security_usersUncheckedUpdateWithoutSystemic_structural_analysis_runsInput>
+}
+
+export type security_usersUpdateWithoutSystemic_structural_analysis_runsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  must_change_password?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  activation_status?: Prisma.StringFieldUpdateOperationsInput | string
+  role_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_sa?: Prisma.graph_run_saUpdateManyWithoutSecurity_usersNestedInput
+  map_user_x_roles?: Prisma.map_user_x_rolesUpdateManyWithoutSecurity_usersNestedInput
+  run_ra_controls?: Prisma.run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput
+  security_logs_access?: Prisma.security_logs_accessUpdateManyWithoutSecurity_usersNestedInput
+  company?: Prisma.companyUpdateOneWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUpdateManyWithoutSecurity_usersNestedInput
+}
+
+export type security_usersUncheckedUpdateWithoutSystemic_structural_analysis_runsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password_hash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  last_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsapp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  is_active?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  must_change_password?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  activation_status?: Prisma.StringFieldUpdateOperationsInput | string
+  role_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  last_login_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  password_updated_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  company_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  username?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expire_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  graph_map_run_sa_activities?: Prisma.graph_map_run_sa_activitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_lifecycle_history?: Prisma.graph_run_lifecycle_historyUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  graph_run_sa?: Prisma.graph_run_saUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  run_ra_controls?: Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  security_logs_access?: Prisma.security_logs_accessUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersCreateManyCompanyInput = {
@@ -1599,6 +2130,9 @@ export type security_usersUpdateWithoutCompanyInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesUpdateManyWithoutSecurity_usersNestedInput
   run_ra_controls?: Prisma.run_ra_controlsUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersUncheckedUpdateWithoutCompanyInput = {
@@ -1624,6 +2158,9 @@ export type security_usersUncheckedUpdateWithoutCompanyInput = {
   map_user_x_roles?: Prisma.map_user_x_rolesUncheckedUpdateManyWithoutSecurity_usersNestedInput
   run_ra_controls?: Prisma.run_ra_controlsUncheckedUpdateManyWithoutSecurity_usersNestedInput
   security_logs_access?: Prisma.security_logs_accessUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_entities?: Prisma.systemic_entitiesUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_simulation_runs?: Prisma.systemic_simulation_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
+  systemic_structural_analysis_runs?: Prisma.systemic_structural_analysis_runsUncheckedUpdateManyWithoutSecurity_usersNestedInput
 }
 
 export type security_usersUncheckedUpdateManyWithoutCompanyInput = {
@@ -1657,6 +2194,9 @@ export type Security_usersCountOutputType = {
   map_user_x_roles: number
   run_ra_controls: number
   security_logs_access: number
+  systemic_entities: number
+  systemic_simulation_runs: number
+  systemic_structural_analysis_runs: number
 }
 
 export type Security_usersCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1666,6 +2206,9 @@ export type Security_usersCountOutputTypeSelect<ExtArgs extends runtime.Types.Ex
   map_user_x_roles?: boolean | Security_usersCountOutputTypeCountMap_user_x_rolesArgs
   run_ra_controls?: boolean | Security_usersCountOutputTypeCountRun_ra_controlsArgs
   security_logs_access?: boolean | Security_usersCountOutputTypeCountSecurity_logs_accessArgs
+  systemic_entities?: boolean | Security_usersCountOutputTypeCountSystemic_entitiesArgs
+  systemic_simulation_runs?: boolean | Security_usersCountOutputTypeCountSystemic_simulation_runsArgs
+  systemic_structural_analysis_runs?: boolean | Security_usersCountOutputTypeCountSystemic_structural_analysis_runsArgs
 }
 
 /**
@@ -1720,6 +2263,27 @@ export type Security_usersCountOutputTypeCountSecurity_logs_accessArgs<ExtArgs e
   where?: Prisma.security_logs_accessWhereInput
 }
 
+/**
+ * Security_usersCountOutputType without action
+ */
+export type Security_usersCountOutputTypeCountSystemic_entitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.systemic_entitiesWhereInput
+}
+
+/**
+ * Security_usersCountOutputType without action
+ */
+export type Security_usersCountOutputTypeCountSystemic_simulation_runsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.systemic_simulation_runsWhereInput
+}
+
+/**
+ * Security_usersCountOutputType without action
+ */
+export type Security_usersCountOutputTypeCountSystemic_structural_analysis_runsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.systemic_structural_analysis_runsWhereInput
+}
+
 
 export type security_usersSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1746,6 +2310,9 @@ export type security_usersSelect<ExtArgs extends runtime.Types.Extensions.Intern
   run_ra_controls?: boolean | Prisma.security_users$run_ra_controlsArgs<ExtArgs>
   security_logs_access?: boolean | Prisma.security_users$security_logs_accessArgs<ExtArgs>
   company?: boolean | Prisma.security_users$companyArgs<ExtArgs>
+  systemic_entities?: boolean | Prisma.security_users$systemic_entitiesArgs<ExtArgs>
+  systemic_simulation_runs?: boolean | Prisma.security_users$systemic_simulation_runsArgs<ExtArgs>
+  systemic_structural_analysis_runs?: boolean | Prisma.security_users$systemic_structural_analysis_runsArgs<ExtArgs>
   _count?: boolean | Prisma.Security_usersCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["security_users"]>
 
@@ -1820,6 +2387,9 @@ export type security_usersInclude<ExtArgs extends runtime.Types.Extensions.Inter
   run_ra_controls?: boolean | Prisma.security_users$run_ra_controlsArgs<ExtArgs>
   security_logs_access?: boolean | Prisma.security_users$security_logs_accessArgs<ExtArgs>
   company?: boolean | Prisma.security_users$companyArgs<ExtArgs>
+  systemic_entities?: boolean | Prisma.security_users$systemic_entitiesArgs<ExtArgs>
+  systemic_simulation_runs?: boolean | Prisma.security_users$systemic_simulation_runsArgs<ExtArgs>
+  systemic_structural_analysis_runs?: boolean | Prisma.security_users$systemic_structural_analysis_runsArgs<ExtArgs>
   _count?: boolean | Prisma.Security_usersCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type security_usersIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1839,6 +2409,9 @@ export type $security_usersPayload<ExtArgs extends runtime.Types.Extensions.Inte
     run_ra_controls: Prisma.$run_ra_controlsPayload<ExtArgs>[]
     security_logs_access: Prisma.$security_logs_accessPayload<ExtArgs>[]
     company: Prisma.$companyPayload<ExtArgs> | null
+    systemic_entities: Prisma.$systemic_entitiesPayload<ExtArgs>[]
+    systemic_simulation_runs: Prisma.$systemic_simulation_runsPayload<ExtArgs>[]
+    systemic_structural_analysis_runs: Prisma.$systemic_structural_analysis_runsPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2259,6 +2832,9 @@ export interface Prisma__security_usersClient<T, Null = never, ExtArgs extends r
   run_ra_controls<T extends Prisma.security_users$run_ra_controlsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.security_users$run_ra_controlsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$run_ra_controlsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   security_logs_access<T extends Prisma.security_users$security_logs_accessArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.security_users$security_logs_accessArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$security_logs_accessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   company<T extends Prisma.security_users$companyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.security_users$companyArgs<ExtArgs>>): Prisma.Prisma__companyClient<runtime.Types.Result.GetResult<Prisma.$companyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  systemic_entities<T extends Prisma.security_users$systemic_entitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.security_users$systemic_entitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$systemic_entitiesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  systemic_simulation_runs<T extends Prisma.security_users$systemic_simulation_runsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.security_users$systemic_simulation_runsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$systemic_simulation_runsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  systemic_structural_analysis_runs<T extends Prisma.security_users$systemic_structural_analysis_runsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.security_users$systemic_structural_analysis_runsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$systemic_structural_analysis_runsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2866,6 +3442,78 @@ export type security_users$companyArgs<ExtArgs extends runtime.Types.Extensions.
    */
   include?: Prisma.companyInclude<ExtArgs> | null
   where?: Prisma.companyWhereInput
+}
+
+/**
+ * security_users.systemic_entities
+ */
+export type security_users$systemic_entitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the systemic_entities
+   */
+  select?: Prisma.systemic_entitiesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the systemic_entities
+   */
+  omit?: Prisma.systemic_entitiesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.systemic_entitiesInclude<ExtArgs> | null
+  where?: Prisma.systemic_entitiesWhereInput
+  orderBy?: Prisma.systemic_entitiesOrderByWithRelationInput | Prisma.systemic_entitiesOrderByWithRelationInput[]
+  cursor?: Prisma.systemic_entitiesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Systemic_entitiesScalarFieldEnum | Prisma.Systemic_entitiesScalarFieldEnum[]
+}
+
+/**
+ * security_users.systemic_simulation_runs
+ */
+export type security_users$systemic_simulation_runsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the systemic_simulation_runs
+   */
+  select?: Prisma.systemic_simulation_runsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the systemic_simulation_runs
+   */
+  omit?: Prisma.systemic_simulation_runsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.systemic_simulation_runsInclude<ExtArgs> | null
+  where?: Prisma.systemic_simulation_runsWhereInput
+  orderBy?: Prisma.systemic_simulation_runsOrderByWithRelationInput | Prisma.systemic_simulation_runsOrderByWithRelationInput[]
+  cursor?: Prisma.systemic_simulation_runsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Systemic_simulation_runsScalarFieldEnum | Prisma.Systemic_simulation_runsScalarFieldEnum[]
+}
+
+/**
+ * security_users.systemic_structural_analysis_runs
+ */
+export type security_users$systemic_structural_analysis_runsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the systemic_structural_analysis_runs
+   */
+  select?: Prisma.systemic_structural_analysis_runsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the systemic_structural_analysis_runs
+   */
+  omit?: Prisma.systemic_structural_analysis_runsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.systemic_structural_analysis_runsInclude<ExtArgs> | null
+  where?: Prisma.systemic_structural_analysis_runsWhereInput
+  orderBy?: Prisma.systemic_structural_analysis_runsOrderByWithRelationInput | Prisma.systemic_structural_analysis_runsOrderByWithRelationInput[]
+  cursor?: Prisma.systemic_structural_analysis_runsWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Systemic_structural_analysis_runsScalarFieldEnum | Prisma.Systemic_structural_analysis_runsScalarFieldEnum[]
 }
 
 /**

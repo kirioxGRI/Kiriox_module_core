@@ -38,6 +38,28 @@ type SidebarProps = {
   loading?: boolean;
 };
 
+const SIDEBAR_HOME_ITEM: ResolvedNavigationItem = {
+  key: "sidebar-home",
+  label: "Inicio",
+  href: "/score/dashboard2",
+  icon: "Home",
+  module: "core",
+  permission: "A",
+  order: -100,
+  backgroundColor: "#182f62",
+};
+
+const SIDEBAR_SYSTEMIC_RISK_ITEM: ResolvedNavigationItem = {
+  key: "sidebar-systemic-risk",
+  label: "Riesgo sistemico",
+  href: "/gestion/dashboard_riesgo_sistemico",
+  icon: "GitBranch",
+  module: "structural-risk",
+  permission: "A",
+  order: 31,
+  backgroundColor: "#182f62",
+};
+
 export default function Sidebar({ items, loading = false }: SidebarProps) {
   const pathname = usePathname();
   const [isHovering, setIsHovering] = useState(false);
@@ -53,7 +75,22 @@ export default function Sidebar({ items, loading = false }: SidebarProps) {
   }, [expandedSections]);
 
   const sortedItems = useMemo(
-    () => [...items].sort((a, b) => a.order - b.order),
+    () => {
+      // `Inicio` is an operational shell entry and must stay visible even when
+      // RBAC excludes the `core` module from the dynamic navigation payload.
+      const itemsWithoutCoreNav = items.filter((item) => item.module !== "core");
+      const mergedItems = [SIDEBAR_HOME_ITEM, ...itemsWithoutCoreNav];
+      const hasStructuralRisk = itemsWithoutCoreNav.some((item) => item.module === "structural-risk");
+      const hasSystemicShortcut = mergedItems.some(
+        (item) => item.key === SIDEBAR_SYSTEMIC_RISK_ITEM.key || item.href === SIDEBAR_SYSTEMIC_RISK_ITEM.href
+      );
+
+      if (hasStructuralRisk && !hasSystemicShortcut) {
+        mergedItems.push(SIDEBAR_SYSTEMIC_RISK_ITEM);
+      }
+
+      return mergedItems.sort((a, b) => a.order - b.order);
+    },
     [items]
   );
 

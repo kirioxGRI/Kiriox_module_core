@@ -132,7 +132,18 @@ export const ModelName = {
   security_roles: 'security_roles',
   security_submodule: 'security_submodule',
   security_system: 'security_system',
-  security_users: 'security_users'
+  security_users: 'security_users',
+  systemic_entities: 'systemic_entities',
+  systemic_entity_attributes: 'systemic_entity_attributes',
+  systemic_entity_relations: 'systemic_entity_relations',
+  systemic_entity_tags: 'systemic_entity_tags',
+  systemic_entity_types: 'systemic_entity_types',
+  systemic_propagation_paths: 'systemic_propagation_paths',
+  systemic_relation_types: 'systemic_relation_types',
+  systemic_simulation_impacts: 'systemic_simulation_impacts',
+  systemic_simulation_runs: 'systemic_simulation_runs',
+  systemic_structural_analysis_runs: 'systemic_structural_analysis_runs',
+  systemic_structural_metrics: 'systemic_structural_metrics'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1507,6 +1518,192 @@ export const Security_usersScalarFieldEnum = {
 } as const
 
 export type Security_usersScalarFieldEnum = (typeof Security_usersScalarFieldEnum)[keyof typeof Security_usersScalarFieldEnum]
+
+
+export const Systemic_entitiesScalarFieldEnum = {
+  id: 'id',
+  entity_type_id: 'entity_type_id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  status: 'status',
+  criticality_level: 'criticality_level',
+  owner_user_id: 'owner_user_id',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Systemic_entitiesScalarFieldEnum = (typeof Systemic_entitiesScalarFieldEnum)[keyof typeof Systemic_entitiesScalarFieldEnum]
+
+
+export const Systemic_entity_attributesScalarFieldEnum = {
+  id: 'id',
+  entity_id: 'entity_id',
+  attribute_key: 'attribute_key',
+  attribute_value: 'attribute_value',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Systemic_entity_attributesScalarFieldEnum = (typeof Systemic_entity_attributesScalarFieldEnum)[keyof typeof Systemic_entity_attributesScalarFieldEnum]
+
+
+export const Systemic_entity_relationsScalarFieldEnum = {
+  id: 'id',
+  source_entity_id: 'source_entity_id',
+  target_entity_id: 'target_entity_id',
+  relation_type_id: 'relation_type_id',
+  weight: 'weight',
+  strength: 'strength',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Systemic_entity_relationsScalarFieldEnum = (typeof Systemic_entity_relationsScalarFieldEnum)[keyof typeof Systemic_entity_relationsScalarFieldEnum]
+
+
+export const Systemic_entity_tagsScalarFieldEnum = {
+  id: 'id',
+  entity_id: 'entity_id',
+  tag: 'tag',
+  created_at: 'created_at'
+} as const
+
+export type Systemic_entity_tagsScalarFieldEnum = (typeof Systemic_entity_tagsScalarFieldEnum)[keyof typeof Systemic_entity_tagsScalarFieldEnum]
+
+
+export const Systemic_entity_typesScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Systemic_entity_typesScalarFieldEnum = (typeof Systemic_entity_typesScalarFieldEnum)[keyof typeof Systemic_entity_typesScalarFieldEnum]
+
+
+export const Systemic_propagation_pathsScalarFieldEnum = {
+  id: 'id',
+  simulation_run_id: 'simulation_run_id',
+  source_entity_id: 'source_entity_id',
+  target_entity_id: 'target_entity_id',
+  path_sequence: 'path_sequence',
+  depth_level: 'depth_level',
+  propagation_score: 'propagation_score',
+  propagation_reason: 'propagation_reason',
+  created_at: 'created_at',
+  relation_type_id: 'relation_type_id',
+  path_trace: 'path_trace'
+} as const
+
+export type Systemic_propagation_pathsScalarFieldEnum = (typeof Systemic_propagation_pathsScalarFieldEnum)[keyof typeof Systemic_propagation_pathsScalarFieldEnum]
+
+
+export const Systemic_relation_typesScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  is_directional: 'is_directional',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Systemic_relation_typesScalarFieldEnum = (typeof Systemic_relation_typesScalarFieldEnum)[keyof typeof Systemic_relation_typesScalarFieldEnum]
+
+
+export const Systemic_simulation_impactsScalarFieldEnum = {
+  id: 'id',
+  simulation_run_id: 'simulation_run_id',
+  entity_id: 'entity_id',
+  impact_level: 'impact_level',
+  impact_score: 'impact_score',
+  impact_reason: 'impact_reason',
+  recommended_action: 'recommended_action',
+  created_at: 'created_at',
+  impact_depth: 'impact_depth',
+  is_origin: 'is_origin'
+} as const
+
+export type Systemic_simulation_impactsScalarFieldEnum = (typeof Systemic_simulation_impactsScalarFieldEnum)[keyof typeof Systemic_simulation_impactsScalarFieldEnum]
+
+
+export const Systemic_simulation_runsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  simulation_type: 'simulation_type',
+  trigger_entity_id: 'trigger_entity_id',
+  status: 'status',
+  started_at: 'started_at',
+  completed_at: 'completed_at',
+  created_by: 'created_by',
+  created_at: 'created_at'
+} as const
+
+export type Systemic_simulation_runsScalarFieldEnum = (typeof Systemic_simulation_runsScalarFieldEnum)[keyof typeof Systemic_simulation_runsScalarFieldEnum]
+
+
+export const Systemic_structural_analysis_runsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  analysis_type: 'analysis_type',
+  status: 'status',
+  started_at: 'started_at',
+  completed_at: 'completed_at',
+  created_by: 'created_by',
+  created_at: 'created_at'
+} as const
+
+export type Systemic_structural_analysis_runsScalarFieldEnum = (typeof Systemic_structural_analysis_runsScalarFieldEnum)[keyof typeof Systemic_structural_analysis_runsScalarFieldEnum]
+
+
+export const Systemic_structural_metricsScalarFieldEnum = {
+  id: 'id',
+  structural_analysis_run_id: 'structural_analysis_run_id',
+  entity_id: 'entity_id',
+  metric_type: 'metric_type',
+  metric_value: 'metric_value',
+  metric_level: 'metric_level',
+  metric_details: 'metric_details',
+  created_at: 'created_at',
+  incoming_count: 'incoming_count',
+  outgoing_count: 'outgoing_count',
+  total_degree: 'total_degree',
+  dependency_count: 'dependency_count',
+  dependent_count: 'dependent_count',
+  control_count: 'control_count',
+  risk_count: 'risk_count',
+  obligation_count: 'obligation_count',
+  evidence_count: 'evidence_count',
+  cascade_exposure_score: 'cascade_exposure_score',
+  criticality_score: 'criticality_score',
+  criticality_level: 'criticality_level',
+  is_critical_node: 'is_critical_node',
+  support_count: 'support_count',
+  alternative_support_count: 'alternative_support_count',
+  is_spof: 'is_spof',
+  resilience_score: 'resilience_score',
+  resilience_level: 'resilience_level',
+  fragility_score: 'fragility_score',
+  has_resilience_gap: 'has_resilience_gap',
+  data_count: 'data_count',
+  incident_count: 'incident_count',
+  uncontrolled_risk_count: 'uncontrolled_risk_count',
+  exposure_score: 'exposure_score',
+  exposure_level: 'exposure_level',
+  has_exposure_gap: 'has_exposure_gap'
+} as const
+
+export type Systemic_structural_metricsScalarFieldEnum = (typeof Systemic_structural_metricsScalarFieldEnum)[keyof typeof Systemic_structural_metricsScalarFieldEnum]
 
 
 export const SortOrder = {

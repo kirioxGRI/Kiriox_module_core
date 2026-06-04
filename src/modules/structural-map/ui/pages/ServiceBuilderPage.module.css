@@ -1,0 +1,344 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0a0f1e 0%, #060b18 100%);
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 1rem;
+  background: rgba(0,0,0,0.35);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.topBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 200px;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.backBtn:hover { color: #94a3b8; }
+
+.serviceTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.serviceDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6366f1;
+  flex-shrink: 0;
+}
+
+.serviceTitleName {
+  color: #f1f5f9;
+  font-size: 0.82rem;
+  font-weight: 800;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.serviceTitleCode {
+  color: #475569;
+  font-size: 0.65rem;
+  font-family: monospace;
+}
+
+.topBarCenter {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.depthControls {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.depthLabel {
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.depthBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.depthBtn:hover { background: rgba(255,255,255,0.06); color: #94a3b8; }
+
+.depthBtnActive {
+  composes: depthBtn;
+  background: rgba(99,102,241,0.2);
+  border-color: rgba(99,102,241,0.5);
+  color: #a5b4fc;
+}
+
+.filterControls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.filterBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: transparent;
+  color: #64748b;
+  font-size: 0.67rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.filterBtn:hover { background: rgba(255,255,255,0.05); color: #94a3b8; }
+
+.filterBtnActive {
+  composes: filterBtn;
+  background: rgba(99,102,241,0.15);
+  border-color: rgba(99,102,241,0.4);
+  color: #a5b4fc;
+}
+
+.topBarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 160px;
+  justify-content: flex-end;
+}
+
+.graphStat {
+  color: #475569;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(99,102,241,0.3);
+  border-top-color: #818cf8;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.closeBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  color: #64748b;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.closeBtn:hover { background: rgba(239,68,68,0.15); color: #f87171; border-color: rgba(239,68,68,0.3); }
+
+.threePane {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 260px 1fr 280px;
+  overflow: hidden;
+}
+
+.leftPane {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  overflow: hidden;
+}
+
+.panelTabs {
+  display: flex;
+  padding: 0.4rem 0.4rem 0;
+  gap: 0.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+.tab {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.38rem 0.3rem;
+  border-radius: 6px 6px 0 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #475569;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tab:hover { color: #94a3b8; background: rgba(255,255,255,0.03); }
+
+.tabActive {
+  composes: tab;
+  background: rgba(99,102,241,0.12);
+  border-color: rgba(99,102,241,0.3) rgba(99,102,241,0.3) transparent;
+  color: #a5b4fc;
+}
+
+.paneBody {
+  flex: 1;
+  overflow: hidden;
+}
+
+.paneHeader {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  color: #475569;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.centerPane {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 40%, rgba(99,102,241,0.04) 0%, transparent 60%),
+              linear-gradient(180deg, #090d1c 0%, #060a16 100%);
+}
+
+.graphError {
+  position: absolute;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  color: #f87171;
+  font-size: 0.72rem;
+  font-weight: 600;
+  z-index: 10;
+}
+
+.graphLoading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: #475569;
+  font-size: 0.78rem;
+}
+
+.spinnerLg {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(99,102,241,0.2);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.graphEmpty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: #475569;
+}
+
+.graphEmpty p {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.graphLegend {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.61rem;
+  color: #64748b;
+  font-weight: 600;
+  z-index: 5;
+  white-space: nowrap;
+}
+
+.legendDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 0.25rem;
+}
+
+.rightPane {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgba(255,255,255,0.05);
+  overflow: hidden;
+}

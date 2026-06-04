@@ -474,3 +474,69 @@ export type security_system = Prisma.security_systemModel
  * This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
  */
 export type security_users = Prisma.security_usersModel
+/**
+ * Model systemic_entities
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_entities = Prisma.systemic_entitiesModel
+/**
+ * Model systemic_entity_attributes
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_entity_attributes = Prisma.systemic_entity_attributesModel
+/**
+ * Model systemic_entity_relations
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_entity_relations = Prisma.systemic_entity_relationsModel
+/**
+ * Model systemic_entity_tags
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_entity_tags = Prisma.systemic_entity_tagsModel
+/**
+ * Model systemic_entity_types
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_entity_types = Prisma.systemic_entity_typesModel
+/**
+ * Model systemic_propagation_paths
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_propagation_paths = Prisma.systemic_propagation_pathsModel
+/**
+ * Model systemic_relation_types
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_relation_types = Prisma.systemic_relation_typesModel
+/**
+ * Model systemic_simulation_impacts
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_simulation_impacts = Prisma.systemic_simulation_impactsModel
+/**
+ * Model systemic_simulation_runs
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_simulation_runs = Prisma.systemic_simulation_runsModel
+/**
+ * Model systemic_structural_analysis_runs
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_structural_analysis_runs = Prisma.systemic_structural_analysis_runsModel
+/**
+ * Model systemic_structural_metrics
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+ */
+export type systemic_structural_metrics = Prisma.systemic_structural_metricsModel

@@ -11,9 +11,9 @@ export const coreModule: KirioxModuleContract = {
     layers: ["domain", "application", "infrastructure", "api", "ui"],
     dependencies: [],
     nav: {
-      label: "Dashboard",
+      label: "Inicio",
       href: "/score/dashboard2",
-      icon: "LayoutDashboard",
+      icon: "Home",
       order: 10,
       permission: "core.read",
     },

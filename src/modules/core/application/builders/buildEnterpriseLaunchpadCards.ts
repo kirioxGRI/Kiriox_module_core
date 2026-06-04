@@ -40,7 +40,7 @@ const SYSTEM_PRESENTATION: Partial<Record<string, CardPresentation>> = {
     order: 20,
   },
   analisis_preventivo: {
-    href: "/incident/dashboard",
+    href: "/validacion/eventos?tab=hechos-relevantes",
     iconKey: "chart",
     accent: "cyan",
     order: 25,

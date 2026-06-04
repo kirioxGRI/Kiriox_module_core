@@ -1551,31 +1551,302 @@ model security_system {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model security_users {
-  id                          String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email                       String                        @unique @db.VarChar(255)
-  password_hash               String
-  name                        String?                       @db.VarChar(255)
-  last_name                   String?
-  whatsapp                    String?
-  is_active                   Boolean?                      @default(true)
-  must_change_password        Boolean                       @default(true)
-  activation_status           String                        @default("pending")
-  role_id                     String?                       @db.Uuid
-  created_at                  DateTime?                     @default(now()) @db.Timestamp(6)
-  updated_at                  DateTime?                     @default(now()) @db.Timestamp(6)
-  last_login_at               DateTime?                     @db.Timestamptz(6)
-  password_updated_at         DateTime?                     @db.Timestamptz(6)
-  company_id                  String?                       @db.Uuid
-  username                    String?
-  expire_at                   DateTime?                     @db.Timestamptz(6)
-  graph_map_run_sa_activities graph_map_run_sa_activities[]
-  graph_run_lifecycle_history graph_run_lifecycle_history[]
-  graph_run_sa                graph_run_sa[]
-  map_user_x_roles            map_user_x_roles[]
-  run_ra_controls             run_ra_controls[]
-  security_logs_access        security_logs_access[]
-  company                     company?                      @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_company_id_fkey")
+  id                                String                              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                             String                              @unique @db.VarChar(255)
+  password_hash                     String
+  name                              String?                             @db.VarChar(255)
+  last_name                         String?
+  whatsapp                          String?
+  is_active                         Boolean?                            @default(true)
+  must_change_password              Boolean                             @default(true)
+  activation_status                 String                              @default("pending")
+  role_id                           String?                             @db.Uuid
+  created_at                        DateTime?                           @default(now()) @db.Timestamp(6)
+  updated_at                        DateTime?                           @default(now()) @db.Timestamp(6)
+  last_login_at                     DateTime?                           @db.Timestamptz(6)
+  password_updated_at               DateTime?                           @db.Timestamptz(6)
+  company_id                        String?                             @db.Uuid
+  username                          String?
+  expire_at                         DateTime?                           @db.Timestamptz(6)
+  graph_map_run_sa_activities       graph_map_run_sa_activities[]
+  graph_run_lifecycle_history       graph_run_lifecycle_history[]
+  graph_run_sa                      graph_run_sa[]
+  map_user_x_roles                  map_user_x_roles[]
+  run_ra_controls                   run_ra_controls[]
+  security_logs_access              security_logs_access[]
+  company                           company?                            @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "users_company_id_fkey")
+  systemic_entities                 systemic_entities[]
+  systemic_simulation_runs          systemic_simulation_runs[]
+  systemic_structural_analysis_runs systemic_structural_analysis_runs[]
 
   @@index([company_id], map: "ix_security_users_company_id")
   @@index([id, company_id], map: "ix_security_users_id_company", where: raw("(COALESCE(is_active, true) = true)"))
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_entities {
+  id                                                                                        String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  entity_type_id                                                                            String                        @db.Uuid
+  code                                                                                      String                        @unique(map: "systemic_entities_code_unique")
+  name                                                                                      String
+  description                                                                               String?
+  status                                                                                    String                        @default("active")
+  criticality_level                                                                         String?
+  owner_user_id                                                                             String?                       @db.Uuid
+  is_active                                                                                 Boolean                       @default(true)
+  created_at                                                                                DateTime                      @default(now()) @db.Timestamptz(6)
+  updated_at                                                                                DateTime                      @default(now()) @db.Timestamptz(6)
+  systemic_entity_types                                                                     systemic_entity_types         @relation(fields: [entity_type_id], references: [id], onUpdate: NoAction, map: "systemic_entities_entity_type_fk")
+  security_users                                                                            security_users?               @relation(fields: [owner_user_id], references: [id], onUpdate: NoAction, map: "systemic_entities_owner_user_fk")
+  systemic_entity_attributes                                                                systemic_entity_attributes[]
+  systemic_entity_relations_systemic_entity_relations_source_entity_idTosystemic_entities   systemic_entity_relations[]   @relation("systemic_entity_relations_source_entity_idTosystemic_entities")
+  systemic_entity_relations_systemic_entity_relations_target_entity_idTosystemic_entities   systemic_entity_relations[]   @relation("systemic_entity_relations_target_entity_idTosystemic_entities")
+  systemic_entity_tags                                                                      systemic_entity_tags[]
+  systemic_propagation_paths_systemic_propagation_paths_source_entity_idTosystemic_entities systemic_propagation_paths[]  @relation("systemic_propagation_paths_source_entity_idTosystemic_entities")
+  systemic_propagation_paths_systemic_propagation_paths_target_entity_idTosystemic_entities systemic_propagation_paths[]  @relation("systemic_propagation_paths_target_entity_idTosystemic_entities")
+  systemic_simulation_impacts                                                               systemic_simulation_impacts[]
+  systemic_simulation_runs                                                                  systemic_simulation_runs[]
+  systemic_structural_metrics                                                               systemic_structural_metrics[]
+
+  @@index([entity_type_id], map: "idx_systemic_entities_entity_type_id")
+  @@index([is_active], map: "idx_systemic_entities_is_active")
+  @@index([name], map: "idx_systemic_entities_name")
+  @@index([owner_user_id], map: "idx_systemic_entities_owner_user_id")
+  @@index([status], map: "idx_systemic_entities_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_entity_attributes {
+  id                String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  entity_id         String            @db.Uuid
+  attribute_key     String
+  attribute_value   Json
+  created_at        DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime          @default(now()) @db.Timestamptz(6)
+  systemic_entities systemic_entities @relation(fields: [entity_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_entity_attributes_entity_fk")
+
+  @@unique([entity_id, attribute_key], map: "systemic_entity_attributes_unique_key_per_entity")
+  @@index([attribute_key], map: "idx_systemic_entity_attributes_attribute_key")
+  @@index([entity_id], map: "idx_systemic_entity_attributes_entity_id")
+  @@index([attribute_value], map: "idx_systemic_entity_attributes_value_gin", type: Gin)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_entity_relations {
+  id                                                                              String                  @id(map: "systemic_relations_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  source_entity_id                                                                String                  @db.Uuid
+  target_entity_id                                                                String                  @db.Uuid
+  relation_type_id                                                                String                  @db.Uuid
+  weight                                                                          Decimal                 @default(1.0000) @db.Decimal(5, 4)
+  strength                                                                        String                  @default("medium")
+  description                                                                     String?
+  is_active                                                                       Boolean                 @default(true)
+  created_at                                                                      DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at                                                                      DateTime                @default(now()) @db.Timestamptz(6)
+  systemic_relation_types                                                         systemic_relation_types @relation(fields: [relation_type_id], references: [id], onUpdate: NoAction, map: "systemic_entity_relations_relation_type_fk")
+  systemic_entities_systemic_entity_relations_source_entity_idTosystemic_entities systemic_entities       @relation("systemic_entity_relations_source_entity_idTosystemic_entities", fields: [source_entity_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_entity_relations_source_entity_fk")
+  systemic_entities_systemic_entity_relations_target_entity_idTosystemic_entities systemic_entities       @relation("systemic_entity_relations_target_entity_idTosystemic_entities", fields: [target_entity_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_entity_relations_target_entity_fk")
+
+  @@unique([source_entity_id, target_entity_id, relation_type_id], map: "systemic_entity_relations_unique_edge")
+  @@index([is_active], map: "idx_systemic_entity_relations_is_active")
+  @@index([relation_type_id], map: "idx_systemic_entity_relations_relation_type_id")
+  @@index([source_entity_id], map: "idx_systemic_entity_relations_source_entity_id")
+  @@index([strength], map: "idx_systemic_entity_relations_strength")
+  @@index([target_entity_id], map: "idx_systemic_entity_relations_target_entity_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_entity_tags {
+  id                String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  entity_id         String            @db.Uuid
+  tag               String
+  created_at        DateTime          @default(now()) @db.Timestamptz(6)
+  systemic_entities systemic_entities @relation(fields: [entity_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_entity_tags_entity_fk")
+
+  @@unique([entity_id, tag], map: "systemic_entity_tags_unique_tag_per_entity")
+  @@index([entity_id], map: "idx_systemic_entity_tags_entity_id")
+  @@index([tag], map: "idx_systemic_entity_tags_tag")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_entity_types {
+  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code              String              @unique(map: "systemic_entity_types_code_unique")
+  name              String
+  description       String?
+  is_active         Boolean             @default(true)
+  created_at        DateTime            @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime            @default(now()) @db.Timestamptz(6)
+  systemic_entities systemic_entities[]
+
+  @@index([is_active], map: "idx_systemic_entity_types_is_active")
+  @@index([name], map: "idx_systemic_entity_types_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_propagation_paths {
+  id                                                                               String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  simulation_run_id                                                                String                   @db.Uuid
+  source_entity_id                                                                 String                   @db.Uuid
+  target_entity_id                                                                 String                   @db.Uuid
+  path_sequence                                                                    Int
+  depth_level                                                                      Int                      @default(1)
+  propagation_score                                                                Decimal                  @default(0.0000) @db.Decimal(5, 4)
+  propagation_reason                                                               String?
+  created_at                                                                       DateTime                 @default(now()) @db.Timestamptz(6)
+  relation_type_id                                                                 String?                  @db.Uuid
+  path_trace                                                                       String[]                 @db.Uuid
+  systemic_relation_types                                                          systemic_relation_types? @relation(fields: [relation_type_id], references: [id], onUpdate: NoAction, map: "systemic_propagation_paths_relation_type_fk")
+  systemic_simulation_runs                                                         systemic_simulation_runs @relation(fields: [simulation_run_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_propagation_paths_simulation_run_fk")
+  systemic_entities_systemic_propagation_paths_source_entity_idTosystemic_entities systemic_entities        @relation("systemic_propagation_paths_source_entity_idTosystemic_entities", fields: [source_entity_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_propagation_paths_source_entity_fk")
+  systemic_entities_systemic_propagation_paths_target_entity_idTosystemic_entities systemic_entities        @relation("systemic_propagation_paths_target_entity_idTosystemic_entities", fields: [target_entity_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_propagation_paths_target_entity_fk")
+
+  @@index([depth_level], map: "idx_systemic_propagation_paths_depth_level")
+  @@index([simulation_run_id, path_sequence], map: "idx_systemic_propagation_paths_run_sequence")
+  @@index([simulation_run_id], map: "idx_systemic_propagation_paths_simulation_run_id")
+  @@index([source_entity_id], map: "idx_systemic_propagation_paths_source_entity_id")
+  @@index([target_entity_id], map: "idx_systemic_propagation_paths_target_entity_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_relation_types {
+  id                         String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                       String                       @unique(map: "systemic_relation_types_code_unique")
+  name                       String
+  description                String?
+  is_directional             Boolean                      @default(true)
+  is_active                  Boolean                      @default(true)
+  created_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  systemic_entity_relations  systemic_entity_relations[]
+  systemic_propagation_paths systemic_propagation_paths[]
+
+  @@index([is_active], map: "idx_systemic_relation_types_is_active")
+  @@index([is_directional], map: "idx_systemic_relation_types_is_directional")
+  @@index([name], map: "idx_systemic_relation_types_name")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_simulation_impacts {
+  id                       String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  simulation_run_id        String                   @db.Uuid
+  entity_id                String                   @db.Uuid
+  impact_level             String
+  impact_score             Decimal                  @default(0.0000) @db.Decimal(10, 4)
+  impact_reason            String?
+  recommended_action       String?
+  created_at               DateTime                 @default(now()) @db.Timestamptz(6)
+  impact_depth             Int                      @default(0)
+  is_origin                Boolean                  @default(false)
+  systemic_entities        systemic_entities        @relation(fields: [entity_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_simulation_impacts_entity_fk")
+  systemic_simulation_runs systemic_simulation_runs @relation(fields: [simulation_run_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_simulation_impacts_simulation_run_fk")
+
+  @@unique([simulation_run_id, entity_id], map: "systemic_simulation_impacts_unique_entity_per_run")
+  @@index([entity_id], map: "idx_systemic_simulation_impacts_entity_id")
+  @@index([impact_level], map: "idx_systemic_simulation_impacts_impact_level")
+  @@index([impact_score], map: "idx_systemic_simulation_impacts_impact_score")
+  @@index([simulation_run_id], map: "idx_systemic_simulation_impacts_simulation_run_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_simulation_runs {
+  id                          String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                        String
+  description                 String?
+  simulation_type             String
+  trigger_entity_id           String?                       @db.Uuid
+  status                      String                        @default("completed")
+  started_at                  DateTime                      @default(now()) @db.Timestamptz(6)
+  completed_at                DateTime?                     @db.Timestamptz(6)
+  created_by                  String?                       @db.Uuid
+  created_at                  DateTime                      @default(now()) @db.Timestamptz(6)
+  systemic_propagation_paths  systemic_propagation_paths[]
+  systemic_simulation_impacts systemic_simulation_impacts[]
+  security_users              security_users?               @relation(fields: [created_by], references: [id], onUpdate: NoAction, map: "systemic_simulation_runs_created_by_fk")
+  systemic_entities           systemic_entities?            @relation(fields: [trigger_entity_id], references: [id], onUpdate: NoAction, map: "systemic_simulation_runs_trigger_entity_fk")
+
+  @@index([created_by], map: "idx_systemic_simulation_runs_created_by")
+  @@index([simulation_type], map: "idx_systemic_simulation_runs_simulation_type")
+  @@index([started_at], map: "idx_systemic_simulation_runs_started_at")
+  @@index([status], map: "idx_systemic_simulation_runs_status")
+  @@index([trigger_entity_id], map: "idx_systemic_simulation_runs_trigger_entity_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_structural_analysis_runs {
+  id                          String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                        String
+  description                 String?
+  analysis_type               String                        @default("full_structural_analysis")
+  status                      String                        @default("completed")
+  started_at                  DateTime                      @default(now()) @db.Timestamptz(6)
+  completed_at                DateTime?                     @db.Timestamptz(6)
+  created_by                  String?                       @db.Uuid
+  created_at                  DateTime                      @default(now()) @db.Timestamptz(6)
+  security_users              security_users?               @relation(fields: [created_by], references: [id], onUpdate: NoAction, map: "systemic_structural_analysis_runs_created_by_fk")
+  systemic_structural_metrics systemic_structural_metrics[]
+
+  @@index([analysis_type], map: "idx_systemic_structural_analysis_runs_analysis_type")
+  @@index([created_by], map: "idx_systemic_structural_analysis_runs_created_by")
+  @@index([started_at], map: "idx_systemic_structural_analysis_runs_started_at")
+  @@index([status], map: "idx_systemic_structural_analysis_runs_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model systemic_structural_metrics {
+  id                                String                            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  structural_analysis_run_id        String                            @db.Uuid
+  entity_id                         String                            @db.Uuid
+  metric_type                       String
+  metric_value                      Decimal                           @default(0.000000) @db.Decimal(10, 6)
+  metric_level                      String?
+  metric_details                    Json?
+  created_at                        DateTime                          @default(now()) @db.Timestamptz(6)
+  incoming_count                    Int?
+  outgoing_count                    Int?
+  total_degree                      Int?
+  dependency_count                  Int?
+  dependent_count                   Int?
+  control_count                     Int?
+  risk_count                        Int?
+  obligation_count                  Int?
+  evidence_count                    Int?
+  cascade_exposure_score            Decimal?                          @db.Decimal(10, 4)
+  criticality_score                 Decimal?                          @db.Decimal(10, 4)
+  criticality_level                 String?
+  is_critical_node                  Boolean?
+  support_count                     Int?
+  alternative_support_count         Int?
+  is_spof                           Boolean?
+  resilience_score                  Decimal?                          @db.Decimal(10, 4)
+  resilience_level                  String?
+  fragility_score                   Decimal?                          @db.Decimal(10, 4)
+  has_resilience_gap                Boolean?
+  data_count                        Int?
+  incident_count                    Int?
+  uncontrolled_risk_count           Int?
+  exposure_score                    Decimal?                          @db.Decimal(10, 4)
+  exposure_level                    String?
+  has_exposure_gap                  Boolean?
+  systemic_structural_analysis_runs systemic_structural_analysis_runs @relation(fields: [structural_analysis_run_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_structural_metrics_analysis_run_fk")
+  systemic_entities                 systemic_entities                 @relation(fields: [entity_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "systemic_structural_metrics_entity_fk")
+
+  @@unique([structural_analysis_run_id, entity_id, metric_type], map: "systemic_structural_metrics_unique_metric_per_entity_run")
+  @@index([structural_analysis_run_id], map: "idx_systemic_structural_metrics_analysis_run_id")
+  @@index([metric_details], map: "idx_systemic_structural_metrics_details_gin", type: Gin)
+  @@index([entity_id], map: "idx_systemic_structural_metrics_entity_id")
+  @@index([metric_level], map: "idx_systemic_structural_metrics_metric_level")
+  @@index([metric_type], map: "idx_systemic_structural_metrics_metric_type")
+  @@index([metric_value], map: "idx_systemic_structural_metrics_metric_value")
 }

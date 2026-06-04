@@ -372,6 +372,82 @@ Bitácora de accesos a recursos, módulos, submódulos y acciones realizadas o d
 
 **Aplicación futura:** Al modificar launchpad, paneles de seguridad o matrices RBAC, tratar sistema y módulo como capas distintas: sistema para visibilidad/acceso macro del producto, módulo para permisos operativos internos y exposición fina de funcionalidades.
 
+## 2026-06-01 — Aprendizaje
+
+**Contexto:** El usuario aclaró cuál es la referencia oficial de diseño UI activa para Kiriox en este repositorio.
+
+**Regla aprendida:** La referencia oficial activa para el diseño de la experiencia de riesgo lineal es la ruta `/gestion/dashboard_riesgo_lineal`. En código, esa ruta monta `LinearRiskDashboardPage`, que alterna entre `StepDashboard` y `EvaluationWizard`; `GobIaDashboardPage` existe como pieza alternativa, pero no es la interfaz oficial actualmente servida.
+
+**Aplicación futura:** Cuando se pidan rediseños, ajustes visuales o alineación de UI en Kiriox, usar `/gestion/dashboard_riesgo_lineal` como fuente de verdad para shell, cards, tabla ejecutiva, stepper y wizard del dominio de riesgo lineal, evitando tomar como referencia páginas no montadas.
+
+## 2026-06-02 — Aprendizaje
+
+**Contexto:** Correccion del usuario al agregar la opcion `Inicio` en el sidebar operativo.
+
+**Regla aprendida:** La entrada `Inicio` del sidebar derivada del modulo `core` debe navegar a `/score/dashboard2`. Esto no reemplaza la regla de que `/main_dashboard` sigue siendo el launchpad central post-login; son destinos distintos dentro de la experiencia.
+
+**Aplicación futura:** Al ajustar navegacion del shell lateral o renombrar la entrada principal del modulo `core`, conservar la distincion entre launchpad global (`/main_dashboard`) y dashboard operativo (`/score/dashboard2`).
+
+## 2026-06-02 — Aprendizaje
+
+**Contexto:** La opcion `Inicio` no aparecia en el sidebar aunque se modificara `core.module.ts`.
+
+**Regla aprendida:** En Kiriox, la visibilidad del sidebar dinamico depende de `enabledModules`, y `enabledModules` solo incluye modulos con permiso `A`. Si `Inicio` debe mostrarse siempre como acceso operativo del shell, no puede depender solo del `nav` del modulo `core`; debe anteponerse desde `Sidebar.tsx` o una capa equivalente del shell.
+
+**Aplicación futura:** Para accesos globales del shell que deban permanecer visibles aun cuando el RBAC module-level excluya `core`, implementarlos en la composicion del sidebar con deduplicacion del item dinamico, no solo en `buildNavigation`.
+
+## 2026-06-02 — Aprendizaje
+
+**Contexto:** Alta de una nueva ruta en `src/app/gestion/dashboard_riesgo_sistemico/page.tsx`.
+
+**Regla aprendida:** En este repositorio, al crear nuevas rutas App Router, `npx tsc --noEmit` puede fallar porque `.next/types` queda desalineado aunque `.next/dev/types` ya reconozca la pagina. Antes de validar tipado tras agregar una ruta, ejecutar `pnpm exec next typegen` para sincronizar los route types.
+
+**Aplicación futura:** Cada vez que se agregue, renombre o elimine una pagina en `src/app/**`, correr `pnpm exec next typegen` antes del chequeo estático final para evitar falsos negativos en `validator.ts` y `routes.d.ts`.
+
+## 2026-06-02 — Aprendizaje
+
+**Contexto:** Definicion funcional del endpoint `/gestion/dashboard_riesgo_sistemico`.
+
+**Regla aprendida:** `/gestion/dashboard_riesgo_sistemico` no es el canvas operativo del grafo. Debe funcionar como dashboard ejecutivo del MVP `Dashboard GRI Structural Map`, articulado en dos tarjetas principales: `Structural Analysis Engine` y `Cascade Simulation Engine`, con diferenciacion explicita entre GRC tradicional y analisis estructural GRI.
+
+**Aplicación futura:** Mantener esta ruta como capa de propuesta, narrativa y demostracion comercial del MVP. Los motores operativos siguen expuestos por separado: diagnostico estructural en `/gestion/dashboard_riesgo_estructural` y mapa/cascada en `/score/dashboard2`.
+
+## 2026-06-03 — Aprendizaje
+
+**Contexto:** Correccion de la funcion SQL `public.fn_elena_systemic_structural_analysis(uuid, uuid)` en la base conectada a Kiriox.
+
+**Regla aprendida:** El esquema sistemico estructural vigente no usa columnas anchas tipo `root_entity_id`, `max_depth`, `finished_at`, `run_id`, `incoming_count` o `structural_score` dentro de una sola fila. La fuente de verdad es `systemic_structural_analysis_runs` para la corrida y `systemic_structural_metrics` como tabla normalizada por `metric_type`, con `completed_at` y `structural_analysis_run_id` como claves de trazabilidad.
+
+**Aplicación futura:** Toda funcion o migracion que persista analisis estructural sistemico debe alinearse con el modelo normalizado actual: registrar la corrida en `systemic_structural_analysis_runs` y descomponer los resultados por entidad en `systemic_structural_metrics`, usando `metric_details` para campos compuestos como relaciones entrantes/salientes, dependencias, dependientes y bandera SPOF.
+
 
 # Para administrar
 /admin
+
+
+# plugin
+npx plugins add vercel/vercel-plugin
+
+## 2026-06-03 — Aprendizaje
+
+**Contexto:** Implementacion y despliegue en la base real del paquete inicial de funciones SQL para analisis estructural sistemico de Kiriox.
+
+**Regla aprendida:** La capa estructural GRI ya cuenta con cinco funciones PostgreSQL genericas y reutilizables sobre el grafo sistemico real: `fn_elena_systemic_structural_analysis`, `fn_elena_systemic_cascade_simulation`, `fn_elena_systemic_criticality_analysis`, `fn_elena_systemic_resilience_analysis` y `fn_elena_systemic_exposure_analysis`. Todas deben operar sobre `public.systemic_entities`, `public.systemic_entity_relations`, `public.systemic_relation_types`, `public.systemic_structural_analysis_runs`, `public.systemic_structural_metrics`, `public.systemic_simulation_runs`, `public.systemic_simulation_impacts` y `public.systemic_propagation_paths`, usando el esquema vigente y no nombres inventados. Los codigos solicitados que no existen literalmente en la base deben mapearse a los reales del grafo, por ejemplo `SUPPORTED_BY` -> `SUPPORTS` inverso, `PROVIDED_BY` -> `PROVIDES` inverso, `AFFECTS` -> `IMPACTS`, `ACTIVATES` -> `TRIGGERS`, `CONTROLLED_BY` -> `PROTECTS`/`MITIGATES` y `EVIDENCED_BY` -> `EVIDENCES` inverso.
+
+**Aplicación futura:** Todo nuevo motor SQL del dominio estructural debe extender esta familia de funciones genericas, conservar la separacion entre corrida y metricas normalizadas, respetar profundidad maxima y proteccion contra ciclos, persistir trazabilidad en las tablas sistemicas reales y evitar cualquier acoplamiento a Pagos Digitales, bancos o nombres concretos de entidades.
+
+## 2026-06-03 — Aprendizaje
+
+**Contexto:** Correccion del usuario para remover `Análisis preventivo` del sidebar operativo.
+
+**Regla aprendida:** El modulo `incident` debe permanecer registrado como capacidad del sistema, pero no debe publicar entrada en el sidebar. Su contrato correcto es `family: "platform"` y sin propiedad `nav`.
+
+**Aplicación futura:** Si `incident` vuelve a exponerse visualmente, debe hacerse solo por una decision explicita de producto. Mientras tanto, conservar sus rutas y logica internas sin item visible en la navegacion lateral.
+
+## 2026-06-03 — Aprendizaje
+
+**Contexto:** Deteccion de enlace visible apuntando a `/incident/dashboard` despues de ocultar `Análisis preventivo` del sidebar.
+
+**Regla aprendida:** `/incident/dashboard` no es una ruta App Router vigente en este repositorio. Mientras la experiencia operativa de incidentes siga expuesta en `/validacion/eventos?tab=hechos-relevantes`, ningun acceso visible del producto debe apuntar a `/incident/dashboard`.
+
+**Aplicación futura:** Al configurar cards del launchpad, shortcuts o accesos visibles relacionados con incidentes/analisis preventivo, usar la ruta viva del producto y no revivir endpoints legados inexistentes.
