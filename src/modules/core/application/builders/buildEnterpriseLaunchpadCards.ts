@@ -24,6 +24,8 @@ type CardPresentation = {
   description?: string;
   /** Excluir del main_dashboard — solo aparece en /admin */
   adminOnly?: boolean;
+  /** Ocultar siempre del launchpad, aunque el sistema esté habilitado */
+  hidden?: boolean;
 };
 
 const SYSTEM_PRESENTATION: Partial<Record<string, CardPresentation>> = {
@@ -44,6 +46,7 @@ const SYSTEM_PRESENTATION: Partial<Record<string, CardPresentation>> = {
     iconKey: "chart",
     accent: "cyan",
     order: 25,
+    hidden: true,
   },
   prevencion_lavado: {
     href: "/gestion/dashboard_plaft",
@@ -96,6 +99,20 @@ const SYSTEM_PRESENTATION: Partial<Record<string, CardPresentation>> = {
   },
 };
 
+/** Tarjetas fijas que siempre aparecen en el launchpad, no dependen de security_system. */
+const STATIC_CARDS: EnterpriseLaunchpadCard[] = [
+  {
+    id: "static-prevencion-fraudes",
+    systemCode: "prevencion_fraudes",
+    title: "Prevención de fraudes",
+    description: "Analizando los micro riesgos que se convierten en grandes consecuencias.",
+    href: "/gestion/structural-map",
+    iconKey: "shield",
+    accent: "cyan",
+    order: 35,
+  },
+];
+
 export function buildEnterpriseLaunchpadCards(
   systems: SecuritySystemSummary[],
   enabledSystems: string[],
@@ -103,8 +120,9 @@ export function buildEnterpriseLaunchpadCards(
 ): EnterpriseLaunchpadCard[] {
   const enabledSet = new Set(enabledSystems);
 
-  return systems
+  const dynamicCards = systems
     .filter((system) => enabledSet.has(system.code))
+    .filter((system) => !(SYSTEM_PRESENTATION[system.code]?.hidden ?? false))
     .filter((system) => {
       const adminOnly = SYSTEM_PRESENTATION[system.code]?.adminOnly ?? false;
       return options?.includeAdminOnly ? true : !adminOnly;
@@ -121,6 +139,7 @@ export function buildEnterpriseLaunchpadCards(
         accent: presentation?.accent ?? "blue",
         order: presentation?.order ?? 999,
       };
-    })
-    .sort((left, right) => left.order - right.order);
+    });
+
+  return [...dynamicCards, ...STATIC_CARDS].sort((left, right) => left.order - right.order);
 }
