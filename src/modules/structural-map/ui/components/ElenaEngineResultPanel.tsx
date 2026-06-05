@@ -1,7 +1,9 @@
 'use client';
 
-import { X, AlertTriangle, CheckCircle2, Activity, Shield, Zap, GitBranch, Eye } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { X, AlertTriangle, CheckCircle2, Activity, Shield, Zap, GitBranch, Eye, Sparkles, Loader2 } from 'lucide-react';
 import type { ElenaRunResult, ElenaMetricRow, ElenaCascadeRow } from '@/modules/structural-map/domain/types/ElenaTypes';
+import { isChromAiAvailable, runKirioxAi } from '@/shared/ai';
 import styles from './ElenaEngineResultPanel.module.css';
 
 type Props = {
@@ -62,6 +64,155 @@ function BoolCell({ val }: { val: boolean | null | undefined }) {
       {val ? '✓' : '—'}
     </span>
   );
+}
+
+function numFromDetails(details: Record<string, unknown> | null | undefined, key: string): number | null {
+  const value = details?.[key];
+  return typeof value === 'number' ? value : null;
+}
+
+function boolFromDetails(details: Record<string, unknown> | null | undefined, key: string): boolean | null {
+  const value = details?.[key];
+  return typeof value === 'boolean' ? value : null;
+}
+
+type StructuralFragilityInsight = {
+  topNodeName: string;
+  topNodeScore: number | null;
+  topNodeDependents: number | null;
+  topNodeDependencies: number | null;
+  topNodeDegree: number | null;
+  spofNodes: string[];
+  mostConnectedName: string;
+  mostConnectedDegree: number | null;
+  deepestName: string;
+  deepestDistance: number | null;
+};
+
+function deriveStructuralFragilityInsight(rows: ElenaMetricRow[]): StructuralFragilityInsight {
+  const criticalityRows = rows
+    .filter((row) => row.metric_type === 'criticality')
+    .sort((a, b) => (b.metric_value ?? 0) - (a.metric_value ?? 0));
+
+  const topNode = criticalityRows[0];
+  const topNodeName = topNode?.entity_name ?? topNode?.entity_code ?? '—';
+  const topNodeDependents = numFromDetails(topNode?.metric_details, 'dependents');
+  const topNodeDependencies = numFromDetails(topNode?.metric_details, 'dependencies');
+  const topNodeDegree = numFromDetails(topNode?.metric_details, 'total_degree');
+
+  const spofNodes = rows
+    .filter((row) => row.metric_type === 'spof' && ((row.metric_value ?? 0) > 0 || boolFromDetails(row.metric_details, 'possible_spof')))
+    .map((row) => row.entity_name ?? row.entity_code);
+
+  const degreeRows = rows
+    .filter((row) => row.metric_type === 'degree_centrality')
+    .sort((a, b) => (b.metric_value ?? 0) - (a.metric_value ?? 0));
+
+  const mostConnectedNode = degreeRows[0];
+  const mostConnectedName = mostConnectedNode?.entity_name ?? mostConnectedNode?.entity_code ?? '—';
+  const mostConnectedDegree = mostConnectedNode?.metric_value ?? null;
+
+  const depthRows = rows
+    .filter((row) => row.metric_type === 'dependency_depth')
+    .sort((a, b) => (b.metric_value ?? 0) - (a.metric_value ?? 0));
+
+  const deepestNode = depthRows[0];
+  const deepestName = deepestNode?.entity_name ?? deepestNode?.entity_code ?? '—';
+  const deepestDistance = deepestNode?.metric_value ?? null;
+
+  return {
+    topNodeName,
+    topNodeScore: topNode?.metric_value ?? null,
+    topNodeDependents,
+    topNodeDependencies,
+    topNodeDegree,
+    spofNodes,
+    mostConnectedName,
+    mostConnectedDegree,
+    deepestName,
+    deepestDistance,
+  };
+}
+
+function StructuralFragilityCard({ insight }: { insight: StructuralFragilityInsight }) {
+  const {
+    topNodeName,
+    topNodeScore,
+    topNodeDependents,
+    topNodeDependencies,
+    topNodeDegree,
+    spofNodes,
+    mostConnectedName,
+    mostConnectedDegree,
+    deepestName,
+    deepestDistance,
+  } = insight;
+
+  return (
+    <section className={styles.insightCard}>
+      <p className={styles.insightEyebrow}>Fragilidad estructural</p>
+      <h3 className={styles.insightQuestion}>¿Dónde está la fragilidad estructural del grafo evaluado?</h3>
+      <p className={styles.insightAnswer}>
+        {topNodeScore != null
+          ? <>La mayor fragilidad se concentra en <strong>{topNodeName}</strong>, con score estructural <strong>{fmtScore(topNodeScore)}</strong>{topNodeDependents != null ? <> y <strong>{topNodeDependents}</strong> dependiente{topNodeDependents === 1 ? '' : 's'} directo{topNodeDependents === 1 ? '' : 's'}</> : null}{topNodeDependencies != null ? <> sobre <strong>{topNodeDependencies}</strong> dependencia{topNodeDependencies === 1 ? '' : 's'}</> : null}{topNodeDegree != null ? <> y grado total <strong>{topNodeDegree}</strong></> : null}.</>
+          : <>No se detectaron métricas suficientes para localizar la fragilidad principal del subgrafo.</>
+        }
+      </p>
+
+      <div className={styles.insightFacts}>
+        <div className={styles.insightFact}>
+          <span className={styles.insightLabel}>Puntos únicos de falla</span>
+          <strong className={styles.insightValue}>{spofNodes.length}</strong>
+          <span className={styles.insightNote}>
+            {spofNodes.length > 0 ? spofNodes.slice(0, 3).join(', ') : 'No se detectaron SPOF'}
+          </span>
+        </div>
+        <div className={styles.insightFact}>
+          <span className={styles.insightLabel}>Mayor concentración</span>
+          <strong className={styles.insightValue}>{mostConnectedName}</strong>
+          <span className={styles.insightNote}>
+            {mostConnectedDegree != null ? `grado ${fmtScore(mostConnectedDegree)}` : 'Sin dato de centralidad'}
+          </span>
+        </div>
+        <div className={styles.insightFact}>
+          <span className={styles.insightLabel}>Nodo más profundo</span>
+          <strong className={styles.insightValue}>{deepestName}</strong>
+          <span className={styles.insightNote}>
+            {deepestDistance != null ? `distancia ${fmtScore(deepestDistance)} desde la raíz` : 'Sin dato de profundidad'}
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+async function runStructuralRecommendationAi(insight: StructuralFragilityInsight): Promise<string> {
+  const input = [
+    `Nodo más frágil: ${insight.topNodeName}.`,
+    insight.topNodeScore != null ? `Score estructural: ${fmtScore(insight.topNodeScore)}.` : '',
+    insight.topNodeDependents != null ? `Dependientes directos: ${insight.topNodeDependents}.` : '',
+    insight.topNodeDependencies != null ? `Dependencias: ${insight.topNodeDependencies}.` : '',
+    insight.topNodeDegree != null ? `Grado total: ${insight.topNodeDegree}.` : '',
+    `SPOF detectados: ${insight.spofNodes.length}.`,
+    insight.spofNodes.length ? `Nodos SPOF: ${insight.spofNodes.slice(0, 5).join(', ')}.` : '',
+    `Mayor concentración: ${insight.mostConnectedName}${insight.mostConnectedDegree != null ? ` con grado ${fmtScore(insight.mostConnectedDegree)}` : ''}.`,
+    `Nodo más profundo: ${insight.deepestName}${insight.deepestDistance != null ? ` a distancia ${fmtScore(insight.deepestDistance)}` : ''}.`,
+    'Genera una recomendación ejecutiva única para reducir la fragilidad estructural del grafo, priorizando la acción más importante.',
+  ].filter(Boolean).join(' ');
+
+  const result = await runKirioxAi({
+    module: 'structural-risk',
+    field: 'structural_fragility_recommendation',
+    intent: 'complete',
+    tone: 'ejecutivo',
+    output: 'text',
+    minWords: 20,
+    maxWords: 60,
+    requiredMeaning: ['fragilidad estructural', 'acción prioritaria', 'redundancia o control'],
+    input,
+  });
+
+  return result.value;
 }
 
 function StructuralTable({ rows }: { rows: ElenaMetricRow[] }) {
@@ -271,13 +422,50 @@ function SummaryKpis({ result }: { result: ElenaRunResult }) {
 }
 
 export function ElenaEngineResultPanel({ result, onClose }: Props) {
-  if (!result) return null;
+  const [recommendation, setRecommendation] = useState<string>('');
+  const [recommendationStatus, setRecommendationStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+  const [recommendationError, setRecommendationError] = useState<string>('');
 
-  const meta = ENGINE_META[result.engine] ?? ENGINE_META.structural;
+  const engine = result?.engine ?? 'structural';
+  const meta = ENGINE_META[engine] ?? ENGINE_META.structural;
   const Icon = meta.icon;
 
-  const rows = result.rows;
-  const isCascade = result.engine === 'cascade';
+  const rows = result?.rows ?? [];
+  const isCascade = engine === 'cascade';
+  const structuralInsight = useMemo(
+    () => engine === 'structural' ? deriveStructuralFragilityInsight(rows as ElenaMetricRow[]) : null,
+    [engine, rows],
+  );
+
+  useEffect(() => {
+    setRecommendation('');
+    setRecommendationStatus('idle');
+    setRecommendationError('');
+  }, [result?.runId, engine]);
+
+  if (!result) return null;
+
+  async function handleRecommendation() {
+    if (!structuralInsight) return;
+    if (!isChromAiAvailable()) {
+      setRecommendationError('Chrome AI no disponible. Requiere Chrome 127+ con Gemini Nano.');
+      setRecommendationStatus('error');
+      return;
+    }
+
+    setRecommendationStatus('loading');
+    setRecommendationError('');
+
+    try {
+      const value = await runStructuralRecommendationAi(structuralInsight);
+      setRecommendation(value);
+      setRecommendationStatus('done');
+    } catch (error) {
+      setRecommendation('');
+      setRecommendationStatus('error');
+      setRecommendationError(error instanceof Error ? error.message : 'No se pudo generar la recomendación.');
+    }
+  }
 
   return (
     <div className={styles.overlay}>
@@ -336,6 +524,31 @@ export function ElenaEngineResultPanel({ result, onClose }: Props) {
                   <p>El análisis se ejecutó pero no produjo registros.</p>
                   <p className={styles.emptyHint}>Es posible que el grafo no tenga entidades conectadas al nodo raíz.</p>
                 </div>
+              ) : result.engine === 'structural' ? (
+                <>
+                  <StructuralFragilityCard insight={structuralInsight!} />
+                  <div className={styles.recommendationBlock}>
+                    <button
+                      type="button"
+                      onClick={() => void handleRecommendation()}
+                      disabled={recommendationStatus === 'loading'}
+                      className={styles.recommendationBtn}
+                      title={!isChromAiAvailable() ? 'Chrome AI no disponible' : 'Generar recomendación con IA local'}
+                    >
+                      {recommendationStatus === 'loading' ? <Loader2 size={14} className={styles.spinIcon} /> : <Sparkles size={14} />}
+                      Recomendación
+                    </button>
+                    {recommendationError && (
+                      <p className={styles.recommendationError}>{recommendationError}</p>
+                    )}
+                    {recommendation && (
+                      <section className={styles.recommendationCard}>
+                        <p className={styles.recommendationEyebrow}>Recomendación IA</p>
+                        <p className={styles.recommendationText}>{recommendation}</p>
+                      </section>
+                    )}
+                  </div>
+                </>
               ) : (
                 <div className={styles.tableSection}>
                   <p className={styles.tableTitle}>
@@ -344,9 +557,7 @@ export function ElenaEngineResultPanel({ result, onClose }: Props) {
                   <div className={styles.tableWrap}>
                     {isCascade
                       ? <CascadeTable rows={rows as ElenaCascadeRow[]} />
-                      : result.engine === 'structural'
-                        ? <StructuralTable rows={rows as ElenaMetricRow[]} />
-                        : result.engine === 'criticality'
+                      : result.engine === 'criticality'
                           ? <CriticalityTable rows={rows as ElenaMetricRow[]} />
                           : result.engine === 'resilience'
                             ? <ResilienceTable rows={rows as ElenaMetricRow[]} />

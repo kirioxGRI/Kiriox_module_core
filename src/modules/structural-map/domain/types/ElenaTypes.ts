@@ -37,6 +37,7 @@ export type ElenaMetricRow = {
   metric_type?: string | null;
   metric_value?: number | null;
   metric_level?: string | null;
+  metric_details?: Record<string, unknown> | null;
   total_degree?: number | null;
   incoming_count?: number | null;
   outgoing_count?: number | null;
