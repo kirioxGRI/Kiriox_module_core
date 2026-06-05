@@ -15,9 +15,13 @@ type Props = {
 
 function generateCode(typeName: string, existingCodes: string[]): string {
   const prefix = typeName.slice(0, 3).toUpperCase().replace(/[^A-Z]/g, 'X').padEnd(3, 'X');
-  let n = existingCodes.filter((c) => c.startsWith(prefix + '_')).length + 1;
-  let candidate = `${prefix}_${String(n).padStart(3, '0')}`;
-  while (existingCodes.includes(candidate)) { n++; candidate = `${prefix}_${String(n).padStart(3, '0')}`; }
+  const timePart = Date.now().toString(36).slice(-4).toUpperCase();
+  const randomPart = Math.floor(Math.random() * 1296).toString(36).padStart(2, '0').toUpperCase();
+  let candidate = `${prefix}_${timePart}${randomPart}`;
+  while (existingCodes.includes(candidate)) {
+    const fallbackRandom = Math.floor(Math.random() * 1296).toString(36).padStart(2, '0').toUpperCase();
+    candidate = `${prefix}_${timePart}${fallbackRandom}`;
+  }
   return candidate;
 }
 

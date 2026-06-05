@@ -342,11 +342,11 @@ export default function ServiceBuilderPage({ serviceId }: Props) {
       const payload = text ? (JSON.parse(text) as { error?: string }) : {};
       throw new Error(payload.error ?? 'Error al crear entidad');
     }
-    const payload = text ? (JSON.parse(text) as { id: string }) : { id: '' };
+    const payload = text ? (JSON.parse(text) as { id: string; code: string }) : { id: '', code: input.code };
     const entityType = entityTypes.find((type) => type.id === input.entity_type_id);
     const draftEntity: GraphEntity = {
       id: payload.id,
-      code: input.code,
+      code: payload.code,
       name: input.name,
       description: input.description ?? null,
       status: input.status ?? 'active',

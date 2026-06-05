@@ -6,6 +6,7 @@ import type {
   EntityType,
   RelationType,
   CreateEntityInput,
+  CreateEntityResult,
   CreateRelationInput,
   UpdateRelationInput,
   ValidationResult,
@@ -35,7 +36,56 @@ function assertValidRelationWeight(weight: number | null | undefined): void {
   }
 }
 
+function normalizeEntityCode(code: string): string {
+  return code.trim().toUpperCase().replace(/[^A-Z0-9_]/g, '_');
+}
+
+function isUniqueViolation(error: unknown): boolean {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002';
+}
+
 export class PrismaPortfolioRepository {
+  private async reserveEntityCode(requestedCode: string): Promise<string> {
+    const normalized = normalizeEntityCode(requestedCode);
+    if (!normalized) return `ENT_${Date.now().toString(36).toUpperCase()}`;
+
+    const existing = await prisma.systemic_entities.findUnique({
+      where: { code: normalized },
+      select: { id: true },
+    });
+    if (!existing) return normalized;
+
+    const match = normalized.match(/^(.*?)(?:_(\d+))?$/);
+    const base = match?.[1] || normalized;
+
+    const related = await prisma.systemic_entities.findMany({
+      where: {
+        OR: [
+          { code: base },
+          { code: { startsWith: `${base}_` } },
+        ],
+      },
+      select: { code: true },
+    });
+
+    const used = new Set(related.map((row) => row.code.toUpperCase()));
+    let next = 1;
+
+    for (const { code } of related) {
+      const suffixMatch = code.toUpperCase().match(new RegExp(`^${base}_(\\d+)$`));
+      if (!suffixMatch) continue;
+      next = Math.max(next, Number(suffixMatch[1]) + 1);
+    }
+
+    let candidate = `${base}_${String(next).padStart(3, '0')}`;
+    while (used.has(candidate)) {
+      next += 1;
+      candidate = `${base}_${String(next).padStart(3, '0')}`;
+    }
+
+    return candidate;
+  }
+
   private async findRelationTuple(sourceEntityId: string, targetEntityId: string, relationTypeId: string) {
     return prisma.systemic_entity_relations.findUnique({
       where: {
@@ -180,20 +230,32 @@ export class PrismaPortfolioRepository {
     return rows.map((r) => ({ ...r, id: String(r.id), is_directional: Boolean(r.is_directional) }));
   }
 
-  async createEntity(input: CreateEntityInput): Promise<{ id: string }> {
-    const rows = await prisma.$queryRaw<{ id: string }[]>(Prisma.sql`
-      INSERT INTO systemic_entities (entity_type_id, code, name, description, status, criticality_level)
-      VALUES (
-        ${input.entity_type_id}::uuid,
-        ${input.code},
-        ${input.name},
-        ${input.description ?? null},
-        ${input.status ?? 'active'},
-        ${input.criticality_level ?? 'medium'}
-      )
-      RETURNING id::text
-    `);
-    return { id: String(rows[0].id) };
+  async createEntity(input: CreateEntityInput): Promise<CreateEntityResult> {
+    const baseCode = normalizeEntityCode(input.code);
+    const name = input.name.trim();
+    let candidateCode = await this.reserveEntityCode(baseCode);
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      try {
+        const created = await prisma.systemic_entities.create({
+          data: {
+            entity_type_id: input.entity_type_id,
+            code: candidateCode,
+            name,
+            description: input.description ?? null,
+            status: input.status ?? 'active',
+            criticality_level: input.criticality_level ?? 'medium',
+          },
+          select: { id: true, code: true },
+        });
+        return { id: String(created.id), code: created.code };
+      } catch (error) {
+        if (!isUniqueViolation(error)) throw error;
+        candidateCode = await this.reserveEntityCode(candidateCode);
+      }
+    }
+
+    throw new Error('No fue posible reservar un código único para la nueva entidad.');
   }
 
   async createRelation(input: CreateRelationInput): Promise<{ id: string }> {

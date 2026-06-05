@@ -573,3 +573,19 @@ useEffect(() => {
 **Regla aprendida:** Cuando el usuario use `Asociar existente`, la entidad elegida no debe agregarse sola al canvas. Debe hidratarse como subgrafo consistente leyendo tanto `public.systemic_entities` como `public.systemic_entity_relations`, al menos para sus relaciones directas, y fusionarse con el grafo actual con deduplicación por `id`.
 
 **Aplicación futura:** Evitar siempre la inserción local de nodos huérfanos cuando provengan del catálogo sistémico. Reutilizar el endpoint de subgrafo `/api/structural-map/graph` para incorporar vecindad estructural real antes de abrir nuevas asociaciones o análisis.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** La sección `Validación del modelo` en el drawer de motores del structural map mostraba `Ver resultado` pero no estaba conectada al endpoint real de validación.
+
+**Regla aprendida:** En paneles operativos de Kiriox, un botón en estado `success` no debe quedar como etiqueta decorativa. Si la acción ya produjo datos, el click debe reenfocar o volver a mostrar ese resultado; si aún no existe integración backend, no debe presentarse como `Ver resultado`.
+
+**Aplicación futura:** Para validaciones, simulaciones o análisis dentro de drawers/paneles, cablear siempre el estado visual del botón con su fuente real de datos y con una acción tangible de recuperación del resultado.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Falla al crear múltiples entidades del mismo tipo en el structural map por colisión sobre `systemic_entities.code`.
+
+**Regla aprendida:** La unicidad de `systemic_entities.code` debe resolverse en backend como fuente de verdad, no depender de contadores locales del canvas. Si un código autogenerado colisiona, el repositorio debe reservar una variante única y devolver el `code` final persistido para que la UI no quede desalineada con la base.
+
+**Aplicación futura:** Toda creación de entidades en builders visuales debe consumir el `code` devuelto por la API y no asumir que el `code` enviado fue el finalmente almacenado. La generación local solo reduce probabilidad de choque; la garantía real vive en infraestructura.

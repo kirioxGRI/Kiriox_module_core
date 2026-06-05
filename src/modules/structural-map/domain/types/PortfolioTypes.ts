@@ -42,6 +42,11 @@ export type CreateEntityInput = {
   criticality_level?: string;
 };
 
+export type CreateEntityResult = {
+  id: string;
+  code: string;
+};
+
 export type CreateRelationInput = {
   source_entity_id: string;
   target_entity_id: string;

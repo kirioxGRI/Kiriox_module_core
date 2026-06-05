@@ -16,6 +16,7 @@ import type { GraphEntity, GraphRelation, SubgraphData } from '@/modules/structu
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
 import { STRENGTH_STYLE, STRENGTH_OPTIONS } from '@/modules/structural-map/domain/types/ModeloTypes';
 import type { ElenaRunResult } from '@/modules/structural-map/domain/types/ElenaTypes';
+import type { ValidationResult } from '@/modules/structural-map/domain/types/PortfolioTypes';
 import styles from './ModeloCanvasPage.module.css';
 
 const ModelCanvas = lazy(() => import('@/modules/structural-map/ui/components/canvas/ModelCanvas'));
@@ -179,12 +180,12 @@ export default function ModeloCanvasPage() {
       const text = await res.text();
       if (!res.ok) throw new Error((JSON.parse(text) as { error?: string }).error ?? 'Error al duplicar entidad');
       
-      const { id } = JSON.parse(text) as { id: string };
+      const { id, code } = JSON.parse(text) as { id: string; code: string };
       
       graph.addEntity({
         ...entityToDuplicate,
         id,
-        code: input.code,
+        code,
         name: input.name,
       });
 
@@ -237,10 +238,10 @@ export default function ModeloCanvasPage() {
     const res  = await fetch('/api/structural-map/entities', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
     const text = await res.text();
     if (!res.ok) throw new Error((JSON.parse(text) as { error?: string }).error ?? 'Error al crear entidad');
-    const { id } = JSON.parse(text) as { id: string };
+    const { id, code } = JSON.parse(text) as { id: string; code: string };
     const et = graph.data?.entityTypes.find((t) => t.id === input.entity_type_id);
     graph.addEntity({
-      id, code: input.code, name: input.name, description: input.description ?? null,
+      id, code, name: input.name, description: input.description ?? null,
       status: 'active', criticality_level: input.criticality_level,
       entity_type_id: input.entity_type_id, entity_type_code: et?.code ?? '', entity_type_name: et?.name ?? '',
       is_active: true, is_spof: false, is_critical_node: false, total_degree: 0,
@@ -297,6 +298,33 @@ export default function ModeloCanvasPage() {
     const rp = cyRef.current?.getElementById(nodeId).renderedPosition() as ScreenPos | undefined;
     if (rp) sm.updateNodePos(rp);
   }, [sm]);
+
+  const handleValidateModel = useCallback(async (): Promise<ValidationResult | null> => {
+    const validationRootId = rootEntityId ?? sm.state.selectedNodeId ?? graph.data?.entities[0]?.id ?? null;
+    if (!validationRootId) {
+      window.alert('No hay una entidad raíz disponible para validar el modelo.');
+      return null;
+    }
+
+    const res = await fetch('/api/structural-map/validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rootEntityId: validationRootId }),
+    });
+    const text = await res.text();
+    if (!res.ok) {
+      let message = 'No fue posible validar el modelo';
+      if (text) {
+        try {
+          message = (JSON.parse(text) as { error?: string }).error ?? message;
+        } catch {
+          message = text;
+        }
+      }
+      throw new Error(message);
+    }
+    return JSON.parse(text) as ValidationResult;
+  }, [graph.data?.entities, rootEntityId, sm.state.selectedNodeId]);
 
   const entities        = graph.data?.entities    ?? [];
   const relations       = graph.data?.relations   ?? [];
@@ -476,7 +504,7 @@ export default function ModeloCanvasPage() {
           <AnalysisPanel
             rootEntityId={entities[0]?.id ?? ''}
             rootEntityName="Grafo completo"
-            onValidate={async () => null}
+            onValidate={handleValidateModel}
             onResult={(r) => setElenaResult(r)}
             onGraphRefresh={graph.reload}
           />
