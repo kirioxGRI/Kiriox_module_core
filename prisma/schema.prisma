@@ -330,6 +330,7 @@ model company {
   security_roles                security_roles[]
   security_system               security_system[]
   security_users                security_users[]
+  systemic_entity_superclass    systemic_entity_superclass[]
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -1656,6 +1657,22 @@ model systemic_entity_relations {
   @@index([source_entity_id], map: "idx_systemic_entity_relations_source_entity_id")
   @@index([strength], map: "idx_systemic_entity_relations_strength")
   @@index([target_entity_id], map: "idx_systemic_entity_relations_target_entity_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model systemic_entity_superclass {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_company        String   @db.Uuid
+  code              String
+  primitive_element String
+  brief_description String
+  example           String?
+  function          String
+  created_at        DateTime @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime @default(now()) @db.Timestamptz(6)
+  company           company  @relation(fields: [id_company], references: [id], onDelete: Cascade, map: "fk_systemic_entity_superclass_company")
+
+  @@unique([id_company, code], map: "uq_systemic_entity_superclass_company_code")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.

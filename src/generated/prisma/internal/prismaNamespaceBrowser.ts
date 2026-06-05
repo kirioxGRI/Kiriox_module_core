@@ -136,6 +136,7 @@ export const ModelName = {
   systemic_entities: 'systemic_entities',
   systemic_entity_attributes: 'systemic_entity_attributes',
   systemic_entity_relations: 'systemic_entity_relations',
+  systemic_entity_superclass: 'systemic_entity_superclass',
   systemic_entity_tags: 'systemic_entity_tags',
   systemic_entity_types: 'systemic_entity_types',
   systemic_propagation_paths: 'systemic_propagation_paths',
@@ -1563,6 +1564,21 @@ export const Systemic_entity_relationsScalarFieldEnum = {
 } as const
 
 export type Systemic_entity_relationsScalarFieldEnum = (typeof Systemic_entity_relationsScalarFieldEnum)[keyof typeof Systemic_entity_relationsScalarFieldEnum]
+
+
+export const Systemic_entity_superclassScalarFieldEnum = {
+  id: 'id',
+  id_company: 'id_company',
+  code: 'code',
+  primitive_element: 'primitive_element',
+  brief_description: 'brief_description',
+  example: 'example',
+  function: 'function',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Systemic_entity_superclassScalarFieldEnum = (typeof Systemic_entity_superclassScalarFieldEnum)[keyof typeof Systemic_entity_superclassScalarFieldEnum]
 
 
 export const Systemic_entity_tagsScalarFieldEnum = {

@@ -44,15 +44,21 @@ type Props = {
   onNodeDragStart:(nodeId: string) => void;
   onNodeDragEnd: (nodeId: string, graphPos: { x: number; y: number }) => void;
   onRelationHandleClick: (sourceId: string) => void;
-  onTargetSelected: (targetId: string) => void;
-  onPanZoom:     () => void;
+  onTargetSelected:      (targetId: string) => void;
+  onPanZoom:             () => void;
+  onZoomChange?:         (zoom: number) => void;
+  onNodeEdit?:           (entityId: string) => void;
+  onNodeDelete?:         (entityId: string) => void;
+  onNodeAnalyze?:        (entityId: string) => void;
+  onNodePickEntity?:     (entityId: string) => void;
   cyRef: React.MutableRefObject<cytoscape.Core | null>;
 };
 
 export default function ModelCanvas({
   entities, relations, canvasState,
   onNodeClick, onNodeDblClick, onEdgeClick, onCanvasClick, onMouseMove,
-  onNodeDragStart, onNodeDragEnd, onRelationHandleClick, onTargetSelected, onPanZoom, cyRef,
+  onNodeDragStart, onNodeDragEnd, onRelationHandleClick, onTargetSelected, onPanZoom, onZoomChange,
+  onNodeEdit, onNodeDelete, onNodeAnalyze, onNodePickEntity, cyRef,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const entityMapRef  = useRef(new Map<string, GraphEntity>());
@@ -126,8 +132,8 @@ export default function ModelCanvas({
           } as unknown as cytoscape.Css.Node },
         ],
         layout: hasSaved
-          ? { name: 'preset' as never }
-          : { name: 'fcose' as never, quality: 'default' as never, randomize: true, animate: true, animationDuration: 600, nodeSeparation: 90, idealEdgeLength: 130 } as never,
+          ? { name: 'preset' as never, fit: false }
+          : { name: 'fcose' as never, quality: 'default' as never, randomize: true, animate: true, animationDuration: 600, nodeSeparation: 90, idealEdgeLength: 130, fit: false } as never,
         userZoomingEnabled: true, userPanningEnabled: true, boxSelectionEnabled: false, wheelSensitivity: 0.3,
       });
 
@@ -180,7 +186,20 @@ export default function ModelCanvas({
         onNodeDragEnd(id, pos);
       });
 
-      cy.on('pan zoom', () => { onPanZoom(); });
+      cy.on('pan zoom', () => {
+        onPanZoom();
+        if (onZoomChange) onZoomChange(parseFloat(cy.zoom().toFixed(2)));
+      });
+
+      // El canvas siempre abre en 150% centrado, una vez estabilizado el layout
+      const applyInitialView = () => {
+        cy.resize();        // releer dimensiones reales del contenedor antes de centrar
+        cy.zoom(1.5);
+        cy.center();        // centra el bounding box del grafo en el viewport
+      };
+      cy.one('layoutstop', () => { requestAnimationFrame(applyInitialView); });
+      // Respaldo: si el contenedor aún no tenía tamaño al estabilizar el layout
+      setTimeout(() => { if (cyRef.current === cy) applyInitialView(); }, 700);
 
       cyRef.current = cy;
     })();
@@ -236,34 +255,75 @@ export default function ModelCanvas({
         </div>
       )}
 
-      {/* Node action handles (connector, edit, delete, simulate) */}
+      {/* Node action menu (relation, edit, delete, analyze) */}
       {canvasState.mode === 'node_selected' && nodeActionPos && canvasState.selectedNodeId && (
         <NodeActionOverlay
           screenPos={nodeActionPos}
           nodeId={canvasState.selectedNodeId}
           onRelationHandle={onRelationHandleClick}
+          onEdit={onNodeEdit}
+          onDelete={onNodeDelete}
+          onAnalyze={onNodeAnalyze}
+          onPickEntity={onNodePickEntity}
         />
       )}
     </div>
   );
 }
 
-function NodeActionOverlay({ screenPos, nodeId, onRelationHandle }: { screenPos: ScreenPos; nodeId: string; onRelationHandle: (id: string) => void }) {
-  const R = 42;
+type OverlayProps = {
+  screenPos: ScreenPos;
+  nodeId: string;
+  onRelationHandle:  (id: string) => void;
+  onEdit?:           (id: string) => void;
+  onDelete?:         (id: string) => void;
+  onAnalyze?:        (id: string) => void;
+  onPickEntity?:     (id: string) => void;
+};
+
+function ActionBtn({ onClick, title, color, children }: { onClick: () => void; title: string; color: string; children: React.ReactNode }) {
+  return (
+    <button
+      onClick={(e) => { e.stopPropagation(); onClick(); }}
+      title={title}
+      style={{
+        width: 26, height: 26, borderRadius: '50%',
+        border: `2px solid ${color}99`,
+        background: 'rgba(8,12,30,0.95)', color,
+        fontSize: '0.78rem', fontWeight: 900, cursor: 'pointer',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        pointerEvents: 'auto', transition: 'background 0.15s, transform 0.1s',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.55)',
+      }}
+    >{children}</button>
+  );
+}
+
+function NodeActionOverlay({ screenPos, nodeId, onRelationHandle, onEdit, onDelete, onAnalyze, onPickEntity }: OverlayProps) {
+  const R = 44;
+  const D = Math.round(R * 0.7071); // diagonal offset for 45° positions
   return (
     <div style={{ position: 'fixed', left: screenPos.x, top: screenPos.y, transform: 'translate(-50%, -50%)', zIndex: 40, pointerEvents: 'none' }}>
-      {/* Connect handle — top */}
-      <button
-        onClick={(e) => { e.stopPropagation(); onRelationHandle(nodeId); }}
-        style={{
-          position: 'absolute', left: '50%', top: -(R + 4), transform: 'translateX(-50%)',
-          width: 26, height: 26, borderRadius: '50%', border: '2px solid rgba(99,102,241,0.7)',
-          background: 'rgba(10,15,40,0.92)', color: '#a5b4fc', fontSize: '0.85rem', fontWeight: 900,
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          pointerEvents: 'auto', transition: 'background 0.15s', boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
-        }}
-        title="Crear relación"
-      >+</button>
+      {/* Top — Crear relación */}
+      <div style={{ position: 'absolute', left: '50%', top: -(R + 2), transform: 'translateX(-50%)' }}>
+        <ActionBtn onClick={() => onRelationHandle(nodeId)} title="Crear relación" color="#a5b4fc">+</ActionBtn>
+      </div>
+      {/* Top-right diagonal — Agregar entidad existente */}
+      <div style={{ position: 'absolute', left: D + 6, top: -(D + 6), transform: 'translate(-50%, -50%)' }}>
+        <ActionBtn onClick={() => onPickEntity?.(nodeId)} title="Agregar entidad existente" color="#38bdf8">⊕</ActionBtn>
+      </div>
+      {/* Right — Editar */}
+      <div style={{ position: 'absolute', left: R + 2, top: '50%', transform: 'translateY(-50%)' }}>
+        <ActionBtn onClick={() => onEdit?.(nodeId)} title="Editar entidad (doble clic)" color="#fbbf24">✎</ActionBtn>
+      </div>
+      {/* Bottom — Eliminar */}
+      <div style={{ position: 'absolute', left: '50%', top: R + 2, transform: 'translateX(-50%)' }}>
+        <ActionBtn onClick={() => onDelete?.(nodeId)} title="Eliminar entidad" color="#f87171">✕</ActionBtn>
+      </div>
+      {/* Left — Analizar */}
+      <div style={{ position: 'absolute', left: -(R + 28), top: '50%', transform: 'translateY(-50%)' }}>
+        <ActionBtn onClick={() => onAnalyze?.(nodeId)} title="Ejecutar análisis desde este nodo" color="#4ade80">⚡</ActionBtn>
+      </div>
     </div>
   );
 }

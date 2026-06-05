@@ -469,6 +469,11 @@ export type systemic_entity_attributes = Prisma.systemic_entity_attributesModel
  */
 export type systemic_entity_relations = Prisma.systemic_entity_relationsModel
 /**
+ * Model systemic_entity_superclass
+ * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+ */
+export type systemic_entity_superclass = Prisma.systemic_entity_superclassModel
+/**
  * Model systemic_entity_tags
  * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

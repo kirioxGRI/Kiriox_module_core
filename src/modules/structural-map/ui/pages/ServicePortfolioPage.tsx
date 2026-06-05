@@ -1,110 +1,159 @@
 'use client';
 
-import Link from 'next/link';
-import { Network, Activity, Shield, AlertTriangle, Zap, ChevronRight, Play, GitBranch } from 'lucide-react';
+import { useEffect, useTransition, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Network, Activity, Shield, AlertTriangle, Zap, Play, GitBranch, Database, BarChart3 } from 'lucide-react';
 import { usePortfolio } from '@/modules/structural-map/ui/hooks/usePortfolio';
-import type { ServiceSummary } from '@/modules/structural-map/domain/types/PortfolioTypes';
+import type { AnalysisRunRow, MetricRow } from '@/modules/structural-map/infrastructure/PrismaPortfolioRepository';
 import styles from './ServicePortfolioPage.module.css';
 
-const CRIT_COLORS: Record<string, string> = { critical: '#f87171', high: '#fb923c', medium: '#fbbf24', low: '#4ade80' };
 const ANALYSIS_LABELS: Record<string, string> = {
   full_structural_analysis:     'Estructural',
   critical_nodes_analysis:      'Criticidad',
   resilience_analysis:          'Resiliencia',
   structural_exposure_analysis: 'Exposición',
+  cascade_simulation:           'Cascada',
 };
 
-function fmtDate(iso: string | null): string {
+const STATUS_COLORS: Record<string, string> = {
+  completed: '#4ade80',
+  running:   '#fbbf24',
+  failed:    '#f87171',
+  pending:   '#94a3b8',
+};
+
+function fmtDate(iso: string | null | undefined): string {
   if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('es', { day: '2-digit', month: 'short', year: 'numeric' });
+  return new Date(iso).toLocaleString('es', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
-function ScoreBar({ label, value, color }: { label: string; value: number | null; color: string }) {
-  if (value == null) return <div style={{ color: '#334155', fontSize: '0.65rem' }}>{label}: N/A</div>;
-  const pct = Math.max(0, Math.min(100, value * 10));
+function fmtScore(v: number | null | undefined): string {
+  if (v == null) return '—';
+  return v.toFixed(2);
+}
+
+function StatusDot({ status }: { status: string }) {
+  const c = STATUS_COLORS[status] ?? '#94a3b8';
+  return <span style={{ display: 'inline-block', width: 7, height: 7, borderRadius: '50%', background: c, marginRight: 5, flexShrink: 0 }} />;
+}
+
+function AnalysisRunsCard({ runs, loading }: { runs: AnalysisRunRow[]; loading: boolean }) {
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-        <span style={{ color: '#64748b', fontSize: '0.62rem', fontWeight: 600 }}>{label}</span>
-        <span style={{ color, fontSize: '0.62rem', fontWeight: 800 }}>{value.toFixed(1)}</span>
+    <div className={styles.dataCard}>
+      <div className={styles.dataCardHeader}>
+        <div className={styles.dataCardTitle}>
+          <Database size={14} color="#818cf8" />
+          <span>systemic_structural_analysis_runs</span>
+        </div>
+        <span className={styles.dataCardSub}>7 últimas ejecuciones</span>
       </div>
-      <div style={{ height: 3, borderRadius: 999, background: 'rgba(255,255,255,0.05)' }}>
-        <div style={{ height: '100%', borderRadius: 999, background: color, width: `${pct}%`, transition: 'width 0.4s' }} />
-      </div>
+
+      {loading && <div className={styles.dataCardLoading}><div className={styles.spinner} /> Cargando…</div>}
+
+      {!loading && runs.length === 0 && (
+        <div className={styles.dataCardEmpty}>No hay ejecuciones registradas aún</div>
+      )}
+
+      {!loading && runs.length > 0 && (
+        <div className={styles.dataGrid}>
+          <div className={styles.dataGridHead}>
+            <span>Nombre</span>
+            <span>Tipo</span>
+            <span>Estado</span>
+            <span>Completado</span>
+          </div>
+          {runs.map((r) => (
+            <div key={r.id} className={styles.dataGridRow}>
+              <span className={styles.runName} title={r.name}>{r.name}</span>
+              <span className={styles.typePill}>{ANALYSIS_LABELS[r.analysis_type] ?? r.analysis_type}</span>
+              <span style={{ display: 'flex', alignItems: 'center' }}>
+                <StatusDot status={r.status} />
+                <span style={{ color: STATUS_COLORS[r.status] ?? '#94a3b8', fontSize: '0.68rem', fontWeight: 700 }}>{r.status}</span>
+              </span>
+              <span className={styles.dateCell}>{fmtDate(r.completed_at ?? r.started_at)}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-function ServiceCard({ svc }: { svc: ServiceSummary }) {
-  const critColor = CRIT_COLORS[svc.criticality_level ?? 'medium'] ?? '#94a3b8';
+function MetricsCard({ metrics, loading }: { metrics: MetricRow[]; loading: boolean }) {
   return (
-    <article className={styles.serviceCard}>
-      <div className={styles.cardGlow} style={{ background: `radial-gradient(circle at 30% 30%, ${critColor}15, transparent 65%)` }} />
-
-      <div className={styles.cardHeader}>
-        <div className={styles.serviceIcon} style={{ background: `${critColor}18`, borderColor: `${critColor}44` }}>
-          <Network size={16} color={critColor} />
+    <div className={styles.dataCard}>
+      <div className={styles.dataCardHeader}>
+        <div className={styles.dataCardTitle}>
+          <BarChart3 size={14} color="#34d399" />
+          <span>systemic_structural_metrics</span>
         </div>
-        <div className={styles.serviceInfo}>
-          <h3 className={styles.serviceName}>{svc.name}</h3>
-          <span className={styles.serviceCode}>{svc.code}</span>
-        </div>
-        <span className={styles.critBadge} style={{ background: `${critColor}18`, borderColor: `${critColor}44`, color: critColor }}>
-          {svc.criticality_level ?? 'N/A'}
-        </span>
+        <span className={styles.dataCardSub}>7 últimas métricas</span>
       </div>
 
-      {svc.description && <p className={styles.serviceDesc}>{svc.description}</p>}
+      {loading && <div className={styles.dataCardLoading}><div className={styles.spinner} /> Cargando…</div>}
 
-      <div className={styles.kpiRow}>
-        <div className={styles.kpi}>
-          <span className={styles.kpiVal}>{svc.entity_count}</span>
-          <span className={styles.kpiLbl}>Entidades</span>
-        </div>
-        <div className={styles.kpi}>
-          <span className={styles.kpiVal}>{svc.relation_count}</span>
-          <span className={styles.kpiLbl}>Relaciones</span>
-        </div>
-        <div className={styles.kpi}>
-          <span className={styles.kpiVal} style={{ color: svc.critical_nodes > 0 ? '#f87171' : '#f1f5f9' }}>{svc.critical_nodes}</span>
-          <span className={styles.kpiLbl}>Críticos</span>
-        </div>
-        <div className={styles.kpi}>
-          <span className={styles.kpiVal} style={{ color: svc.spof_count > 0 ? '#fb923c' : '#f1f5f9' }}>{svc.spof_count}</span>
-          <span className={styles.kpiLbl}>SPOF</span>
-        </div>
-      </div>
-
-      <div className={styles.scoresWrap}>
-        <ScoreBar label="Criticidad" value={svc.criticality_score} color="#f87171" />
-        <ScoreBar label="Resiliencia" value={svc.resilience_score}  color="#4ade80" />
-        <ScoreBar label="Exposición" value={svc.exposure_score}     color="#fb923c" />
-      </div>
-
-      {svc.last_analysis_at && (
-        <p className={styles.lastAnalysis}>
-          Último análisis: {ANALYSIS_LABELS[svc.last_analysis_type ?? ''] ?? svc.last_analysis_type ?? '—'} · {fmtDate(svc.last_analysis_at)}
-        </p>
+      {!loading && metrics.length === 0 && (
+        <div className={styles.dataCardEmpty}>No hay métricas calculadas aún</div>
       )}
 
-      <div className={styles.cardActions}>
-        <Link href={`/gestion/structural-map/modelo?serviceId=${svc.id}`} className={styles.primaryAction}>
-          <Play size={12} fill="currentColor" /> Abrir modelo
-          <ChevronRight size={12} />
-        </Link>
-        <Link href={`/gestion/structural-map/modelo?serviceId=${svc.id}&tab=analysis`} className={styles.secondaryAction}>
-          <Activity size={12} /> Analizar
-        </Link>
-        <Link href={`/gestion/structural-map/modelo?serviceId=${svc.id}&tab=simulation`} className={styles.secondaryAction}>
-          <GitBranch size={12} /> Simular
-        </Link>
-      </div>
-    </article>
+      {!loading && metrics.length > 0 && (
+        <div className={styles.dataGrid}>
+          <div className={styles.dataGridHead}>
+            <span>Entidad</span>
+            <span>Métrica</span>
+            <span>Valor</span>
+            <span>Nivel</span>
+            <span>Crítico</span>
+            <span>SPOF</span>
+          </div>
+          {metrics.map((m, i) => (
+            <div key={`${m.id}-${i}`} className={styles.dataGridRow}>
+              <span className={styles.entityCell}>
+                <span className={styles.entityName}>{m.entity_name ?? m.entity_code}</span>
+                <span className={styles.entityType}>{m.entity_type_name}</span>
+              </span>
+              <span className={styles.metricType}>{m.metric_type ?? '—'}</span>
+              <span className={styles.scoreCell}>{fmtScore(m.criticality_score ?? m.metric_value)}</span>
+              <span>
+                {(m.criticality_level ?? m.metric_level) ? (
+                  <span className={styles.levelBadge}>{m.criticality_level ?? m.metric_level}</span>
+                ) : '—'}
+              </span>
+              <span style={{ color: m.is_critical_node ? '#f87171' : '#334155', fontWeight: 800, fontSize: '0.7rem' }}>
+                {m.is_critical_node ? '✓' : '—'}
+              </span>
+              <span style={{ color: m.is_spof ? '#fb923c' : '#334155', fontWeight: 800, fontSize: '0.7rem' }}>
+                {m.is_spof ? '✓' : '—'}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
 export default function ServicePortfolioPage() {
+  const router                    = useRouter();
   const { data, error, isPending } = usePortfolio();
+  const [runs, setRuns]           = useState<AnalysisRunRow[]>([]);
+  const [metrics, setMetrics]     = useState<MetricRow[]>([]);
+  const [runsLoading, startRuns]  = useTransition();
+  const [selectedEntityId, setSelectedEntityId] = useState<string>('');
+
+  useEffect(() => {
+    startRuns(async () => {
+      try {
+        const res  = await fetch('/api/structural-map/portfolio-runs', { cache: 'no-store' });
+        const text = await res.text();
+        if (!res.ok || !text) return;
+        const payload = JSON.parse(text) as { analysis_runs: AnalysisRunRow[]; metrics: MetricRow[] };
+        setRuns(payload.analysis_runs ?? []);
+        setMetrics(payload.metrics ?? []);
+      } catch { /* noop */ }
+    });
+  }, []);
+
   const services = data?.services ?? [];
 
   return (
@@ -113,6 +162,7 @@ export default function ServicePortfolioPage() {
       <div className={styles.glowB} />
 
       <div className={styles.content}>
+        {/* Hero */}
         <section className={styles.heroSection}>
           <div className={styles.heroLeft}>
             <div className={styles.kickerRow}>
@@ -121,8 +171,35 @@ export default function ServicePortfolioPage() {
             </div>
             <h1 className={styles.heroTitle}>Service Portfolio</h1>
             <p className={styles.heroLead}>
-              Selecciona un servicio para construir, validar, analizar y simular su modelo estructural de dependencias.
+              Construye, valida, analiza y simula modelos estructurales de dependencias organizacionales.
             </p>
+            <div style={{ marginTop: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <select
+                value={selectedEntityId}
+                onChange={(e) => setSelectedEntityId(e.target.value)}
+                className={styles.entityCombo}
+              >
+                {(data?.allEntities ?? [])
+                  .slice()
+                  .sort((a, b) => String(a.name ?? a.code).localeCompare(String(b.name ?? b.code)))
+                  .map((e: { id: string; name?: string; code?: string }) => (
+                    <option key={e.id} value={e.id}>{e.name ?? e.code}</option>
+                  ))
+                }
+                <option value="">Toda entidad</option>
+              </select>
+              <button
+                onClick={() => {
+                  const path = selectedEntityId
+                    ? `/gestion/structural-map/modelo?serviceId=${selectedEntityId}`
+                    : '/gestion/structural-map/modelo';
+                  router.push(path);
+                }}
+                className={styles.openModelBtn}
+              >
+                <Play size={13} fill="currentColor" /> Abrir Modelo Estructural
+              </button>
+            </div>
           </div>
           <div className={styles.heroStats}>
             <div className={styles.heroStat}>
@@ -130,41 +207,35 @@ export default function ServicePortfolioPage() {
               <span className={styles.heroStatLbl}>Servicios</span>
             </div>
             <div className={styles.heroStat}>
-              <span className={styles.heroStatVal}>{services.reduce((a, s) => a + s.critical_nodes, 0)}</span>
+              <span className={styles.heroStatVal}>{runs.length > 0 ? runs.length : '—'}</span>
+              <span className={styles.heroStatLbl}>Análisis recientes</span>
+            </div>
+            <div className={styles.heroStat}>
+              <span className={styles.heroStatVal}>{metrics.filter((m) => m.is_critical_node).length}</span>
               <span className={styles.heroStatLbl}>Nodos críticos</span>
             </div>
             <div className={styles.heroStat}>
-              <span className={styles.heroStatVal}>{services.reduce((a, s) => a + s.spof_count, 0)}</span>
-              <span className={styles.heroStatLbl}>SPOF totales</span>
+              <span className={styles.heroStatVal}>{metrics.filter((m) => m.is_spof).length}</span>
+              <span className={styles.heroStatLbl}>SPOF</span>
             </div>
           </div>
         </section>
 
         {error && (
-          <div className={styles.errorBanner}>
-            <AlertTriangle size={14} /> {error}
-          </div>
+          <div className={styles.errorBanner}><AlertTriangle size={14} /> {error}</div>
         )}
 
         {isPending && !data && (
-          <div className={styles.loadingBanner}>
-            <div className={styles.spinner} />
-            Cargando portafolio de servicios…
-          </div>
+          <div className={styles.loadingBanner}><div className={styles.spinner} /> Cargando portafolio…</div>
         )}
 
-        {data && services.length === 0 && (
-          <div className={styles.emptyState}>
-            <Network size={32} color="#334155" />
-            <p>No hay servicios registrados en el modelo sistémico.</p>
-            <p className={styles.emptyHint}>Crea entidades de tipo SERVICE en la base de datos para comenzar.</p>
-          </div>
-        )}
-
-        <div className={styles.grid}>
-          {services.map((svc) => <ServiceCard key={svc.id} svc={svc} />)}
+        {/* Two data cards */}
+        <div className={styles.dataCardsRow}>
+          <AnalysisRunsCard runs={runs}    loading={runsLoading} />
+          <MetricsCard      metrics={metrics} loading={runsLoading} />
         </div>
 
+        {/* Legend */}
         <section className={styles.legend}>
           <div className={styles.legendTitle}>Leyenda de indicadores</div>
           <div className={styles.legendItems}>
@@ -173,6 +244,7 @@ export default function ServicePortfolioPage() {
               { icon: Shield,        color: '#fb923c', label: 'SPOF — punto único de falla sin alternativa' },
               { icon: Activity,      color: '#4ade80', label: 'Resiliencia — capacidad de recuperarse' },
               { icon: AlertTriangle, color: '#fbbf24', label: 'Exposición — riesgos no controlados' },
+              { icon: GitBranch,     color: '#a78bfa', label: 'Cascada — propagación de fallo en cadena' },
             ].map(({ icon: Icon, color, label }) => (
               <div key={label} className={styles.legendItem}>
                 <Icon size={12} color={color} />

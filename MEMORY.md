@@ -541,3 +541,11 @@ useEffect(() => {
 **Regla aprendida:** El zoom de Cytoscape en Kiriox no debe mostrarse como factor decimal tipo `1.00x`. Debe exponerse al usuario como porcentaje entero (`100%`, `125%`, `80%`) y actualizarse en tiempo real con el evento de zoom del canvas.
 
 **Aplicación futura:** Cualquier HUD o badge de viewport para builders gráficos debe usar porcentaje entero legible para usuario final y no valores técnicos de escala interna.
+
+## 2026-06-04 — Aprendizaje
+
+**Contexto:** Retiro del dashboard ejecutivo sistémico y consolidación de la navegación de `Riesgo sistemico`.
+
+**Regla aprendida:** La opción lateral `Riesgo sistemico` ya no debe abrir `/gestion/dashboard_riesgo_sistemico`. Su destino visible correcto es `/gestion/structural-map`, y la ruta App Router `/gestion/dashboard_riesgo_sistemico` debe retirarse del repositorio junto con su UI asociada.
+
+**Aplicación futura:** Si se vuelve a plantear una capa ejecutiva o comercial del riesgo sistémico, no revivirla sobre el endpoint retirado. Usar rutas nuevas y explícitas, dejando `Riesgo sistemico` del sidebar conectado al builder operativo vigente.

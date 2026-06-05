@@ -330,4 +330,68 @@ export class PrismaPortfolioRepository {
     };
     return { is_valid: stats.critical === 0 && stats.high === 0, issues, stats };
   }
+
+  async getPortfolioRuns(): Promise<{ analysis_runs: AnalysisRunRow[]; metrics: MetricRow[] }> {
+    const [analysis_runs, metrics] = await Promise.all([
+      prisma.$queryRaw<AnalysisRunRow[]>(Prisma.sql`
+        SELECT
+          id::text,
+          name,
+          analysis_type,
+          status,
+          started_at::text,
+          completed_at::text,
+          created_at::text
+        FROM systemic_structural_analysis_runs
+        ORDER BY created_at DESC
+        LIMIT 7
+      `),
+      prisma.$queryRaw<MetricRow[]>(Prisma.sql`
+        SELECT
+          ssm.id::text,
+          se.name        AS entity_name,
+          se.code        AS entity_code,
+          et.name        AS entity_type_name,
+          ssm.metric_type,
+          ssm.metric_value::float   AS metric_value,
+          ssm.metric_level,
+          ssm.criticality_score::float AS criticality_score,
+          ssm.criticality_level,
+          COALESCE(ssm.is_critical_node, false) AS is_critical_node,
+          COALESCE(ssm.is_spof, false)          AS is_spof,
+          ssm.total_degree::int                 AS total_degree,
+          ssm.created_at::text
+        FROM systemic_structural_metrics ssm
+        JOIN systemic_entities se  ON se.id  = ssm.entity_id
+        JOIN systemic_entity_types et ON et.id = se.entity_type_id
+        ORDER BY ssm.created_at DESC
+        LIMIT 7
+      `),
+    ]);
+
+    return {
+      analysis_runs: analysis_runs.map((r) => ({ ...r, id: String(r.id) })),
+      metrics: metrics.map((r) => ({
+        ...r,
+        id:               String(r.id),
+        metric_value:     r.metric_value     != null ? Number(r.metric_value)     : null,
+        criticality_score: r.criticality_score != null ? Number(r.criticality_score) : null,
+        total_degree:     r.total_degree     != null ? Number(r.total_degree)     : null,
+        is_critical_node: Boolean(r.is_critical_node),
+        is_spof:          Boolean(r.is_spof),
+      })),
+    };
+  }
 }
+
+export type AnalysisRunRow = {
+  id: string; name: string; analysis_type: string; status: string;
+  started_at: string | null; completed_at: string | null; created_at: string;
+};
+
+export type MetricRow = {
+  id: string; entity_name: string | null; entity_code: string; entity_type_name: string;
+  metric_type: string | null; metric_value: number | null; metric_level: string | null;
+  criticality_score: number | null; criticality_level: string | null;
+  is_critical_node: boolean; is_spof: boolean; total_degree: number | null; created_at: string;
+};

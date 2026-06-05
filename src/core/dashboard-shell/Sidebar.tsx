@@ -52,7 +52,7 @@ const SIDEBAR_HOME_ITEM: ResolvedNavigationItem = {
 const SIDEBAR_SYSTEMIC_RISK_ITEM: ResolvedNavigationItem = {
   key: "sidebar-systemic-risk",
   label: "Riesgo sistemico",
-  href: "/gestion/dashboard_riesgo_sistemico",
+  href: "/gestion/structural-map",
   icon: "GitBranch",
   module: "structural-risk",
   permission: "A",

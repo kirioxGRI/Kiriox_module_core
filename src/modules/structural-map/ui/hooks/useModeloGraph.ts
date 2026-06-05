@@ -9,9 +9,10 @@ export type ModeloGraphData = {
   relations:     GraphRelation[];
   entityTypes:   EntityType[];
   relationTypes: RelationType[];
+  allEntities:   GraphEntity[];
 };
 
-export function useModeloGraph() {
+export function useModeloGraph(rootEntityId?: string | null) {
   const [data, setData]     = useState<ModeloGraphData | null>(null);
   const [error, setError]   = useState<string | null>(null);
   const [isPending, start]  = useTransition();
@@ -20,22 +21,27 @@ export function useModeloGraph() {
     setError(null);
     start(async () => {
       try {
+        // Si viene rootEntityId filtra por subgrafo (depth=3), si no carga todo el modelo
+        const graphUrl = rootEntityId
+          ? `/api/structural-map/graph?rootEntityId=${encodeURIComponent(rootEntityId)}&depth=3`
+          : '/api/structural-map/modelo/graph';
+
         const [graphRes, catalogRes] = await Promise.all([
-          fetch('/api/structural-map/modelo/graph', { cache: 'no-store' }),
-          fetch('/api/structural-map/services',     { cache: 'no-store' }),
+          fetch(graphUrl, { cache: 'no-store' }),
+          fetch('/api/structural-map/services', { cache: 'no-store' }),
         ]);
         const graphText   = await graphRes.text();
         const catalogText = await catalogRes.text();
         if (!graphRes.ok)   throw new Error(graphText   || `Error HTTP ${graphRes.status}`);
         if (!catalogRes.ok) throw new Error(catalogText || `Error HTTP ${catalogRes.status}`);
         const graph   = JSON.parse(graphText)   as { entities: GraphEntity[]; relations: GraphRelation[] };
-        const catalog = JSON.parse(catalogText) as { entityTypes: EntityType[]; relationTypes: RelationType[] };
-        setData({ entities: graph.entities, relations: graph.relations, entityTypes: catalog.entityTypes, relationTypes: catalog.relationTypes });
+        const catalog = JSON.parse(catalogText) as { entityTypes: EntityType[]; relationTypes: RelationType[]; allEntities?: GraphEntity[] };
+        setData({ entities: graph.entities, relations: graph.relations, entityTypes: catalog.entityTypes, relationTypes: catalog.relationTypes, allEntities: catalog.allEntities ?? [] });
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Error al cargar el grafo');
       }
     });
-  }, []);
+  }, [rootEntityId]);
 
   useEffect(() => { load(); }, [load]);
 

@@ -1,13 +1,16 @@
 'use client';
 
 import { useRef, useCallback, lazy, Suspense, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft, Activity, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, Activity, AlertTriangle, Play, ZoomIn } from 'lucide-react';
 import { useCanvasStateMachine } from '@/modules/structural-map/ui/hooks/useCanvasStateMachine';
 import { useModeloGraph } from '@/modules/structural-map/ui/hooks/useModeloGraph';
 import { AnalysisPanel } from '@/modules/structural-map/ui/components/AnalysisPanel';
 import { ElenaEngineResultPanel } from '@/modules/structural-map/ui/components/ElenaEngineResultPanel';
 import { EntityQuickCreate } from '@/modules/structural-map/ui/components/canvas/EntityQuickCreate';
+import { EntityEditForm }    from '@/modules/structural-map/ui/components/canvas/EntityEditForm';
+import { EntityPickerPanel } from '@/modules/structural-map/ui/components/canvas/EntityPickerPanel';
 import { RelationFormPopover } from '@/modules/structural-map/ui/components/canvas/RelationFormPopover';
 import type { GraphEntity, GraphRelation } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
@@ -19,18 +22,26 @@ const ModelCanvas = lazy(() => import('@/modules/structural-map/ui/components/ca
 type PendingRelation = { sourceId: string; targetId: string; targetScreenPos: ScreenPos };
 
 export default function ModeloCanvasPage() {
+  const searchParams  = useSearchParams();
+  const rootEntityId  = searchParams.get('serviceId') ?? undefined;
+
   const sm    = useCanvasStateMachine();
-  const graph = useModeloGraph();
+  const graph = useModeloGraph(rootEntityId);
   const cyRef = useRef<cytoscape.Core | null>(null);
 
   const [pendingRelation, setPendingRelation] = useState<PendingRelation | null>(null);
   const [elenaResult,     setElenaResult]     = useState<ElenaRunResult | null>(null);
   const [showAnalysis,    setShowAnalysis]    = useState(false);
-  const [editingEdgeId,   setEditingEdgeId]   = useState<string | null>(null);
+  const [editingEdgeId,    setEditingEdgeId]    = useState<string | null>(null);
+  const [editingEntityId,  setEditingEntityId]  = useState<string | null>(null);
+  const [zoomLevel,       setZoomLevel]       = useState<number>(1.5);
+  const [selectedEngine,  setSelectedEngine]  = useState<string>('criticality');
+  const [engineRunning,   setEngineRunning]   = useState(false);
+  const [pickerForNode,   setPickerForNode]   = useState<string | null>(null);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { sm.escape(); setPendingRelation(null); setEditingEdgeId(null); }
+      if (e.key === 'Escape') { sm.escape(); setPendingRelation(null); setEditingEdgeId(null); setEditingEntityId(null); setPickerForNode(null); }
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
@@ -49,6 +60,7 @@ export default function ModeloCanvasPage() {
 
   const handleNodeDblClick = useCallback((entity: GraphEntity) => {
     sm.selectNode(entity.id, sm.state.nodeRenderedPos ?? { x: 0, y: 0 });
+    setEditingEntityId(entity.id);
   }, [sm]);
 
   const handleEdgeClick = useCallback((relation: GraphRelation) => {
@@ -61,6 +73,80 @@ export default function ModeloCanvasPage() {
   const handleRelationHandleClick = useCallback((sourceId: string) => {
     sm.startCreateRelation(sourceId);
   }, [sm]);
+
+  const handleNodePickEntity = useCallback((nodeId: string) => {
+    setPickerForNode(nodeId);
+  }, []);
+
+  const handlePickedEntity = useCallback((entity: GraphEntity) => {
+    const sourceId = pickerForNode;
+    setPickerForNode(null);
+    if (!sourceId) return;
+
+    // Agregar la entidad existente al canvas si aún no está presente
+    const alreadyOnCanvas = graph.data?.entities.some((e) => e.id === entity.id) ?? false;
+    if (!alreadyOnCanvas) graph.addEntity(entity);
+
+    // Posición del nodo destino para el formulario (cerca del nodo origen)
+    const rp = cyRef.current?.getElementById(sourceId).renderedPosition() as ScreenPos | undefined;
+    const r  = document.querySelector('[data-cy-container]')?.getBoundingClientRect();
+    const sp: ScreenPos = { x: (r?.left ?? 0) + (rp?.x ?? 0) + 80, y: (r?.top ?? 0) + (rp?.y ?? 0) };
+
+    // Abrir formulario de relación entre el nodo seleccionado y la entidad elegida
+    sm.setPendingTarget();
+    setPendingRelation({ sourceId, targetId: entity.id, targetScreenPos: sp });
+  }, [pickerForNode, graph, sm]);
+
+  const handleNodeEditAction = useCallback((nodeId: string) => {
+    setEditingEntityId(nodeId);
+  }, []);
+
+  const handleNodeDeleteAction = useCallback(async (nodeId: string) => {
+    const entity = graph.data?.entities.find((e) => e.id === nodeId);
+    if (!window.confirm(`¿Eliminar "${entity?.name ?? nodeId}" y todas sus relaciones?`)) return;
+    const res = await fetch(`/api/structural-map/entities/${nodeId}`, { method: 'DELETE' });
+    if (!res.ok) { window.alert('Error al eliminar la entidad'); return; }
+    graph.removeEntity(nodeId);
+    sm.deselect();
+    sm.markDirty();
+  }, [graph, sm]);
+
+  const handleNodeAnalyzeAction = useCallback((nodeId: string) => {
+    setSelectedEngine('criticality');
+    void (async () => {
+      setEngineRunning(true);
+      try {
+        const res  = await fetch('/api/structural-map/elena/run', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rootEntityId: nodeId, engine: 'criticality' }),
+        });
+        const text = await res.text();
+        const result = text ? JSON.parse(text) as ElenaRunResult : null;
+        if (result) { setElenaResult(result); sm.markDirty(); graph.reload(); }
+      } finally { setEngineRunning(false); }
+    })();
+  }, [graph, sm]);
+
+  const handleUpdateEntity = useCallback(async (id: string, patch: { name?: string; description?: string | null; criticality_level?: string }) => {
+    const res  = await fetch(`/api/structural-map/entities/${id}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch),
+    });
+    const text = await res.text();
+    if (!res.ok) throw new Error((JSON.parse(text) as { error?: string }).error ?? 'Error al actualizar entidad');
+    graph.updateEntity(id, patch as Partial<GraphEntity>);
+    setEditingEntityId(null);
+    sm.markDirty();
+  }, [graph, sm]);
+
+  const handleDeleteEntityFromForm = useCallback(async (id: string) => {
+    const res = await fetch(`/api/structural-map/entities/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Error al eliminar entidad');
+    graph.removeEntity(id);
+    setEditingEntityId(null);
+    sm.deselect();
+    sm.markDirty();
+  }, [graph, sm]);
 
   const handleTargetSelected = useCallback((targetId: string) => {
     if (!sm.state.pendingSourceId) return;
@@ -128,8 +214,26 @@ export default function ModeloCanvasPage() {
     }
   }, [sm]);
 
+  const handleRunEngine = useCallback(async () => {
+    const rootId = rootEntityId ?? sm.state.selectedNodeId ?? graph.data?.entities[0]?.id;
+    if (!rootId) return;
+    setEngineRunning(true);
+    try {
+      const res  = await fetch('/api/structural-map/elena/run', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rootEntityId: rootId, engine: selectedEngine }),
+      });
+      const text = await res.text();
+      const result = text ? JSON.parse(text) as ElenaRunResult : null;
+      if (result) { setElenaResult(result); sm.markDirty(); graph.reload(); }
+    } finally {
+      setEngineRunning(false);
+    }
+  }, [sm, selectedEngine, graph]);
+
   const entities        = graph.data?.entities    ?? [];
   const relations       = graph.data?.relations   ?? [];
+  const rootEntity      = rootEntityId ? entities.find((e) => e.id === rootEntityId) : null;
   const editingRelation = editingEdgeId ? (relations.find((r) => r.id === editingEdgeId) ?? null) : null;
   const pendingSrc      = pendingRelation ? entities.find((e) => e.id === pendingRelation.sourceId)  : undefined;
   const pendingTgt      = pendingRelation ? entities.find((e) => e.id === pendingRelation.targetId)  : undefined;
@@ -140,17 +244,57 @@ export default function ModeloCanvasPage() {
   return (
     <div className={styles.layout}>
       <header className={styles.header}>
+        {/* Left — navigation */}
         <div className={styles.headerLeft}>
           <Link href="/gestion/structural-map" className={styles.backBtn}><ChevronLeft size={14} /> Portafolio</Link>
-          <span className={styles.pageTitle}>Modelo estructural</span>
+          <span className={styles.pageTitle}>
+            {rootEntity ? rootEntity.name : 'Modelo estructural completo'}
+          </span>
+          {rootEntityId && !rootEntity && <span className={styles.pageTitle}>Modelo estructural</span>}
           {sm.state.isDirty && <span className={styles.dirtyBadge}>Cambios pendientes de análisis</span>}
         </div>
+
+        {/* Center — zoom + analysis combobox */}
+        <div className={styles.headerCenter}>
+          <span className={styles.zoomBadge}>
+            <ZoomIn size={11} />
+            {Math.round(zoomLevel * 100)}%
+          </span>
+
+          <div className={styles.engineRow}>
+            <select
+              value={selectedEngine}
+              onChange={(e) => setSelectedEngine(e.target.value)}
+              className={styles.engineSelect}
+            >
+              <option value="structural">Análisis estructural · fn_elena_systemic_structural_analysis</option>
+              <option value="criticality">Análisis de criticidad · fn_elena_systemic_criticality_analysis</option>
+              <option value="resilience">Análisis de resiliencia · fn_elena_systemic_resilience_analysis</option>
+              <option value="exposure">Análisis de exposición · fn_elena_systemic_exposure_analysis</option>
+              <option value="cascade">Simulación de cascada · fn_elena_systemic_cascade_simulation</option>
+            </select>
+            <button
+              onClick={() => void handleRunEngine()}
+              disabled={engineRunning || !graph.data}
+              className={styles.runEngineBtn}
+              title={sm.state.selectedNodeId ? 'Ejecutar desde nodo seleccionado' : 'Ejecutar desde primera entidad'}
+            >
+              {engineRunning
+                ? <span className={styles.spinnerSm} />
+                : <Play size={11} fill="currentColor" />
+              }
+              {engineRunning ? 'Ejecutando…' : 'Ejecutar'}
+            </button>
+          </div>
+        </div>
+
+        {/* Right — stats + analysis panel toggle */}
         <div className={styles.headerRight}>
           <span className={styles.stat}>{entities.length} entidades</span>
           <span className={styles.stat}>{relations.length} relaciones</span>
           {graph.isPending && <div className={styles.spinner} />}
           <button onClick={() => setShowAnalysis((p) => !p)} className={showAnalysis ? styles.analysisBtnActive : styles.analysisBtn}>
-            <Activity size={13} /> Análisis
+            <Activity size={13} /> Motores
           </button>
         </div>
       </header>
@@ -174,6 +318,11 @@ export default function ModeloCanvasPage() {
                 onRelationHandleClick={handleRelationHandleClick}
                 onTargetSelected={handleTargetSelected}
                 onPanZoom={handlePanZoom}
+                onZoomChange={setZoomLevel}
+                onNodeEdit={handleNodeEditAction}
+                onNodeDelete={(id) => void handleNodeDeleteAction(id)}
+                onNodeAnalyze={handleNodeAnalyzeAction}
+                onNodePickEntity={handleNodePickEntity}
                 cyRef={cyRef}
               />
             </div>
@@ -182,11 +331,12 @@ export default function ModeloCanvasPage() {
 
         <div className={styles.modeBar}>
           {sm.state.mode === 'idle'              && 'Clic en el lienzo para crear entidad · Clic en nodo para seleccionar'}
-          {sm.state.mode === 'node_selected'     && 'Nodo seleccionado · Usa + para crear relación · Esc para deseleccionar'}
+          {sm.state.mode === 'node_selected'     && 'Nodo seleccionado · + relación · ⊕ entidad existente · ✎ editar · ✕ eliminar · ⚡ analizar · Esc'}
           {sm.state.mode === 'creating_entity'   && 'Creando entidad…'}
           {sm.state.mode === 'creating_relation' && 'Selecciona el nodo destino · Esc para cancelar'}
           {sm.state.mode === 'editing_relation'  && 'Editando relación · Esc para cancelar'}
-          {sm.state.mode === 'dragging_node'     && 'Moviendo nodo…'}
+          {sm.state.mode === 'dragging_node'     && 'Moviendo nodo · suelta para fijar posición'}
+          {sm.state.mode === 'panning_canvas'    && 'Moviendo lienzo…'}
         </div>
       </div>
 
@@ -222,6 +372,40 @@ export default function ModeloCanvasPage() {
           onCancel={() => { setEditingEdgeId(null); sm.deselectEdge(); }}
         />
       )}
+
+      {/* Entity picker — agregar entidad existente desde la tabla */}
+      {pickerForNode && graph.data && (() => {
+        const rp = cyRef.current?.getElementById(pickerForNode).renderedPosition() as ScreenPos | undefined;
+        const r  = document.querySelector('[data-cy-container]')?.getBoundingClientRect();
+        const pos: ScreenPos = rp
+          ? { x: (r?.left ?? 0) + rp.x, y: (r?.top ?? 0) + rp.y }
+          : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        return (
+          <EntityPickerPanel
+            position={pos}
+            allEntities={graph.data.allEntities}
+            currentEntityIds={new Set(entities.map((e) => e.id))}
+            onSelect={handlePickedEntity}
+            onCancel={() => setPickerForNode(null)}
+          />
+        );
+      })()}
+
+      {/* Entity edit form — opens on dblclick or ✎ button */}
+      {editingEntityId && (() => {
+        const ent = entities.find((e) => e.id === editingEntityId);
+        if (!ent) return null;
+        const pos = sm.state.nodeRenderedPos ?? { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        return (
+          <EntityEditForm
+            entity={ent}
+            position={pos}
+            onSave={handleUpdateEntity}
+            onDelete={handleDeleteEntityFromForm}
+            onCancel={() => setEditingEntityId(null)}
+          />
+        );
+      })()}
 
       {showAnalysis && (
         <div className={styles.analysisDrawer}>
