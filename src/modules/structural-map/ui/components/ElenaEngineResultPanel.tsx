@@ -541,6 +541,21 @@ export function ElenaEngineResultPanel({ result, onClose }: Props) {
                     {recommendationError && (
                       <p className={styles.recommendationError}>{recommendationError}</p>
                     )}
+                    {recommendationStatus === 'loading' && (
+                      <section className={styles.recommendationLoadingCard} aria-live="polite" aria-busy="true">
+                        <div className={styles.recommendationLoadingHeader}>
+                          <span className={styles.recommendationEyebrow}>Recomendación IA</span>
+                          <span className={styles.recommendationLoadingDots}>
+                            <span />
+                            <span />
+                            <span />
+                          </span>
+                        </div>
+                        <div className={styles.recommendationSkeletonLine} />
+                        <div className={styles.recommendationSkeletonLine} />
+                        <div className={styles.recommendationSkeletonLineShort} />
+                      </section>
+                    )}
                     {recommendation && (
                       <section className={styles.recommendationCard}>
                         <p className={styles.recommendationEyebrow}>Recomendación IA</p>
