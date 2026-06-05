@@ -32,8 +32,9 @@ export default function ModeloCanvasPage() {
   const [pendingRelation, setPendingRelation] = useState<PendingRelation | null>(null);
   const [elenaResult,     setElenaResult]     = useState<ElenaRunResult | null>(null);
   const [showAnalysis,    setShowAnalysis]    = useState(false);
-  const [editingEdgeId,    setEditingEdgeId]    = useState<string | null>(null);
-  const [editingEntityId,  setEditingEntityId]  = useState<string | null>(null);
+  const [editingEdgeId,   setEditingEdgeId]   = useState<string | null>(null);
+  const [editingEdgePos,  setEditingEdgePos]  = useState<ScreenPos | null>(null);
+  const [editingEntityId, setEditingEntityId] = useState<string | null>(null);
   const [zoomLevel,       setZoomLevel]       = useState<number>(1.5);
   const [selectedEngine,  setSelectedEngine]  = useState<string>('criticality');
   const [engineRunning,   setEngineRunning]   = useState(false);
@@ -41,7 +42,14 @@ export default function ModeloCanvasPage() {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { sm.escape(); setPendingRelation(null); setEditingEdgeId(null); setEditingEntityId(null); setPickerForNode(null); }
+      if (e.key === 'Escape') {
+        sm.escape();
+        setPendingRelation(null);
+        setEditingEdgeId(null);
+        setEditingEdgePos(null);
+        setEditingEntityId(null);
+        setPickerForNode(null);
+      }
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
@@ -49,7 +57,8 @@ export default function ModeloCanvasPage() {
 
   const handleCanvasClick = useCallback((screenPos: ScreenPos, graphPos: { x: number; y: number }) => {
     if (sm.state.mode === 'creating_relation') return;
-    if (sm.state.mode === 'node_selected' || sm.state.mode === 'editing_relation') { sm.deselect(); return; }
+    if (sm.state.mode === 'editing_relation') return;
+    if (sm.state.mode === 'node_selected') { sm.deselect(); return; }
     sm.startCreateEntity(screenPos, graphPos);
   }, [sm]);
 
@@ -63,15 +72,24 @@ export default function ModeloCanvasPage() {
     setEditingEntityId(entity.id);
   }, [sm]);
 
-  const handleEdgeClick = useCallback((relation: GraphRelation) => {
-    sm.selectEdge(relation.id);
+  const handleEdgeDblClick = useCallback((relation: GraphRelation, screenPos: ScreenPos) => {
+    setPendingRelation(null);
+    setEditingEntityId(null);
     setEditingEdgeId(relation.id);
-    sm.startCreateEntity({ x: 0, y: 0 }, { x: 0, y: 0 });
-    sm.cancelCreateEntity();
+    setEditingEdgePos(screenPos);
+    sm.selectEdge(relation.id);
   }, [sm]);
 
-  const handleRelationHandleClick = useCallback((sourceId: string) => {
-    sm.startCreateRelation(sourceId);
+  const handleRelationStart = useCallback((sourceId: string, mousePos: ScreenPos) => {
+    setPendingRelation(null);
+    setEditingEdgeId(null);
+    setEditingEdgePos(null);
+    sm.startCreateRelation(sourceId, mousePos);
+  }, [sm]);
+
+  const handleRelationCancel = useCallback(() => {
+    setPendingRelation(null);
+    sm.cancelRelation();
   }, [sm]);
 
   const handleNodePickEntity = useCallback((nodeId: string) => {
@@ -96,10 +114,6 @@ export default function ModeloCanvasPage() {
     sm.setPendingTarget();
     setPendingRelation({ sourceId, targetId: entity.id, targetScreenPos: sp });
   }, [pickerForNode, graph, sm]);
-
-  const handleNodeEditAction = useCallback((nodeId: string) => {
-    setEditingEntityId(nodeId);
-  }, []);
 
   const handleNodeDeleteAction = useCallback(async (nodeId: string) => {
     const entity = graph.data?.entities.find((e) => e.id === nodeId);
@@ -150,9 +164,14 @@ export default function ModeloCanvasPage() {
 
   const handleTargetSelected = useCallback((targetId: string) => {
     if (!sm.state.pendingSourceId) return;
-    const rp = cyRef.current?.getElementById(targetId).renderedPosition() as ScreenPos | undefined;
-    const r  = document.querySelector('[data-cy-container]')?.getBoundingClientRect();
-    const sp: ScreenPos = { x: (r?.left ?? 0) + (rp?.x ?? 0), y: (r?.top ?? 0) + (rp?.y ?? 0) };
+
+    const sourcePos = cyRef.current?.getElementById(sm.state.pendingSourceId).renderedPosition() as ScreenPos | undefined;
+    const targetPos = cyRef.current?.getElementById(targetId).renderedPosition() as ScreenPos | undefined;
+    const rect = document.querySelector('[data-cy-container]')?.getBoundingClientRect();
+    const sp: ScreenPos = {
+      x: (rect?.left ?? 0) + (((sourcePos?.x ?? 0) + (targetPos?.x ?? 0)) / 2),
+      y: (rect?.top ?? 0) + (((sourcePos?.y ?? 0) + (targetPos?.y ?? 0)) / 2),
+    };
     const sourceId = sm.state.pendingSourceId;
     sm.setPendingTarget();
     setPendingRelation({ sourceId, targetId, targetScreenPos: sp });
@@ -192,9 +211,11 @@ export default function ModeloCanvasPage() {
 
   const handleUpdateRelation = useCallback(async (id: string, patch: { relation_type_id?: string; strength?: string; weight?: number; description?: string | null }) => {
     const res = await fetch(`/api/structural-map/relations/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(patch) });
-    if (!res.ok) throw new Error('Error al actualizar relación');
+    const text = await res.text();
+    if (!res.ok) throw new Error((JSON.parse(text) as { error?: string }).error ?? 'Error al actualizar relación');
     graph.updateRelation(id, patch as Partial<GraphRelation>);
     setEditingEdgeId(null);
+    setEditingEdgePos(null);
     sm.deselectEdge();
   }, [graph, sm]);
 
@@ -203,6 +224,7 @@ export default function ModeloCanvasPage() {
     if (!res.ok) throw new Error('Error al eliminar relación');
     graph.removeRelation(id);
     setEditingEdgeId(null);
+    setEditingEdgePos(null);
     sm.deselectEdge();
     sm.markDirty();
   }, [graph, sm]);
@@ -212,6 +234,12 @@ export default function ModeloCanvasPage() {
       const rp = cyRef.current.getElementById(sm.state.selectedNodeId).renderedPosition() as ScreenPos;
       sm.updateNodePos(rp);
     }
+  }, [sm]);
+
+  const handleNodeDragEnd = useCallback((nodeId: string, _graphPos: { x: number; y: number }) => {
+    sm.endDrag();
+    const rp = cyRef.current?.getElementById(nodeId).renderedPosition() as ScreenPos | undefined;
+    if (rp) sm.updateNodePos(rp);
   }, [sm]);
 
   const handleRunEngine = useCallback(async () => {
@@ -239,7 +267,7 @@ export default function ModeloCanvasPage() {
   const pendingTgt      = pendingRelation ? entities.find((e) => e.id === pendingRelation.targetId)  : undefined;
   const editSrc         = editingRelation ? entities.find((e) => e.id === editingRelation.source_entity_id) : undefined;
   const editTgt         = editingRelation ? entities.find((e) => e.id === editingRelation.target_entity_id) : undefined;
-  const edgeEditPos     = sm.state.clickScreenPos ?? (typeof window !== 'undefined' ? { x: window.innerWidth / 2, y: window.innerHeight / 2 } : { x: 500, y: 400 });
+  const edgeEditPos     = editingEdgePos ?? (typeof window !== 'undefined' ? { x: window.innerWidth / 2, y: window.innerHeight / 2 } : { x: 500, y: 400 });
 
   return (
     <div className={styles.layout}>
@@ -311,15 +339,16 @@ export default function ModeloCanvasPage() {
               <ModelCanvas
                 entities={entities} relations={relations} canvasState={sm.state}
                 onNodeClick={handleNodeClick} onNodeDblClick={handleNodeDblClick}
-                onEdgeClick={handleEdgeClick} onCanvasClick={handleCanvasClick}
+                onEdgeDblClick={handleEdgeDblClick} onCanvasClick={handleCanvasClick}
                 onMouseMove={sm.updateMouse}
                 onNodeDragStart={sm.startDrag}
-                onNodeDragEnd={() => sm.endDrag()}
-                onRelationHandleClick={handleRelationHandleClick}
+                onNodeDragEnd={handleNodeDragEnd}
+                onRelationStart={handleRelationStart}
+                onRelationHoverChange={sm.hoverRelationTarget}
                 onTargetSelected={handleTargetSelected}
+                onRelationCancel={handleRelationCancel}
                 onPanZoom={handlePanZoom}
                 onZoomChange={setZoomLevel}
-                onNodeEdit={handleNodeEditAction}
                 onNodeDelete={(id) => void handleNodeDeleteAction(id)}
                 onNodeAnalyze={handleNodeAnalyzeAction}
                 onNodePickEntity={handleNodePickEntity}
@@ -330,10 +359,10 @@ export default function ModeloCanvasPage() {
         )}
 
         <div className={styles.modeBar}>
-          {sm.state.mode === 'idle'              && 'Clic en el lienzo para crear entidad · Clic en nodo para seleccionar'}
-          {sm.state.mode === 'node_selected'     && 'Nodo seleccionado · + relación · ⊕ entidad existente · ✎ editar · ✕ eliminar · ⚡ analizar · Esc'}
+          {sm.state.mode === 'idle'              && 'Clic corto en el lienzo para crear entidad · Clic en un nodo para mostrar conectores'}
+          {sm.state.mode === 'node_selected'     && 'Nodo seleccionado · Arrastra desde un conector para crear relación · Doble clic para editar'}
           {sm.state.mode === 'creating_entity'   && 'Creando entidad…'}
-          {sm.state.mode === 'creating_relation' && 'Selecciona el nodo destino · Esc para cancelar'}
+          {sm.state.mode === 'creating_relation' && 'Arrastra la línea hacia un destino válido y suelta · Esc para cancelar'}
           {sm.state.mode === 'editing_relation'  && 'Editando relación · Esc para cancelar'}
           {sm.state.mode === 'dragging_node'     && 'Moviendo nodo · suelta para fijar posición'}
           {sm.state.mode === 'panning_canvas'    && 'Moviendo lienzo…'}
@@ -356,7 +385,7 @@ export default function ModeloCanvasPage() {
           sourceEntity={pendingSrc} targetEntity={pendingTgt}
           relationTypes={graph.data?.relationTypes ?? []}
           onSave={handleCreateRelation}
-          onCancel={() => { setPendingRelation(null); sm.cancelRelation(); }}
+          onCancel={handleRelationCancel}
         />
       )}
 
@@ -369,7 +398,7 @@ export default function ModeloCanvasPage() {
           relationTypes={graph.data?.relationTypes ?? []}
           onSave={handleUpdateRelation}
           onDelete={handleDeleteRelation}
-          onCancel={() => { setEditingEdgeId(null); sm.deselectEdge(); }}
+          onCancel={() => { setEditingEdgeId(null); setEditingEdgePos(null); sm.deselectEdge(); }}
         />
       )}
 

@@ -549,3 +549,11 @@ useEffect(() => {
 **Regla aprendida:** La opción lateral `Riesgo sistemico` ya no debe abrir `/gestion/dashboard_riesgo_sistemico`. Su destino visible correcto es `/gestion/structural-map`, y la ruta App Router `/gestion/dashboard_riesgo_sistemico` debe retirarse del repositorio junto con su UI asociada.
 
 **Aplicación futura:** Si se vuelve a plantear una capa ejecutiva o comercial del riesgo sistémico, no revivirla sobre el endpoint retirado. Usar rutas nuevas y explícitas, dejando `Riesgo sistemico` del sidebar conectado al builder operativo vigente.
+
+## 2026-06-04 — Aprendizaje
+
+**Contexto:** Reimplementación del flujo de creación de relaciones en el canvas canónico `/gestion/structural-map/modelo`.
+
+**Regla aprendida:** En la ruta viva del structural map, la creación de relaciones debe seguir el patrón QBE visual: `seleccionar nodo -> arrastrar desde handle explícito -> soltar sobre destino válido -> abrir popover corto de relación`. La edición posterior debe abrirse por doble clic sobre la arista, no por formularios previos ni botones alejados del grafo.
+
+**Aplicación futura:** Toda evolución del modelador sistémico debe preservar la separación de gestos: mover nodo desde el cuerpo del nodo, crear relación solo desde conectores visibles, editar entidad por doble clic de nodo y editar relación por doble clic de línea.

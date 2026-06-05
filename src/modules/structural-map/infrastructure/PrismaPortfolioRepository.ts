@@ -1,5 +1,6 @@
 import { Prisma } from '@/generated/prisma/client';
 import prisma from '@/infrastructure/db/prisma/client';
+import { RelationMutationError } from '@/modules/structural-map/domain/errors/RelationMutationError';
 import type {
   ServiceSummary,
   EntityType,
@@ -20,7 +21,33 @@ function normalizeRelationWeight(weight: number | null | undefined): number | nu
   return Number(clamped.toFixed(4));
 }
 
+function assertValidRelationStrength(strength: string | null | undefined): void {
+  if (strength == null) return;
+  if (!['weak', 'medium', 'strong', 'critical'].includes(strength)) {
+    throw new RelationMutationError('INVALID_STRENGTH', 'La fuerza de la relación debe ser weak, medium, strong o critical.');
+  }
+}
+
+function assertValidRelationWeight(weight: number | null | undefined): void {
+  if (weight == null) return;
+  if (!Number.isFinite(weight) || weight < 0 || weight > 1) {
+    throw new RelationMutationError('INVALID_WEIGHT', 'El peso de la relación debe estar entre 0 y 1.');
+  }
+}
+
 export class PrismaPortfolioRepository {
+  private async findRelationTuple(sourceEntityId: string, targetEntityId: string, relationTypeId: string) {
+    return prisma.systemic_entity_relations.findUnique({
+      where: {
+        source_entity_id_target_entity_id_relation_type_id: {
+          source_entity_id: sourceEntityId,
+          target_entity_id: targetEntityId,
+          relation_type_id: relationTypeId,
+        },
+      },
+    });
+  }
+
   async getAllEntities(): Promise<any[]> {
     const rows = await prisma.$queryRaw<any[]>(Prisma.sql`
       SELECT
@@ -170,21 +197,47 @@ export class PrismaPortfolioRepository {
   }
 
   async createRelation(input: CreateRelationInput): Promise<{ id: string }> {
+    if (input.source_entity_id === input.target_entity_id) {
+      throw new RelationMutationError('SELF_RELATION', 'Una entidad no puede relacionarse consigo misma.');
+    }
+
+    assertValidRelationStrength(input.strength);
+    assertValidRelationWeight(input.weight);
+
     const normalizedWeight = normalizeRelationWeight(input.weight);
-    const rows = await prisma.$queryRaw<{ id: string }[]>(Prisma.sql`
-      INSERT INTO systemic_entity_relations
-        (source_entity_id, target_entity_id, relation_type_id, weight, strength, description)
-      VALUES (
-        ${input.source_entity_id}::uuid,
-        ${input.target_entity_id}::uuid,
-        ${input.relation_type_id}::uuid,
-        ${normalizedWeight},
-        ${input.strength ?? null},
-        ${input.description ?? null}
-      )
-      RETURNING id::text
-    `);
-    return { id: String(rows[0].id) };
+    const existing = await this.findRelationTuple(input.source_entity_id, input.target_entity_id, input.relation_type_id);
+
+    if (existing?.is_active) {
+      throw new RelationMutationError('DUPLICATE_RELATION', 'Ya existe una relación activa con el mismo origen, destino y tipo.');
+    }
+
+    if (existing && !existing.is_active) {
+      const restored = await prisma.systemic_entity_relations.update({
+        where: { id: existing.id },
+        data: {
+          is_active: true,
+          weight: normalizedWeight ?? undefined,
+          strength: input.strength ?? undefined,
+          description: input.description ?? null,
+          updated_at: new Date(),
+        },
+        select: { id: true },
+      });
+      return { id: String(restored.id) };
+    }
+
+    const created = await prisma.systemic_entity_relations.create({
+      data: {
+        source_entity_id: input.source_entity_id,
+        target_entity_id: input.target_entity_id,
+        relation_type_id: input.relation_type_id,
+        weight: normalizedWeight ?? undefined,
+        strength: input.strength ?? undefined,
+        description: input.description ?? null,
+      },
+      select: { id: true },
+    });
+    return { id: String(created.id) };
   }
 
   async deleteRelation(id: string): Promise<void> {
@@ -225,43 +278,37 @@ export class PrismaPortfolioRepository {
   }
 
   async updateRelation(id: string, input: UpdateRelationInput): Promise<void> {
-    const setClauses: string[] = [];
-    const values: unknown[] = [];
+    const existing = await prisma.systemic_entity_relations.findUnique({ where: { id } });
+    if (!existing || !existing.is_active) return;
 
-    if (input.source_entity_id !== undefined) {
-      setClauses.push(`source_entity_id = $${values.length + 2}::uuid`);
-      values.push(input.source_entity_id);
-    }
-    if (input.target_entity_id !== undefined) {
-      setClauses.push(`target_entity_id = $${values.length + 2}::uuid`);
-      values.push(input.target_entity_id);
-    }
-    if (input.relation_type_id !== undefined) {
-      setClauses.push(`relation_type_id = $${values.length + 2}::uuid`);
-      values.push(input.relation_type_id);
-    }
-    if (input.weight !== undefined) {
-      setClauses.push(`weight = $${values.length + 2}`);
-      values.push(normalizeRelationWeight(input.weight));
-    }
-    if (input.strength !== undefined) {
-      setClauses.push(`strength = $${values.length + 2}`);
-      values.push(input.strength);
-    }
-    if (input.description !== undefined) {
-      setClauses.push(`description = $${values.length + 2}`);
-      values.push(input.description);
+    const nextSourceId = input.source_entity_id ?? existing.source_entity_id;
+    const nextTargetId = input.target_entity_id ?? existing.target_entity_id;
+    const nextRelationTypeId = input.relation_type_id ?? existing.relation_type_id;
+
+    if (nextSourceId === nextTargetId) {
+      throw new RelationMutationError('SELF_RELATION', 'Una entidad no puede relacionarse consigo misma.');
     }
 
-    if (setClauses.length === 0) return;
+    assertValidRelationStrength(input.strength);
+    assertValidRelationWeight(input.weight);
 
-    setClauses.push('updated_at = NOW()');
+    const duplicate = await this.findRelationTuple(nextSourceId, nextTargetId, nextRelationTypeId);
+    if (duplicate && duplicate.id !== id && duplicate.is_active) {
+      throw new RelationMutationError('DUPLICATE_RELATION', 'Ya existe una relación activa con el mismo origen, destino y tipo.');
+    }
 
-    await prisma.$executeRawUnsafe(
-      `UPDATE systemic_entity_relations SET ${setClauses.join(', ')} WHERE id = $1::uuid AND is_active = true`,
-      id,
-      ...values,
-    );
+    await prisma.systemic_entity_relations.update({
+      where: { id },
+      data: {
+        source_entity_id: input.source_entity_id ?? undefined,
+        target_entity_id: input.target_entity_id ?? undefined,
+        relation_type_id: input.relation_type_id ?? undefined,
+        weight: input.weight !== undefined ? normalizeRelationWeight(input.weight) ?? undefined : undefined,
+        strength: input.strength ?? undefined,
+        description: input.description,
+        updated_at: new Date(),
+      },
+    });
   }
 
   async validateModel(rootEntityId: string): Promise<ValidationResult> {

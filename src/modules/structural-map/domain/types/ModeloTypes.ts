@@ -15,6 +15,7 @@ export type CanvasState = {
   selectedNodeId:      string | null;
   selectedEdgeId:      string | null;
   pendingSourceId:     string | null;
+  hoverTargetId:       string | null;
   clickScreenPos:      ScreenPos | null;
   clickGraphPos:       GraphPos | null;
   nodeRenderedPos:     ScreenPos | null;
@@ -27,13 +28,16 @@ export type CanvasAction =
   | { type: 'DESELECT' }
   | { type: 'START_CREATE_ENTITY'; screenPos: ScreenPos; graphPos: GraphPos }
   | { type: 'CANCEL_CREATE_ENTITY' }
-  | { type: 'START_CREATE_RELATION'; sourceId: string }
-  | { type: 'SET_PENDING_TARGET'; targetId: string }
+  | { type: 'START_CREATE_RELATION'; sourceId: string; mousePos: ScreenPos }
+  | { type: 'HOVER_RELATION_TARGET'; targetId: string | null }
+  | { type: 'SET_PENDING_TARGET' }
   | { type: 'CANCEL_RELATION' }
   | { type: 'SELECT_EDGE'; edgeId: string }
   | { type: 'DESELECT_EDGE' }
   | { type: 'START_DRAG'; nodeId: string }
   | { type: 'END_DRAG' }
+  | { type: 'START_PAN' }
+  | { type: 'END_PAN' }
   | { type: 'UPDATE_MOUSE'; pos: ScreenPos }
   | { type: 'UPDATE_NODE_POS'; renderedPos: ScreenPos }
   | { type: 'ESCAPE' }
@@ -45,6 +49,7 @@ export const INITIAL_CANVAS_STATE: CanvasState = {
   selectedNodeId:  null,
   selectedEdgeId:  null,
   pendingSourceId: null,
+  hoverTargetId:   null,
   clickScreenPos:  null,
   clickGraphPos:   null,
   nodeRenderedPos: null,
@@ -56,10 +61,10 @@ export const STRENGTH_OPTIONS = ['weak', 'medium', 'strong', 'critical'] as cons
 export type StrengthLevel = (typeof STRENGTH_OPTIONS)[number];
 
 export const STRENGTH_STYLE: Record<StrengthLevel, { color: string; width: number; label: string }> = {
-  weak:     { color: '#ffffff', width: 1,   label: 'Débil' },
-  medium:   { color: '#22c55e', width: 2,   label: 'Media' },
-  strong:   { color: '#fbbf24', width: 3.5, label: 'Fuerte' },
-  critical: { color: '#f87171', width: 5,   label: 'Crítica' },
+  weak:     { color: '#ffffff', width: 0.9, label: 'Débil' },
+  medium:   { color: '#22c55e', width: 1.6, label: 'Media' },
+  strong:   { color: '#fbbf24', width: 2.4, label: 'Fuerte' },
+  critical: { color: '#ef4444', width: 3.2, label: 'Crítica' },
 };
 
 export const CRIT_LEVELS = ['critical', 'high', 'medium', 'low'] as const;
