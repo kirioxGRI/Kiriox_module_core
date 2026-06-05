@@ -557,3 +557,11 @@ useEffect(() => {
 **Regla aprendida:** En la ruta viva del structural map, la creación de relaciones debe seguir el patrón QBE visual: `seleccionar nodo -> arrastrar desde handle explícito -> soltar sobre destino válido -> abrir popover corto de relación`. La edición posterior debe abrirse por doble clic sobre la arista, no por formularios previos ni botones alejados del grafo.
 
 **Aplicación futura:** Toda evolución del modelador sistémico debe preservar la separación de gestos: mover nodo desde el cuerpo del nodo, crear relación solo desde conectores visibles, editar entidad por doble clic de nodo y editar relación por doble clic de línea.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Comportamiento del menú contextual y de selección sobre nodos en el structural map.
+
+**Regla aprendida:** El clic izquierdo sobre un nodo debe destinarse exclusivamente a la selección, arrastre y reubicación espacial del nodo. La apertura del menú de herramientas contextuales de Kiriox debe gatillarse únicamente al hacer clic derecho (evento `cxttap` de Cytoscape). Asimismo, todo clic en el lienzo vacío debe cerrar el menú contextual que se encuentre activo.
+
+**Aplicación futura:** Para interacciones espaciales de grafos o mapas, delegar las acciones de modelado al clic derecho e interacciones de transporte (paneo, arrastre) al clic izquierdo.

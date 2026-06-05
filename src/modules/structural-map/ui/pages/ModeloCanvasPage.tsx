@@ -58,13 +58,18 @@ export default function ModeloCanvasPage() {
   const handleCanvasClick = useCallback((screenPos: ScreenPos, graphPos: { x: number; y: number }) => {
     if (sm.state.mode === 'creating_relation') return;
     if (sm.state.mode === 'editing_relation') return;
-    if (sm.state.mode === 'node_selected') { sm.deselect(); return; }
+    if (sm.state.mode === 'node_selected' || sm.state.mode === 'node_context_menu') { sm.deselect(); return; }
     sm.startCreateEntity(screenPos, graphPos);
   }, [sm]);
 
   const handleNodeClick = useCallback((entity: GraphEntity, renderedPos: ScreenPos) => {
     if (sm.state.mode === 'creating_relation') return;
     sm.selectNode(entity.id, renderedPos);
+  }, [sm]);
+
+  const handleNodeContextMenu = useCallback((entity: GraphEntity, renderedPos: ScreenPos) => {
+    if (sm.state.mode === 'creating_relation') return;
+    sm.showContextMenu(entity.id, renderedPos);
   }, [sm]);
 
   const handleNodeDblClick = useCallback((entity: GraphEntity) => {
@@ -105,14 +110,9 @@ export default function ModeloCanvasPage() {
     const alreadyOnCanvas = graph.data?.entities.some((e) => e.id === entity.id) ?? false;
     if (!alreadyOnCanvas) graph.addEntity(entity);
 
-    // Posición del nodo destino para el formulario (cerca del nodo origen)
-    const rp = cyRef.current?.getElementById(sourceId).renderedPosition() as ScreenPos | undefined;
-    const r  = document.querySelector('[data-cy-container]')?.getBoundingClientRect();
-    const sp: ScreenPos = { x: (r?.left ?? 0) + (rp?.x ?? 0) + 80, y: (r?.top ?? 0) + (rp?.y ?? 0) };
-
-    // Abrir formulario de relación entre el nodo seleccionado y la entidad elegida
-    sm.setPendingTarget();
-    setPendingRelation({ sourceId, targetId: entity.id, targetScreenPos: sp });
+    // Seleccionamos la nueva entidad agregada pero NO abrimos la creación de relación
+    sm.deselect();
+    sm.selectNode(entity.id, { x: 0, y: 0 }); // Fallback coords, will be updated by Cytoscape layout
   }, [pickerForNode, graph, sm]);
 
   const handleNodeDeleteAction = useCallback(async (nodeId: string) => {
@@ -139,6 +139,47 @@ export default function ModeloCanvasPage() {
         if (result) { setElenaResult(result); sm.markDirty(); graph.reload(); }
       } finally { setEngineRunning(false); }
     })();
+  }, [graph, sm]);
+
+  const handleNodeDuplicateAction = useCallback(async (nodeId: string) => {
+    const entityToDuplicate = graph.data?.entities.find((e) => e.id === nodeId);
+    if (!entityToDuplicate) return;
+
+    const newCode = `${entityToDuplicate.code}_COPY_${Date.now().toString().slice(-4)}`;
+
+    const input = {
+      entity_type_id: entityToDuplicate.entity_type_id,
+      code: newCode,
+      name: `${entityToDuplicate.name} (copia)`,
+      description: entityToDuplicate.description,
+      criticality_level: entityToDuplicate.criticality_level ?? 'medium',
+    };
+
+    try {
+      const res = await fetch('/api/structural-map/entities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      });
+      const text = await res.text();
+      if (!res.ok) throw new Error((JSON.parse(text) as { error?: string }).error ?? 'Error al duplicar entidad');
+      
+      const { id } = JSON.parse(text) as { id: string };
+      
+      graph.addEntity({
+        ...entityToDuplicate,
+        id,
+        code: input.code,
+        name: input.name,
+      });
+
+      sm.deselect();
+      sm.selectNode(id, sm.state.nodeRenderedPos ?? { x: window.innerWidth / 2, y: window.innerHeight / 2 });
+      setEditingEntityId(id);
+      sm.markDirty();
+    } catch (err) {
+      window.alert(err instanceof Error ? err.message : 'Error al duplicar entidad');
+    }
   }, [graph, sm]);
 
   const handleUpdateEntity = useCallback(async (id: string, patch: { name?: string; description?: string | null; criticality_level?: string }) => {
@@ -338,7 +379,7 @@ export default function ModeloCanvasPage() {
             <div data-cy-container style={{ width: '100%', height: '100%' }}>
               <ModelCanvas
                 entities={entities} relations={relations} canvasState={sm.state}
-                onNodeClick={handleNodeClick} onNodeDblClick={handleNodeDblClick}
+                onNodeClick={handleNodeClick} onNodeContextMenu={handleNodeContextMenu} onNodeDblClick={handleNodeDblClick}
                 onEdgeDblClick={handleEdgeDblClick} onCanvasClick={handleCanvasClick}
                 onMouseMove={sm.updateMouse}
                 onNodeDragStart={sm.startDrag}
@@ -352,6 +393,7 @@ export default function ModeloCanvasPage() {
                 onNodeDelete={(id) => void handleNodeDeleteAction(id)}
                 onNodeAnalyze={handleNodeAnalyzeAction}
                 onNodePickEntity={handleNodePickEntity}
+                onNodeDuplicate={(id) => void handleNodeDuplicateAction(id)}
                 cyRef={cyRef}
               />
             </div>

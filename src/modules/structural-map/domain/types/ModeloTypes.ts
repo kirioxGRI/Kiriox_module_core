@@ -5,7 +5,8 @@ export type CanvasMode =
   | 'creating_relation'
   | 'editing_relation'
   | 'dragging_node'
-  | 'panning_canvas';
+  | 'panning_canvas'
+  | 'node_context_menu';
 
 export type ScreenPos  = { x: number; y: number };
 export type GraphPos   = { x: number; y: number };
@@ -25,6 +26,7 @@ export type CanvasState = {
 
 export type CanvasAction =
   | { type: 'SELECT_NODE'; nodeId: string; renderedPos: ScreenPos }
+  | { type: 'SHOW_CONTEXT_MENU'; nodeId: string; renderedPos: ScreenPos }
   | { type: 'DESELECT' }
   | { type: 'START_CREATE_ENTITY'; screenPos: ScreenPos; graphPos: GraphPos }
   | { type: 'CANCEL_CREATE_ENTITY' }

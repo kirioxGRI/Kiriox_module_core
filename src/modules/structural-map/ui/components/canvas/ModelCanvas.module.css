@@ -101,54 +101,84 @@
 .toolsOverlay {
   position: fixed;
   z-index: 54;
-  transform: translate(-50%, 30px);
+  transform: translate(15px, 15px);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.45rem;
+  align-items: flex-start;
   pointer-events: none;
 }
 
-.toolsHint {
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 999px;
-  background: rgba(8, 18, 38, 0.82);
-  padding: 0.28rem 0.65rem;
-  color: #94a3b8;
-  font-size: 0.67rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.toolsRail {
+.contextMenu {
   display: flex;
-  gap: 0.35rem;
+  flex-direction: column;
   pointer-events: auto;
+  background: rgba(10, 14, 32, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.35rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.15);
+  min-width: 140px;
 }
 
-.toolButton,
-.toolButtonDanger {
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  border-radius: 999px;
-  background: rgba(8, 18, 38, 0.94);
-  padding: 0.35rem 0.65rem;
+.contextMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
   color: #cbd5e1;
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 140ms ease, border-color 140ms ease;
+  transition: all 120ms ease;
+  text-align: left;
 }
 
-.toolButton:hover {
-  border-color: rgba(56, 189, 248, 0.38);
-  background: rgba(15, 30, 58, 0.98);
+.contextMenuItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
 }
 
-.toolButtonDanger {
+.contextMenuItem svg {
+  opacity: 0.7;
+}
+
+.contextMenuItem:hover svg {
+  opacity: 1;
+}
+
+.contextMenuItemDanger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
   color: #fca5a5;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 120ms ease;
+  text-align: left;
+  margin-top: 0.2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.toolButtonDanger:hover {
-  border-color: rgba(239, 68, 68, 0.36);
-  background: rgba(52, 12, 18, 0.96);
+.contextMenuItemDanger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fecaca;
+}
+
+.contextMenuItemDanger svg {
+  opacity: 0.8;
+}
+
+.contextMenuItemDanger:hover svg {
+  opacity: 1;
 }

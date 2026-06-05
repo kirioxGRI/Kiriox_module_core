@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import type { RelationType } from '@/modules/structural-map/domain/types/PortfolioTypes';
 import type { GraphEntity, GraphRelation } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
@@ -80,7 +80,9 @@ export function RelationFormPopover(props: Props) {
     [relationTypes, typeId],
   );
 
-  const panelPosition = useMemo(() => {
+  const [currentPos, setCurrentPos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
     const width = 348;
     const height = 388;
     let left = position.x - width / 2;
@@ -91,9 +93,36 @@ export function RelationFormPopover(props: Props) {
       if (left + width > window.innerWidth - 12) left = window.innerWidth - width - 12;
       if (top + height > window.innerHeight - 12) top = position.y - height - 18;
     }
-
-    return { left, top };
+    setCurrentPos({ x: left, y: top });
   }, [position]);
+
+  const dragOffsetRef = useRef<{ x: number; y: number } | null>(null);
+
+  const handlePointerMove = useCallback((event: PointerEvent) => {
+    if (!dragOffsetRef.current) return;
+    setCurrentPos({
+      x: event.clientX - dragOffsetRef.current.x,
+      y: event.clientY - dragOffsetRef.current.y,
+    });
+  }, []);
+
+  const stopDragging = useCallback(() => {
+    dragOffsetRef.current = null;
+    window.removeEventListener('pointermove', handlePointerMove);
+    window.removeEventListener('pointerup', stopDragging);
+  }, [handlePointerMove]);
+
+  const startDragging = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    // Current event is on the header, we want the rect of the whole panel
+    const rect = event.currentTarget.parentElement?.getBoundingClientRect();
+    if (!rect) return;
+    dragOffsetRef.current = {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    };
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', stopDragging);
+  }, [handlePointerMove, stopDragging]);
 
   const sourceEntity = isCreate ? props.sourceEntity : props.sourceEntity;
   const targetEntity = isCreate ? props.targetEntity : props.targetEntity;
@@ -159,10 +188,14 @@ export function RelationFormPopover(props: Props) {
   return (
     <div
       className={styles.panel}
-      style={{ left: panelPosition.left, top: panelPosition.top }}
+      style={{ left: currentPos.x, top: currentPos.y }}
       onClick={(event) => event.stopPropagation()}
     >
-      <div className={styles.header}>
+      <div 
+        className={styles.header} 
+        onPointerDown={startDragging}
+        style={{ cursor: 'grab' }}
+      >
         <div>
           <p className={styles.eyebrow}>{isCreate ? 'Nueva relación' : 'Editar relación'}</p>
           <h3 className={styles.title}>Definir propiedades</h3>

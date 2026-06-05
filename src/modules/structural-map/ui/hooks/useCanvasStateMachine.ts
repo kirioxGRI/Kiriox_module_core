@@ -17,6 +17,17 @@ function reducer(state: CanvasState, action: CanvasAction): CanvasState {
         nodeRenderedPos: action.renderedPos,
       };
 
+    case 'SHOW_CONTEXT_MENU':
+      return {
+        ...state,
+        mode: 'node_context_menu',
+        selectedNodeId: action.nodeId,
+        selectedEdgeId: null,
+        pendingSourceId: null,
+        hoverTargetId: null,
+        nodeRenderedPos: action.renderedPos,
+      };
+
     case 'DESELECT':
       return {
         ...state,
@@ -118,6 +129,7 @@ export function useCanvasStateMachine() {
   const [state, dispatch] = useReducer(reducer, INITIAL_CANVAS_STATE);
 
   const selectNode       = useCallback((nodeId: string, renderedPos: ScreenPos) => dispatch({ type: 'SELECT_NODE', nodeId, renderedPos }), []);
+  const showContextMenu  = useCallback((nodeId: string, renderedPos: ScreenPos) => dispatch({ type: 'SHOW_CONTEXT_MENU', nodeId, renderedPos }), []);
   const deselect         = useCallback(() => dispatch({ type: 'DESELECT' }), []);
   const startCreateEntity = useCallback((screenPos: ScreenPos, graphPos: GraphPos) => dispatch({ type: 'START_CREATE_ENTITY', screenPos, graphPos }), []);
   const cancelCreateEntity = useCallback(() => dispatch({ type: 'CANCEL_CREATE_ENTITY' }), []);
@@ -139,7 +151,7 @@ export function useCanvasStateMachine() {
 
   return {
     state, dispatch,
-    selectNode, deselect, startCreateEntity, cancelCreateEntity,
+    selectNode, showContextMenu, deselect, startCreateEntity, cancelCreateEntity,
     startCreateRelation, hoverRelationTarget, setPendingTarget, cancelRelation,
     selectEdge, deselectEdge, startDrag, endDrag, startPan, endPan,
     updateMouse, updateNodePos, escape, markDirty, markClean,

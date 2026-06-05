@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { GraphEntity, GraphRelation } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { CanvasState, ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
 import { STRENGTH_STYLE } from '@/modules/structural-map/domain/types/ModeloTypes';
-import { NodeToolsOverlay, RelationHandleOverlay } from '@/modules/structural-map/ui/components/canvas/ModelCanvasOverlays';
+import { NodeToolsOverlay } from '@/modules/structural-map/ui/components/canvas/ModelCanvasOverlays';
 import styles from './ModelCanvas.module.css';
 
 const POS_KEY = 'kiriox-node-positions';
@@ -54,6 +54,7 @@ type Props = {
   relations: GraphRelation[];
   canvasState: CanvasState;
   onNodeClick: (entity: GraphEntity, renderedPos: ScreenPos) => void;
+  onNodeContextMenu: (entity: GraphEntity, renderedPos: ScreenPos) => void;
   onNodeDblClick: (entity: GraphEntity) => void;
   onEdgeDblClick: (relation: GraphRelation, screenPos: ScreenPos) => void;
   onCanvasClick: (screenPos: ScreenPos, graphPos: { x: number; y: number }) => void;
@@ -69,6 +70,7 @@ type Props = {
   onNodeDelete?: (entityId: string) => void;
   onNodeAnalyze?: (entityId: string) => void;
   onNodePickEntity?: (entityId: string) => void;
+  onNodeDuplicate?: (entityId: string) => void;
   cyRef: React.MutableRefObject<cytoscape.Core | null>;
 };
 
@@ -77,6 +79,7 @@ export default function ModelCanvas({
   relations,
   canvasState,
   onNodeClick,
+  onNodeContextMenu,
   onNodeDblClick,
   onEdgeDblClick,
   onCanvasClick,
@@ -92,6 +95,7 @@ export default function ModelCanvas({
   onNodeDelete,
   onNodeAnalyze,
   onNodePickEntity,
+  onNodeDuplicate,
   cyRef,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -167,6 +171,16 @@ export default function ModelCanvas({
 
     return null;
   }, [cyRef, getContainerRect]);
+
+  useEffect(() => {
+    const preventNativeMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    };
+    document.addEventListener('contextmenu', preventNativeMenu, { capture: true });
+    return () => document.removeEventListener('contextmenu', preventNativeMenu, { capture: true });
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -298,6 +312,19 @@ export default function ModelCanvas({
         const rect = getContainerRect();
         const screenPos: ScreenPos = { x: (rect?.left ?? 0) + rendered.x, y: (rect?.top ?? 0) + rendered.y };
         onNodeClick(entity, screenPos);
+      });
+
+      cy.on('cxttap', 'node', (evt) => {
+        if (canvasState.mode === 'creating_relation') return;
+
+        const nodeId = evt.target.id() as string;
+        const entity = entityMapRef.current.get(nodeId);
+        if (!entity) return;
+
+        const rendered = evt.target.renderedPosition() as ScreenPos;
+        const rect = getContainerRect();
+        const screenPos: ScreenPos = { x: (rect?.left ?? 0) + rendered.x, y: (rect?.top ?? 0) + rendered.y };
+        onNodeContextMenu(entity, screenPos);
       });
 
       cy.on('dbltap', 'node', (evt) => {
@@ -439,7 +466,7 @@ export default function ModelCanvas({
   const overlayScreenPos = canvasState.nodeRenderedPos;
 
   const showHandles = overlayNodeId && overlayScreenPos && canvasState.mode !== 'creating_relation' && canvasState.mode !== 'editing_relation';
-  const showNodeTools = canvasState.mode === 'node_selected' && canvasState.selectedNodeId === overlayNodeId && overlayScreenPos;
+  const showNodeTools = canvasState.mode === 'node_context_menu' && canvasState.selectedNodeId === overlayNodeId && overlayScreenPos;
 
   return (
     <div className={styles.root}>
@@ -479,12 +506,7 @@ export default function ModelCanvas({
         </div>
       )}
 
-      {showHandles && overlayNodeId && overlayScreenPos && (
-        <RelationHandleOverlay
-          screenPos={overlayScreenPos}
-          onPointerDown={(mousePos) => onRelationStart(overlayNodeId, mousePos)}
-        />
-      )}
+      {/* Relation handles removed in favor of context menu option */}
 
       {showNodeTools && overlayNodeId && overlayScreenPos && (
         <NodeToolsOverlay
@@ -493,6 +515,8 @@ export default function ModelCanvas({
           onDelete={onNodeDelete}
           onAnalyze={onNodeAnalyze}
           onPickEntity={onNodePickEntity}
+          onDuplicate={onNodeDuplicate}
+          onRelationStart={(mousePos) => onRelationStart(overlayNodeId, mousePos)}
         />
       )}
     </div>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
 import type { GraphEntity } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
+import { useDraggable } from './useDraggable';
 
 type Props = {
   position:         ScreenPos;
@@ -44,19 +45,14 @@ export function EntityPickerPanel({ position, allEntities, currentEntityIds, onS
   }
 
   const W = 320;
-  let left = position.x - W / 2;
-  let top  = position.y + 20;
-  if (typeof window !== 'undefined') {
-    if (left < 8) left = 8;
-    if (left + W > window.innerWidth - 8) left = window.innerWidth - W - 8;
-    if (top + 440 > window.innerHeight - 8) top = position.y - 450;
-  }
+  const { pos, startDragging } = useDraggable(position, W, 440);
 
   return (
     <div
+      data-draggable-root
       onClick={(e) => e.stopPropagation()}
       style={{
-        position: 'fixed', left, top, width: W, zIndex: 300,
+        position: 'fixed', left: pos.x, top: pos.y, width: W, zIndex: 300,
         background: 'rgba(10,14,32,0.98)',
         border: '1px solid rgba(56,189,248,0.4)',
         borderRadius: 12, padding: '0.85rem 1rem',
@@ -65,7 +61,10 @@ export function EntityPickerPanel({ position, allEntities, currentEntityIds, onS
         display: 'flex', flexDirection: 'column', gap: '0.6rem',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div
+        onPointerDown={startDragging}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'grab', userSelect: 'none' }}
+      >
         <span style={{ color: '#38bdf8', fontSize: '0.78rem', fontWeight: 800 }}>
           Agregar entidad existente
         </span>

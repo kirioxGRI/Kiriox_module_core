@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { EntityType } from '@/modules/structural-map/domain/types/PortfolioTypes';
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
 import { CRIT_LEVELS } from '@/modules/structural-map/domain/types/ModeloTypes';
+import { useDraggable } from './useDraggable';
 
 type Props = {
   position:    ScreenPos;
@@ -53,23 +54,21 @@ export function EntityQuickCreate({ position, entityTypes, onSave, onCancel }: P
   }
 
   const W = 300;
-  let left = position.x - W / 2;
-  let top  = position.y + 20;
-  if (typeof window !== 'undefined') {
-    if (left < 8) left = 8;
-    if (left + W > window.innerWidth - 8) left = window.innerWidth - W - 8;
-    if (top + 320 > window.innerHeight - 8) top = position.y - 330;
-  }
+  const { pos, startDragging } = useDraggable(position, W, 320);
 
   const inp: React.CSSProperties = { width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 7, color: '#f1f5f9', fontSize: '0.78rem', padding: '0.42rem 0.6rem', outline: 'none', boxSizing: 'border-box' };
   const lbl: React.CSSProperties = { display: 'block', color: '#64748b', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' };
 
   return (
     <div
+      data-draggable-root
       onClick={(e) => e.stopPropagation()}
-      style={{ position: 'fixed', left, top, width: W, zIndex: 300, background: 'rgba(10,14,32,0.97)', border: '1px solid rgba(99,102,241,0.45)', borderRadius: 12, padding: '0.85rem 1rem', boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.15)', backdropFilter: 'blur(12px)' }}
+      style={{ position: 'fixed', left: pos.x, top: pos.y, width: W, zIndex: 300, background: 'rgba(10,14,32,0.97)', border: '1px solid rgba(99,102,241,0.45)', borderRadius: 12, padding: '0.85rem 1rem', boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.15)', backdropFilter: 'blur(12px)' }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+      <div
+        onPointerDown={startDragging}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', cursor: 'grab', userSelect: 'none' }}
+      >
         <span style={{ color: '#a5b4fc', fontSize: '0.78rem', fontWeight: 800 }}>Nueva entidad</span>
         <button onClick={onCancel} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '0.9rem', lineHeight: 1 }}>✕</button>
       </div>

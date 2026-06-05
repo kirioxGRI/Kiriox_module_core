@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { GraphEntity } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
 import { CRIT_LEVELS } from '@/modules/structural-map/domain/types/ModeloTypes';
+import { useDraggable } from './useDraggable';
 
 type Props = {
   entity:   GraphEntity;
@@ -53,23 +54,21 @@ export function EntityEditForm({ entity, position, onSave, onDelete, onCancel }:
   }
 
   const W = 300;
-  let left = position.x - W / 2;
-  let top  = position.y + 20;
-  if (typeof window !== 'undefined') {
-    if (left < 8) left = 8;
-    if (left + W > window.innerWidth - 8) left = window.innerWidth - W - 8;
-    if (top + 300 > window.innerHeight - 8) top = position.y - 310;
-  }
+  const { pos, startDragging } = useDraggable(position, W, 300);
 
   const inp: React.CSSProperties = { width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 7, color: '#f1f5f9', fontSize: '0.78rem', padding: '0.42rem 0.6rem', outline: 'none', boxSizing: 'border-box' };
   const lbl: React.CSSProperties = { display: 'block', color: '#64748b', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' };
 
   return (
     <div
+      data-draggable-root
       onClick={(e) => e.stopPropagation()}
-      style={{ position: 'fixed', left, top, width: W, zIndex: 300, background: 'rgba(10,14,32,0.97)', border: '1px solid rgba(251,191,36,0.4)', borderRadius: 12, padding: '0.85rem 1rem', boxShadow: '0 20px 60px rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)' }}
+      style={{ position: 'fixed', left: pos.x, top: pos.y, width: W, zIndex: 300, background: 'rgba(10,14,32,0.97)', border: '1px solid rgba(251,191,36,0.4)', borderRadius: 12, padding: '0.85rem 1rem', boxShadow: '0 20px 60px rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)' }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+      <div
+        onPointerDown={startDragging}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem', cursor: 'grab', userSelect: 'none' }}
+      >
         <span style={{ color: '#fbbf24', fontSize: '0.78rem', fontWeight: 800 }}>Editar entidad</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <span style={{ color: '#475569', fontSize: '0.65rem', fontFamily: 'monospace' }}>{entity.code}</span>

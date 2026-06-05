@@ -1,6 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import {
+  CircleDot, BarChart3, Activity, Zap, ZapOff, ShieldAlert,
+  Pencil, Trash2, Save, X, Link2, ArrowRightLeft, Target,
+} from 'lucide-react';
 import type { GraphEntity, GraphRelation } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { RelationType } from '@/modules/structural-map/domain/types/PortfolioTypes';
 
@@ -60,10 +64,13 @@ function asPercentWeight(weight: number | null): number | null {
 const S: Record<string, React.CSSProperties> = {
   panel:  { height: '100%', overflowY: 'auto', padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' },
   card:   { background: 'rgba(0,0,0,0.22)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 10, padding: '0.75rem' },
-  title:  { color: '#94a3b8', fontSize: '0.67rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.5rem' },
+  title:  { display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#94a3b8', fontSize: '0.67rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.5rem' },
   name:   { color: '#f8fafc', fontSize: '1rem', fontWeight: 800, lineHeight: 1.2, marginBottom: '0.2rem' },
   code:   { color: '#475569', fontSize: '0.7rem', fontFamily: 'monospace' },
-  btnRow: { display: 'flex', gap: '0.4rem', flexWrap: 'wrap' as const, marginTop: '0.6rem' },
+  btnRow: { display: 'flex', gap: '0.35rem', flexWrap: 'wrap' as const, marginTop: '0.6rem' },
+  iconBtn: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 7, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.04)', color: '#cbd5e1', cursor: 'pointer', transition: 'background 0.15s, border-color 0.15s' },
+  iconBtnDel: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 7, border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.1)', color: '#f87171', cursor: 'pointer', transition: 'background 0.15s' },
+  iconBtnSave: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 7, border: '1px solid rgba(99,102,241,0.4)', background: 'rgba(99,102,241,0.15)', color: '#a5b4fc', cursor: 'pointer', transition: 'background 0.15s' },
   btn:    { padding: '0.35rem 0.65rem', borderRadius: 7, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.04)', color: '#cbd5e1', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer' },
   delBtn: { padding: '0.35rem 0.65rem', borderRadius: 7, border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.1)', color: '#f87171', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer' },
   saveBtn: { padding: '0.4rem 0.75rem', borderRadius: 7, border: '1px solid rgba(99,102,241,0.4)', background: 'rgba(99,102,241,0.15)', color: '#a5b4fc', fontSize: '0.72rem', fontWeight: 700, cursor: 'pointer', flex: 1 },
@@ -75,13 +82,19 @@ const S: Record<string, React.CSSProperties> = {
   msg:    { margin: 0, fontSize: '0.7rem', fontWeight: 700 },
 };
 
+const SIM_ICONS: Record<string, { icon: typeof Zap; label: string }> = {
+  FAILURE:     { icon: ZapOff,      label: 'Simular falla total' },
+  DEGRADATION: { icon: Activity,    label: 'Simular degradación' },
+  COMPROMISE:  { icon: ShieldAlert,  label: 'Simular compromiso' },
+};
+
 function EntityDetail({ entity, onSimulate }: { entity: GraphEntity; onSimulate?: (scenario: string) => void }) {
   const crit = entity.criticality_level ?? 'medium';
   const critColor = CRIT_COLORS[crit] ?? '#94a3b8';
   return (
     <>
       <div style={S.card}>
-        <p style={S.title as React.CSSProperties}>Entidad seleccionada</p>
+        <p style={S.title as React.CSSProperties}><CircleDot size={13} /> <span title="Entidad seleccionada">Entidad</span></p>
         <p style={S.name as React.CSSProperties}>{entity.name ?? entity.code}</p>
         <p style={S.code as React.CSSProperties}>{entity.code}</p>
         <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
@@ -94,7 +107,7 @@ function EntityDetail({ entity, onSimulate }: { entity: GraphEntity; onSimulate?
 
       {(entity.criticality_score != null || entity.resilience_score != null || entity.exposure_score != null) && (
         <div style={S.card}>
-          <p style={S.title as React.CSSProperties}>Scores calculados</p>
+          <p style={S.title as React.CSSProperties}><BarChart3 size={13} /> <span title="Scores calculados">Scores</span></p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.4rem' }}>
             {entity.criticality_score != null && <ScorePill label="Criticidad" value={entity.criticality_score} color="#f87171" />}
             {entity.resilience_score  != null && <ScorePill label="Resiliencia" value={entity.resilience_score} color="#4ade80" />}
@@ -104,7 +117,7 @@ function EntityDetail({ entity, onSimulate }: { entity: GraphEntity; onSimulate?
       )}
 
       <div style={S.card}>
-        <p style={S.title as React.CSSProperties}>Métricas de grafo</p>
+          <p style={S.title as React.CSSProperties}><Activity size={13} /> <span title="Métricas de grafo">Métricas</span></p>
         <Row label="Grado total" value={entity.total_degree} />
         <Row label="Estado" value={entity.status} />
         {entity.description && <Row label="Descripción" value={entity.description} />}
@@ -112,11 +125,17 @@ function EntityDetail({ entity, onSimulate }: { entity: GraphEntity; onSimulate?
 
       {onSimulate && (
         <div style={S.card}>
-          <p style={S.title as React.CSSProperties}>Simular desde este nodo</p>
+          <p style={S.title as React.CSSProperties}><Zap size={13} /> <span title="Simular desde este nodo">Simular</span></p>
           <div style={S.btnRow}>
-            {['FAILURE', 'DEGRADATION', 'COMPROMISE'].map((s) => (
-              <button key={s} onClick={() => onSimulate(s)} style={S.btn as React.CSSProperties}>{s}</button>
-            ))}
+            {(['FAILURE', 'DEGRADATION', 'COMPROMISE'] as const).map((s) => {
+              const meta = SIM_ICONS[s];
+              const Icon = meta.icon;
+              return (
+                <button key={s} onClick={() => onSimulate(s)} title={meta.label} style={S.iconBtn as React.CSSProperties}>
+                  <Icon size={14} />
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
@@ -201,7 +220,7 @@ function RelationDetail({
     return (
       <>
         <div style={S.card}>
-          <p style={S.title as React.CSSProperties}>Editar relación</p>
+          <p style={S.title as React.CSSProperties}><Pencil size={13} /> <span title="Editar relación">Editar</span></p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
             <div style={S.field}>
               <label style={S.label as React.CSSProperties}>Origen</label>
@@ -250,15 +269,19 @@ function RelationDetail({
           </div>
           {msg && <p style={{ ...S.msg as React.CSSProperties, color: msg.includes('✓') ? '#4ade80' : '#f87171', marginTop: '0.4rem' }}>{msg}</p>}
           <div style={{ ...S.btnRow, marginTop: '0.5rem' }}>
-            <button onClick={() => void handleSave()} disabled={saving} style={S.saveBtn as React.CSSProperties}>
-              {saving ? 'Guardando…' : 'Guardar cambios'}
+            <button onClick={() => void handleSave()} disabled={saving} title={saving ? 'Guardando…' : 'Guardar cambios'} style={S.iconBtnSave as React.CSSProperties}>
+              <Save size={14} />
             </button>
-            <button onClick={() => { setEditing(false); setMsg(''); }} style={S.btn as React.CSSProperties}>Cancelar</button>
+            <button onClick={() => { setEditing(false); setMsg(''); }} title="Cancelar" style={S.iconBtn as React.CSSProperties}>
+              <X size={14} />
+            </button>
           </div>
         </div>
         {onDelete && (
           <div style={{ ...S.btnRow, padding: '0 0.75rem' }}>
-            <button onClick={() => void onDelete()} style={S.delBtn as React.CSSProperties}>Eliminar relación</button>
+            <button onClick={() => void onDelete()} title="Eliminar relación" style={S.iconBtnDel as React.CSSProperties}>
+              <Trash2 size={14} />
+            </button>
           </div>
         )}
       </>
@@ -268,7 +291,7 @@ function RelationDetail({
   return (
     <>
       <div style={S.card}>
-        <p style={S.title as React.CSSProperties}>Relación seleccionada</p>
+        <p style={S.title as React.CSSProperties}><Link2 size={13} /> <span title="Relación seleccionada">Relación</span></p>
         <p style={S.name as React.CSSProperties}>{relation.relation_type_name}</p>
         <p style={S.code as React.CSSProperties}>{relation.relation_type_code}</p>
         <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0' }}>
@@ -281,10 +304,14 @@ function RelationDetail({
         </div>
         <div style={S.btnRow}>
           {onUpdate && (
-            <button onClick={() => setEditing(true)} style={S.btn as React.CSSProperties}>✏️ Editar</button>
+            <button onClick={() => setEditing(true)} title="Editar relación" style={S.iconBtn as React.CSSProperties}>
+              <Pencil size={14} />
+            </button>
           )}
           {onDelete && (
-            <button onClick={() => void onDelete()} style={S.delBtn as React.CSSProperties}>Eliminar relación</button>
+            <button onClick={() => void onDelete()} title="Eliminar relación" style={S.iconBtnDel as React.CSSProperties}>
+              <Trash2 size={14} />
+            </button>
           )}
         </div>
       </div>
@@ -297,7 +324,7 @@ export function NodeContextPanel({ selected, entities, relationTypes, onDeleteRe
     return (
       <div style={{ ...S.panel, alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', color: '#475569' }}>
-          <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>◎</div>
+          <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}><Target size={28} color="#475569" /></div>
           <p style={{ fontSize: '0.75rem', fontWeight: 600 }}>Selecciona un nodo o arista</p>
           <p style={{ fontSize: '0.68rem', color: '#334155', marginTop: '0.25rem' }}>para ver sus detalles aquí</p>
         </div>

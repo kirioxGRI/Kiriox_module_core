@@ -1,46 +1,8 @@
 'use client';
 
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
+import { PlusCircle, Copy, Zap, Trash2, Link2 } from 'lucide-react';
 import styles from './ModelCanvas.module.css';
-
-const HANDLE_OFFSETS = [
-  { x: 0, y: -54 },
-  { x: 54, y: 0 },
-  { x: 0, y: 54 },
-  { x: -54, y: 0 },
-];
-
-export function RelationHandleOverlay({
-  screenPos,
-  onPointerDown,
-}: {
-  screenPos: ScreenPos;
-  onPointerDown: (mousePos: ScreenPos) => void;
-}) {
-  return (
-    <div
-      className={styles.handleOverlay}
-      style={{ left: screenPos.x, top: screenPos.y }}
-    >
-      {HANDLE_OFFSETS.map((offset, index) => (
-        <button
-          key={`${offset.x}-${offset.y}-${index}`}
-          type="button"
-          className={styles.handleButton}
-          style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
-          onPointerDown={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            onPointerDown({ x: event.clientX, y: event.clientY });
-          }}
-          title="Arrastrar para crear relación"
-        >
-          +
-        </button>
-      ))}
-    </div>
-  );
-}
 
 export function NodeToolsOverlay({
   screenPos,
@@ -48,30 +10,52 @@ export function NodeToolsOverlay({
   onDelete,
   onAnalyze,
   onPickEntity,
+  onDuplicate,
+  onRelationStart,
 }: {
   screenPos: ScreenPos;
   nodeId: string;
   onDelete?: (entityId: string) => void;
   onAnalyze?: (entityId: string) => void;
   onPickEntity?: (entityId: string) => void;
+  onDuplicate?: (entityId: string) => void;
+  onRelationStart?: (mousePos: ScreenPos) => void;
 }) {
   return (
     <div className={styles.toolsOverlay} style={{ left: screenPos.x, top: screenPos.y }}>
-      <span className={styles.toolsHint}>Doble clic para editar entidad</span>
-      <div className={styles.toolsRail}>
+      <div className={styles.contextMenu}>
+        {onRelationStart && (
+          <button 
+            type="button" 
+            className={styles.contextMenuItem} 
+            onPointerDown={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onRelationStart({ x: event.clientX, y: event.clientY });
+            }}
+            title="Mantén pulsado y arrastra hacia otro nodo para conectarlos"
+          >
+            <Link2 size={14} /> Conectar (arrastrar)
+          </button>
+        )}
         {onPickEntity && (
-          <button type="button" className={styles.toolButton} onClick={() => onPickEntity(nodeId)}>
-            ⊕ Entidad existente
+          <button type="button" className={styles.contextMenuItem} onClick={() => onPickEntity(nodeId)} title="Asociar entidad existente">
+            <PlusCircle size={14} /> Asociar existente
+          </button>
+        )}
+        {onDuplicate && (
+          <button type="button" className={styles.contextMenuItem} onClick={() => onDuplicate(nodeId)} title="Duplicar entidad">
+            <Copy size={14} /> Duplicar entidad
           </button>
         )}
         {onAnalyze && (
-          <button type="button" className={styles.toolButton} onClick={() => onAnalyze(nodeId)}>
-            ⚡ Analizar
+          <button type="button" className={styles.contextMenuItem} onClick={() => onAnalyze(nodeId)} title="Analizar dependencias con Motores Elena">
+            <Zap size={14} /> Analizar dependencias
           </button>
         )}
         {onDelete && (
-          <button type="button" className={styles.toolButtonDanger} onClick={() => onDelete(nodeId)}>
-            ✕ Remover
+          <button type="button" className={styles.contextMenuItemDanger} onClick={() => onDelete(nodeId)} title="Eliminar entidad">
+            <Trash2 size={14} /> Eliminar
           </button>
         )}
       </div>
