@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useReducer, useState } from 'react';
+import { useCallback, useReducer, useRef, useState } from 'react';
 import { CheckCircle2, AlertTriangle, Activity, Shield, Zap, GitBranch } from 'lucide-react';
 import type { ElenaEngine, ElenaRunResult } from '@/modules/structural-map/domain/types/ElenaTypes';
 import type { ValidationResult } from '@/modules/structural-map/domain/types/PortfolioTypes';
@@ -95,6 +95,7 @@ export function AnalysisPanel({ rootEntityId, rootEntityName, onValidate, onResu
   const [btnState, dispatch]        = useReducer(reducer, {} as BtnState);
   const [vResult, setVResult]       = useState<ValidationResult | null>(null);
   const [simScenario, setSimScenario] = useState<string>('FAILURE');
+  const validationResultRef = useRef<HTMLDivElement | null>(null);
 
   const anyLoading = Object.values(btnState).some((s) => s === 'loading');
 
@@ -107,11 +108,29 @@ export function AnalysisPanel({ rootEntityId, rootEntityName, onValidate, onResu
   }, [rootEntityId, onResult, onGraphRefresh]);
 
   const handleValidate = useCallback(async () => {
+    if (btnState.validate === 'success' && vResult) {
+      validationResultRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      return;
+    }
+
     dispatch({ type: 'START', key: 'validate' });
-    const r = await onValidate();
-    setVResult(r);
-    dispatch({ type: 'DONE', key: 'validate' });
-  }, [onValidate]);
+    try {
+      const r = await onValidate();
+      if (!r) {
+        setVResult(null);
+        dispatch({ type: 'FAIL', key: 'validate' });
+        return;
+      }
+      setVResult(r);
+      dispatch({ type: 'DONE', key: 'validate' });
+      requestAnimationFrame(() => {
+        validationResultRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      });
+    } catch {
+      setVResult(null);
+      dispatch({ type: 'FAIL', key: 'validate' });
+    }
+  }, [btnState.validate, onValidate, vResult]);
 
   return (
     <div style={{ height: '100%', overflowY: 'auto', padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -121,7 +140,7 @@ export function AnalysisPanel({ rootEntityId, rootEntityName, onValidate, onResu
         {rootEntityName && <p style={{ margin: '0 0 0.5rem', color: '#60a5fa', fontSize: '0.72rem', fontWeight: 600 }}>{rootEntityName}</p>}
         <EngineButton label="Validar modelo" status={btnState.validate ?? 'idle'} color="#6366f1" icon={CheckCircle2} disabled={anyLoading} onClick={() => void handleValidate()} />
         {vResult && (
-          <div style={{ marginTop: '0.5rem' }}>
+          <div ref={validationResultRef} style={{ marginTop: '0.5rem' }}>
             <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
               {(['critical', 'high', 'medium', 'low'] as const).map((sev) =>
                 vResult.stats[sev] > 0 ? (
