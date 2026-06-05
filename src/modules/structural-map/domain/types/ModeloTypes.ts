@@ -63,10 +63,10 @@ export const STRENGTH_OPTIONS = ['weak', 'medium', 'strong', 'critical'] as cons
 export type StrengthLevel = (typeof STRENGTH_OPTIONS)[number];
 
 export const STRENGTH_STYLE: Record<StrengthLevel, { color: string; width: number; label: string }> = {
-  weak:     { color: '#ffffff', width: 0.9, label: 'Débil' },
-  medium:   { color: '#22c55e', width: 1.6, label: 'Media' },
-  strong:   { color: '#fbbf24', width: 2.4, label: 'Fuerte' },
-  critical: { color: '#ef4444', width: 3.2, label: 'Crítica' },
+  weak:     { color: '#ffffff', width: 2,   label: 'Débil' },
+  medium:   { color: '#22c55e', width: 3,   label: 'Media' },
+  strong:   { color: '#fbbf24', width: 4.5, label: 'Fuerte' },
+  critical: { color: '#ef4444', width: 6,   label: 'Crítica' },
 };
 
 export const CRIT_LEVELS = ['critical', 'high', 'medium', 'low'] as const;

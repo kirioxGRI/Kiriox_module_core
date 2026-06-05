@@ -240,6 +240,7 @@ export default function ModelCanvas({
               'text-rotation': 'autorotate',
               'text-margin-y': -7,
               'overlay-opacity': 0.18,
+              'overlay-padding': 6,
             } as unknown as cytoscape.Css.Edge,
           },
           {
@@ -277,8 +278,10 @@ export default function ModelCanvas({
           {
             selector: 'edge.selected',
             style: {
-              width: 3.4,
-              'arrow-scale': 0.72,
+              width: 7,
+              'line-color': '#a5f3fc',
+              'target-arrow-color': '#a5f3fc',
+              'arrow-scale': 0.85,
               opacity: 1,
             } as unknown as cytoscape.Css.Edge,
           },

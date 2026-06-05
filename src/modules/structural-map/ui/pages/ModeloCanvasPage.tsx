@@ -3,7 +3,7 @@
 import { useRef, useCallback, lazy, Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft, Activity, AlertTriangle, Play, ZoomIn } from 'lucide-react';
+import { ChevronLeft, Activity, AlertTriangle, ZoomIn } from 'lucide-react';
 import { useCanvasStateMachine } from '@/modules/structural-map/ui/hooks/useCanvasStateMachine';
 import { useModeloGraph } from '@/modules/structural-map/ui/hooks/useModeloGraph';
 import { AnalysisPanel } from '@/modules/structural-map/ui/components/AnalysisPanel';
@@ -14,6 +14,7 @@ import { EntityPickerPanel } from '@/modules/structural-map/ui/components/canvas
 import { RelationFormPopover } from '@/modules/structural-map/ui/components/canvas/RelationFormPopover';
 import type { GraphEntity, GraphRelation, SubgraphData } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
+import { STRENGTH_STYLE, STRENGTH_OPTIONS } from '@/modules/structural-map/domain/types/ModeloTypes';
 import type { ElenaRunResult } from '@/modules/structural-map/domain/types/ElenaTypes';
 import styles from './ModeloCanvasPage.module.css';
 
@@ -36,8 +37,6 @@ export default function ModeloCanvasPage() {
   const [editingEdgePos,  setEditingEdgePos]  = useState<ScreenPos | null>(null);
   const [editingEntityId, setEditingEntityId] = useState<string | null>(null);
   const [zoomLevel,       setZoomLevel]       = useState<number>(1.5);
-  const [selectedEngine,  setSelectedEngine]  = useState<string>('criticality');
-  const [engineRunning,   setEngineRunning]   = useState(false);
   const [pickerForNode,   setPickerForNode]   = useState<string | null>(null);
 
   useEffect(() => {
@@ -142,9 +141,7 @@ export default function ModeloCanvasPage() {
   }, [graph, sm]);
 
   const handleNodeAnalyzeAction = useCallback((nodeId: string) => {
-    setSelectedEngine('criticality');
     void (async () => {
-      setEngineRunning(true);
       try {
         const res  = await fetch('/api/structural-map/elena/run', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -153,7 +150,9 @@ export default function ModeloCanvasPage() {
         const text = await res.text();
         const result = text ? JSON.parse(text) as ElenaRunResult : null;
         if (result) { setElenaResult(result); sm.markDirty(); graph.reload(); }
-      } finally { setEngineRunning(false); }
+      } catch {
+        window.alert('No fue posible ejecutar el análisis');
+      }
     })();
   }, [graph, sm]);
 
@@ -299,23 +298,6 @@ export default function ModeloCanvasPage() {
     if (rp) sm.updateNodePos(rp);
   }, [sm]);
 
-  const handleRunEngine = useCallback(async () => {
-    const rootId = rootEntityId ?? sm.state.selectedNodeId ?? graph.data?.entities[0]?.id;
-    if (!rootId) return;
-    setEngineRunning(true);
-    try {
-      const res  = await fetch('/api/structural-map/elena/run', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rootEntityId: rootId, engine: selectedEngine }),
-      });
-      const text = await res.text();
-      const result = text ? JSON.parse(text) as ElenaRunResult : null;
-      if (result) { setElenaResult(result); sm.markDirty(); graph.reload(); }
-    } finally {
-      setEngineRunning(false);
-    }
-  }, [sm, selectedEngine, graph]);
-
   const entities        = graph.data?.entities    ?? [];
   const relations       = graph.data?.relations   ?? [];
   const rootEntity      = rootEntityId ? entities.find((e) => e.id === rootEntityId) : null;
@@ -339,38 +321,12 @@ export default function ModeloCanvasPage() {
           {sm.state.isDirty && <span className={styles.dirtyBadge}>Cambios pendientes de análisis</span>}
         </div>
 
-        {/* Center — zoom + analysis combobox */}
+        {/* Center — zoom badge */}
         <div className={styles.headerCenter}>
           <span className={styles.zoomBadge}>
             <ZoomIn size={11} />
             {Math.round(zoomLevel * 100)}%
           </span>
-
-          <div className={styles.engineRow}>
-            <select
-              value={selectedEngine}
-              onChange={(e) => setSelectedEngine(e.target.value)}
-              className={styles.engineSelect}
-            >
-              <option value="structural">Análisis estructural · fn_elena_systemic_structural_analysis</option>
-              <option value="criticality">Análisis de criticidad · fn_elena_systemic_criticality_analysis</option>
-              <option value="resilience">Análisis de resiliencia · fn_elena_systemic_resilience_analysis</option>
-              <option value="exposure">Análisis de exposición · fn_elena_systemic_exposure_analysis</option>
-              <option value="cascade">Simulación de cascada · fn_elena_systemic_cascade_simulation</option>
-            </select>
-            <button
-              onClick={() => void handleRunEngine()}
-              disabled={engineRunning || !graph.data}
-              className={styles.runEngineBtn}
-              title={sm.state.selectedNodeId ? 'Ejecutar desde nodo seleccionado' : 'Ejecutar desde primera entidad'}
-            >
-              {engineRunning
-                ? <span className={styles.spinnerSm} />
-                : <Play size={11} fill="currentColor" />
-              }
-              {engineRunning ? 'Ejecutando…' : 'Ejecutar'}
-            </button>
-          </div>
         </div>
 
         {/* Right — stats + analysis panel toggle */}
@@ -424,6 +380,23 @@ export default function ModeloCanvasPage() {
           {sm.state.mode === 'editing_relation'  && 'Editando relación · Esc para cancelar'}
           {sm.state.mode === 'dragging_node'     && 'Moviendo nodo · suelta para fijar posición'}
           {sm.state.mode === 'panning_canvas'    && 'Moviendo lienzo…'}
+        </div>
+
+        {/* Leyenda de fuerza de relación — abajo a la izquierda */}
+        <div className={styles.edgeLegend}>
+          <span className={styles.edgeLegendTitle}>Fuerza de relación</span>
+          {STRENGTH_OPTIONS.map((level) => {
+            const s = STRENGTH_STYLE[level];
+            return (
+              <span key={level} className={styles.edgeLegendItem}>
+                <span
+                  className={styles.edgeLegendLine}
+                  style={{ background: s.color, height: Math.max(2, s.width) }}
+                />
+                <span className={styles.edgeLegendLabel}>{s.label}</span>
+              </span>
+            );
+          })}
         </div>
       </div>
 

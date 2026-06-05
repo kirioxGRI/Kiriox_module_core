@@ -252,6 +252,50 @@
 
 .modeBar b { color: #a5b4fc; }
 
+/* Leyenda de fuerza de relación — abajo a la izquierda */
+.edgeLegend {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 0.4rem 0.85rem;
+  z-index: 5;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.edgeLegendTitle {
+  color: #64748b;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.edgeLegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.edgeLegendLine {
+  display: inline-block;
+  width: 22px;
+  border-radius: 999px;
+}
+
+.edgeLegendLabel {
+  color: #cbd5e1;
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+
 .analysisDrawer {
   position: fixed;
   top: 48px;
