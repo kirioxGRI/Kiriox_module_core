@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useTransition, useState } from 'react';
-import type { GraphEntity, GraphRelation } from '@/modules/structural-map/domain/types/GraphTypes';
+import type { GraphEntity, GraphRelation, SubgraphData } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { RelationType, EntityType } from '@/modules/structural-map/domain/types/PortfolioTypes';
 
 export type ModeloGraphData = {
@@ -53,6 +53,28 @@ export function useModeloGraph(rootEntityId?: string | null) {
     setData((prev) => prev ? { ...prev, relations: [...prev.relations, relation] } : prev);
   }, []);
 
+  const mergeSubgraph = useCallback((subgraph: SubgraphData) => {
+    setData((prev) => {
+      if (!prev) return prev;
+
+      const entityMap = new Map(prev.entities.map((entity) => [entity.id, entity]));
+      for (const entity of subgraph.entities) {
+        entityMap.set(entity.id, entity);
+      }
+
+      const relationMap = new Map(prev.relations.map((relation) => [relation.id, relation]));
+      for (const relation of subgraph.relations) {
+        relationMap.set(relation.id, relation);
+      }
+
+      return {
+        ...prev,
+        entities: Array.from(entityMap.values()),
+        relations: Array.from(relationMap.values()),
+      };
+    });
+  }, []);
+
   const removeRelation = useCallback((id: string) => {
     setData((prev) => prev ? { ...prev, relations: prev.relations.filter((r) => r.id !== id) } : prev);
   }, []);
@@ -73,5 +95,17 @@ export function useModeloGraph(rootEntityId?: string | null) {
     setData((prev) => prev ? { ...prev, entities: prev.entities.map((e) => e.id === id ? { ...e, ...patch } : e) } : prev);
   }, []);
 
-  return { data, error, isPending, reload: load, addEntity, addRelation, removeRelation, updateRelation, removeEntity, updateEntity };
+  return {
+    data,
+    error,
+    isPending,
+    reload: load,
+    addEntity,
+    addRelation,
+    mergeSubgraph,
+    removeRelation,
+    updateRelation,
+    removeEntity,
+    updateEntity,
+  };
 }

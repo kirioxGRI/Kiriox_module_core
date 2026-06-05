@@ -565,3 +565,11 @@ useEffect(() => {
 **Regla aprendida:** El clic izquierdo sobre un nodo debe destinarse exclusivamente a la selección, arrastre y reubicación espacial del nodo. La apertura del menú de herramientas contextuales de Kiriox debe gatillarse únicamente al hacer clic derecho (evento `cxttap` de Cytoscape). Asimismo, todo clic en el lienzo vacío debe cerrar el menú contextual que se encuentre activo.
 
 **Aplicación futura:** Para interacciones espaciales de grafos o mapas, delegar las acciones de modelado al clic derecho e interacciones de transporte (paneo, arrastre) al clic izquierdo.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Asociación de entidades existentes dentro de `/gestion/structural-map/modelo`.
+
+**Regla aprendida:** Cuando el usuario use `Asociar existente`, la entidad elegida no debe agregarse sola al canvas. Debe hidratarse como subgrafo consistente leyendo tanto `public.systemic_entities` como `public.systemic_entity_relations`, al menos para sus relaciones directas, y fusionarse con el grafo actual con deduplicación por `id`.
+
+**Aplicación futura:** Evitar siempre la inserción local de nodos huérfanos cuando provengan del catálogo sistémico. Reutilizar el endpoint de subgrafo `/api/structural-map/graph` para incorporar vecindad estructural real antes de abrir nuevas asociaciones o análisis.

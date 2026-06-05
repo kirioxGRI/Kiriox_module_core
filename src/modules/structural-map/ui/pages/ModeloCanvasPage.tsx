@@ -12,7 +12,7 @@ import { EntityQuickCreate } from '@/modules/structural-map/ui/components/canvas
 import { EntityEditForm }    from '@/modules/structural-map/ui/components/canvas/EntityEditForm';
 import { EntityPickerPanel } from '@/modules/structural-map/ui/components/canvas/EntityPickerPanel';
 import { RelationFormPopover } from '@/modules/structural-map/ui/components/canvas/RelationFormPopover';
-import type { GraphEntity, GraphRelation } from '@/modules/structural-map/domain/types/GraphTypes';
+import type { GraphEntity, GraphRelation, SubgraphData } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
 import type { ElenaRunResult } from '@/modules/structural-map/domain/types/ElenaTypes';
 import styles from './ModeloCanvasPage.module.css';
@@ -102,17 +102,33 @@ export default function ModeloCanvasPage() {
   }, []);
 
   const handlePickedEntity = useCallback((entity: GraphEntity) => {
-    const sourceId = pickerForNode;
     setPickerForNode(null);
-    if (!sourceId) return;
+    if (!pickerForNode) return;
 
-    // Agregar la entidad existente al canvas si aún no está presente
-    const alreadyOnCanvas = graph.data?.entities.some((e) => e.id === entity.id) ?? false;
-    if (!alreadyOnCanvas) graph.addEntity(entity);
+    void (async () => {
+      const res = await fetch(`/api/structural-map/graph?rootEntityId=${encodeURIComponent(entity.id)}&depth=1`, {
+        cache: 'no-store',
+      });
+      const text = await res.text();
+      if (!res.ok) {
+        throw new Error(text || 'No fue posible cargar la entidad y sus relaciones');
+      }
 
-    // Seleccionamos la nueva entidad agregada pero NO abrimos la creación de relación
-    sm.deselect();
-    sm.selectNode(entity.id, { x: 0, y: 0 }); // Fallback coords, will be updated by Cytoscape layout
+      const subgraph = JSON.parse(text) as SubgraphData;
+      graph.mergeSubgraph(subgraph);
+
+      const rp = cyRef.current?.getElementById(entity.id).renderedPosition() as ScreenPos | undefined;
+      const rect = document.querySelector('[data-cy-container]')?.getBoundingClientRect();
+      const renderedPos: ScreenPos = rp
+        ? { x: (rect?.left ?? 0) + rp.x, y: (rect?.top ?? 0) + rp.y }
+        : sm.state.nodeRenderedPos ?? { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+      sm.deselect();
+      sm.selectNode(entity.id, renderedPos);
+      sm.markDirty();
+    })().catch((error: unknown) => {
+      window.alert(error instanceof Error ? error.message : 'No fue posible asociar la entidad existente');
+    });
   }, [pickerForNode, graph, sm]);
 
   const handleNodeDeleteAction = useCallback(async (nodeId: string) => {
