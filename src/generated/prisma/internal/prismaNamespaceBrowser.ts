@@ -140,6 +140,10 @@ export const ModelName = {
   systemic_entity_superclass: 'systemic_entity_superclass',
   systemic_entity_tags: 'systemic_entity_tags',
   systemic_entity_types: 'systemic_entity_types',
+  systemic_filter_groups: 'systemic_filter_groups',
+  systemic_filter_options: 'systemic_filter_options',
+  systemic_filter_view_preferences: 'systemic_filter_view_preferences',
+  systemic_filter_view_rules: 'systemic_filter_view_rules',
   systemic_propagation_paths: 'systemic_propagation_paths',
   systemic_relation_types: 'systemic_relation_types',
   systemic_simulation_impacts: 'systemic_simulation_impacts',
@@ -1615,6 +1619,62 @@ export const Systemic_entity_typesScalarFieldEnum = {
 } as const
 
 export type Systemic_entity_typesScalarFieldEnum = (typeof Systemic_entity_typesScalarFieldEnum)[keyof typeof Systemic_entity_typesScalarFieldEnum]
+
+
+export const Systemic_filter_groupsScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  sort_order: 'sort_order',
+  is_active: 'is_active',
+  created_at: 'created_at'
+} as const
+
+export type Systemic_filter_groupsScalarFieldEnum = (typeof Systemic_filter_groupsScalarFieldEnum)[keyof typeof Systemic_filter_groupsScalarFieldEnum]
+
+
+export const Systemic_filter_optionsScalarFieldEnum = {
+  id: 'id',
+  group_id: 'group_id',
+  code: 'code',
+  label: 'label',
+  value: 'value',
+  sort_order: 'sort_order',
+  is_default: 'is_default',
+  is_active: 'is_active',
+  created_at: 'created_at'
+} as const
+
+export type Systemic_filter_optionsScalarFieldEnum = (typeof Systemic_filter_optionsScalarFieldEnum)[keyof typeof Systemic_filter_optionsScalarFieldEnum]
+
+
+export const Systemic_filter_view_preferencesScalarFieldEnum = {
+  id: 'id',
+  entity_id: 'entity_id',
+  default_view_code: 'default_view_code',
+  default_depth: 'default_depth',
+  default_mode: 'default_mode',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Systemic_filter_view_preferencesScalarFieldEnum = (typeof Systemic_filter_view_preferencesScalarFieldEnum)[keyof typeof Systemic_filter_view_preferencesScalarFieldEnum]
+
+
+export const Systemic_filter_view_rulesScalarFieldEnum = {
+  id: 'id',
+  view_code: 'view_code',
+  name: 'name',
+  default_depth: 'default_depth',
+  allowed_entity_type_codes: 'allowed_entity_type_codes',
+  allowed_relation_type_codes: 'allowed_relation_type_codes',
+  criticality_filter: 'criticality_filter',
+  layout_strategy: 'layout_strategy',
+  is_active: 'is_active',
+  created_at: 'created_at'
+} as const
+
+export type Systemic_filter_view_rulesScalarFieldEnum = (typeof Systemic_filter_view_rulesScalarFieldEnum)[keyof typeof Systemic_filter_view_rulesScalarFieldEnum]
 
 
 export const Systemic_propagation_pathsScalarFieldEnum = {

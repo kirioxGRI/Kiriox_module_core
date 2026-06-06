@@ -473,6 +473,10 @@ export const ModelName = {
   systemic_entity_superclass: 'systemic_entity_superclass',
   systemic_entity_tags: 'systemic_entity_tags',
   systemic_entity_types: 'systemic_entity_types',
+  systemic_filter_groups: 'systemic_filter_groups',
+  systemic_filter_options: 'systemic_filter_options',
+  systemic_filter_view_preferences: 'systemic_filter_view_preferences',
+  systemic_filter_view_rules: 'systemic_filter_view_rules',
   systemic_propagation_paths: 'systemic_propagation_paths',
   systemic_relation_types: 'systemic_relation_types',
   systemic_simulation_impacts: 'systemic_simulation_impacts',
@@ -494,7 +498,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "activities" | "catalog_activity_criticality_level" | "catalog_activity_frequency" | "catalog_activity_review" | "catalog_appetite" | "catalog_control_cobertura" | "catalog_control_effectiveness" | "catalog_control_effectiveness_peso" | "catalog_control_type" | "catalog_controls_category" | "catalog_controls_frequency" | "catalog_frequency" | "catalog_ra_category" | "catalog_ra_impact" | "catalog_ra_lifecycle" | "catalog_ra_lifecycle_history" | "catalog_ra_probability" | "catalog_ra_valoration" | "catalog_risk_category" | "catalog_risk_level" | "company" | "company_objective" | "company_resource_catalog" | "company_resource_category" | "element_types" | "elements" | "graph_activities_alternative_level" | "graph_activities_dependencies" | "graph_activities_dependency_resource" | "graph_activities_dependency_strength" | "graph_activities_failure_effect" | "graph_activity_catalog_criticality" | "graph_activity_catalog_impact" | "graph_activity_resource" | "graph_catalog_run_lifecycle" | "graph_catalog_run_methodology" | "graph_catalog_run_scope_type" | "graph_control_evidence" | "graph_control_hardgate" | "graph_map_activity_resource_dependency" | "graph_map_run_sa_activities" | "graph_risk_cascade" | "graph_risk_catalog_cascade" | "graph_run_lifecycle_history" | "graph_run_sa" | "incident_register" | "map_role_x_module_x_permissions" | "map_role_x_system_x_permissions" | "map_run_ra_risk_controls" | "map_user_x_roles" | "monitoring_due_item" | "monitoring_event" | "monitoring_event_response" | "monitoring_external_source" | "monitoring_internal_source" | "monitoring_rule" | "monitoring_run" | "pesos" | "run_ra" | "run_ra_analysis_sensitivity" | "run_ra_appetite_rules" | "run_ra_change_history" | "run_ra_contexto_evaluacion" | "run_ra_contexto_interno" | "run_ra_contexto_interno_externo" | "run_ra_contexto_negocio" | "run_ra_contexto_reglas" | "run_ra_control_effectiveness" | "run_ra_control_tests" | "run_ra_controls" | "run_ra_evidence" | "run_ra_monitoring" | "run_ra_risk_analysis" | "run_ra_risk_treatment" | "run_ra_risks" | "security_logs_access" | "security_module" | "security_permissions" | "security_roles" | "security_submodule" | "security_system" | "security_users" | "systemic_entities" | "systemic_entity_attributes" | "systemic_entity_color" | "systemic_entity_relations" | "systemic_entity_superclass" | "systemic_entity_tags" | "systemic_entity_types" | "systemic_propagation_paths" | "systemic_relation_types" | "systemic_simulation_impacts" | "systemic_simulation_runs" | "systemic_structural_analysis_runs" | "systemic_structural_metrics"
+    modelProps: "activities" | "catalog_activity_criticality_level" | "catalog_activity_frequency" | "catalog_activity_review" | "catalog_appetite" | "catalog_control_cobertura" | "catalog_control_effectiveness" | "catalog_control_effectiveness_peso" | "catalog_control_type" | "catalog_controls_category" | "catalog_controls_frequency" | "catalog_frequency" | "catalog_ra_category" | "catalog_ra_impact" | "catalog_ra_lifecycle" | "catalog_ra_lifecycle_history" | "catalog_ra_probability" | "catalog_ra_valoration" | "catalog_risk_category" | "catalog_risk_level" | "company" | "company_objective" | "company_resource_catalog" | "company_resource_category" | "element_types" | "elements" | "graph_activities_alternative_level" | "graph_activities_dependencies" | "graph_activities_dependency_resource" | "graph_activities_dependency_strength" | "graph_activities_failure_effect" | "graph_activity_catalog_criticality" | "graph_activity_catalog_impact" | "graph_activity_resource" | "graph_catalog_run_lifecycle" | "graph_catalog_run_methodology" | "graph_catalog_run_scope_type" | "graph_control_evidence" | "graph_control_hardgate" | "graph_map_activity_resource_dependency" | "graph_map_run_sa_activities" | "graph_risk_cascade" | "graph_risk_catalog_cascade" | "graph_run_lifecycle_history" | "graph_run_sa" | "incident_register" | "map_role_x_module_x_permissions" | "map_role_x_system_x_permissions" | "map_run_ra_risk_controls" | "map_user_x_roles" | "monitoring_due_item" | "monitoring_event" | "monitoring_event_response" | "monitoring_external_source" | "monitoring_internal_source" | "monitoring_rule" | "monitoring_run" | "pesos" | "run_ra" | "run_ra_analysis_sensitivity" | "run_ra_appetite_rules" | "run_ra_change_history" | "run_ra_contexto_evaluacion" | "run_ra_contexto_interno" | "run_ra_contexto_interno_externo" | "run_ra_contexto_negocio" | "run_ra_contexto_reglas" | "run_ra_control_effectiveness" | "run_ra_control_tests" | "run_ra_controls" | "run_ra_evidence" | "run_ra_monitoring" | "run_ra_risk_analysis" | "run_ra_risk_treatment" | "run_ra_risks" | "security_logs_access" | "security_module" | "security_permissions" | "security_roles" | "security_submodule" | "security_system" | "security_users" | "systemic_entities" | "systemic_entity_attributes" | "systemic_entity_color" | "systemic_entity_relations" | "systemic_entity_superclass" | "systemic_entity_tags" | "systemic_entity_types" | "systemic_filter_groups" | "systemic_filter_options" | "systemic_filter_view_preferences" | "systemic_filter_view_rules" | "systemic_propagation_paths" | "systemic_relation_types" | "systemic_simulation_impacts" | "systemic_simulation_runs" | "systemic_structural_analysis_runs" | "systemic_structural_metrics"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -7084,6 +7088,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    systemic_filter_groups: {
+      payload: Prisma.$systemic_filter_groupsPayload<ExtArgs>
+      fields: Prisma.systemic_filter_groupsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.systemic_filter_groupsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.systemic_filter_groupsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload>
+        }
+        findFirst: {
+          args: Prisma.systemic_filter_groupsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.systemic_filter_groupsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload>
+        }
+        findMany: {
+          args: Prisma.systemic_filter_groupsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload>[]
+        }
+        create: {
+          args: Prisma.systemic_filter_groupsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload>
+        }
+        createMany: {
+          args: Prisma.systemic_filter_groupsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.systemic_filter_groupsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload>[]
+        }
+        delete: {
+          args: Prisma.systemic_filter_groupsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload>
+        }
+        update: {
+          args: Prisma.systemic_filter_groupsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload>
+        }
+        deleteMany: {
+          args: Prisma.systemic_filter_groupsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.systemic_filter_groupsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.systemic_filter_groupsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload>[]
+        }
+        upsert: {
+          args: Prisma.systemic_filter_groupsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_groupsPayload>
+        }
+        aggregate: {
+          args: Prisma.Systemic_filter_groupsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSystemic_filter_groups>
+        }
+        groupBy: {
+          args: Prisma.systemic_filter_groupsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Systemic_filter_groupsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.systemic_filter_groupsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Systemic_filter_groupsCountAggregateOutputType> | number
+        }
+      }
+    }
+    systemic_filter_options: {
+      payload: Prisma.$systemic_filter_optionsPayload<ExtArgs>
+      fields: Prisma.systemic_filter_optionsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.systemic_filter_optionsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.systemic_filter_optionsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload>
+        }
+        findFirst: {
+          args: Prisma.systemic_filter_optionsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.systemic_filter_optionsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload>
+        }
+        findMany: {
+          args: Prisma.systemic_filter_optionsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload>[]
+        }
+        create: {
+          args: Prisma.systemic_filter_optionsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload>
+        }
+        createMany: {
+          args: Prisma.systemic_filter_optionsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.systemic_filter_optionsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload>[]
+        }
+        delete: {
+          args: Prisma.systemic_filter_optionsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload>
+        }
+        update: {
+          args: Prisma.systemic_filter_optionsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload>
+        }
+        deleteMany: {
+          args: Prisma.systemic_filter_optionsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.systemic_filter_optionsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.systemic_filter_optionsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload>[]
+        }
+        upsert: {
+          args: Prisma.systemic_filter_optionsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_optionsPayload>
+        }
+        aggregate: {
+          args: Prisma.Systemic_filter_optionsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSystemic_filter_options>
+        }
+        groupBy: {
+          args: Prisma.systemic_filter_optionsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Systemic_filter_optionsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.systemic_filter_optionsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Systemic_filter_optionsCountAggregateOutputType> | number
+        }
+      }
+    }
+    systemic_filter_view_preferences: {
+      payload: Prisma.$systemic_filter_view_preferencesPayload<ExtArgs>
+      fields: Prisma.systemic_filter_view_preferencesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.systemic_filter_view_preferencesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.systemic_filter_view_preferencesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload>
+        }
+        findFirst: {
+          args: Prisma.systemic_filter_view_preferencesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.systemic_filter_view_preferencesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload>
+        }
+        findMany: {
+          args: Prisma.systemic_filter_view_preferencesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload>[]
+        }
+        create: {
+          args: Prisma.systemic_filter_view_preferencesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload>
+        }
+        createMany: {
+          args: Prisma.systemic_filter_view_preferencesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.systemic_filter_view_preferencesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload>[]
+        }
+        delete: {
+          args: Prisma.systemic_filter_view_preferencesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload>
+        }
+        update: {
+          args: Prisma.systemic_filter_view_preferencesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload>
+        }
+        deleteMany: {
+          args: Prisma.systemic_filter_view_preferencesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.systemic_filter_view_preferencesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.systemic_filter_view_preferencesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload>[]
+        }
+        upsert: {
+          args: Prisma.systemic_filter_view_preferencesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_preferencesPayload>
+        }
+        aggregate: {
+          args: Prisma.Systemic_filter_view_preferencesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSystemic_filter_view_preferences>
+        }
+        groupBy: {
+          args: Prisma.systemic_filter_view_preferencesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Systemic_filter_view_preferencesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.systemic_filter_view_preferencesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Systemic_filter_view_preferencesCountAggregateOutputType> | number
+        }
+      }
+    }
+    systemic_filter_view_rules: {
+      payload: Prisma.$systemic_filter_view_rulesPayload<ExtArgs>
+      fields: Prisma.systemic_filter_view_rulesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.systemic_filter_view_rulesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.systemic_filter_view_rulesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload>
+        }
+        findFirst: {
+          args: Prisma.systemic_filter_view_rulesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.systemic_filter_view_rulesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload>
+        }
+        findMany: {
+          args: Prisma.systemic_filter_view_rulesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload>[]
+        }
+        create: {
+          args: Prisma.systemic_filter_view_rulesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload>
+        }
+        createMany: {
+          args: Prisma.systemic_filter_view_rulesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.systemic_filter_view_rulesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload>[]
+        }
+        delete: {
+          args: Prisma.systemic_filter_view_rulesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload>
+        }
+        update: {
+          args: Prisma.systemic_filter_view_rulesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload>
+        }
+        deleteMany: {
+          args: Prisma.systemic_filter_view_rulesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.systemic_filter_view_rulesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.systemic_filter_view_rulesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload>[]
+        }
+        upsert: {
+          args: Prisma.systemic_filter_view_rulesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_filter_view_rulesPayload>
+        }
+        aggregate: {
+          args: Prisma.Systemic_filter_view_rulesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSystemic_filter_view_rules>
+        }
+        groupBy: {
+          args: Prisma.systemic_filter_view_rulesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Systemic_filter_view_rulesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.systemic_filter_view_rulesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Systemic_filter_view_rulesCountAggregateOutputType> | number
+        }
+      }
+    }
     systemic_propagation_paths: {
       payload: Prisma.$systemic_propagation_pathsPayload<ExtArgs>
       fields: Prisma.systemic_propagation_pathsFieldRefs
@@ -9020,6 +9320,62 @@ export const Systemic_entity_typesScalarFieldEnum = {
 export type Systemic_entity_typesScalarFieldEnum = (typeof Systemic_entity_typesScalarFieldEnum)[keyof typeof Systemic_entity_typesScalarFieldEnum]
 
 
+export const Systemic_filter_groupsScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  sort_order: 'sort_order',
+  is_active: 'is_active',
+  created_at: 'created_at'
+} as const
+
+export type Systemic_filter_groupsScalarFieldEnum = (typeof Systemic_filter_groupsScalarFieldEnum)[keyof typeof Systemic_filter_groupsScalarFieldEnum]
+
+
+export const Systemic_filter_optionsScalarFieldEnum = {
+  id: 'id',
+  group_id: 'group_id',
+  code: 'code',
+  label: 'label',
+  value: 'value',
+  sort_order: 'sort_order',
+  is_default: 'is_default',
+  is_active: 'is_active',
+  created_at: 'created_at'
+} as const
+
+export type Systemic_filter_optionsScalarFieldEnum = (typeof Systemic_filter_optionsScalarFieldEnum)[keyof typeof Systemic_filter_optionsScalarFieldEnum]
+
+
+export const Systemic_filter_view_preferencesScalarFieldEnum = {
+  id: 'id',
+  entity_id: 'entity_id',
+  default_view_code: 'default_view_code',
+  default_depth: 'default_depth',
+  default_mode: 'default_mode',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Systemic_filter_view_preferencesScalarFieldEnum = (typeof Systemic_filter_view_preferencesScalarFieldEnum)[keyof typeof Systemic_filter_view_preferencesScalarFieldEnum]
+
+
+export const Systemic_filter_view_rulesScalarFieldEnum = {
+  id: 'id',
+  view_code: 'view_code',
+  name: 'name',
+  default_depth: 'default_depth',
+  allowed_entity_type_codes: 'allowed_entity_type_codes',
+  allowed_relation_type_codes: 'allowed_relation_type_codes',
+  criticality_filter: 'criticality_filter',
+  layout_strategy: 'layout_strategy',
+  is_active: 'is_active',
+  created_at: 'created_at'
+} as const
+
+export type Systemic_filter_view_rulesScalarFieldEnum = (typeof Systemic_filter_view_rulesScalarFieldEnum)[keyof typeof Systemic_filter_view_rulesScalarFieldEnum]
+
+
 export const Systemic_propagation_pathsScalarFieldEnum = {
   id: 'id',
   simulation_run_id: 'simulation_run_id',
@@ -9495,6 +9851,10 @@ export type GlobalOmitConfig = {
   systemic_entity_superclass?: Prisma.systemic_entity_superclassOmit
   systemic_entity_tags?: Prisma.systemic_entity_tagsOmit
   systemic_entity_types?: Prisma.systemic_entity_typesOmit
+  systemic_filter_groups?: Prisma.systemic_filter_groupsOmit
+  systemic_filter_options?: Prisma.systemic_filter_optionsOmit
+  systemic_filter_view_preferences?: Prisma.systemic_filter_view_preferencesOmit
+  systemic_filter_view_rules?: Prisma.systemic_filter_view_rulesOmit
   systemic_propagation_paths?: Prisma.systemic_propagation_pathsOmit
   systemic_relation_types?: Prisma.systemic_relation_typesOmit
   systemic_simulation_impacts?: Prisma.systemic_simulation_impactsOmit

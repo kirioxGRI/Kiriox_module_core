@@ -416,9 +416,9 @@ export default function ModelCanvas({
 
       const applyInitialView = () => {
         cy?.resize();
-        cy?.zoom(0.8);
+        cy?.zoom(0.45);
         cy?.center();
-        onZoomChange?.(0.8);
+        onZoomChange?.(0.45);
       };
 
       cy.one('layoutstop', () => {

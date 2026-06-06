@@ -491,6 +491,26 @@ export type systemic_entity_tags = Prisma.systemic_entity_tagsModel
  */
 export type systemic_entity_types = Prisma.systemic_entity_typesModel
 /**
+ * Model systemic_filter_groups
+ * 
+ */
+export type systemic_filter_groups = Prisma.systemic_filter_groupsModel
+/**
+ * Model systemic_filter_options
+ * 
+ */
+export type systemic_filter_options = Prisma.systemic_filter_optionsModel
+/**
+ * Model systemic_filter_view_preferences
+ * 
+ */
+export type systemic_filter_view_preferences = Prisma.systemic_filter_view_preferencesModel
+/**
+ * Model systemic_filter_view_rules
+ * 
+ */
+export type systemic_filter_view_rules = Prisma.systemic_filter_view_rulesModel
+/**
  * Model systemic_propagation_paths
  * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

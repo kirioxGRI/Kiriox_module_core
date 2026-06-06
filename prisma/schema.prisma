@@ -1587,25 +1587,26 @@ model security_users {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model systemic_entities {
-  id                                                                                        String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  entity_type_id                                                                            String                        @db.Uuid
-  code                                                                                      String                        @unique(map: "systemic_entities_code_unique")
+  id                                                                                        String                            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  entity_type_id                                                                            String                            @db.Uuid
+  code                                                                                      String                            @unique(map: "systemic_entities_code_unique")
   name                                                                                      String
   description                                                                               String?
-  status                                                                                    String                        @default("active")
+  status                                                                                    String                            @default("active")
   criticality_level                                                                         String?
-  owner_user_id                                                                             String?                       @db.Uuid
-  is_active                                                                                 Boolean                       @default(true)
-  created_at                                                                                DateTime                      @default(now()) @db.Timestamptz(6)
-  updated_at                                                                                DateTime                      @default(now()) @db.Timestamptz(6)
-  systemic_entity_types                                                                     systemic_entity_types         @relation(fields: [entity_type_id], references: [id], onUpdate: NoAction, map: "systemic_entities_entity_type_fk")
-  security_users                                                                            security_users?               @relation(fields: [owner_user_id], references: [id], onUpdate: NoAction, map: "systemic_entities_owner_user_fk")
+  owner_user_id                                                                             String?                           @db.Uuid
+  is_active                                                                                 Boolean                           @default(true)
+  created_at                                                                                DateTime                          @default(now()) @db.Timestamptz(6)
+  updated_at                                                                                DateTime                          @default(now()) @db.Timestamptz(6)
+  systemic_entity_types                                                                     systemic_entity_types             @relation(fields: [entity_type_id], references: [id], onUpdate: NoAction, map: "systemic_entities_entity_type_fk")
+  security_users                                                                            security_users?                   @relation(fields: [owner_user_id], references: [id], onUpdate: NoAction, map: "systemic_entities_owner_user_fk")
   systemic_entity_attributes                                                                systemic_entity_attributes[]
-  systemic_entity_relations_systemic_entity_relations_source_entity_idTosystemic_entities   systemic_entity_relations[]   @relation("systemic_entity_relations_source_entity_idTosystemic_entities")
-  systemic_entity_relations_systemic_entity_relations_target_entity_idTosystemic_entities   systemic_entity_relations[]   @relation("systemic_entity_relations_target_entity_idTosystemic_entities")
+  systemic_entity_relations_systemic_entity_relations_source_entity_idTosystemic_entities   systemic_entity_relations[]       @relation("systemic_entity_relations_source_entity_idTosystemic_entities")
+  systemic_entity_relations_systemic_entity_relations_target_entity_idTosystemic_entities   systemic_entity_relations[]       @relation("systemic_entity_relations_target_entity_idTosystemic_entities")
   systemic_entity_tags                                                                      systemic_entity_tags[]
-  systemic_propagation_paths_systemic_propagation_paths_source_entity_idTosystemic_entities systemic_propagation_paths[]  @relation("systemic_propagation_paths_source_entity_idTosystemic_entities")
-  systemic_propagation_paths_systemic_propagation_paths_target_entity_idTosystemic_entities systemic_propagation_paths[]  @relation("systemic_propagation_paths_target_entity_idTosystemic_entities")
+  systemic_filter_view_preferences                                                          systemic_filter_view_preferences?
+  systemic_propagation_paths_systemic_propagation_paths_source_entity_idTosystemic_entities systemic_propagation_paths[]      @relation("systemic_propagation_paths_source_entity_idTosystemic_entities")
+  systemic_propagation_paths_systemic_propagation_paths_target_entity_idTosystemic_entities systemic_propagation_paths[]      @relation("systemic_propagation_paths_target_entity_idTosystemic_entities")
   systemic_simulation_impacts                                                               systemic_simulation_impacts[]
   systemic_simulation_runs                                                                  systemic_simulation_runs[]
   systemic_structural_metrics                                                               systemic_structural_metrics[]
@@ -1715,6 +1716,63 @@ model systemic_entity_types {
 
   @@index([is_active], map: "idx_systemic_entity_types_is_active")
   @@index([name], map: "idx_systemic_entity_types_name")
+}
+
+model systemic_filter_groups {
+  id                      String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                    String                    @unique
+  name                    String
+  sort_order              Int                       @default(0)
+  is_active               Boolean                   @default(true)
+  created_at              DateTime                  @default(now()) @db.Timestamptz(6)
+  systemic_filter_options systemic_filter_options[]
+}
+
+model systemic_filter_options {
+  id                     String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  group_id               String                 @db.Uuid
+  code                   String
+  label                  String
+  value                  String
+  sort_order             Int                    @default(0)
+  is_default             Boolean                @default(false)
+  is_active              Boolean                @default(true)
+  created_at             DateTime               @default(now()) @db.Timestamptz(6)
+  systemic_filter_groups systemic_filter_groups @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([group_id, code], map: "systemic_filter_options_unique")
+  @@index([is_active], map: "idx_systemic_filter_options_active")
+  @@index([group_id], map: "idx_systemic_filter_options_group_id")
+}
+
+model systemic_filter_view_preferences {
+  id                         String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  entity_id                  String                     @unique(map: "systemic_filter_view_preferences_unique") @db.Uuid
+  default_view_code          String
+  default_depth              Int                        @default(1)
+  default_mode               String?
+  created_at                 DateTime                   @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime                   @default(now()) @db.Timestamptz(6)
+  systemic_filter_view_rules systemic_filter_view_rules @relation(fields: [default_view_code], references: [view_code], onDelete: NoAction, onUpdate: NoAction)
+  systemic_entities          systemic_entities          @relation(fields: [entity_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([entity_id], map: "idx_systemic_filter_view_preferences_entity_id")
+}
+
+model systemic_filter_view_rules {
+  id                               String                             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  view_code                        String                             @unique
+  name                             String
+  default_depth                    Int                                @default(1)
+  allowed_entity_type_codes        String[]
+  allowed_relation_type_codes      String[]
+  criticality_filter               String[]
+  layout_strategy                  String                             @default("force")
+  is_active                        Boolean                            @default(true)
+  created_at                       DateTime                           @default(now()) @db.Timestamptz(6)
+  systemic_filter_view_preferences systemic_filter_view_preferences[]
+
+  @@index([is_active], map: "idx_systemic_filter_view_rules_active")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.

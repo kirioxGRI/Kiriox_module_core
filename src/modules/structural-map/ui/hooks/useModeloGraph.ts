@@ -12,7 +12,7 @@ export type ModeloGraphData = {
   allEntities:   GraphEntity[];
 };
 
-export function useModeloGraph(rootEntityId?: string | null) {
+export function useModeloGraph(rootEntityId?: string | null, depth = 3) {
   const [data, setData]     = useState<ModeloGraphData | null>(null);
   const [error, setError]   = useState<string | null>(null);
   const [isPending, start]  = useTransition();
@@ -21,9 +21,9 @@ export function useModeloGraph(rootEntityId?: string | null) {
     setError(null);
     start(async () => {
       try {
-        // Si viene rootEntityId filtra por subgrafo (depth=3), si no carga todo el modelo
+        // Si viene rootEntityId filtra por subgrafo con profundidad dinámica; si no, carga todo el modelo.
         const graphUrl = rootEntityId
-          ? `/api/structural-map/graph?rootEntityId=${encodeURIComponent(rootEntityId)}&depth=3`
+          ? `/api/structural-map/graph?rootEntityId=${encodeURIComponent(rootEntityId)}&depth=${depth}`
           : '/api/structural-map/modelo/graph';
 
         const [graphRes, catalogRes] = await Promise.all([
@@ -41,7 +41,7 @@ export function useModeloGraph(rootEntityId?: string | null) {
         setError(e instanceof Error ? e.message : 'Error al cargar el grafo');
       }
     });
-  }, [rootEntityId]);
+  }, [depth, rootEntityId]);
 
   useEffect(() => { load(); }, [load]);
 

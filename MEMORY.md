@@ -624,6 +624,38 @@ useEffect(() => {
 
 ## 2026-06-05 — Aprendizaje
 
+**Contexto:** Implementación de filtros de visualización para `/gestion/structural-map/modelo` con configuración dinámica desde tablas sistémicas.
+
+**Regla aprendida:** En el structural map productivo, los filtros de vista no deben reescribir el grafo base ni alterar los motores. La forma segura es cargar la configuración desde `systemic_filter_groups`, `systemic_filter_options`, `systemic_filter_view_rules` y `systemic_filter_view_preferences`, conservar el dataset canónico ya cargado y derivar en cliente un subgrafo visible filtrado por vista, profundidad, criticidad y modo.
+
+**Aplicación futura:** Cuando se agreguen capas de navegación visual sobre el modelador sistémico, encapsularlas en un módulo propio de filtros con API separada y persistencia de preferencias por entidad, evitando tocar la lógica estructural, el catálogo base y los motores Elena salvo para consumir el `scope` visible resultante.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Ajuste fino de experiencia base del structural map tras introducir filtros dinámicos.
+
+**Regla aprendida:** La vista por defecto del selector debe ser `Riesgo`, no `Operación`. Además, la vista `Todo` debe comportarse como vista completa del subgrafo de la entidad seleccionada y por eso debe cargar profundidad 8 en el hook base del grafo, no solo filtrar sobre una profundidad fija ya recortada. El zoom inicial del canvas debe arrancar en 45% para dar contexto espacial amplio desde la primera carga.
+
+**Aplicación futura:** Si se agregan nuevas vistas en `systemic_filter_view_rules`, revisar siempre si requieren cambiar la profundidad base de carga además del filtrado visible. Para el shell visual del modelador, mantener el zoom inicial desacoplado de la lógica del filtro y tratarlo como configuración explícita de UX.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Incoherencia detectada en combinaciones de filtros como `Selector de vista = Todo` + `Criticidad = critical`, donde el sistema mostraba un solo nodo en vez del conjunto esperado.
+
+**Regla aprendida:** En el structural map, el orden correcto del pipeline de filtros es: `vista` + `modo` + `profundidad` primero para construir el scope alcanzable del grafo; `criticidad` después, solo para decidir qué nodos del scope ya alcanzado quedan visibles. La criticidad no debe cortar el recorrido del grafo ni usarse para descartar relaciones antes de expandir el subgrafo.
+
+**Aplicación futura:** Toda evolución del motor de filtros debe preservar esa secuencia. Si un filtro temático cambia el tipo de entidades o relaciones permitidas, puede afectar el universo recorrible; si un filtro representa severidad/prioridad como `critical/high/medium/low`, debe aplicarse únicamente sobre la salida visible del scope y no sobre el BFS/expansión base.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Ajuste de interacción en los filtros `Profundidad` y `Modo` del structural map para permitir activación y desactivación con el mismo clic.
+
+**Regla aprendida:** En `/gestion/structural-map/modelo`, `Profundidad` y `Modo` deben comportarse como toggles opcionales: un segundo clic sobre la opción activa la desactiva y el pipeline visible del grafo debe ignorar ese filtro. La persistencia por entidad no debe guardar `null`; si el estado visual queda desactivado, se debe persistir un valor canónico de fallback para mantener compatibilidad con la base real, mientras el filtrado en cliente interpreta `null` como “sin restricción”.
+
+**Aplicación futura:** Cuando un filtro visual pueda desactivarse en runtime, distinguir explícitamente entre estado UI opcional y preferencia persistida obligatoria. Para el structural map, `depth = null` implica expandir el subgrafo visible sin recorte de profundidad del filtro y `mode = null` implica no forzar una dirección de recorrido en la expansión visible.
+
+## 2026-06-05 — Aprendizaje
+
 **Contexto:** Edición de entidades en el "Catálogo de entidades existentes" del canvas.
 
 **Regla aprendida:** La edición de metadatos de las entidades existentes desde el catálogo lateral o inferior debe realizarse mediante controles editables en la propia fila de la grilla (inline editing), evitando abrir modales o formularios flotantes externos redundantes para preservar el foco espacial y la simplicidad.
@@ -637,4 +669,3 @@ useEffect(() => {
 **Regla aprendida:** La tabla `systemic_structural_metrics` almacena múltiples filas por entidad correspondientes a distintos `metric_type` (ej. `spof`, `criticality`) y corridas en paralelo. Para consultar el estado actual consolidado sin perder flags o recibir `NULL` aleatorios por `DISTINCT ON` o `LIMIT 1` arbitrarios, se debe agrupar por `entity_id` sobre las últimas corridas completadas de cada tipo, extrayendo los flags tanto de las columnas dedicadas como del objeto JSONB `metric_details` (usando `possible_spof` e `is_critical_node`) mediante agregaciones `MAX` y `BOOL_OR`.
 
 **Aplicación futura:** Al consultar métricas estructuradas sistémicas por nodo, usar siempre agregación consolidada sobre los últimos runs válidos de cada motor Elena para evitar quiebres visuales o de consistencia en el canvas.
-

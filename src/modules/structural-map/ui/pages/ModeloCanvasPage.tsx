@@ -1,18 +1,21 @@
 'use client';
 
-import { useRef, useCallback, lazy, Suspense, useEffect, useState } from 'react';
+import { useRef, useCallback, lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft, Activity, AlertTriangle, ZoomIn } from 'lucide-react';
+import { ChevronLeft, Activity, AlertTriangle, SlidersHorizontal, ZoomIn } from 'lucide-react';
 import { useCanvasStateMachine } from '@/modules/structural-map/ui/hooks/useCanvasStateMachine';
 import { useModeloGraph } from '@/modules/structural-map/ui/hooks/useModeloGraph';
+import { useStructuralMapFilters } from '@/modules/structural-map/ui/hooks/useStructuralMapFilters';
 import { useEntityColors } from '@/modules/structural-map/ui/colors/entityColors';
 import { AnalysisPanel } from '@/modules/structural-map/ui/components/AnalysisPanel';
 import { ElenaEngineResultPanel } from '@/modules/structural-map/ui/components/ElenaEngineResultPanel';
+import { FiltersDrawer } from '@/modules/structural-map/ui/components/filters/FiltersDrawer';
 import { EntitiesCatalogDrawer } from '@/modules/structural-map/ui/components/canvas/EntitiesCatalogDrawer';
 import { EntityEditForm }    from '@/modules/structural-map/ui/components/canvas/EntityEditForm';
 import { EntityPickerPanel } from '@/modules/structural-map/ui/components/canvas/EntityPickerPanel';
 import { RelationFormPopover } from '@/modules/structural-map/ui/components/canvas/RelationFormPopover';
+import { applyGraphFilters } from '@/modules/structural-map/ui/lib/applyGraphFilters';
 import type { GraphEntity, GraphRelation, SubgraphData } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
 import { STRENGTH_STYLE, STRENGTH_OPTIONS } from '@/modules/structural-map/domain/types/ModeloTypes';
@@ -27,19 +30,27 @@ type PendingRelation = { sourceId: string; targetId: string; targetScreenPos: Sc
 export default function ModeloCanvasPage() {
   const searchParams  = useSearchParams();
   const rootEntityId  = searchParams.get('serviceId') ?? undefined;
+  const filters = useStructuralMapFilters(rootEntityId);
+  const requestedGraphDepth = useMemo(() => {
+    if (!rootEntityId) return 3;
+    if (filters.selection?.viewCode === 'todo') return 8;
+    if (filters.selection?.depth == null) return 8;
+    return Math.max(1, Math.min(8, filters.selection?.depth ?? filters.activeViewRule?.default_depth ?? 3));
+  }, [filters.activeViewRule?.default_depth, filters.selection?.depth, filters.selection?.viewCode, rootEntityId]);
 
   const sm    = useCanvasStateMachine();
-  const graph = useModeloGraph(rootEntityId);
+  const graph = useModeloGraph(rootEntityId, requestedGraphDepth);
   const colorMap = useEntityColors();
   const cyRef = useRef<cytoscape.Core | null>(null);
 
   const [pendingRelation, setPendingRelation] = useState<PendingRelation | null>(null);
   const [elenaResult,     setElenaResult]     = useState<ElenaRunResult | null>(null);
   const [showAnalysis,    setShowAnalysis]    = useState(false);
+  const [showFilters,     setShowFilters]     = useState(false);
   const [editingEdgeId,   setEditingEdgeId]   = useState<string | null>(null);
   const [editingEdgePos,  setEditingEdgePos]  = useState<ScreenPos | null>(null);
   const [editingEntityId, setEditingEntityId] = useState<string | null>(null);
-  const [zoomLevel,       setZoomLevel]       = useState<number>(0.8);
+  const [zoomLevel,       setZoomLevel]       = useState<number>(0.45);
   const [pickerForNode,   setPickerForNode]   = useState<string | null>(null);
   const [showCatalogDrawer, setShowCatalogDrawer] = useState(false);
   const [catalogClickPos, setCatalogClickPos] = useState<{ screen: ScreenPos; graph: { x: number; y: number } } | null>(null);
@@ -54,6 +65,7 @@ export default function ModeloCanvasPage() {
         setEditingEntityId(null);
         setPickerForNode(null);
         setShowCatalogDrawer(false);
+        setShowFilters(false);
       }
     };
     document.addEventListener('keydown', handler);
@@ -165,12 +177,20 @@ export default function ModeloCanvasPage() {
   const handleNodeAnalyzeAction = useCallback((nodeId: string) => {
     void (async () => {
       try {
+        const visibleScopeEntityIds = applyGraphFilters({
+          entities: graph.data?.entities ?? [],
+          relations: graph.data?.relations ?? [],
+          rootEntityId,
+          selection: filters.selection,
+          viewRule: filters.activeViewRule,
+        }).entities.map((entity) => entity.id);
+
         const res  = await fetch('/api/structural-map/elena/run', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             rootEntityId: nodeId,
             engine: 'criticality',
-            scopeEntityIds: (graph.data?.entities ?? []).map((entity) => entity.id),
+            scopeEntityIds: visibleScopeEntityIds,
           }),
         });
         const text = await res.text();
@@ -180,7 +200,7 @@ export default function ModeloCanvasPage() {
         window.alert('No fue posible ejecutar el análisis');
       }
     })();
-  }, [graph, sm]);
+  }, [filters.activeViewRule, filters.selection, graph, rootEntityId, sm]);
 
   const handleNodeDuplicateAction = useCallback(async (nodeId: string) => {
     const entityToDuplicate = graph.data?.entities.find((e) => e.id === nodeId);
@@ -378,10 +398,22 @@ export default function ModeloCanvasPage() {
     return JSON.parse(text) as ValidationResult;
   }, [graph.data?.entities, rootEntityId, sm.state.selectedNodeId]);
 
-  const entities        = graph.data?.entities    ?? [];
-  const relations       = graph.data?.relations   ?? [];
-  const rootEntity      = rootEntityId ? entities.find((e) => e.id === rootEntityId) : null;
-  const analysisRootId  = rootEntityId ?? sm.state.selectedNodeId ?? entities[0]?.id ?? '';
+  const allGraphEntities = graph.data?.entities ?? [];
+  const allGraphRelations = graph.data?.relations ?? [];
+  const filteredGraph = useMemo(() => applyGraphFilters({
+    entities: allGraphEntities,
+    relations: allGraphRelations,
+    rootEntityId,
+    selection: filters.selection,
+    viewRule: filters.activeViewRule,
+  }), [allGraphEntities, allGraphRelations, rootEntityId, filters.selection, filters.activeViewRule]);
+  const entities = filteredGraph.entities;
+  const relations = filteredGraph.relations;
+  const visibleEntities = entities;
+  const rootEntity = rootEntityId
+    ? allGraphEntities.find((e) => e.id === rootEntityId) ?? entities.find((e) => e.id === rootEntityId) ?? null
+    : null;
+  const analysisRootId  = rootEntityId ?? sm.state.selectedNodeId ?? entities[0]?.id ?? allGraphEntities[0]?.id ?? '';
   const analysisRootName = rootEntity?.name
     ?? (sm.state.selectedNodeId ? entities.find((e) => e.id === sm.state.selectedNodeId)?.name : null)
     ?? (analysisRootId ? entities.find((e) => e.id === analysisRootId)?.name : null)
@@ -437,6 +469,9 @@ export default function ModeloCanvasPage() {
           <span className={styles.stat}>{entities.length} entidades</span>
           <span className={styles.stat}>{relations.length} relaciones</span>
           {graph.isPending && <div className={styles.spinner} />}
+          <button onClick={() => setShowFilters((p) => !p)} className={showFilters ? styles.analysisBtnActive : styles.analysisBtn}>
+            <SlidersHorizontal size={13} /> Filtros
+          </button>
           <button onClick={() => setShowAnalysis((p) => !p)} className={showAnalysis ? styles.analysisBtnActive : styles.analysisBtn}>
             <Activity size={13} /> Motores
           </button>
@@ -508,7 +543,7 @@ export default function ModeloCanvasPage() {
       {showCatalogDrawer && graph.data && (
         <EntitiesCatalogDrawer
           allEntities={graph.data.allEntities}
-          currentEntityIds={new Set(entities.map((e) => e.id))}
+          currentEntityIds={new Set(allGraphEntities.map((e) => e.id))}
           entityTypes={graph.data.entityTypes}
           colorMap={colorMap}
           onSelect={handleSelectCatalogEntity}
@@ -554,7 +589,7 @@ export default function ModeloCanvasPage() {
           <EntityPickerPanel
             position={pos}
             allEntities={graph.data.allEntities}
-            currentEntityIds={new Set(entities.map((e) => e.id))}
+            currentEntityIds={new Set(allGraphEntities.map((e) => e.id))}
             colorMap={colorMap}
             onSelect={handlePickedEntity}
             onCancel={() => setPickerForNode(null)}
@@ -587,12 +622,33 @@ export default function ModeloCanvasPage() {
           <AnalysisPanel
             rootEntityId={analysisRootId}
             rootEntityName={analysisRootName}
-            scopeEntityIds={entities.map((entity) => entity.id)}
+            scopeEntityIds={visibleEntities.map((entity) => entity.id)}
             onValidate={handleValidateModel}
             onResult={(r) => setElenaResult(r)}
             onGraphRefresh={graph.reload}
           />
         </div>
+      )}
+
+      {showFilters && filters.selection && (
+        <FiltersDrawer
+          rightOffset={showAnalysis ? 280 : 0}
+          groups={filters.config?.groups ?? []}
+          viewCode={filters.selection.viewCode}
+          depth={filters.selection.depth}
+          mode={filters.selection.mode}
+          criticalityCodes={filters.selection.criticalityCodes}
+          isLoading={filters.isLoading}
+          isSaving={filters.isSaving}
+          error={filters.error}
+          onClose={() => setShowFilters(false)}
+          onReload={() => void filters.reload()}
+          onReset={filters.resetSelection}
+          onSelectView={filters.selectView}
+          onSelectDepth={filters.selectDepth}
+          onSelectMode={filters.selectMode}
+          onToggleCriticality={filters.toggleCriticality}
+        />
       )}
 
       <ElenaEngineResultPanel result={elenaResult} onClose={() => setElenaResult(null)} />
