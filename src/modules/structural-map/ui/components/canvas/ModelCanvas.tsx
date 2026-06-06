@@ -69,6 +69,7 @@ type Props = {
   onNodeDblClick: (entity: GraphEntity) => void;
   onEdgeDblClick: (relation: GraphRelation, screenPos: ScreenPos) => void;
   onCanvasClick: (screenPos: ScreenPos, graphPos: { x: number; y: number }) => void;
+  onCanvasContextMenu?: (screenPos: ScreenPos, graphPos: { x: number; y: number }) => void;
   onMouseMove: (pos: ScreenPos) => void;
   onNodeDragStart: (nodeId: string) => void;
   onNodeDragEnd: (nodeId: string, graphPos: { x: number; y: number }) => void;
@@ -95,6 +96,7 @@ export default function ModelCanvas({
   onNodeDblClick,
   onEdgeDblClick,
   onCanvasClick,
+  onCanvasContextMenu,
   onMouseMove,
   onNodeDragStart,
   onNodeDragEnd,
@@ -378,6 +380,16 @@ export default function ModelCanvas({
         const rect = getContainerRect();
         const screenPos: ScreenPos = { x: (rect?.left ?? 0) + rendered.x, y: (rect?.top ?? 0) + rendered.y };
         onCanvasClick(screenPos, graphPos);
+      });
+
+      cy.on('cxttap', (evt) => {
+        if (evt.target !== cy || canvasState.mode === 'creating_relation' || canvasState.mode === 'editing_relation') return;
+
+        const graphPos = evt.position as { x: number; y: number };
+        const rendered = evt.renderedPosition as { x: number; y: number };
+        const rect = getContainerRect();
+        const screenPos: ScreenPos = { x: (rect?.left ?? 0) + rendered.x, y: (rect?.top ?? 0) + rendered.y };
+        onCanvasContextMenu?.(screenPos, graphPos);
       });
 
       cy.on('mousemove', (evt) => {

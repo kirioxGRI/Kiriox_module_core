@@ -9,7 +9,7 @@ import { useModeloGraph } from '@/modules/structural-map/ui/hooks/useModeloGraph
 import { useEntityColors } from '@/modules/structural-map/ui/colors/entityColors';
 import { AnalysisPanel } from '@/modules/structural-map/ui/components/AnalysisPanel';
 import { ElenaEngineResultPanel } from '@/modules/structural-map/ui/components/ElenaEngineResultPanel';
-import { EntityQuickCreate } from '@/modules/structural-map/ui/components/canvas/EntityQuickCreate';
+import { EntitiesCatalogDrawer } from '@/modules/structural-map/ui/components/canvas/EntitiesCatalogDrawer';
 import { EntityEditForm }    from '@/modules/structural-map/ui/components/canvas/EntityEditForm';
 import { EntityPickerPanel } from '@/modules/structural-map/ui/components/canvas/EntityPickerPanel';
 import { RelationFormPopover } from '@/modules/structural-map/ui/components/canvas/RelationFormPopover';
@@ -41,6 +41,8 @@ export default function ModeloCanvasPage() {
   const [editingEntityId, setEditingEntityId] = useState<string | null>(null);
   const [zoomLevel,       setZoomLevel]       = useState<number>(0.8);
   const [pickerForNode,   setPickerForNode]   = useState<string | null>(null);
+  const [showCatalogDrawer, setShowCatalogDrawer] = useState(false);
+  const [catalogClickPos, setCatalogClickPos] = useState<{ screen: ScreenPos; graph: { x: number; y: number } } | null>(null);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -51,6 +53,7 @@ export default function ModeloCanvasPage() {
         setEditingEdgePos(null);
         setEditingEntityId(null);
         setPickerForNode(null);
+        setShowCatalogDrawer(false);
       }
     };
     document.addEventListener('keydown', handler);
@@ -60,8 +63,22 @@ export default function ModeloCanvasPage() {
   const handleCanvasClick = useCallback((screenPos: ScreenPos, graphPos: { x: number; y: number }) => {
     if (sm.state.mode === 'creating_relation') return;
     if (sm.state.mode === 'editing_relation') return;
-    if (sm.state.mode === 'node_selected' || sm.state.mode === 'node_context_menu') { sm.deselect(); return; }
-    sm.startCreateEntity(screenPos, graphPos);
+    if (sm.state.mode === 'node_selected' || sm.state.mode === 'node_context_menu') { sm.deselect(); }
+    setShowCatalogDrawer(false);
+  }, [sm]);
+
+  const handleCanvasContextMenu = useCallback((screenPos: ScreenPos, graphPos: { x: number; y: number }) => {
+    if (sm.state.mode === 'creating_relation') return;
+    if (sm.state.mode === 'editing_relation') return;
+
+    setEditingEdgeId(null);
+    setEditingEdgePos(null);
+    setEditingEntityId(null);
+    setPickerForNode(null);
+    sm.deselect();
+
+    setCatalogClickPos({ screen: screenPos, graph: graphPos });
+    setShowCatalogDrawer(true);
   }, [sm]);
 
   const handleNodeClick = useCallback((entity: GraphEntity, renderedPos: ScreenPos) => {
@@ -134,11 +151,13 @@ export default function ModeloCanvasPage() {
   }, [pickerForNode, graph, sm]);
 
   const handleNodeDeleteAction = useCallback(async (nodeId: string) => {
-    const entity = graph.data?.entities.find((e) => e.id === nodeId);
+    const entity = graph.data?.allEntities.find((e) => e.id === nodeId)
+                || graph.data?.entities.find((e) => e.id === nodeId);
     if (!window.confirm(`¿Eliminar "${entity?.name ?? nodeId}" y todas sus relaciones?`)) return;
     const res = await fetch(`/api/structural-map/entities/${nodeId}`, { method: 'DELETE' });
     if (!res.ok) { window.alert('Error al eliminar la entidad'); return; }
     graph.removeEntity(nodeId);
+    await graph.reload();
     sm.deselect();
     sm.markDirty();
   }, [graph, sm]);
@@ -240,11 +259,39 @@ export default function ModeloCanvasPage() {
     setPendingRelation({ sourceId, targetId, targetScreenPos: sp });
   }, [sm]);
 
-  const handleCreateEntity = useCallback(async (input: { entity_type_id: string; code: string; name: string; description?: string; criticality_level: string }) => {
+  const handleSelectCatalogEntity = useCallback((entity: GraphEntity) => {
+    if (!catalogClickPos) return;
+
+    try {
+      const all = JSON.parse(localStorage.getItem('kiriox-node-positions') ?? '{}');
+      all[entity.id] = catalogClickPos.graph;
+      localStorage.setItem('kiriox-node-positions', JSON.stringify(all));
+    } catch (e) {
+      console.error(e);
+    }
+
+    graph.addEntity(entity);
+    sm.markDirty();
+  }, [catalogClickPos, graph, sm]);
+
+  const handleCreateCatalogEntity = useCallback(async (input: { entity_type_id: string; code: string; name: string; description?: string; criticality_level: string }) => {
+    if (!catalogClickPos) return;
+
     const res  = await fetch('/api/structural-map/entities', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(input) });
     const text = await res.text();
     if (!res.ok) throw new Error((JSON.parse(text) as { error?: string }).error ?? 'Error al crear entidad');
     const { id, code } = JSON.parse(text) as { id: string; code: string };
+
+    try {
+      const all = JSON.parse(localStorage.getItem('kiriox-node-positions') ?? '{}');
+      all[id] = catalogClickPos.graph;
+      localStorage.setItem('kiriox-node-positions', JSON.stringify(all));
+    } catch (e) {
+      console.error(e);
+    }
+
+    await graph.reload();
+
     const et = graph.data?.entityTypes.find((t) => t.id === input.entity_type_id);
     graph.addEntity({
       id, code, name: input.name, description: input.description ?? null,
@@ -253,9 +300,8 @@ export default function ModeloCanvasPage() {
       is_active: true, is_spof: false, is_critical_node: false, total_degree: 0,
       criticality_score: null, resilience_score: null, exposure_score: null,
     });
-    sm.cancelCreateEntity();
     sm.markDirty();
-  }, [graph, sm]);
+  }, [catalogClickPos, graph, sm]);
 
   const handleCreateRelation = useCallback(async (input: { source_entity_id: string; target_entity_id: string; relation_type_id: string; strength: string; weight: number; description?: string }) => {
     if (input.source_entity_id === input.target_entity_id) throw new Error('Una entidad no puede relacionarse consigo misma');
@@ -410,6 +456,7 @@ export default function ModeloCanvasPage() {
                 entities={entities} relations={relations} canvasState={sm.state} colorMap={colorMap}
                 onNodeClick={handleNodeClick} onNodeContextMenu={handleNodeContextMenu} onNodeDblClick={handleNodeDblClick}
                 onEdgeDblClick={handleEdgeDblClick} onCanvasClick={handleCanvasClick}
+                onCanvasContextMenu={handleCanvasContextMenu}
                 onMouseMove={sm.updateMouse}
                 onNodeDragStart={sm.startDrag}
                 onNodeDragEnd={handleNodeDragEnd}
@@ -430,7 +477,7 @@ export default function ModeloCanvasPage() {
         )}
 
         <div className={styles.modeBar}>
-          {sm.state.mode === 'idle'              && 'Clic corto en el lienzo para crear entidad · Clic en un nodo para mostrar conectores'}
+          {sm.state.mode === 'idle'              && 'Clic derecho en el lienzo para catálogo de entidades · Clic en un nodo para mostrar conectores'}
           {sm.state.mode === 'node_selected'     && 'Nodo seleccionado · Arrastra desde un conector para crear relación · Doble clic para editar'}
           {sm.state.mode === 'creating_entity'   && 'Creando entidad…'}
           {sm.state.mode === 'creating_relation' && 'Arrastra la línea hacia un destino válido y suelta · Esc para cancelar'}
@@ -458,12 +505,17 @@ export default function ModeloCanvasPage() {
 
       </div>
 
-      {sm.state.mode === 'creating_entity' && sm.state.clickScreenPos && (
-        <EntityQuickCreate
-          position={sm.state.clickScreenPos}
-          entityTypes={graph.data?.entityTypes ?? []}
-          onSave={handleCreateEntity}
-          onCancel={sm.cancelCreateEntity}
+      {showCatalogDrawer && graph.data && (
+        <EntitiesCatalogDrawer
+          allEntities={graph.data.allEntities}
+          currentEntityIds={new Set(entities.map((e) => e.id))}
+          entityTypes={graph.data.entityTypes}
+          colorMap={colorMap}
+          onSelect={handleSelectCatalogEntity}
+          onCreate={handleCreateCatalogEntity}
+          onEditSave={handleUpdateEntity}
+          onDelete={handleNodeDeleteAction}
+          onClose={() => { setShowCatalogDrawer(false); setCatalogClickPos(null); }}
         />
       )}
 

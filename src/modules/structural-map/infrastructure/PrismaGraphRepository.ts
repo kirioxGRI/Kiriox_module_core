@@ -26,17 +26,24 @@ export class PrismaGraphRepository {
           AND ser.is_active = true
         WHERE sg.dist < ${depth}
       ),
+      latest_runs AS (
+        SELECT DISTINCT ON (analysis_type) id
+        FROM systemic_structural_analysis_runs
+        WHERE status = 'completed'
+        ORDER BY analysis_type, completed_at DESC
+      ),
       latest_metrics AS (
-        SELECT DISTINCT ON (ssm.entity_id)
+        SELECT 
           ssm.entity_id,
-          ssm.criticality_score,
-          ssm.resilience_score,
-          ssm.exposure_score,
-          ssm.is_spof,
-          ssm.is_critical_node,
-          ssm.total_degree
+          MAX(ssm.criticality_score) AS criticality_score,
+          MAX(ssm.resilience_score) AS resilience_score,
+          MAX(ssm.exposure_score) AS exposure_score,
+          BOOL_OR(COALESCE(ssm.is_spof, (ssm.metric_details->>'possible_spof')::boolean, false)) AS is_spof,
+          BOOL_OR(COALESCE(ssm.is_critical_node, (ssm.metric_details->>'is_critical_node')::boolean, false)) AS is_critical_node,
+          MAX(ssm.total_degree) AS total_degree
         FROM systemic_structural_metrics ssm
-        ORDER BY ssm.entity_id, ssm.created_at DESC
+        JOIN latest_runs lr ON lr.id = ssm.structural_analysis_run_id
+        GROUP BY ssm.entity_id
       )
       SELECT DISTINCT
         se.id::text,

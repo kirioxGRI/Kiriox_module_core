@@ -35,11 +35,21 @@ export class PrismaModeloRepository {
       FROM systemic_entities se
       JOIN systemic_entity_types et ON et.id = se.entity_type_id
       LEFT JOIN LATERAL (
-        SELECT criticality_score, resilience_score, exposure_score,
-               is_spof, is_critical_node, total_degree
+        SELECT 
+          MAX(ssm.criticality_score) AS criticality_score,
+          MAX(ssm.resilience_score) AS resilience_score,
+          MAX(ssm.exposure_score) AS exposure_score,
+          BOOL_OR(COALESCE(ssm.is_spof, (ssm.metric_details->>'possible_spof')::boolean, false)) AS is_spof,
+          BOOL_OR(COALESCE(ssm.is_critical_node, (ssm.metric_details->>'is_critical_node')::boolean, false)) AS is_critical_node,
+          MAX(ssm.total_degree) AS total_degree
         FROM systemic_structural_metrics ssm
+        JOIN (
+          SELECT DISTINCT ON (analysis_type) id
+          FROM systemic_structural_analysis_runs
+          WHERE status = 'completed'
+          ORDER BY analysis_type, completed_at DESC
+        ) lr ON lr.id = ssm.structural_analysis_run_id
         WHERE ssm.entity_id = se.id
-        ORDER BY ssm.created_at DESC LIMIT 1
       ) lm ON true
       WHERE se.is_active = true
       ORDER BY se.name

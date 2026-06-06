@@ -621,3 +621,20 @@ useEffect(() => {
 **Regla aprendida:** Si un motor Elena se ejecuta desde el canvas operativo y la UI muestra un subgrafo recortado, el análisis de criticidad debe calcularse exclusivamente sobre ese mismo conjunto visible de entidades y relaciones. No se debe mezclar criticidad del grafo persistido completo con un canvas parcial.
 
 **Aplicación futura:** Mantener en `PrismaElenaRepository` variantes scoped para motores ejecutivos que el usuario compara visualmente contra el canvas. Reutilizar `analysis_type` canónicos (`critical_nodes_analysis`, `full_structural_analysis`, etc.) y dejar la diferencia de alcance en `description` y `functionName`.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Edición de entidades en el "Catálogo de entidades existentes" del canvas.
+
+**Regla aprendida:** La edición de metadatos de las entidades existentes desde el catálogo lateral o inferior debe realizarse mediante controles editables en la propia fila de la grilla (inline editing), evitando abrir modales o formularios flotantes externos redundantes para preservar el foco espacial y la simplicidad.
+
+**Aplicación futura:** Implementar edición en el mismo renglón al modificar listados o grillas tabulares complejas.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Recuperación de métricas de criticidad y SPOF en el canvas y listados del modelo sistémico.
+
+**Regla aprendida:** La tabla `systemic_structural_metrics` almacena múltiples filas por entidad correspondientes a distintos `metric_type` (ej. `spof`, `criticality`) y corridas en paralelo. Para consultar el estado actual consolidado sin perder flags o recibir `NULL` aleatorios por `DISTINCT ON` o `LIMIT 1` arbitrarios, se debe agrupar por `entity_id` sobre las últimas corridas completadas de cada tipo, extrayendo los flags tanto de las columnas dedicadas como del objeto JSONB `metric_details` (usando `possible_spof` e `is_critical_node`) mediante agregaciones `MAX` y `BOOL_OR`.
+
+**Aplicación futura:** Al consultar métricas estructuradas sistémicas por nodo, usar siempre agregación consolidada sobre los últimos runs válidos de cada motor Elena para evitar quiebres visuales o de consistencia en el canvas.
+

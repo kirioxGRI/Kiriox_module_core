@@ -92,7 +92,11 @@ export function useModeloGraph(rootEntityId?: string | null) {
   }, []);
 
   const updateEntity = useCallback((id: string, patch: Partial<GraphEntity>) => {
-    setData((prev) => prev ? { ...prev, entities: prev.entities.map((e) => e.id === id ? { ...e, ...patch } : e) } : prev);
+    setData((prev) => prev ? {
+      ...prev,
+      entities: prev.entities.map((e) => e.id === id ? { ...e, ...patch } : e),
+      allEntities: prev.allEntities.map((e) => e.id === id ? { ...e, ...patch } : e),
+    } : prev);
   }, []);
 
   return {
