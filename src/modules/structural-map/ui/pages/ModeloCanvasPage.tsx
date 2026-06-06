@@ -425,6 +425,18 @@ export default function ModeloCanvasPage() {
     ?? (sm.state.selectedNodeId ? entities.find((e) => e.id === sm.state.selectedNodeId)?.name : null)
     ?? (analysisRootId ? entities.find((e) => e.id === analysisRootId)?.name : null)
     ?? 'Grafo completo';
+  // Origen del stress: nodo explícitamente seleccionado (si es visible) → nodo central/raíz
+  // (si sobrevive al filtro) → hub de mayor grado visible. Respeta el grafo filtrado.
+  const stressSourceId = useMemo(() => {
+    if (!entities.length) return null;
+    const visibleIds = new Set(entities.map((e) => e.id));
+    if (sm.state.selectedNodeId && visibleIds.has(sm.state.selectedNodeId)) return sm.state.selectedNodeId;
+    if (rootEntityId && visibleIds.has(rootEntityId)) return rootEntityId;
+    return [...entities].sort((a, b) => (b.total_degree ?? 0) - (a.total_degree ?? 0))[0]?.id ?? null;
+  }, [entities, sm.state.selectedNodeId, rootEntityId]);
+  const stressSourceName = stressSourceId ? (entities.find((e) => e.id === stressSourceId)?.name ?? null) : null;
+  const stressSourceIsExplicit = !!sm.state.selectedNodeId && stressSourceId === sm.state.selectedNodeId;
+
   const editingRelation = editingEdgeId ? (relations.find((r) => r.id === editingEdgeId) ?? null) : null;
   const pendingSrc      = pendingRelation ? entities.find((e) => e.id === pendingRelation.sourceId)  : undefined;
   const pendingTgt      = pendingRelation ? entities.find((e) => e.id === pendingRelation.targetId)  : undefined;
@@ -649,8 +661,9 @@ export default function ModeloCanvasPage() {
           </div>
           <div style={{ height: '100%', overflowY: 'auto', padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <StressSimulationPanel
-              selectedNodeId={sm.state.selectedNodeId}
-              selectedNodeName={sm.state.selectedNodeId ? (entities.find((e) => e.id === sm.state.selectedNodeId)?.name ?? null) : null}
+              selectedNodeId={stressSourceId}
+              selectedNodeName={stressSourceName}
+              autoSelected={!stressSourceIsExplicit}
               scopeCount={visibleEntities.length}
               config={stress.config}
               updateConfig={stress.updateConfig}
@@ -658,9 +671,9 @@ export default function ModeloCanvasPage() {
               error={stress.error}
               hasResult={!!stress.result}
               onRun={() => {
-                if (!sm.state.selectedNodeId) return;
+                if (!stressSourceId) return;
                 void stress.run({
-                  sourceNodeId: sm.state.selectedNodeId,
+                  sourceNodeId: stressSourceId,
                   scopeEntityIds: visibleEntities.map((entity) => entity.id),
                   graphId: rootEntityId,
                 });

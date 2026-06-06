@@ -29,6 +29,7 @@ const PROCESS_TYPES = ['PROCESS', 'ACTIVITY'];
 const SERVICE_TYPES = ['SERVICE'];
 const CONTROL_TYPES = ['CONTROL'];
 const OBLIGATION_TYPES = ['OBLIGATION'];
+const RISK_TYPES = ['RISK'];
 
 type ImpactDbRow = {
   entity_id: string;
@@ -128,6 +129,7 @@ export class PrismaStressSimulationRepository {
       affectedServices: this.affectedByType(impactedNonOrigin, SERVICE_TYPES),
       affectedControls: this.affectedByType(impactedNonOrigin, CONTROL_TYPES),
       affectedObligations: this.affectedByType(impactedNonOrigin, OBLIGATION_TYPES),
+      affectedRisks: this.affectedByType(impactedNonOrigin, RISK_TYPES),
       topCascadeNodes: buildTopCascadeNodes(impacted, criticalityRows, 10),
       cascadePaths,
       recommendations: buildRecommendations(graph, impacted, resilienceRows, criticalityRows),

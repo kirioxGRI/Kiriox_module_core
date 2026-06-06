@@ -12,6 +12,8 @@ import type { StressConfig } from '@/modules/structural-map/ui/hooks/useStressSi
 type Props = {
   selectedNodeId: string | null;
   selectedNodeName: string | null;
+  /** True cuando el origen es el nodo central/raíz auto-derivado, no un clic explícito. */
+  autoSelected?: boolean;
   scopeCount: number;
   config: StressConfig;
   updateConfig: <K extends keyof StressConfig>(key: K, value: StressConfig[K]) => void;
@@ -28,7 +30,7 @@ const labelStyle: React.CSSProperties = { display: 'block', color: '#64748b', fo
 const inputStyle: React.CSSProperties = { width: '100%', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 7, color: '#f1f5f9', fontSize: '0.78rem', padding: '0.42rem 0.6rem', outline: 'none', boxSizing: 'border-box' };
 
 export function StressSimulationPanel({
-  selectedNodeId, selectedNodeName, scopeCount, config, updateConfig,
+  selectedNodeId, selectedNodeName, autoSelected, scopeCount, config, updateConfig,
   running, error, hasResult, onRun, onClear,
 }: Props) {
   const canRun = !!selectedNodeId && scopeCount > 0 && !running;
@@ -40,9 +42,14 @@ export function StressSimulationPanel({
       <div style={cardStyle}>
         <p style={titleStyle}><Crosshair size={12} /> Nodo origen del shock</p>
         {selectedNodeId ? (
-          <p style={{ margin: 0, color: '#a78bfa', fontSize: '0.8rem', fontWeight: 700 }}>{selectedNodeName ?? selectedNodeId}</p>
+          <>
+            <p style={{ margin: 0, color: '#a78bfa', fontSize: '0.8rem', fontWeight: 700 }}>{selectedNodeName ?? selectedNodeId}</p>
+            <p style={{ margin: '0.2rem 0 0', color: '#64748b', fontSize: '0.62rem' }}>
+              {autoSelected ? 'Nodo central del grafo (clic en otro nodo para cambiar el origen)' : 'Nodo seleccionado en el canvas'}
+            </p>
+          </>
         ) : (
-          <p style={{ margin: 0, color: '#fbbf24', fontSize: '0.72rem' }}>Selecciona un nodo en el canvas para originar la cascada.</p>
+          <p style={{ margin: 0, color: '#fbbf24', fontSize: '0.72rem' }}>No hay nodos visibles para originar la cascada. Ajusta los filtros.</p>
         )}
         <p style={{ margin: '0.35rem 0 0', color: '#475569', fontSize: '0.63rem' }}>Universo de simulación: {scopeCount} entidades visibles</p>
       </div>

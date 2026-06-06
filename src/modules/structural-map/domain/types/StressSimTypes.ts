@@ -137,6 +137,7 @@ export type StructuralStressResponse = {
   affectedServices: AffectedEntityRef[];
   affectedControls: AffectedEntityRef[];
   affectedObligations: AffectedEntityRef[];
+  affectedRisks: AffectedEntityRef[];
   topCascadeNodes: StressCascadeNode[];
   cascadePaths: StressCascadePath[];
   recommendations: StressRecommendation[];

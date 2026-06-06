@@ -62,6 +62,7 @@ export function StressImpactPanel({ result }: Props) {
           <Kpi label="Cascadas" value={result.cascadePaths.length} color="#a78bfa" />
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.4rem' }}>
+          <Kpi label="Riesgos" value={result.affectedRisks.length} color="#f472b6" />
           <Kpi label="Procesos" value={result.affectedProcesses.length} color="#60a5fa" />
           <Kpi label="Servicios" value={result.affectedServices.length} color="#34d399" />
           <Kpi label="Controles" value={result.affectedControls.length} color="#fbbf24" />
