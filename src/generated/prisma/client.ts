@@ -487,6 +487,11 @@ export type systemic_entities = Prisma.systemic_entitiesModel
  */
 export type systemic_entity_attributes = Prisma.systemic_entity_attributesModel
 /**
+ * Model systemic_entity_color
+ * This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+ */
+export type systemic_entity_color = Prisma.systemic_entity_colorModel
+/**
  * Model systemic_entity_relations
  * This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
  * This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

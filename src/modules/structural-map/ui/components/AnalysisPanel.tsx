@@ -8,6 +8,7 @@ import type { ValidationResult } from '@/modules/structural-map/domain/types/Por
 type Props = {
   rootEntityId: string;
   rootEntityName?: string;
+  scopeEntityIds?: string[];
   onValidate:      () => Promise<ValidationResult | null>;
   onResult:        (result: ElenaRunResult) => void;
   onGraphRefresh?: () => void;
@@ -33,11 +34,11 @@ const ENGINES: { type: ElenaEngine; label: string; icon: React.ElementType; colo
 
 const SEV_COLORS: Record<string, string> = { critical: '#f87171', high: '#fb923c', medium: '#fbbf24', low: '#4ade80' };
 
-async function callElena(rootEntityId: string, engine: ElenaEngine, scenario?: string): Promise<ElenaRunResult> {
+async function callElena(rootEntityId: string, engine: ElenaEngine, scenario?: string, scopeEntityIds?: string[]): Promise<ElenaRunResult> {
   const res = await fetch('/api/structural-map/elena/run', {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify({ rootEntityId, engine, scenario }),
+    body:    JSON.stringify({ rootEntityId, engine, scenario, scopeEntityIds }),
   });
   const text = await res.text();
   if (!text) {
@@ -91,7 +92,7 @@ const cardStyle: React.CSSProperties = { background: 'rgba(0,0,0,0.22)', border:
 const titleStyle: React.CSSProperties = { color: '#94a3b8', fontSize: '0.67rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem' };
 const inputStyle: React.CSSProperties = { width: '100%', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 7, color: '#f1f5f9', fontSize: '0.78rem', padding: '0.42rem 0.6rem', outline: 'none', boxSizing: 'border-box' };
 
-export function AnalysisPanel({ rootEntityId, rootEntityName, onValidate, onResult, onGraphRefresh }: Props) {
+export function AnalysisPanel({ rootEntityId, rootEntityName, scopeEntityIds, onValidate, onResult, onGraphRefresh }: Props) {
   const [btnState, dispatch]        = useReducer(reducer, {} as BtnState);
   const [vResult, setVResult]       = useState<ValidationResult | null>(null);
   const [simScenario, setSimScenario] = useState<string>('FAILURE');
@@ -101,11 +102,11 @@ export function AnalysisPanel({ rootEntityId, rootEntityName, onValidate, onResu
 
   const runEngine = useCallback(async (engine: ElenaEngine, scenario?: string) => {
     dispatch({ type: 'START', key: engine });
-    const result = await callElena(rootEntityId, engine, scenario);
+    const result = await callElena(rootEntityId, engine, scenario, scopeEntityIds);
     dispatch({ type: result.ok ? 'DONE' : 'FAIL', key: engine });
     onResult(result);
     if (result.ok) onGraphRefresh?.();
-  }, [rootEntityId, onResult, onGraphRefresh]);
+  }, [rootEntityId, scopeEntityIds, onResult, onGraphRefresh]);
 
   const handleValidate = useCallback(async () => {
     if (btnState.validate === 'success' && vResult) {

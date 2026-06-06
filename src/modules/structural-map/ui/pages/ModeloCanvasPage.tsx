@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ChevronLeft, Activity, AlertTriangle, ZoomIn } from 'lucide-react';
 import { useCanvasStateMachine } from '@/modules/structural-map/ui/hooks/useCanvasStateMachine';
 import { useModeloGraph } from '@/modules/structural-map/ui/hooks/useModeloGraph';
+import { useEntityColors } from '@/modules/structural-map/ui/colors/entityColors';
 import { AnalysisPanel } from '@/modules/structural-map/ui/components/AnalysisPanel';
 import { ElenaEngineResultPanel } from '@/modules/structural-map/ui/components/ElenaEngineResultPanel';
 import { EntityQuickCreate } from '@/modules/structural-map/ui/components/canvas/EntityQuickCreate';
@@ -29,6 +30,7 @@ export default function ModeloCanvasPage() {
 
   const sm    = useCanvasStateMachine();
   const graph = useModeloGraph(rootEntityId);
+  const colorMap = useEntityColors();
   const cyRef = useRef<cytoscape.Core | null>(null);
 
   const [pendingRelation, setPendingRelation] = useState<PendingRelation | null>(null);
@@ -37,7 +39,7 @@ export default function ModeloCanvasPage() {
   const [editingEdgeId,   setEditingEdgeId]   = useState<string | null>(null);
   const [editingEdgePos,  setEditingEdgePos]  = useState<ScreenPos | null>(null);
   const [editingEntityId, setEditingEntityId] = useState<string | null>(null);
-  const [zoomLevel,       setZoomLevel]       = useState<number>(1.5);
+  const [zoomLevel,       setZoomLevel]       = useState<number>(0.8);
   const [pickerForNode,   setPickerForNode]   = useState<string | null>(null);
 
   useEffect(() => {
@@ -146,7 +148,11 @@ export default function ModeloCanvasPage() {
       try {
         const res  = await fetch('/api/structural-map/elena/run', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rootEntityId: nodeId, engine: 'criticality' }),
+          body: JSON.stringify({
+            rootEntityId: nodeId,
+            engine: 'criticality',
+            scopeEntityIds: (graph.data?.entities ?? []).map((entity) => entity.id),
+          }),
         });
         const text = await res.text();
         const result = text ? JSON.parse(text) as ElenaRunResult : null;
@@ -329,6 +335,11 @@ export default function ModeloCanvasPage() {
   const entities        = graph.data?.entities    ?? [];
   const relations       = graph.data?.relations   ?? [];
   const rootEntity      = rootEntityId ? entities.find((e) => e.id === rootEntityId) : null;
+  const analysisRootId  = rootEntityId ?? sm.state.selectedNodeId ?? entities[0]?.id ?? '';
+  const analysisRootName = rootEntity?.name
+    ?? (sm.state.selectedNodeId ? entities.find((e) => e.id === sm.state.selectedNodeId)?.name : null)
+    ?? (analysisRootId ? entities.find((e) => e.id === analysisRootId)?.name : null)
+    ?? 'Grafo completo';
   const editingRelation = editingEdgeId ? (relations.find((r) => r.id === editingEdgeId) ?? null) : null;
   const pendingSrc      = pendingRelation ? entities.find((e) => e.id === pendingRelation.sourceId)  : undefined;
   const pendingTgt      = pendingRelation ? entities.find((e) => e.id === pendingRelation.targetId)  : undefined;
@@ -349,12 +360,30 @@ export default function ModeloCanvasPage() {
           {sm.state.isDirty && <span className={styles.dirtyBadge}>Cambios pendientes de análisis</span>}
         </div>
 
-        {/* Center — zoom badge */}
+        {/* Center — zoom badge + leyenda de tipo de nodo */}
         <div className={styles.headerCenter}>
           <span className={styles.zoomBadge}>
             <ZoomIn size={11} />
             {Math.round(zoomLevel * 100)}%
           </span>
+          <div className={styles.headerNodeLegend}>
+            <span className={styles.headerNodeLegendTitle}>Tipo de nodo</span>
+            {[
+              { label: 'Control', color: colorMap.byType.CONTROL ?? '#22c55e' },
+              { label: 'Riesgo', color: colorMap.byType.RISK ?? '#ef4444' },
+              { label: 'Otros', color: colorMap.fallback },
+            ].map((item) => (
+              <span key={item.label} className={styles.headerNodeLegendItem}>
+                <span className={styles.nodeLegendDot} style={{ background: item.color }} />
+                {item.label}
+              </span>
+            ))}
+            <span className={styles.headerNodeLegendDivider} />
+            <span className={styles.headerNodeLegendItem} title="Los nodos críticos o SPOF laten con un resplandor para llamar la atención">
+              <span className={styles.glowLegendDot} />
+              Crítico / SPOF
+            </span>
+          </div>
         </div>
 
         {/* Right — stats + analysis panel toggle */}
@@ -378,7 +407,7 @@ export default function ModeloCanvasPage() {
           <Suspense fallback={<div className={styles.loadingOverlay}><div className={styles.spinnerLg} /></div>}>
             <div data-cy-container style={{ width: '100%', height: '100%' }}>
               <ModelCanvas
-                entities={entities} relations={relations} canvasState={sm.state}
+                entities={entities} relations={relations} canvasState={sm.state} colorMap={colorMap}
                 onNodeClick={handleNodeClick} onNodeContextMenu={handleNodeContextMenu} onNodeDblClick={handleNodeDblClick}
                 onEdgeDblClick={handleEdgeDblClick} onCanvasClick={handleCanvasClick}
                 onMouseMove={sm.updateMouse}
@@ -426,6 +455,7 @@ export default function ModeloCanvasPage() {
             );
           })}
         </div>
+
       </div>
 
       {sm.state.mode === 'creating_entity' && sm.state.clickScreenPos && (
@@ -473,6 +503,7 @@ export default function ModeloCanvasPage() {
             position={pos}
             allEntities={graph.data.allEntities}
             currentEntityIds={new Set(entities.map((e) => e.id))}
+            colorMap={colorMap}
             onSelect={handlePickedEntity}
             onCancel={() => setPickerForNode(null)}
           />
@@ -502,8 +533,9 @@ export default function ModeloCanvasPage() {
             <button onClick={() => setShowAnalysis(false)} className={styles.closeAnalysis}>✕</button>
           </div>
           <AnalysisPanel
-            rootEntityId={entities[0]?.id ?? ''}
-            rootEntityName="Grafo completo"
+            rootEntityId={analysisRootId}
+            rootEntityName={analysisRootName}
+            scopeEntityIds={entities.map((entity) => entity.id)}
             onValidate={handleValidateModel}
             onResult={(r) => setElenaResult(r)}
             onGraphRefresh={graph.reload}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react';
 import type { SubgraphData, GraphEntity, GraphRelation } from '@/modules/structural-map/domain/types/GraphTypes';
+import { resolveEntityColor, useEntityColors } from '@/modules/structural-map/ui/colors/entityColors';
 
 type Props = {
   data: SubgraphData;
@@ -23,27 +24,6 @@ type Props = {
   onSelectedNodeAnchorChange?: (anchor: { x: number; y: number } | null) => void;
   onZoomChange?: (zoom: number) => void;
 };
-
-const TYPE_COLORS: Record<string, string> = {
-  SERVICE:     '#6366f1',
-  PROCESS:     '#14b8a6',
-  APPLICATION: '#3b82f6',
-  SYSTEM:      '#8b5cf6',
-  SUPPLIER:    '#f59e0b',
-  RISK:        '#ef4444',
-  CONTROL:     '#22c55e',
-  OBLIGATION:  '#ec4899',
-  CONTRACT:    '#06b6d4',
-  DATA:        '#a78bfa',
-  EVIDENCE:    '#84cc16',
-  DEFAULT:     '#64748b',
-};
-
-function nodeColor(entity: GraphEntity): string {
-  if (entity.is_critical_node) return '#f87171';
-  if (entity.is_spof)          return '#fb923c';
-  return TYPE_COLORS[entity.entity_type_code] ?? TYPE_COLORS.DEFAULT;
-}
 
 function edgeColor(code: string): string {
   const map: Record<string, string> = {
@@ -75,6 +55,7 @@ export default function CytoscapeGraph({
   onSelectedNodeAnchorChange,
   onZoomChange,
 }: Props) {
+  const colorMap = useEntityColors();
   const containerRef   = useRef<HTMLDivElement>(null);
   const cyRef          = useRef<cytoscape.Core | null>(null);
   const [cyReadyKey, setCyReadyKey] = useState(0);
@@ -92,7 +73,7 @@ export default function CytoscapeGraph({
       data: {
         id:    e.id,
         label: e.name ?? e.code,
-        color: nodeColor(e),
+        color: resolveEntityColor(e.entity_type_code, colorMap),
         size:  e.id === rootEntityId ? 3 : e.is_critical_node ? 2.5 : e.is_spof ? 2 : 1.5,
         border: e.id === rootEntityId ? '#ffffff' : e.is_critical_node ? '#f87171' : e.is_spof ? '#fb923c' : 'transparent',
       },
@@ -108,7 +89,7 @@ export default function CytoscapeGraph({
       },
     }));
     return [...nodes, ...edges];
-  }, [data, rootEntityId]);
+  }, [data, rootEntityId, colorMap]);
 
   const emitZoomPercent = useCallback((zoom: number) => {
     if (!onZoomChange) return;

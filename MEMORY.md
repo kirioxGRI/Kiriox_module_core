@@ -589,3 +589,35 @@ useEffect(() => {
 **Regla aprendida:** La unicidad de `systemic_entities.code` debe resolverse en backend como fuente de verdad, no depender de contadores locales del canvas. Si un código autogenerado colisiona, el repositorio debe reservar una variante única y devolver el `code` final persistido para que la UI no quede desalineada con la base.
 
 **Aplicación futura:** Toda creación de entidades en builders visuales debe consumir el `code` devuelto por la API y no asumir que el `code` enviado fue el finalmente almacenado. La generación local solo reduce probabilidad de choque; la garantía real vive en infraestructura.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Incorporación de recomendación asistida por IA local dentro del resultado estructural en `/gestion/structural-map/modelo`, reutilizando el patrón ya existente de `✦ Autocompletar` en riesgo lineal.
+
+**Regla aprendida:** En Kiriox, toda ayuda de IA en frontend debe reutilizar la infraestructura compartida de `src/shared/ai` (`runKirioxAi`, `AiFieldAssist`, `aiUtils`) y operar con Chrome built-in AI local cuando aplique, en vez de crear integraciones ad hoc por pantalla. Además, toda acción de IA con latencia perceptible debe mostrar feedback visible inmediato mediante animación, skeleton o estado de “pensando”; no debe dejar al usuario frente a un botón estático sin señal de progreso.
+
+**Aplicación futura:** Cuando se agreguen recomendaciones, autocompletados o resúmenes asistidos por IA en módulos de Kiriox, construir el prompt desde contratos o contexto derivado del dominio, ejecutar sobre `shared/ai` como fuente de verdad y acompañar siempre la espera con una tarjeta o microestado animado consistente con el shell visual del producto.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Desalineamiento entre el subgrafo visible del canvas y el alcance real ejecutado por motores Elena en `/gestion/structural-map/modelo`.
+
+**Regla aprendida:** En el structural map, los motores analíticos no deben inferir su scope desde `entities[0]` ni solo desde el nodo raíz persistido. La pantalla debe enviar explícitamente al backend el conjunto de `entityIds` visibles en el canvas para que el análisis respete el subgrafo que el usuario está viendo.
+
+**Aplicación futura:** Todo análisis lanzado desde builders o canvases de Kiriox debe distinguir entre `rootEntityId` y `visibleScopeEntityIds`. Si la UX muestra un subgrafo recortado, el backend debe recibir ese recorte como parte del contrato de ejecución.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Ejecución del análisis estructural acotado al canvas visible en `/gestion/structural-map/modelo`.
+
+**Regla aprendida:** Aunque el cálculo estructural se ejecute con un scope visible especial desde infraestructura, el registro persistido en `public.systemic_structural_analysis_runs.analysis_type` debe usar un valor canónico permitido por el constraint real de la base. No se deben inventar `analysis_type` nuevos desde código si antes no existen en el esquema vigente.
+
+**Aplicación futura:** Cuando se creen variantes operativas de un motor Elena, diferenciar el comportamiento en `description`, `functionName` o metadatos de salida, pero conservar en la tabla de runs únicamente `analysis_type` admitidos por la base real salvo migración explícita previa.
+
+## 2026-06-05 — Aprendizaje
+
+**Contexto:** Extensión del patrón visible-scope desde `Análisis estructural` hacia `Análisis de criticidad` en `/gestion/structural-map/modelo`.
+
+**Regla aprendida:** Si un motor Elena se ejecuta desde el canvas operativo y la UI muestra un subgrafo recortado, el análisis de criticidad debe calcularse exclusivamente sobre ese mismo conjunto visible de entidades y relaciones. No se debe mezclar criticidad del grafo persistido completo con un canvas parcial.
+
+**Aplicación futura:** Mantener en `PrismaElenaRepository` variantes scoped para motores ejecutivos que el usuario compara visualmente contra el canvas. Reutilizar `analysis_type` canónicos (`critical_nodes_analysis`, `full_structural_analysis`, etc.) y dejar la diferencia de alcance en `description` y `functionName`.

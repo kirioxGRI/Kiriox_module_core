@@ -8,6 +8,7 @@ export type ElenaEngine =
 export type ElenaRunInput = {
   rootEntityId: string;
   engine: ElenaEngine;
+  scopeEntityIds?: string[];
   scenario?: 'FAILURE' | 'DEGRADATION' | 'COMPROMISE';
   userId?: string;
 };

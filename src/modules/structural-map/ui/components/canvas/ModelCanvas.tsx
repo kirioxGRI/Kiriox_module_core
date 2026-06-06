@@ -5,30 +5,40 @@ import type { GraphEntity, GraphRelation } from '@/modules/structural-map/domain
 import type { CanvasState, ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
 import { STRENGTH_STYLE } from '@/modules/structural-map/domain/types/ModeloTypes';
 import { NodeToolsOverlay } from '@/modules/structural-map/ui/components/canvas/ModelCanvasOverlays';
+import { resolveEntityColor, type EntityColorMap } from '@/modules/structural-map/ui/colors/entityColors';
 import styles from './ModelCanvas.module.css';
 
 const POS_KEY = 'kiriox-node-positions';
 
-const TYPE_COLORS: Record<string, string> = {
-  SERVICE: '#6366f1',
-  PROCESS: '#14b8a6',
-  APPLICATION: '#3b82f6',
-  SYSTEM: '#8b5cf6',
-  SUPPLIER: '#f59e0b',
-  RISK: '#ef4444',
-  CONTROL: '#22c55e',
-  OBLIGATION: '#ec4899',
-  CONTRACT: '#06b6d4',
-  DATA: '#a78bfa',
-  EVIDENCE: '#84cc16',
-  INCIDENT: '#f43f5e',
-  DEFAULT: '#64748b',
-};
+/** Un nodo crítico o SPOF se resalta con un "glow breathing" (resplandor que late), sin cambiar su color de tipo. */
+function needsAttention(entity: GraphEntity): boolean {
+  return Boolean(entity.is_critical_node) || Boolean(entity.is_spof);
+}
 
-function nodeColor(entity: GraphEntity): string {
-  if (entity.is_critical_node) return '#f87171';
-  if (entity.is_spof) return '#fb923c';
-  return TYPE_COLORS[entity.entity_type_code] ?? TYPE_COLORS.DEFAULT;
+/** Animación de respiración continua del resplandor exterior sobre los nodos con clase `.attention`. */
+function startBreathingPulse(cy: cytoscape.Core): void {
+  const breathe = (ele: cytoscape.NodeSingular) => {
+    if (cy.destroyed() || ele.removed()) return;
+    ele.animate(
+      { style: { 'overlay-opacity': 0.4, 'overlay-padding': 16 } },
+      {
+        duration: 800,
+        easing: 'ease-in-out-sine' as never,
+        complete: () => {
+          if (cy.destroyed() || ele.removed()) return;
+          ele.animate(
+            { style: { 'overlay-opacity': 0.1, 'overlay-padding': 4 } },
+            {
+              duration: 800,
+              easing: 'ease-in-out-sine' as never,
+              complete: () => breathe(ele),
+            },
+          );
+        },
+      },
+    );
+  };
+  cy.nodes('.attention').forEach((ele) => breathe(ele as cytoscape.NodeSingular));
 }
 
 function loadPositions(): Record<string, { x: number; y: number }> {
@@ -53,6 +63,7 @@ type Props = {
   entities: GraphEntity[];
   relations: GraphRelation[];
   canvasState: CanvasState;
+  colorMap: EntityColorMap;
   onNodeClick: (entity: GraphEntity, renderedPos: ScreenPos) => void;
   onNodeContextMenu: (entity: GraphEntity, renderedPos: ScreenPos) => void;
   onNodeDblClick: (entity: GraphEntity) => void;
@@ -78,6 +89,7 @@ export default function ModelCanvas({
   entities,
   relations,
   canvasState,
+  colorMap,
   onNodeClick,
   onNodeContextMenu,
   onNodeDblClick,
@@ -109,14 +121,16 @@ export default function ModelCanvas({
     const saved = loadPositions();
     const nodes = entities.map((entity) => {
       const pos = saved[entity.id];
+      const attention = needsAttention(entity);
       return {
         data: {
           id: entity.id,
           label: entity.name ?? entity.code,
-          color: nodeColor(entity),
+          color: resolveEntityColor(entity.entity_type_code, colorMap),
           size: entity.is_critical_node ? 48 : 38,
-          border: entity.is_critical_node ? '#f87171' : entity.is_spof ? '#fb923c' : 'transparent',
+          border: 'transparent',
         },
+        classes: attention ? 'attention' : '',
         position: pos ?? undefined,
       };
     });
@@ -138,7 +152,7 @@ export default function ModelCanvas({
     });
 
     return [...nodes, ...edges];
-  }, [entities, relations]);
+  }, [entities, relations, colorMap]);
 
   const getContainerRect = useCallback(() => containerRef.current?.getBoundingClientRect(), []);
 
@@ -242,6 +256,15 @@ export default function ModelCanvas({
               'overlay-opacity': 0.18,
               'overlay-padding': 6,
             } as unknown as cytoscape.Css.Edge,
+          },
+          {
+            selector: 'node.attention',
+            style: {
+              'overlay-color': 'data(color)',
+              'overlay-shape': 'ellipse',
+              'overlay-opacity': 0.18,
+              'overlay-padding': 6,
+            } as unknown as cytoscape.Css.Node,
           },
           {
             selector: 'node.selected',
@@ -381,9 +404,9 @@ export default function ModelCanvas({
 
       const applyInitialView = () => {
         cy?.resize();
-        cy?.zoom(1.5);
+        cy?.zoom(0.8);
         cy?.center();
-        onZoomChange?.(1.5);
+        onZoomChange?.(0.8);
       };
 
       cy.one('layoutstop', () => {
@@ -393,6 +416,9 @@ export default function ModelCanvas({
       setTimeout(() => {
         if (cyRef.current === cy) applyInitialView();
       }, 700);
+
+      // Glow breathing: los nodos crítico/SPOF laten suavemente para guiar la mirada.
+      startBreathingPulse(cy);
 
       cyRef.current = cy;
     })();

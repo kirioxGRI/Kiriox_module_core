@@ -23,6 +23,9 @@ export async function runElenaEngineHandler(req: Request): Promise<NextResponse>
   const result = await repo.runAndFetch({
     rootEntityId: body.rootEntityId,
     engine:       body.engine,
+    scopeEntityIds: Array.isArray(body.scopeEntityIds)
+      ? body.scopeEntityIds.filter((value): value is string => typeof value === 'string' && value.length > 0)
+      : undefined,
     scenario:     body.scenario,
     userId:       body.userId,
   });

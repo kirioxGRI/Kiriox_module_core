@@ -51,6 +51,62 @@
   flex-shrink: 0;
 }
 
+.headerNodeLegend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.26rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(30,41,59,0.5);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.headerNodeLegendTitle {
+  color: #64748b;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.headerNodeLegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #cbd5e1;
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+
+.headerNodeLegendDivider {
+  width: 1px;
+  height: 14px;
+  background: rgba(255,255,255,0.12);
+}
+
+/* Punto que late: espejo del glow breathing de los nodos crítico/SPOF en el canvas. */
+.glowLegendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  background: #f8fafc;
+  animation: glowBreathe 1.6s ease-in-out infinite;
+}
+
+@keyframes glowBreathe {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(248,250,252,0.0);
+    transform: scale(0.9);
+  }
+  50% {
+    box-shadow: 0 0 6px 4px rgba(248,250,252,0.55);
+    transform: scale(1.05);
+  }
+}
+
 .engineRow {
   display: flex;
   align-items: center;
@@ -282,6 +338,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+}
+
+.nodeLegendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
 .edgeLegendLine {

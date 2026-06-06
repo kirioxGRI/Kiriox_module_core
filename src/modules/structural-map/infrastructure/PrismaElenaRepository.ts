@@ -4,6 +4,17 @@ import type {
   ElenaEngine, ElenaRunInput, ElenaRunResult, ElenaRunSummary,
   ElenaMetricRow, ElenaCascadeRow,
 } from '@/modules/structural-map/domain/types/ElenaTypes';
+import {
+  buildScopedCriticalityMetricRows,
+  buildScopedExposureMetricRows,
+  buildScopedGraphContext,
+  buildScopedResilienceMetricRows,
+  buildScopedStructuralMetricRows,
+  STRUCTURAL_RELATION_CODES,
+  type ScopeEntityRow,
+  type ScopeRelationRow,
+  type ScopedGraphContext,
+} from '@/modules/structural-map/infrastructure/elena/scopedAnalysis';
 
 const FN_MAP: Record<string, string> = {
   structural:  'fn_elena_systemic_structural_analysis',
@@ -17,11 +28,23 @@ type RunInfo = { run_id: string; name: string; analysis_type: string; status: st
 
 export class PrismaElenaRepository {
   async runAndFetch(input: ElenaRunInput): Promise<ElenaRunResult> {
-    const { rootEntityId, engine, scenario, userId } = input;
+    const { rootEntityId, engine, scenario, userId, scopeEntityIds } = input;
     const fn = FN_MAP[engine];
     if (!fn) throw new Error(`Motor desconocido: ${engine}`);
 
     try {
+      if (engine === 'structural' && scopeEntityIds?.length) {
+        return await this.runScopedStructuralAnalysis(rootEntityId, scopeEntityIds, userId, fn);
+      }
+      if (engine === 'criticality' && scopeEntityIds?.length) {
+        return await this.runScopedCriticalityAnalysis(rootEntityId, scopeEntityIds, userId, fn);
+      }
+      if (engine === 'resilience' && scopeEntityIds?.length) {
+        return await this.runScopedResilienceAnalysis(rootEntityId, scopeEntityIds, userId, fn);
+      }
+      if (engine === 'exposure' && scopeEntityIds?.length) {
+        return await this.runScopedExposureAnalysis(rootEntityId, scopeEntityIds, userId, fn);
+      }
       if (engine === 'cascade') {
         return await this.runCascade(rootEntityId, scenario ?? 'FAILURE', userId, fn);
       }
@@ -35,6 +58,377 @@ export class PrismaElenaRepository {
         error: e instanceof Error ? e.message : 'Error inesperado ejecutando el motor',
       };
     }
+  }
+
+  /** Normaliza el scope visible, valida la raíz y construye el grafo en memoria. Compartido por todos los runners scoped. */
+  private async prepareScopedGraph(rootEntityId: string, scopeEntityIds: string[]) {
+    const normalizedScope = Array.from(new Set(scopeEntityIds.filter(Boolean)));
+    if (!normalizedScope.includes(rootEntityId)) {
+      normalizedScope.unshift(rootEntityId);
+    }
+
+    const entities = await this.fetchScopeEntities(normalizedScope);
+    const rootScopeEntity = entities.find((entity) => entity.id === rootEntityId);
+    if (!rootScopeEntity) {
+      throw new Error('La entidad raíz visible no existe o no está activa dentro del scope del canvas');
+    }
+
+    const relations = await this.fetchScopeRelations(normalizedScope);
+    const graph = buildScopedGraphContext(rootEntityId, entities, relations);
+    return { normalizedScope, graph, rootScopeEntity };
+  }
+
+  /** Crea el run en estado 'running' con un analysis_type válido del constraint. Compartido por todos los runners scoped. */
+  private async createScopedRun(params: {
+    analysisType: string;
+    label: string;
+    rootScopeEntity: ScopeEntityRow;
+    rootEntityId: string;
+    scopeSize: number;
+    userId: string | undefined;
+  }): Promise<string> {
+    const { analysisType, label, rootScopeEntity, rootEntityId, scopeSize, userId } = params;
+    const runName = `${label} - ${rootScopeEntity.code.trim() || rootEntityId}`;
+    const runDescription = `Visible canvas ${label.toLowerCase()} rooted at ${rootScopeEntity.name?.trim() || 'unknown entity'} (${rootEntityId}). Scope entities: ${scopeSize}.`;
+
+    const runRows = await prisma.$queryRaw<{ run_id: string }[]>(Prisma.sql`
+      INSERT INTO systemic_structural_analysis_runs (
+        name, description, analysis_type, status, started_at, created_by
+      ) VALUES (
+        ${runName}, ${runDescription}, ${analysisType}, 'running', now(),
+        ${userId ? Prisma.sql`${userId}::uuid` : Prisma.sql`NULL::uuid`}
+      )
+      RETURNING id::text AS run_id
+    `);
+    const runId = String(runRows[0]?.run_id ?? '');
+    if (!runId) throw new Error('No fue posible crear el run de análisis visible');
+    return runId;
+  }
+
+  /** Marca el run como completado, relee métricas y arma el resultado. Compartido por todos los runners scoped. */
+  private async finishScopedRun(params: {
+    runId: string;
+    engine: ElenaEngine;
+    analysisType: string;
+    rootEntityId: string;
+    graph: ScopedGraphContext;
+    fn: string;
+  }): Promise<ElenaRunResult> {
+    const { runId, engine, analysisType, rootEntityId, graph, fn } = params;
+    await prisma.$executeRaw(Prisma.sql`
+      UPDATE systemic_structural_analysis_runs
+      SET status = 'completed', completed_at = now()
+      WHERE id = ${runId}::uuid
+    `);
+
+    const rows = await this.fetchMetricRows(runId, engine);
+    const rootEntity = graph.entityMap.get(rootEntityId)?.name ?? await this.getEntityName(rootEntityId);
+    const summary = this.buildAnalysisSummary(engine, rows, rootEntity, analysisType);
+
+    return {
+      ok: true,
+      engine,
+      functionName: `${fn} [visible-scope]`,
+      runId,
+      executedAt: new Date().toISOString(),
+      summary,
+      rows,
+    };
+  }
+
+  private async runScopedStructuralAnalysis(
+    rootEntityId: string,
+    scopeEntityIds: string[],
+    userId: string | undefined,
+    fn: string,
+  ): Promise<ElenaRunResult> {
+    const { normalizedScope, graph, rootScopeEntity } = await this.prepareScopedGraph(rootEntityId, scopeEntityIds);
+    const runId = await this.createScopedRun({
+      analysisType: 'full_structural_analysis',
+      label: 'Structural analysis',
+      rootScopeEntity, rootEntityId, scopeSize: normalizedScope.length, userId,
+    });
+
+    const metricRows = buildScopedStructuralMetricRows(rootEntityId, graph);
+
+    for (const metric of metricRows) {
+      await prisma.$executeRaw(Prisma.sql`
+        INSERT INTO systemic_structural_metrics (
+          structural_analysis_run_id,
+          entity_id,
+          metric_type,
+          metric_value,
+          metric_level,
+          metric_details
+        )
+        VALUES (
+          ${runId}::uuid,
+          ${metric.entityId}::uuid,
+          ${metric.metricType},
+          ${metric.metricValue},
+          ${metric.metricLevel},
+          ${JSON.stringify(metric.metricDetails)}::jsonb
+        )
+        ON CONFLICT (structural_analysis_run_id, entity_id, metric_type) DO UPDATE
+        SET
+          metric_value = EXCLUDED.metric_value,
+          metric_level = EXCLUDED.metric_level,
+          metric_details = EXCLUDED.metric_details
+      `);
+    }
+
+    return this.finishScopedRun({
+      runId, engine: 'structural', analysisType: 'full_structural_analysis', rootEntityId, graph, fn,
+    });
+  }
+
+  private async runScopedCriticalityAnalysis(
+    rootEntityId: string,
+    scopeEntityIds: string[],
+    userId: string | undefined,
+    fn: string,
+  ): Promise<ElenaRunResult> {
+    const { normalizedScope, graph, rootScopeEntity } = await this.prepareScopedGraph(rootEntityId, scopeEntityIds);
+    const runId = await this.createScopedRun({
+      analysisType: 'critical_nodes_analysis',
+      label: 'Criticality analysis',
+      rootScopeEntity, rootEntityId, scopeSize: normalizedScope.length, userId,
+    });
+
+    const metricRows = buildScopedCriticalityMetricRows(rootEntityId, graph);
+
+    for (const metric of metricRows) {
+      await prisma.$executeRaw(Prisma.sql`
+        INSERT INTO systemic_structural_metrics (
+          structural_analysis_run_id,
+          entity_id,
+          metric_type,
+          metric_value,
+          metric_level,
+          metric_details,
+          incoming_count,
+          outgoing_count,
+          total_degree,
+          dependency_count,
+          dependent_count,
+          control_count,
+          risk_count,
+          obligation_count,
+          evidence_count,
+          cascade_exposure_score,
+          criticality_score,
+          criticality_level,
+          is_critical_node
+        ) VALUES (
+          ${runId}::uuid,
+          ${metric.entityId}::uuid,
+          ${metric.metricType},
+          ${metric.metricValue},
+          ${metric.metricLevel},
+          ${JSON.stringify(metric.metricDetails)}::jsonb,
+          ${metric.incomingCount},
+          ${metric.outgoingCount},
+          ${metric.totalDegree},
+          ${metric.dependencyCount},
+          ${metric.dependentCount},
+          ${metric.controlCount},
+          ${metric.riskCount},
+          ${metric.obligationCount},
+          ${metric.evidenceCount},
+          ${metric.cascadeExposureScore},
+          ${metric.criticalityScore},
+          ${metric.criticalityLevel},
+          ${metric.isCriticalNode}
+        )
+        ON CONFLICT (structural_analysis_run_id, entity_id, metric_type) DO UPDATE
+        SET
+          metric_value = EXCLUDED.metric_value,
+          metric_level = EXCLUDED.metric_level,
+          metric_details = EXCLUDED.metric_details,
+          incoming_count = EXCLUDED.incoming_count,
+          outgoing_count = EXCLUDED.outgoing_count,
+          total_degree = EXCLUDED.total_degree,
+          dependency_count = EXCLUDED.dependency_count,
+          dependent_count = EXCLUDED.dependent_count,
+          control_count = EXCLUDED.control_count,
+          risk_count = EXCLUDED.risk_count,
+          obligation_count = EXCLUDED.obligation_count,
+          evidence_count = EXCLUDED.evidence_count,
+          cascade_exposure_score = EXCLUDED.cascade_exposure_score,
+          criticality_score = EXCLUDED.criticality_score,
+          criticality_level = EXCLUDED.criticality_level,
+          is_critical_node = EXCLUDED.is_critical_node
+      `);
+    }
+
+    return this.finishScopedRun({
+      runId, engine: 'criticality', analysisType: 'critical_nodes_analysis', rootEntityId, graph, fn,
+    });
+  }
+
+  private async runScopedResilienceAnalysis(
+    rootEntityId: string,
+    scopeEntityIds: string[],
+    userId: string | undefined,
+    fn: string,
+  ): Promise<ElenaRunResult> {
+    const { normalizedScope, graph, rootScopeEntity } = await this.prepareScopedGraph(rootEntityId, scopeEntityIds);
+    const runId = await this.createScopedRun({
+      analysisType: 'resilience_analysis',
+      label: 'Resilience analysis',
+      rootScopeEntity, rootEntityId, scopeSize: normalizedScope.length, userId,
+    });
+
+    const metricRows = buildScopedResilienceMetricRows(rootEntityId, graph);
+
+    for (const metric of metricRows) {
+      await prisma.$executeRaw(Prisma.sql`
+        INSERT INTO systemic_structural_metrics (
+          structural_analysis_run_id,
+          entity_id,
+          metric_type,
+          metric_value,
+          metric_level,
+          metric_details,
+          dependency_count,
+          dependent_count,
+          support_count,
+          alternative_support_count,
+          control_count,
+          risk_count,
+          is_spof,
+          resilience_score,
+          resilience_level,
+          fragility_score,
+          has_resilience_gap
+        ) VALUES (
+          ${runId}::uuid,
+          ${metric.entityId}::uuid,
+          ${metric.metricType},
+          ${metric.metricValue},
+          ${metric.metricLevel},
+          ${JSON.stringify(metric.metricDetails)}::jsonb,
+          ${metric.dependencyCount},
+          ${metric.dependentCount},
+          ${metric.supportCount},
+          ${metric.alternativeSupportCount},
+          ${metric.controlCount},
+          ${metric.riskCount},
+          ${metric.isSpof},
+          ${metric.resilienceScore},
+          ${metric.resilienceLevel},
+          ${metric.fragilityScore},
+          ${metric.hasResilienceGap}
+        )
+        ON CONFLICT (structural_analysis_run_id, entity_id, metric_type) DO UPDATE
+        SET
+          metric_value = EXCLUDED.metric_value,
+          metric_level = EXCLUDED.metric_level,
+          metric_details = EXCLUDED.metric_details,
+          dependency_count = EXCLUDED.dependency_count,
+          dependent_count = EXCLUDED.dependent_count,
+          support_count = EXCLUDED.support_count,
+          alternative_support_count = EXCLUDED.alternative_support_count,
+          control_count = EXCLUDED.control_count,
+          risk_count = EXCLUDED.risk_count,
+          is_spof = EXCLUDED.is_spof,
+          resilience_score = EXCLUDED.resilience_score,
+          resilience_level = EXCLUDED.resilience_level,
+          fragility_score = EXCLUDED.fragility_score,
+          has_resilience_gap = EXCLUDED.has_resilience_gap
+      `);
+    }
+
+    return this.finishScopedRun({
+      runId, engine: 'resilience', analysisType: 'resilience_analysis', rootEntityId, graph, fn,
+    });
+  }
+
+  private async runScopedExposureAnalysis(
+    rootEntityId: string,
+    scopeEntityIds: string[],
+    userId: string | undefined,
+    fn: string,
+  ): Promise<ElenaRunResult> {
+    const { normalizedScope, graph, rootScopeEntity } = await this.prepareScopedGraph(rootEntityId, scopeEntityIds);
+    const runId = await this.createScopedRun({
+      analysisType: 'structural_exposure_analysis',
+      label: 'Exposure analysis',
+      rootScopeEntity, rootEntityId, scopeSize: normalizedScope.length, userId,
+    });
+
+    const metricRows = buildScopedExposureMetricRows(rootEntityId, graph);
+
+    for (const metric of metricRows) {
+      await prisma.$executeRaw(Prisma.sql`
+        INSERT INTO systemic_structural_metrics (
+          structural_analysis_run_id,
+          entity_id,
+          metric_type,
+          metric_value,
+          metric_level,
+          metric_details,
+          incoming_count,
+          outgoing_count,
+          total_degree,
+          dependency_count,
+          dependent_count,
+          risk_count,
+          control_count,
+          obligation_count,
+          data_count,
+          incident_count,
+          uncontrolled_risk_count,
+          exposure_score,
+          exposure_level,
+          has_exposure_gap
+        ) VALUES (
+          ${runId}::uuid,
+          ${metric.entityId}::uuid,
+          ${metric.metricType},
+          ${metric.metricValue},
+          ${metric.metricLevel},
+          ${JSON.stringify(metric.metricDetails)}::jsonb,
+          ${metric.incomingCount},
+          ${metric.outgoingCount},
+          ${metric.totalDegree},
+          ${metric.dependencyCount},
+          ${metric.dependentCount},
+          ${metric.riskCount},
+          ${metric.controlCount},
+          ${metric.obligationCount},
+          ${metric.dataCount},
+          ${metric.incidentCount},
+          ${metric.uncontrolledRiskCount},
+          ${metric.exposureScore},
+          ${metric.exposureLevel},
+          ${metric.hasExposureGap}
+        )
+        ON CONFLICT (structural_analysis_run_id, entity_id, metric_type) DO UPDATE
+        SET
+          metric_value = EXCLUDED.metric_value,
+          metric_level = EXCLUDED.metric_level,
+          metric_details = EXCLUDED.metric_details,
+          incoming_count = EXCLUDED.incoming_count,
+          outgoing_count = EXCLUDED.outgoing_count,
+          total_degree = EXCLUDED.total_degree,
+          dependency_count = EXCLUDED.dependency_count,
+          dependent_count = EXCLUDED.dependent_count,
+          risk_count = EXCLUDED.risk_count,
+          control_count = EXCLUDED.control_count,
+          obligation_count = EXCLUDED.obligation_count,
+          data_count = EXCLUDED.data_count,
+          incident_count = EXCLUDED.incident_count,
+          uncontrolled_risk_count = EXCLUDED.uncontrolled_risk_count,
+          exposure_score = EXCLUDED.exposure_score,
+          exposure_level = EXCLUDED.exposure_level,
+          has_exposure_gap = EXCLUDED.has_exposure_gap
+      `);
+    }
+
+    return this.finishScopedRun({
+      runId, engine: 'exposure', analysisType: 'structural_exposure_analysis', rootEntityId, graph, fn,
+    });
   }
 
   private async runAnalysis(
@@ -183,6 +577,52 @@ export class PrismaElenaRepository {
     }));
   }
 
+  private async fetchScopeEntities(scopeEntityIds: string[]): Promise<ScopeEntityRow[]> {
+    if (!scopeEntityIds.length) return [];
+    const scopeIdsSql = Prisma.join(scopeEntityIds.map((id) => Prisma.sql`${id}::uuid`));
+    const rows = await prisma.$queryRaw<ScopeEntityRow[]>(Prisma.sql`
+      SELECT
+        se.id::text AS id,
+        se.name,
+        se.code,
+        se.criticality_level,
+        et.name AS entity_type_name,
+        et.code AS entity_type_code
+      FROM systemic_entities se
+      JOIN systemic_entity_types et ON et.id = se.entity_type_id
+      WHERE se.is_active = true
+        AND se.id IN (${scopeIdsSql})
+    `);
+    return rows.map((row) => ({
+      ...row,
+      id: String(row.id),
+    }));
+  }
+
+  private async fetchScopeRelations(scopeEntityIds: string[]): Promise<ScopeRelationRow[]> {
+    if (!scopeEntityIds.length) return [];
+    const scopeIdsSql = Prisma.join(scopeEntityIds.map((id) => Prisma.sql`${id}::uuid`));
+    const relationCodesSql = Prisma.join(Array.from(STRUCTURAL_RELATION_CODES).map((code) => Prisma.sql`${code}`));
+    const rows = await prisma.$queryRaw<ScopeRelationRow[]>(Prisma.sql`
+      SELECT
+        r.source_entity_id::text AS source_entity_id,
+        r.target_entity_id::text AS target_entity_id,
+        rt.code AS relation_code
+      FROM systemic_entity_relations r
+      JOIN systemic_relation_types rt ON rt.id = r.relation_type_id
+      WHERE r.is_active = true
+        AND rt.is_active = true
+        AND rt.code IN (${relationCodesSql})
+        AND r.source_entity_id IN (${scopeIdsSql})
+        AND r.target_entity_id IN (${scopeIdsSql})
+    `);
+    return rows.map((row) => ({
+      ...row,
+      source_entity_id: String(row.source_entity_id),
+      target_entity_id: String(row.target_entity_id),
+    }));
+  }
+
   private async fetchCascadeRows(runId: string): Promise<ElenaCascadeRow[]> {
     const rows = await prisma.$queryRaw<ElenaCascadeRow[]>(Prisma.sql`
       SELECT
@@ -227,8 +667,14 @@ export class PrismaElenaRepository {
     const uniqueEntities = new Set(rows.map((r) => r.entity_id)).size;
 
     if (engine === 'structural') {
-      const spofRows = rows.filter((r) => r.is_spof);
-      const scores   = rows.map((r) => r.metric_value).filter((v) => v != null) as number[];
+      const spofRows = rows.filter((r) =>
+        r.metric_type === 'spof' &&
+        ((r.metric_value ?? 0) > 0 || (r.metric_details && r.metric_details['possible_spof'] === true)),
+      );
+      const scores = rows
+        .filter((r) => r.metric_type === 'criticality')
+        .map((r) => r.metric_value)
+        .filter((v) => v != null) as number[];
       return {
         analysisType, rootEntityName: rootEntity, totalEntities: uniqueEntities,
         spofCount: new Set(spofRows.map((r) => r.entity_id)).size,

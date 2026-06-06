@@ -135,6 +135,7 @@ export const ModelName = {
   security_users: 'security_users',
   systemic_entities: 'systemic_entities',
   systemic_entity_attributes: 'systemic_entity_attributes',
+  systemic_entity_color: 'systemic_entity_color',
   systemic_entity_relations: 'systemic_entity_relations',
   systemic_entity_superclass: 'systemic_entity_superclass',
   systemic_entity_tags: 'systemic_entity_tags',
@@ -1548,6 +1549,18 @@ export const Systemic_entity_attributesScalarFieldEnum = {
 } as const
 
 export type Systemic_entity_attributesScalarFieldEnum = (typeof Systemic_entity_attributesScalarFieldEnum)[keyof typeof Systemic_entity_attributesScalarFieldEnum]
+
+
+export const Systemic_entity_colorScalarFieldEnum = {
+  id: 'id',
+  color_name: 'color_name',
+  color_code: 'color_code',
+  appliedto: 'appliedto',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Systemic_entity_colorScalarFieldEnum = (typeof Systemic_entity_colorScalarFieldEnum)[keyof typeof Systemic_entity_colorScalarFieldEnum]
 
 
 export const Systemic_entity_relationsScalarFieldEnum = {

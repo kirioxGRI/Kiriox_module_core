@@ -1634,6 +1634,17 @@ model systemic_entity_attributes {
   @@index([attribute_value], map: "idx_systemic_entity_attributes_value_gin", type: Gin)
 }
 
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model systemic_entity_color {
+  id                    String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  color_name            String
+  color_code            String
+  appliedto             String?                @unique(map: "systemic_entity_color_appliedto_unique", where: raw("(appliedto IS NOT NULL)"))
+  created_at            DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime               @default(now()) @db.Timestamptz(6)
+  systemic_entity_types systemic_entity_types? @relation(fields: [appliedto], references: [code], onDelete: Cascade, map: "systemic_entity_color_appliedto_fk")
+}
+
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model systemic_entity_relations {
@@ -1692,14 +1703,15 @@ model systemic_entity_tags {
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model systemic_entity_types {
-  id                String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  code              String              @unique(map: "systemic_entity_types_code_unique")
-  name              String
-  description       String?
-  is_active         Boolean             @default(true)
-  created_at        DateTime            @default(now()) @db.Timestamptz(6)
-  updated_at        DateTime            @default(now()) @db.Timestamptz(6)
-  systemic_entities systemic_entities[]
+  id                    String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                  String                 @unique(map: "systemic_entity_types_code_unique")
+  name                  String
+  description           String?
+  is_active             Boolean                @default(true)
+  created_at            DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime               @default(now()) @db.Timestamptz(6)
+  systemic_entities     systemic_entities[]
+  systemic_entity_color systemic_entity_color?
 
   @@index([is_active], map: "idx_systemic_entity_types_is_active")
   @@index([name], map: "idx_systemic_entity_types_name")

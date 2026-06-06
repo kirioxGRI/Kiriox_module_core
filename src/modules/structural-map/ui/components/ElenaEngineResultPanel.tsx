@@ -1,9 +1,14 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { X, AlertTriangle, CheckCircle2, Activity, Shield, Zap, GitBranch, Eye, Sparkles, Loader2 } from 'lucide-react';
+import { X, AlertTriangle, CheckCircle2, Activity, Shield, Zap, GitBranch, Eye } from 'lucide-react';
 import type { ElenaRunResult, ElenaMetricRow, ElenaCascadeRow } from '@/modules/structural-map/domain/types/ElenaTypes';
 import { isChromAiAvailable, runKirioxAi } from '@/shared/ai';
+import { deriveResilienceInsight, runResilienceRecommendationAi, type ResilienceInsight } from './resilienceInsight';
+import { ResilienceFragilityCard } from './ResilienceFragilityCard';
+import { deriveExposureInsight, runExposureRecommendationAi, type ExposureInsight } from './exposureInsight';
+import { ExposureRiskCard } from './ExposureRiskCard';
+import { RecommendationBlock } from './RecommendationBlock';
 import styles from './ElenaEngineResultPanel.module.css';
 
 type Props = {
@@ -89,6 +94,18 @@ type StructuralFragilityInsight = {
   deepestDistance: number | null;
 };
 
+type CriticalityInsight = {
+  highlightedRows: ElenaMetricRow[];
+  topNodeName: string;
+  topNodeScore: number | null;
+  topNodeLevel: string | null;
+  criticalCount: number;
+  highCount: number;
+  nodesWithoutControl: string[];
+  concentrationNodeName: string;
+  concentrationNodeDegree: number | null;
+};
+
 function deriveStructuralFragilityInsight(rows: ElenaMetricRow[]): StructuralFragilityInsight {
   const criticalityRows = rows
     .filter((row) => row.metric_type === 'criticality')
@@ -131,6 +148,36 @@ function deriveStructuralFragilityInsight(rows: ElenaMetricRow[]): StructuralFra
     mostConnectedDegree,
     deepestName,
     deepestDistance,
+  };
+}
+
+function deriveCriticalityInsight(rows: ElenaMetricRow[]): CriticalityInsight {
+  const highlightedRows = rows
+    .filter((row) => row.criticality_level === 'CRITICAL' || row.criticality_level === 'HIGH')
+    .sort((a, b) => (b.criticality_score ?? 0) - (a.criticality_score ?? 0));
+
+  const topNode = highlightedRows[0];
+  const topNodeName = topNode?.entity_name ?? topNode?.entity_code ?? '—';
+  const topNodeScore = topNode?.criticality_score ?? null;
+  const topNodeLevel = topNode?.criticality_level ?? null;
+  const criticalCount = highlightedRows.filter((row) => row.criticality_level === 'CRITICAL').length;
+  const highCount = highlightedRows.filter((row) => row.criticality_level === 'HIGH').length;
+  const nodesWithoutControl = highlightedRows
+    .filter((row) => (row.risk_count ?? 0) > 0 && (row.control_count ?? 0) === 0)
+    .map((row) => row.entity_name ?? row.entity_code);
+
+  const concentrationNode = [...highlightedRows].sort((a, b) => (b.total_degree ?? 0) - (a.total_degree ?? 0))[0];
+
+  return {
+    highlightedRows,
+    topNodeName,
+    topNodeScore,
+    topNodeLevel,
+    criticalCount,
+    highCount,
+    nodesWithoutControl,
+    concentrationNodeName: concentrationNode?.entity_name ?? concentrationNode?.entity_code ?? '—',
+    concentrationNodeDegree: concentrationNode?.total_degree ?? null,
   };
 }
 
@@ -209,6 +256,32 @@ async function runStructuralRecommendationAi(insight: StructuralFragilityInsight
     minWords: 20,
     maxWords: 60,
     requiredMeaning: ['fragilidad estructural', 'acción prioritaria', 'redundancia o control'],
+    input,
+  });
+
+  return result.value;
+}
+
+async function runCriticalityRecommendationAi(insight: CriticalityInsight): Promise<string> {
+  const input = [
+    `Nodos en criticidad alta o crítica: ${insight.highlightedRows.length}.`,
+    `Nodos CRITICAL: ${insight.criticalCount}.`,
+    `Nodos HIGH: ${insight.highCount}.`,
+    `Nodo más crítico: ${insight.topNodeName}${insight.topNodeScore != null ? ` con score ${fmtScore(insight.topNodeScore)}` : ''}${insight.topNodeLevel ? ` y nivel ${insight.topNodeLevel}` : ''}.`,
+    `Nodo con mayor concentración: ${insight.concentrationNodeName}${insight.concentrationNodeDegree != null ? ` con grado ${insight.concentrationNodeDegree}` : ''}.`,
+    insight.nodesWithoutControl.length ? `Nodos con riesgo sin control entre los priorizados: ${insight.nodesWithoutControl.slice(0, 5).join(', ')}.` : 'No se detectaron nodos priorizados sin control.',
+    'Genera una recomendación ejecutiva única para reducir la criticidad estructural, priorizando el frente de intervención más importante.',
+  ].filter(Boolean).join(' ');
+
+  const result = await runKirioxAi({
+    module: 'structural-risk',
+    field: 'criticality_recommendation',
+    intent: 'complete',
+    tone: 'ejecutivo',
+    output: 'text',
+    minWords: 20,
+    maxWords: 60,
+    requiredMeaning: ['criticidad estructural', 'prioridad ejecutiva', 'acción correctiva'],
     input,
   });
 
@@ -431,9 +504,20 @@ export function ElenaEngineResultPanel({ result, onClose }: Props) {
   const Icon = meta.icon;
 
   const rows = result?.rows ?? [];
-  const isCascade = engine === 'cascade';
   const structuralInsight = useMemo(
     () => engine === 'structural' ? deriveStructuralFragilityInsight(rows as ElenaMetricRow[]) : null,
+    [engine, rows],
+  );
+  const criticalityInsight = useMemo(
+    () => engine === 'criticality' ? deriveCriticalityInsight(rows as ElenaMetricRow[]) : null,
+    [engine, rows],
+  );
+  const resilienceInsight = useMemo<ResilienceInsight | null>(
+    () => engine === 'resilience' ? deriveResilienceInsight(rows as ElenaMetricRow[]) : null,
+    [engine, rows],
+  );
+  const exposureInsight = useMemo<ExposureInsight | null>(
+    () => engine === 'exposure' ? deriveExposureInsight(rows as ElenaMetricRow[]) : null,
     [engine, rows],
   );
 
@@ -446,7 +530,6 @@ export function ElenaEngineResultPanel({ result, onClose }: Props) {
   if (!result) return null;
 
   async function handleRecommendation() {
-    if (!structuralInsight) return;
     if (!isChromAiAvailable()) {
       setRecommendationError('Chrome AI no disponible. Requiere Chrome 127+ con Gemini Nano.');
       setRecommendationStatus('error');
@@ -457,7 +540,20 @@ export function ElenaEngineResultPanel({ result, onClose }: Props) {
     setRecommendationError('');
 
     try {
-      const value = await runStructuralRecommendationAi(structuralInsight);
+      const value = structuralInsight
+        ? await runStructuralRecommendationAi(structuralInsight)
+        : criticalityInsight
+          ? await runCriticalityRecommendationAi(criticalityInsight)
+          : resilienceInsight
+            ? await runResilienceRecommendationAi(resilienceInsight)
+            : exposureInsight
+              ? await runExposureRecommendationAi(exposureInsight)
+              : '';
+      if (!value) {
+        setRecommendation('');
+        setRecommendationStatus('idle');
+        return;
+      }
       setRecommendation(value);
       setRecommendationStatus('done');
     } catch (error) {
@@ -527,42 +623,69 @@ export function ElenaEngineResultPanel({ result, onClose }: Props) {
               ) : result.engine === 'structural' ? (
                 <>
                   <StructuralFragilityCard insight={structuralInsight!} />
-                  <div className={styles.recommendationBlock}>
-                    <button
-                      type="button"
-                      onClick={() => void handleRecommendation()}
-                      disabled={recommendationStatus === 'loading'}
-                      className={styles.recommendationBtn}
-                      title={!isChromAiAvailable() ? 'Chrome AI no disponible' : 'Generar recomendación con IA local'}
-                    >
-                      {recommendationStatus === 'loading' ? <Loader2 size={14} className={styles.spinIcon} /> : <Sparkles size={14} />}
-                      Recomendación
-                    </button>
-                    {recommendationError && (
-                      <p className={styles.recommendationError}>{recommendationError}</p>
-                    )}
-                    {recommendationStatus === 'loading' && (
-                      <section className={styles.recommendationLoadingCard} aria-live="polite" aria-busy="true">
-                        <div className={styles.recommendationLoadingHeader}>
-                          <span className={styles.recommendationEyebrow}>Recomendación IA</span>
-                          <span className={styles.recommendationLoadingDots}>
-                            <span />
-                            <span />
-                            <span />
-                          </span>
-                        </div>
-                        <div className={styles.recommendationSkeletonLine} />
-                        <div className={styles.recommendationSkeletonLine} />
-                        <div className={styles.recommendationSkeletonLineShort} />
-                      </section>
-                    )}
-                    {recommendation && (
-                      <section className={styles.recommendationCard}>
-                        <p className={styles.recommendationEyebrow}>Recomendación IA</p>
-                        <p className={styles.recommendationText}>{recommendation}</p>
-                      </section>
-                    )}
+                  <RecommendationBlock
+                    status={recommendationStatus}
+                    error={recommendationError}
+                    recommendation={recommendation}
+                    aiAvailable={isChromAiAvailable()}
+                    onGenerate={() => void handleRecommendation()}
+                  />
+                </>
+              ) : result.engine === 'criticality' ? (
+                <>
+                  <div className={styles.tableSection}>
+                    <p className={styles.tableTitle}>
+                      Nodos críticos priorizados — {criticalityInsight?.highlightedRows.length ?? 0} registro{(criticalityInsight?.highlightedRows.length ?? 0) !== 1 ? 's' : ''}
+                    </p>
+                    <div className={styles.tableWrap}>
+                      <CriticalityTable rows={criticalityInsight?.highlightedRows ?? []} />
+                    </div>
                   </div>
+                  <RecommendationBlock
+                    status={recommendationStatus}
+                    error={recommendationError}
+                    recommendation={recommendation}
+                    aiAvailable={isChromAiAvailable()}
+                    onGenerate={() => void handleRecommendation()}
+                  />
+                </>
+              ) : result.engine === 'resilience' ? (
+                <>
+                  <ResilienceFragilityCard insight={resilienceInsight!} />
+                  <div className={styles.tableSection}>
+                    <p className={styles.tableTitle}>
+                      Nodos frágiles priorizados — {resilienceInsight?.fragileRows.length ?? 0} registro{(resilienceInsight?.fragileRows.length ?? 0) !== 1 ? 's' : ''}
+                    </p>
+                    <div className={styles.tableWrap}>
+                      <ResilienceTable rows={resilienceInsight?.fragileRows ?? []} />
+                    </div>
+                  </div>
+                  <RecommendationBlock
+                    status={recommendationStatus}
+                    error={recommendationError}
+                    recommendation={recommendation}
+                    aiAvailable={isChromAiAvailable()}
+                    onGenerate={() => void handleRecommendation()}
+                  />
+                </>
+              ) : result.engine === 'exposure' ? (
+                <>
+                  <ExposureRiskCard insight={exposureInsight!} />
+                  <div className={styles.tableSection}>
+                    <p className={styles.tableTitle}>
+                      Nodos más expuestos — {exposureInsight?.exposedRows.length ?? 0} registro{(exposureInsight?.exposedRows.length ?? 0) !== 1 ? 's' : ''}
+                    </p>
+                    <div className={styles.tableWrap}>
+                      <ExposureTable rows={exposureInsight?.exposedRows ?? []} />
+                    </div>
+                  </div>
+                  <RecommendationBlock
+                    status={recommendationStatus}
+                    error={recommendationError}
+                    recommendation={recommendation}
+                    aiAvailable={isChromAiAvailable()}
+                    onGenerate={() => void handleRecommendation()}
+                  />
                 </>
               ) : (
                 <div className={styles.tableSection}>
@@ -570,14 +693,7 @@ export function ElenaEngineResultPanel({ result, onClose }: Props) {
                     Detalle — {rows.length} registro{rows.length !== 1 ? 's' : ''}
                   </p>
                   <div className={styles.tableWrap}>
-                    {isCascade
-                      ? <CascadeTable rows={rows as ElenaCascadeRow[]} />
-                      : result.engine === 'criticality'
-                          ? <CriticalityTable rows={rows as ElenaMetricRow[]} />
-                          : result.engine === 'resilience'
-                            ? <ResilienceTable rows={rows as ElenaMetricRow[]} />
-                            : <ExposureTable rows={rows as ElenaMetricRow[]} />
-                    }
+                    <CascadeTable rows={rows as ElenaCascadeRow[]} />
                   </div>
                 </div>
               )}

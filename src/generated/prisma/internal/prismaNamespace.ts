@@ -468,6 +468,7 @@ export const ModelName = {
   security_users: 'security_users',
   systemic_entities: 'systemic_entities',
   systemic_entity_attributes: 'systemic_entity_attributes',
+  systemic_entity_color: 'systemic_entity_color',
   systemic_entity_relations: 'systemic_entity_relations',
   systemic_entity_superclass: 'systemic_entity_superclass',
   systemic_entity_tags: 'systemic_entity_tags',
@@ -493,7 +494,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "activities" | "catalog_activity_criticality_level" | "catalog_activity_frequency" | "catalog_activity_review" | "catalog_appetite" | "catalog_control_cobertura" | "catalog_control_effectiveness" | "catalog_control_effectiveness_peso" | "catalog_control_type" | "catalog_controls_category" | "catalog_controls_frequency" | "catalog_frequency" | "catalog_ra_category" | "catalog_ra_impact" | "catalog_ra_lifecycle" | "catalog_ra_lifecycle_history" | "catalog_ra_probability" | "catalog_ra_valoration" | "catalog_risk_category" | "catalog_risk_level" | "company" | "company_objective" | "company_resource_catalog" | "company_resource_category" | "element_types" | "elements" | "graph_activities_alternative_level" | "graph_activities_dependencies" | "graph_activities_dependency_resource" | "graph_activities_dependency_strength" | "graph_activities_failure_effect" | "graph_activity_catalog_criticality" | "graph_activity_catalog_impact" | "graph_activity_resource" | "graph_catalog_run_lifecycle" | "graph_catalog_run_methodology" | "graph_catalog_run_scope_type" | "graph_control_evidence" | "graph_control_hardgate" | "graph_map_activity_resource_dependency" | "graph_map_run_sa_activities" | "graph_risk_cascade" | "graph_risk_catalog_cascade" | "graph_run_lifecycle_history" | "graph_run_sa" | "incident_register" | "map_role_x_module_x_permissions" | "map_role_x_system_x_permissions" | "map_run_ra_risk_controls" | "map_user_x_roles" | "monitoring_due_item" | "monitoring_event" | "monitoring_event_response" | "monitoring_external_source" | "monitoring_internal_source" | "monitoring_rule" | "monitoring_run" | "pesos" | "run_ra" | "run_ra_analysis_sensitivity" | "run_ra_appetite_rules" | "run_ra_change_history" | "run_ra_contexto_evaluacion" | "run_ra_contexto_interno" | "run_ra_contexto_interno_externo" | "run_ra_contexto_negocio" | "run_ra_contexto_reglas" | "run_ra_control_effectiveness" | "run_ra_control_tests" | "run_ra_controls" | "run_ra_evidence" | "run_ra_monitoring" | "run_ra_risk_analysis" | "run_ra_risk_treatment" | "run_ra_risks" | "security_logs_access" | "security_module" | "security_permissions" | "security_roles" | "security_submodule" | "security_system" | "security_users" | "systemic_entities" | "systemic_entity_attributes" | "systemic_entity_relations" | "systemic_entity_superclass" | "systemic_entity_tags" | "systemic_entity_types" | "systemic_propagation_paths" | "systemic_relation_types" | "systemic_simulation_impacts" | "systemic_simulation_runs" | "systemic_structural_analysis_runs" | "systemic_structural_metrics"
+    modelProps: "activities" | "catalog_activity_criticality_level" | "catalog_activity_frequency" | "catalog_activity_review" | "catalog_appetite" | "catalog_control_cobertura" | "catalog_control_effectiveness" | "catalog_control_effectiveness_peso" | "catalog_control_type" | "catalog_controls_category" | "catalog_controls_frequency" | "catalog_frequency" | "catalog_ra_category" | "catalog_ra_impact" | "catalog_ra_lifecycle" | "catalog_ra_lifecycle_history" | "catalog_ra_probability" | "catalog_ra_valoration" | "catalog_risk_category" | "catalog_risk_level" | "company" | "company_objective" | "company_resource_catalog" | "company_resource_category" | "element_types" | "elements" | "graph_activities_alternative_level" | "graph_activities_dependencies" | "graph_activities_dependency_resource" | "graph_activities_dependency_strength" | "graph_activities_failure_effect" | "graph_activity_catalog_criticality" | "graph_activity_catalog_impact" | "graph_activity_resource" | "graph_catalog_run_lifecycle" | "graph_catalog_run_methodology" | "graph_catalog_run_scope_type" | "graph_control_evidence" | "graph_control_hardgate" | "graph_map_activity_resource_dependency" | "graph_map_run_sa_activities" | "graph_risk_cascade" | "graph_risk_catalog_cascade" | "graph_run_lifecycle_history" | "graph_run_sa" | "incident_register" | "map_role_x_module_x_permissions" | "map_role_x_system_x_permissions" | "map_run_ra_risk_controls" | "map_user_x_roles" | "monitoring_due_item" | "monitoring_event" | "monitoring_event_response" | "monitoring_external_source" | "monitoring_internal_source" | "monitoring_rule" | "monitoring_run" | "pesos" | "run_ra" | "run_ra_analysis_sensitivity" | "run_ra_appetite_rules" | "run_ra_change_history" | "run_ra_contexto_evaluacion" | "run_ra_contexto_interno" | "run_ra_contexto_interno_externo" | "run_ra_contexto_negocio" | "run_ra_contexto_reglas" | "run_ra_control_effectiveness" | "run_ra_control_tests" | "run_ra_controls" | "run_ra_evidence" | "run_ra_monitoring" | "run_ra_risk_analysis" | "run_ra_risk_treatment" | "run_ra_risks" | "security_logs_access" | "security_module" | "security_permissions" | "security_roles" | "security_submodule" | "security_system" | "security_users" | "systemic_entities" | "systemic_entity_attributes" | "systemic_entity_color" | "systemic_entity_relations" | "systemic_entity_superclass" | "systemic_entity_tags" | "systemic_entity_types" | "systemic_propagation_paths" | "systemic_relation_types" | "systemic_simulation_impacts" | "systemic_simulation_runs" | "systemic_structural_analysis_runs" | "systemic_structural_metrics"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6713,6 +6714,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    systemic_entity_color: {
+      payload: Prisma.$systemic_entity_colorPayload<ExtArgs>
+      fields: Prisma.systemic_entity_colorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.systemic_entity_colorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.systemic_entity_colorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload>
+        }
+        findFirst: {
+          args: Prisma.systemic_entity_colorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.systemic_entity_colorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload>
+        }
+        findMany: {
+          args: Prisma.systemic_entity_colorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload>[]
+        }
+        create: {
+          args: Prisma.systemic_entity_colorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload>
+        }
+        createMany: {
+          args: Prisma.systemic_entity_colorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.systemic_entity_colorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload>[]
+        }
+        delete: {
+          args: Prisma.systemic_entity_colorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload>
+        }
+        update: {
+          args: Prisma.systemic_entity_colorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload>
+        }
+        deleteMany: {
+          args: Prisma.systemic_entity_colorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.systemic_entity_colorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.systemic_entity_colorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload>[]
+        }
+        upsert: {
+          args: Prisma.systemic_entity_colorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$systemic_entity_colorPayload>
+        }
+        aggregate: {
+          args: Prisma.Systemic_entity_colorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSystemic_entity_color>
+        }
+        groupBy: {
+          args: Prisma.systemic_entity_colorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Systemic_entity_colorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.systemic_entity_colorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Systemic_entity_colorCountAggregateOutputType> | number
+        }
+      }
+    }
     systemic_entity_relations: {
       payload: Prisma.$systemic_entity_relationsPayload<ExtArgs>
       fields: Prisma.systemic_entity_relationsFieldRefs
@@ -8879,6 +8954,18 @@ export const Systemic_entity_attributesScalarFieldEnum = {
 export type Systemic_entity_attributesScalarFieldEnum = (typeof Systemic_entity_attributesScalarFieldEnum)[keyof typeof Systemic_entity_attributesScalarFieldEnum]
 
 
+export const Systemic_entity_colorScalarFieldEnum = {
+  id: 'id',
+  color_name: 'color_name',
+  color_code: 'color_code',
+  appliedto: 'appliedto',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type Systemic_entity_colorScalarFieldEnum = (typeof Systemic_entity_colorScalarFieldEnum)[keyof typeof Systemic_entity_colorScalarFieldEnum]
+
+
 export const Systemic_entity_relationsScalarFieldEnum = {
   id: 'id',
   source_entity_id: 'source_entity_id',
@@ -9403,6 +9490,7 @@ export type GlobalOmitConfig = {
   security_users?: Prisma.security_usersOmit
   systemic_entities?: Prisma.systemic_entitiesOmit
   systemic_entity_attributes?: Prisma.systemic_entity_attributesOmit
+  systemic_entity_color?: Prisma.systemic_entity_colorOmit
   systemic_entity_relations?: Prisma.systemic_entity_relationsOmit
   systemic_entity_superclass?: Prisma.systemic_entity_superclassOmit
   systemic_entity_tags?: Prisma.systemic_entity_tagsOmit

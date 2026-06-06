@@ -4,23 +4,19 @@ import { useState, useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
 import type { GraphEntity } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
+import { resolveEntityColor, type EntityColorMap } from '@/modules/structural-map/ui/colors/entityColors';
 import { useDraggable } from './useDraggable';
 
 type Props = {
   position:         ScreenPos;
   allEntities:      GraphEntity[];
   currentEntityIds: Set<string>;
+  colorMap:         EntityColorMap;
   onSelect:         (entity: GraphEntity) => void;
   onCancel:         () => void;
 };
 
-const TYPE_COLORS: Record<string, string> = {
-  SERVICE: '#6366f1', PROCESS: '#14b8a6', APPLICATION: '#3b82f6',
-  SYSTEM: '#8b5cf6', SUPPLIER: '#f59e0b', RISK: '#ef4444',
-  CONTROL: '#22c55e', OBLIGATION: '#ec4899', DEFAULT: '#64748b',
-};
-
-export function EntityPickerPanel({ position, allEntities, currentEntityIds, onSelect, onCancel }: Props) {
+export function EntityPickerPanel({ position, allEntities, currentEntityIds, colorMap, onSelect, onCancel }: Props) {
   const [query, setQuery]   = useState('');
   const [picked, setPicked] = useState<GraphEntity | null>(null);
   const inputRef            = useRef<HTMLInputElement>(null);
@@ -101,7 +97,7 @@ export function EntityPickerPanel({ position, allEntities, currentEntityIds, onS
           </p>
         )}
         {available.map((e) => {
-          const typeColor = TYPE_COLORS[e.entity_type_code] ?? TYPE_COLORS.DEFAULT;
+          const typeColor = resolveEntityColor(e.entity_type_code, colorMap);
           const isSelected = picked?.id === e.id;
           return (
             <button
