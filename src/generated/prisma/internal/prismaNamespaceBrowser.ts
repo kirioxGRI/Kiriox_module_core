@@ -1718,7 +1718,8 @@ export const Systemic_simulation_impactsScalarFieldEnum = {
   recommended_action: 'recommended_action',
   created_at: 'created_at',
   impact_depth: 'impact_depth',
-  is_origin: 'is_origin'
+  is_origin: 'is_origin',
+  node_state: 'node_state'
 } as const
 
 export type Systemic_simulation_impactsScalarFieldEnum = (typeof Systemic_simulation_impactsScalarFieldEnum)[keyof typeof Systemic_simulation_impactsScalarFieldEnum]
@@ -1734,7 +1735,10 @@ export const Systemic_simulation_runsScalarFieldEnum = {
   started_at: 'started_at',
   completed_at: 'completed_at',
   created_by: 'created_by',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  severity: 'severity',
+  duration_hours: 'duration_hours',
+  event_type: 'event_type'
 } as const
 
 export type Systemic_simulation_runsScalarFieldEnum = (typeof Systemic_simulation_runsScalarFieldEnum)[keyof typeof Systemic_simulation_runsScalarFieldEnum]

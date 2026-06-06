@@ -83,6 +83,8 @@ type Props = {
   onNodeAnalyze?: (entityId: string) => void;
   onNodePickEntity?: (entityId: string) => void;
   onNodeDuplicate?: (entityId: string) => void;
+  /** Override de color por estado de simulación de estrés (entityId → color). NORMAL no se incluye. */
+  stateColors?: Map<string, string>;
   cyRef: React.MutableRefObject<cytoscape.Core | null>;
 };
 
@@ -110,6 +112,7 @@ export default function ModelCanvas({
   onNodeAnalyze,
   onNodePickEntity,
   onNodeDuplicate,
+  stateColors,
   cyRef,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -466,6 +469,19 @@ export default function ModelCanvas({
       cy.getElementById(canvasState.hoverTargetId).addClass('relation-hover-target');
     }
   }, [canvasState.hoverTargetId, canvasState.pendingSourceId, canvasState.selectedEdgeId, canvasState.selectedNodeId, cyRef]);
+
+  // Stress simulation: pinta cada nodo según su estado de cascada sin reconstruir el grafo.
+  useEffect(() => {
+    const cy = cyRef.current;
+    if (!cy) return;
+    cy.batch(() => {
+      cy.nodes().forEach((node) => {
+        const entity = entityMapRef.current.get(node.id());
+        const baseColor = entity ? resolveEntityColor(entity.entity_type_code, colorMap) : (node.data('color') as string);
+        node.data('color', stateColors?.get(node.id()) ?? baseColor);
+      });
+    });
+  }, [stateColors, colorMap, cyRef]);
 
   useEffect(() => {
     if (canvasState.mode !== 'creating_relation' || !canvasState.pendingSourceId) return;

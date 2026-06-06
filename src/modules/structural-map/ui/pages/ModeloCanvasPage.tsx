@@ -3,13 +3,17 @@
 import { useRef, useCallback, lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft, Activity, AlertTriangle, SlidersHorizontal, ZoomIn } from 'lucide-react';
+import { ChevronLeft, Activity, AlertTriangle, SlidersHorizontal, ZoomIn, Zap } from 'lucide-react';
 import { useCanvasStateMachine } from '@/modules/structural-map/ui/hooks/useCanvasStateMachine';
 import { useModeloGraph } from '@/modules/structural-map/ui/hooks/useModeloGraph';
 import { useStructuralMapFilters } from '@/modules/structural-map/ui/hooks/useStructuralMapFilters';
 import { useEntityColors } from '@/modules/structural-map/ui/colors/entityColors';
 import { AnalysisPanel } from '@/modules/structural-map/ui/components/AnalysisPanel';
 import { ElenaEngineResultPanel } from '@/modules/structural-map/ui/components/ElenaEngineResultPanel';
+import { StressSimulationPanel } from '@/modules/structural-map/ui/components/stress/StressSimulationPanel';
+import { StressImpactPanel } from '@/modules/structural-map/ui/components/stress/StressImpactPanel';
+import { StressRecommendationsPanel } from '@/modules/structural-map/ui/components/stress/StressRecommendationsPanel';
+import { useStressSimulation } from '@/modules/structural-map/ui/hooks/useStressSimulation';
 import { FiltersDrawer } from '@/modules/structural-map/ui/components/filters/FiltersDrawer';
 import { EntitiesCatalogDrawer } from '@/modules/structural-map/ui/components/canvas/EntitiesCatalogDrawer';
 import { EntityEditForm }    from '@/modules/structural-map/ui/components/canvas/EntityEditForm';
@@ -46,7 +50,9 @@ export default function ModeloCanvasPage() {
   const [pendingRelation, setPendingRelation] = useState<PendingRelation | null>(null);
   const [elenaResult,     setElenaResult]     = useState<ElenaRunResult | null>(null);
   const [showAnalysis,    setShowAnalysis]    = useState(false);
+  const [showStress,      setShowStress]      = useState(false);
   const [showFilters,     setShowFilters]     = useState(false);
+  const stress = useStressSimulation();
   const [editingEdgeId,   setEditingEdgeId]   = useState<string | null>(null);
   const [editingEdgePos,  setEditingEdgePos]  = useState<ScreenPos | null>(null);
   const [editingEntityId, setEditingEntityId] = useState<string | null>(null);
@@ -66,6 +72,7 @@ export default function ModeloCanvasPage() {
         setPickerForNode(null);
         setShowCatalogDrawer(false);
         setShowFilters(false);
+        setShowStress(false);
       }
     };
     document.addEventListener('keydown', handler);
@@ -469,10 +476,13 @@ export default function ModeloCanvasPage() {
           <span className={styles.stat}>{entities.length} entidades</span>
           <span className={styles.stat}>{relations.length} relaciones</span>
           {graph.isPending && <div className={styles.spinner} />}
+          <button onClick={() => { setShowStress((p) => !p); setShowAnalysis(false); }} className={showStress ? styles.analysisBtnActive : styles.analysisBtn}>
+            <Zap size={13} /> Simulación
+          </button>
           <button onClick={() => setShowFilters((p) => !p)} className={showFilters ? styles.analysisBtnActive : styles.analysisBtn}>
             <SlidersHorizontal size={13} /> Filtros
           </button>
-          <button onClick={() => setShowAnalysis((p) => !p)} className={showAnalysis ? styles.analysisBtnActive : styles.analysisBtn}>
+          <button onClick={() => { setShowAnalysis((p) => !p); setShowStress(false); }} className={showAnalysis ? styles.analysisBtnActive : styles.analysisBtn}>
             <Activity size={13} /> Motores
           </button>
         </div>
@@ -505,6 +515,7 @@ export default function ModeloCanvasPage() {
                 onNodeAnalyze={handleNodeAnalyzeAction}
                 onNodePickEntity={handleNodePickEntity}
                 onNodeDuplicate={(id) => void handleNodeDuplicateAction(id)}
+                stateColors={stress.nodeStateColors}
                 cyRef={cyRef}
               />
             </div>
@@ -630,9 +641,41 @@ export default function ModeloCanvasPage() {
         </div>
       )}
 
+      {showStress && (
+        <div className={styles.analysisDrawer}>
+          <div className={styles.analysisHeader}>
+            <span><Zap size={13} style={{ verticalAlign: '-2px', marginRight: 6 }} />Structural Stress Simulator</span>
+            <button onClick={() => setShowStress(false)} className={styles.closeAnalysis}>✕</button>
+          </div>
+          <div style={{ height: '100%', overflowY: 'auto', padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <StressSimulationPanel
+              selectedNodeId={sm.state.selectedNodeId}
+              selectedNodeName={sm.state.selectedNodeId ? (entities.find((e) => e.id === sm.state.selectedNodeId)?.name ?? null) : null}
+              scopeCount={visibleEntities.length}
+              config={stress.config}
+              updateConfig={stress.updateConfig}
+              running={stress.running}
+              error={stress.error}
+              hasResult={!!stress.result}
+              onRun={() => {
+                if (!sm.state.selectedNodeId) return;
+                void stress.run({
+                  sourceNodeId: sm.state.selectedNodeId,
+                  scopeEntityIds: visibleEntities.map((entity) => entity.id),
+                  graphId: rootEntityId,
+                });
+              }}
+              onClear={stress.reset}
+            />
+            {stress.result && <StressImpactPanel result={stress.result} />}
+            {stress.result && <StressRecommendationsPanel result={stress.result} />}
+          </div>
+        </div>
+      )}
+
       {showFilters && filters.selection && (
         <FiltersDrawer
-          rightOffset={showAnalysis ? 280 : 0}
+          rightOffset={showAnalysis || showStress ? 280 : 0}
           groups={filters.config?.groups ?? []}
           viewCode={filters.selection.viewCode}
           depth={filters.selection.depth}

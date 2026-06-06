@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useReducer, useRef, useState } from 'react';
-import { CheckCircle2, AlertTriangle, Activity, Shield, Zap, GitBranch } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, Activity, Shield, Zap } from 'lucide-react';
 import type { ElenaEngine, ElenaRunResult } from '@/modules/structural-map/domain/types/ElenaTypes';
 import type { ValidationResult } from '@/modules/structural-map/domain/types/PortfolioTypes';
 
@@ -90,12 +90,10 @@ function EngineButton({ label, status, color, icon: Icon, disabled, onClick }: {
 
 const cardStyle: React.CSSProperties = { background: 'rgba(0,0,0,0.22)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 10, padding: '0.75rem' };
 const titleStyle: React.CSSProperties = { color: '#94a3b8', fontSize: '0.67rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem' };
-const inputStyle: React.CSSProperties = { width: '100%', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 7, color: '#f1f5f9', fontSize: '0.78rem', padding: '0.42rem 0.6rem', outline: 'none', boxSizing: 'border-box' };
 
 export function AnalysisPanel({ rootEntityId, rootEntityName, scopeEntityIds, onValidate, onResult, onGraphRefresh }: Props) {
   const [btnState, dispatch]        = useReducer(reducer, {} as BtnState);
   const [vResult, setVResult]       = useState<ValidationResult | null>(null);
-  const [simScenario, setSimScenario] = useState<string>('FAILURE');
   const validationResultRef = useRef<HTMLDivElement | null>(null);
 
   const anyLoading = Object.values(btnState).some((s) => s === 'loading');
@@ -175,21 +173,6 @@ export function AnalysisPanel({ rootEntityId, rootEntityName, scopeEntityIds, on
             <p style={{ margin: '0 0 0.55rem 0.2rem', color: '#2d3748', fontSize: '0.59rem', fontFamily: 'monospace' }}>{fn}</p>
           </div>
         ))}
-      </div>
-
-      {/* Simulación de cascada */}
-      <div style={cardStyle}>
-        <p style={titleStyle}><GitBranch size={12} /> Simulación de cascada</p>
-        <div style={{ marginBottom: '0.5rem' }}>
-          <label style={{ display: 'block', color: '#64748b', fontSize: '0.67rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Escenario</label>
-          <select value={simScenario} onChange={(e) => setSimScenario(e.target.value)} style={inputStyle}>
-            <option value="FAILURE">FAILURE — Falla total</option>
-            <option value="DEGRADATION">DEGRADATION — Degradación (×0.6)</option>
-            <option value="COMPROMISE">COMPROMISE — Compromiso (×0.85)</option>
-          </select>
-        </div>
-        <EngineButton label="Simular cascada" status={btnState.cascade ?? 'idle'} color="#a78bfa" icon={GitBranch} disabled={anyLoading} onClick={() => void runEngine('cascade', simScenario)} />
-        <p style={{ margin: '0.1rem 0 0 0.2rem', color: '#2d3748', fontSize: '0.59rem', fontFamily: 'monospace' }}>fn_elena_systemic_cascade_simulation</p>
       </div>
     </div>
   );
