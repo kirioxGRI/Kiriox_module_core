@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { GraphEntity, GraphRelation } from '@/modules/structural-map/domain/types/GraphTypes';
 import type { CanvasState, ScreenPos } from '@/modules/structural-map/domain/types/ModeloTypes';
 import { STRENGTH_STYLE } from '@/modules/structural-map/domain/types/ModeloTypes';
@@ -118,6 +118,8 @@ export default function ModelCanvas({
   const containerRef = useRef<HTMLDivElement>(null);
   const entityMapRef = useRef(new Map<string, GraphEntity>());
   const relationMapRef = useRef(new Map<string, GraphRelation>());
+
+  const [nodeTooltip, setNodeTooltip] = useState<null | { text: string; x: number; y: number }>(null);
 
   entityMapRef.current = new Map(entities.map((entity) => [entity.id, entity]));
   relationMapRef.current = new Map(relations.map((relation) => [relation.id, relation]));
@@ -412,9 +414,31 @@ export default function ModelCanvas({
         onNodeDragEnd(nodeId, pos);
       });
 
+      // Node tooltip on hover (name only, 14px as requested)
+      cy.on('mouseover', 'node', (evt) => {
+        const nodeId = evt.target.id() as string;
+        const entity = entityMapRef.current.get(nodeId);
+        if (!entity) return;
+
+        const rendered = evt.target.renderedPosition() as { x: number; y: number };
+        const rect = getContainerRect();
+        if (!rect) return;
+
+        setNodeTooltip({
+          text: entity.name || entity.code || '',
+          x: rect.left + rendered.x,
+          y: rect.top + rendered.y,
+        });
+      });
+
+      cy.on('mouseout', 'node', () => {
+        setNodeTooltip(null);
+      });
+
       cy.on('pan zoom', () => {
         onPanZoom();
         onZoomChange?.(parseFloat(cy!.zoom().toFixed(2)));
+        setNodeTooltip(null); // avoid stale positioned tooltip after view change
       });
 
       const applyInitialView = () => {
@@ -575,6 +599,15 @@ export default function ModelCanvas({
           onDuplicate={onNodeDuplicate}
           onRelationStart={(mousePos) => onRelationStart(overlayNodeId, mousePos)}
         />
+      )}
+
+      {nodeTooltip && (
+        <div
+          className={styles.nodeTooltip}
+          style={{ left: `${nodeTooltip.x}px`, top: `${nodeTooltip.y}px` }}
+        >
+          {nodeTooltip.text}
+        </div>
       )}
     </div>
   );

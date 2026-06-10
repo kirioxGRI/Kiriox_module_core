@@ -61,6 +61,11 @@ export default function ModeloCanvasPage() {
   const [showCatalogDrawer, setShowCatalogDrawer] = useState(false);
   const [catalogClickPos, setCatalogClickPos] = useState<{ screen: ScreenPos; graph: { x: number; y: number } } | null>(null);
 
+  // Entities explicitly added by the user via the right-click "Catálogo de Entidades Existentes" drawer
+  // must remain visible in the current canvas even if they fall outside the active view/depth/mode
+  // scoping from the root. This is a minimal post-filter expansion (does not touch applyGraphFilters).
+  const forceVisibleFromCatalog = useRef(new Set<string>());
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -78,6 +83,12 @@ export default function ModeloCanvasPage() {
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [sm]);
+
+  // When the user opens a different service/root, clear any previous catalog-forced nodes
+  // so the force-visible mechanism does not leak across different models.
+  useEffect(() => {
+    forceVisibleFromCatalog.current.clear();
+  }, [rootEntityId]);
 
   const handleCanvasClick = useCallback((screenPos: ScreenPos, graphPos: { x: number; y: number }) => {
     if (sm.state.mode === 'creating_relation') return;
@@ -286,7 +297,7 @@ export default function ModeloCanvasPage() {
     setPendingRelation({ sourceId, targetId, targetScreenPos: sp });
   }, [sm]);
 
-  const handleSelectCatalogEntity = useCallback((entity: GraphEntity) => {
+  const handleSelectCatalogEntity = useCallback(async (entity: GraphEntity) => {
     if (!catalogClickPos) return;
 
     try {
@@ -297,7 +308,24 @@ export default function ModeloCanvasPage() {
       console.error(e);
     }
 
-    graph.addEntity(entity);
+    // Follow documented rule: never insert orphan nodes from catalog.
+    // Hydrate with direct relations (depth 1) so the entity comes with its immediate context.
+    // Then force it visible in the current canvas (user explicitly added it via right-click catalog).
+    try {
+      const res = await fetch(`/api/structural-map/graph?rootEntityId=${encodeURIComponent(entity.id)}&depth=1`, {
+        cache: 'no-store',
+      });
+      if (res.ok) {
+        const subgraph = (await res.json()) as SubgraphData;
+        graph.mergeSubgraph(subgraph);
+      } else {
+        graph.addEntity(entity);
+      }
+    } catch {
+      graph.addEntity(entity);
+    }
+
+    forceVisibleFromCatalog.current.add(entity.id);
     sm.markDirty();
   }, [catalogClickPos, graph, sm]);
 
@@ -327,6 +355,7 @@ export default function ModeloCanvasPage() {
       is_active: true, is_spof: false, is_critical_node: false, total_degree: 0,
       criticality_score: null, resilience_score: null, exposure_score: null,
     });
+    forceVisibleFromCatalog.current.add(id);
     sm.markDirty();
   }, [catalogClickPos, graph, sm]);
 
@@ -417,8 +446,19 @@ export default function ModeloCanvasPage() {
     selection: filters.selection,
     viewRule: filters.activeViewRule,
   }), [allGraphEntities, allGraphRelations, rootEntityId, filters.selection, filters.activeViewRule]);
-  const entities = filteredGraph.entities;
+
+  // Expand the strictly filtered result with entities the user explicitly brought in
+  // via the right-click catalog drawer ("control de entidades existentes").
+  // This is the minimal safe way to honor user intent without modifying the complex
+  // applyGraphFilters / BFS / viewRule logic (which has many hard-won coherence rules).
+  let entities = filteredGraph.entities;
   const relations = filteredGraph.relations;
+  const extraFromCatalog = allGraphEntities.filter((e) =>
+    forceVisibleFromCatalog.current.has(e.id) && !entities.some((ee) => ee.id === e.id)
+  );
+  if (extraFromCatalog.length > 0) {
+    entities = [...entities, ...extraFromCatalog];
+  }
   const visibleEntities = entities;
 
   // Only offer relation types that the current view considers visible.

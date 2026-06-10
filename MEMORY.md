@@ -680,3 +680,25 @@ useEffect(() => {
 - Para creación de relaciones en builders visuales, pasar al formulario solo los tipos permitidos por `activeViewRule.allowed_relation_type_codes` (o todos si la regla no restringe). Esto garantiza que lo creado pase los filtros y sea visible inmediatamente vía optimistic + re-init de Cytoscape.
 - Tras create exitoso de arista, hacer `void graph.reload()` para resincronizar el estado maestro con el servidor (el endpoint de grafo/subgrafo devolverá la nueva relación directa entre nodos ya cargados).
 - Los flujos de mutación en canvas deben ser coherentes con el pipeline de filtros actual; las vistas no son solo "cosméticas" para lectura.
+
+## 2026-06-06 — Aprendizaje (tooltip hover)
+
+**Contexto:** Requerimiento en el canvas de `/gestion/structural-map/modelo`: al hover sobre un nodo mostrar tooltip con el nombre (font-size 14px).
+
+**Regla aprendida:** En componentes ModelCanvas que usan Cytoscape, para tooltips sin dependencias extras se usan listeners `cy.on('mouseover', 'node')` + `mouseout`, se calcula posición con `renderedPosition()` + `getContainerRect()`, y se renderiza un div `position: fixed` dentro de `.root` (ya relative). Se limpia en pan/zoom para evitar stale positions. El estilo (14px, glass) va en el module.css del componente.
+
+**Aplicación futura:** Reutilizar este patrón (hovered ref + fixed overlay calculado desde rendered coords) para otros hints, labels contextuales o inspección rápida sobre nodos/aristas del grafo estructural.
+
+## 2026-06-06 — Aprendizaje (catálogo drawer / agregar entidades)
+
+**Contexto:** En `/gestion/structural-map/modelo`, el drawer "Catálogo de Entidades Existentes" (se abre con clic derecho en espacio vacío del canvas) permitía "Agregar" (asociar existente) y "Crear Nueva", pero la entidad no aparecía en el canvas a pesar de guardarse la posición en LS y de estar en el master data de useModeloGraph.
+
+**Regla aprendida (crítica para producción):** 
+- El path de "Asociar existente" desde el drawer violaba la regla previa documentada: "Cuando el usuario use `Asociar existente`, la entidad elegida no debe agregarse sola al canvas. Debe hidratarse como subgrafo consistente... reutilizar `/api/structural-map/graph` + mergeSubgraph".
+- Incluso con datos en `allGraphEntities`, `applyGraphFilters` (cuando hay rootEntityId) solo incluye entidades alcanzables por BFS desde la raíz bajo la vista/depth/mode actual + post-filtro de tipos permitidos por la viewRule. Una adición libre (drop en right-click) casi nunca está en ese scope → queda fuera de la lista `entities` que se pasa a ModelCanvas.
+- No se puede tocar applyGraphFilters ni el pipeline de filtros (muchas correcciones previas de coherencia vista/modo/profundidad/criticidad).
+
+**Aplicación futura:** 
+- Para adiciones explícitas desde el control de catálogo por right-click, hidratar con depth=1 + mergeSubgraph (para el select) y registrar el id en un pequeño "force visible" (ref).
+- Expandir post-filtrado (sólo la lista para canvas + scopes derivados) con los ids forzados. Esto respeta la intención del usuario sin alterar la lógica base de visibilidad del grafo principal.
+- Limpiar el set de forzados al cambiar de root/serviceId. Mantener el delta mínimo y contenido para software en producción.
