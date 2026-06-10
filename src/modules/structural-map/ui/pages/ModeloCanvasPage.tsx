@@ -343,6 +343,9 @@ export default function ModeloCanvasPage() {
     setPendingRelation(null);
     sm.deselect();
     sm.markDirty();
+    // Refresh master data from server (the subgraph will contain the new direct relation).
+    // Optimistic add already made it visible immediately because we restricted creatable types to the current view.
+    void graph.reload();
   }, [graph, sm]);
 
   const handleUpdateRelation = useCallback(async (id: string, patch: { relation_type_id?: string; strength?: string; weight?: number; description?: string | null }) => {
@@ -417,6 +420,18 @@ export default function ModeloCanvasPage() {
   const entities = filteredGraph.entities;
   const relations = filteredGraph.relations;
   const visibleEntities = entities;
+
+  // Only offer relation types that the current view considers visible.
+  // This guarantees that a newly created relation will pass applyGraphFilters
+  // and actually render (be "marked") on the canvas via optimistic update.
+  const creatableRelationTypes = useMemo(() => {
+    const all = graph.data?.relationTypes ?? [];
+    const allowed = filters.activeViewRule?.allowed_relation_type_codes ?? [];
+    if (!allowed.length) return all;
+    const allowedSet = new Set(allowed.map((c) => c.toUpperCase()));
+    return all.filter((rt) => allowedSet.has((rt.code ?? '').toUpperCase()));
+  }, [graph.data?.relationTypes, filters.activeViewRule]);
+
   const rootEntity = rootEntityId
     ? allGraphEntities.find((e) => e.id === rootEntityId) ?? entities.find((e) => e.id === rootEntityId) ?? null
     : null;
@@ -582,7 +597,7 @@ export default function ModeloCanvasPage() {
           mode="create"
           position={pendingRelation.targetScreenPos}
           sourceEntity={pendingSrc} targetEntity={pendingTgt}
-          relationTypes={graph.data?.relationTypes ?? []}
+          relationTypes={creatableRelationTypes}
           onSave={handleCreateRelation}
           onCancel={handleRelationCancel}
         />

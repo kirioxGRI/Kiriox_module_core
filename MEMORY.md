@@ -669,3 +669,14 @@ useEffect(() => {
 **Regla aprendida:** La tabla `systemic_structural_metrics` almacena múltiples filas por entidad correspondientes a distintos `metric_type` (ej. `spof`, `criticality`) y corridas en paralelo. Para consultar el estado actual consolidado sin perder flags o recibir `NULL` aleatorios por `DISTINCT ON` o `LIMIT 1` arbitrarios, se debe agrupar por `entity_id` sobre las últimas corridas completadas de cada tipo, extrayendo los flags tanto de las columnas dedicadas como del objeto JSONB `metric_details` (usando `possible_spof` e `is_critical_node`) mediante agregaciones `MAX` y `BOOL_OR`.
 
 **Aplicación futura:** Al consultar métricas estructuradas sistémicas por nodo, usar siempre agregación consolidada sobre los últimos runs válidos de cada motor Elena para evitar quiebres visuales o de consistencia en el canvas.
+
+## 2026-06-06 — Aprendizaje
+
+**Contexto:** El usuario reportó que en `/gestion/structural-map/modelo`, "Cuando establezco una relación entre nodos no se marca." (el edge no aparecía en el canvas tras guardar en el RelationFormPopover, a pesar de éxito en POST y optimistic update).
+
+**Regla aprendida:** Las `systemic_filter_view_rules` definen `allowed_relation_type_codes` por vista ("Riesgo", "Todo", etc.). `applyGraphFilters` filtra las relaciones por esos códigos (además del BFS de profundidad/modo y criticidad) antes de pasar el array `relations` a ModelCanvas (y por ende a buildElements + nuevo cytoscape). El código de creación siempre pasaba `graph.data?.relationTypes` completo al popover de create, permitiendo seleccionar tipos que la vista activa descartaría en el useMemo de filteredGraph. Resultado: el optimistic `addRelation` actualizaba el master, pero la relación nunca llegaba al prop del canvas → no se dibujaba ("no se marca"). Además, las mutaciones de relaciones no hacían `reload()` (a diferencia de creación de entidades), dejando solo el snapshot cliente.
+
+**Aplicación futura:** 
+- Para creación de relaciones en builders visuales, pasar al formulario solo los tipos permitidos por `activeViewRule.allowed_relation_type_codes` (o todos si la regla no restringe). Esto garantiza que lo creado pase los filtros y sea visible inmediatamente vía optimistic + re-init de Cytoscape.
+- Tras create exitoso de arista, hacer `void graph.reload()` para resincronizar el estado maestro con el servidor (el endpoint de grafo/subgrafo devolverá la nueva relación directa entre nodos ya cargados).
+- Los flujos de mutación en canvas deben ser coherentes con el pipeline de filtros actual; las vistas no son solo "cosméticas" para lectura.
